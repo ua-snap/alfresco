@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 3.1.0?>
+
+<ManagedProjectBuildInfo>
+<project id="Client.cdt.managedbuild.target.gnu.exe.372543191" name="Gnu Executable" projectType="cdt.managedbuild.target.gnu.exe">
+<configuration artifactName="FrescoClient" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.exe.debug.2126631447" name="Debug" parent="cdt.managedbuild.config.gnu.exe.debug">
+<toolChain id="cdt.managedbuild.toolchain.gnu.exe.debug.642394091" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.exe.debug">
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1976274427" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug">
+<option id="gnu.cpp.compiler.option.include.paths.1265892961" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Client/include}&quot;"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Custom/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Foundation/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/poco/Foundation/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/poco/Net/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/poco/XML/include"/>
+</option>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1021092837" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug"/>
+<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.69029530" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1970605178" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
+<option id="gnu.cpp.link.option.libs.1814635881" superClass="gnu.cpp.link.option.libs" valueType="libs">
+<listOptionValue builtIn="false" value="PocoFoundationd"/>
+<listOptionValue builtIn="false" value="FrescoFoundationd"/>
+<listOptionValue builtIn="false" value="FrescoCustomd"/>
+<listOptionValue builtIn="false" value="PocoNetd"/>
+<listOptionValue builtIn="false" value="PocoXMLd"/>
+</option>
+<option id="gnu.cpp.link.option.paths.1634343862" superClass="gnu.cpp.link.option.paths" valueType="stringList">
+<listOptionValue builtIn="false" value="/home/tglaser/lib"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Custom/Debug"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Foundation/Debug"/>
+</option>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.1089203583" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug"/>
+<macros/>
+</toolChain>
+</configuration>
+<configuration artifactName="FrescoClient" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.exe.release.1330790483" name="Release" parent="cdt.managedbuild.config.gnu.exe.release">
+<toolChain id="cdt.managedbuild.toolchain.gnu.exe.release.116600037" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.exe.release">
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1638381710" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
+<option id="gnu.cpp.compiler.option.include.paths.1801937892" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Client/include}&quot;"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Custom/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Foundation/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/poco/Foundation/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/poco/Net/include"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/poco/XML/include"/>
+</option>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1447814321" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release"/>
+<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.298592937" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.1813126563" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
+<option id="gnu.cpp.link.option.libs.1707358717" superClass="gnu.cpp.link.option.libs" valueType="libs">
+<listOptionValue builtIn="false" value="PocoFoundation"/>
+<listOptionValue builtIn="false" value="PocoNet"/>
+<listOptionValue builtIn="false" value="PocoXML"/>
+<listOptionValue builtIn="false" value="FrescoCustom"/>
+<listOptionValue builtIn="false" value="FrescoFoundation"/>
+</option>
+<option id="gnu.cpp.link.option.paths.140145727" superClass="gnu.cpp.link.option.paths" valueType="stringList">
+<listOptionValue builtIn="false" value="/home/tglaser/lib"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/poco/lib/Linux/i686.old"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Custom/Release"/>
+<listOptionValue builtIn="false" value="/home/tglaser/projects/Fresco/Foundation/Release"/>
+</option>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.2097742198" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release"/>
+<macros/>
+</toolChain>
+</configuration>
+<macros/>
+</project>
+</ManagedProjectBuildInfo>

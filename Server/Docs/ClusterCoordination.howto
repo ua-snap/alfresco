@@ -1,0 +1,43 @@
+-------------------------------------------------------------------
+ File:        ClusterCoordination.howto
+ Author:      Tim Glaser
+ Changes:     3/22/2007  Created.
+              6/22/2007  Updated 0.2.0 release.  Added Jock to 
+                         cluster contact list.  Moved commands
+                         section to LinuxCommands.howto.
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------
+ Protocol for Coordinating Cluster Use
+-------------------------------------------------------------------
+Maybe overkill to list it like this, but here's an outline of 
+the protocol we we agreed to follow when using the cluster.
+
+1)Check Cluster Status:
+    Is the cluster available?  $gstat -a
+    If no, who is using it?    $dsh -aH psall or on each node of concern run $top 
+        coordinate with them.
+    If yes, continue.
+
+    Is space available for input and output?   $df -H /home
+    If no, probably ask Jock what he knows.
+    If yes, continue.
+
+2)Run Simulation:
+    Run FRESCO Server on Windows machine
+    Run clients:  $dsh -a startclient
+    Start simulation with FRESCO Server
+    Email the following group:
+    	Jock Irons <fnjgi@uaf.edu>
+        Todd Burnside <fntjb1@uaf.edu>
+        Michael Balshi <ftmsb@uaf.edu>
+        Eugenie Euskirchen <ffese@uaf.edu>
+        Shuhua Yi <ffsy@uaf.edu>
+        Daniel Hayes <ffdjh1@uaf.edu>
+
+3)Clean up:
+    $dsh -a stopclient
+    Use 'mv' or FileZilla to retreive output
+    Delete output: $rm -rf <directory>
+
+-------------------------------------------------------------------

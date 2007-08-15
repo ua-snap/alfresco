@@ -1,0 +1,45 @@
+-------------------------------------------------------------------
+ File:        LinuxCommands.howto
+ Author:      Tim Glaser
+ Changes:     3/22/2007  Created 
+              6/22/2007  Removed custom commands no longer used.
+ Contents:    - Custom commands for running FRESCO Client on the
+                SEL cluster
+              - Linux commands likely to be helpful
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------
+ Custom commands for running FRESCO Client on cluster
+-------------------------------------------------------------------
+If you need to look inside them, go to /home/<username>/fresco/bin.
+
+ startclient
+    A script that calls FrescoClient as a daemon with the IP address 
+    specified inside the startclient script.  
+
+ stopclient
+    Terminates all FrescoClient processes with the kill command.
+
+ FrescoClient
+    You can run FrescoClient directly, much like using 'startclient'.
+
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------
+ Linux Commands Likely To Be Helpful
+-------------------------------------------------------------------
+ man <command>      Get info  how to use 'command'.  Short for manual.
+ command -h         Get info how to use 'command'.  Sometimes ? or --help.
+
+ gstat -a           See load on each cluster node.
+ top                See list of running jobs and who is running them.
+ df -H              See disk usage and availability.  /home and /stuff are what we care about.
+ dsh -a <command>   Run a command on all nodes of a cluster.  See dsh -h for more.
+
+ cd <directory>     Move to 'directory'.
+ ls                 See content of a directory (see man page).
+ pwd                See path of current directory.
+ ps                 Get info about running processes (see man page).
+
+ scp                A command line version of FileZilla (see man page).
+-------------------------------------------------------------------

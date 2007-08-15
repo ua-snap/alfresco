@@ -1,0 +1,60 @@
+-------------------------------------------------------------------
+ File:     ConvertingFIFs.howto
+ Author:   Tim Glaser
+ Changes:  Created 3/22/2007.
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------
+ How To Convert A VegFRESCO FIF To A FRESCO CS FIF That Is
+ Compatible With Linux
+-------------------------------------------------------------------
+Let's address the compatibility issue first. Windows and Linux use
+different text file formatting.  When creating a text file using a
+typical Windows text editor, such as Notepad, a program running on
+Linux may not be able to read the file due to the different format.
+
+Within Windows, I recommend using TextPad (www.textpad.com) to read
+and edit FIFs from now on.  But there are likely a number of other
+text editors available to do a comparable job.  Within Linux, your
+text editor of choice will be fine.
+
+  How to make a FIF compatible with Linux.
+  1. Open a FIF in TextPad (right click the file and select TextPad).
+  2. Go to File | Save as..., set "File Format" to UNIX and press
+     Save.
+
+
+Now, the changes necessary to get an old VegFRESCO FIF running in
+FRESCO CS.  FRESCO CS uses a different parsing mechanism than
+VegFRESCO.  Here are the necessary changes to conform to FRESCO CS.
+
+ 1. Replace BaseDirectory with ClusterBaseDirectory and
+    ServerBaseDirectory.
+    a. The server and cluster are not sharing a file system.  This
+       means two seperate base directories must be specified in the
+       FIF.
+
+       Example:
+         ClusterBaseDirectory = "/home/username/fresco/runs/interior" ; Base directory for clients to access and write files.
+         ServerBaseDirectory  = "c:\fcs\runs\interior"                ; Base directory for server to access and write files.
+
+
+At this point, you could just start using FRESCO CS and rely on the
+error messages to direct you.  But here are the most likely
+remaining steps.
+
+ 2. Update Fire.Historical field to be an array of strings.  An
+    example in the case of two Fire.TypeTransitionYears specified:
+      Fire.Historical = {"","/input/fire/historical_1900-2000"}
+
+ 3. Provide a decimal point for any real number.  The system needs
+    to know what type of number it is reading.  It might be best to
+    rely on FRESCO CS to tell you what fields need to be changed.
+
+
+Optional changes:
+
+ 4. FRESCO CS does not require FIF fields be in a specific order,
+     so feel free to rearrange.
+
+-------------------------------------------------------------------
