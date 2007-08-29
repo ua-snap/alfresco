@@ -94,7 +94,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(OutDir)\FrescoCustomd.dll p:\Fresco\lib&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.lib  p:\Fresco\lib&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.dll  p:\Fresco\Client\Debug\"
+				CommandLine="copy $(OutDir)\FrescoCustomd.dll p:\Fresco\lib&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.lib  p:\Fresco\lib&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.dll  p:\Fresco\Client\Debug\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -147,7 +147,7 @@
 				AdditionalDependencies="PocoFoundation.lib PocoNet.lib PocoXML.lib FrescoFoundation.lib"
 				OutputFile="$(OutDir)\FrescoCustom.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="p:\fresco\lib;p:\poco\lib"
+				AdditionalLibraryDirectories="..\lib;p:\poco\lib"
 				OptimizeForWindows98="1"
 				LinkTimeCodeGeneration="0"
 				ImportLibrary="$(OutDir)\FrescoCustom.lib"
@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(OutDir)\FrescoCustom.dll p:\Fresco\lib&#x0D;&#x0A;copy $(OutDir)\FrescoCustom.lib  p:\Fresco\lib&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoCustom.dll  p:\Fresco\Client\Release\&#x0D;&#x0A;"
+				CommandLine="copy $(OutDir)\FrescoCustom.dll  ..\lib&#x0D;&#x0A;copy $(OutDir)\FrescoCustom.lib  ..\lib&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoCustom.dll  ..\Client\Release\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

@@ -52,6 +52,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>
     </DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AssisiControls, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -409,6 +410,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>P:\Fresco\Server\PostBuild.bat</PostBuildEvent>
+    <PostBuildEvent>$(ProjectDir)PostBuild.bat</PostBuildEvent>
   </PropertyGroup>
 </Project>

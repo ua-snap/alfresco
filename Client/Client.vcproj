@@ -144,7 +144,7 @@
 				AdditionalDependencies="PocoFoundation.lib PocoNet.lib PocoXML.lib FrescoFoundation.lib FrescoCustom.lib"
 				Version="0.2.3"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="p:\fresco\lib;p:\poco\lib"
+				AdditionalLibraryDirectories="..\lib;p:\poco\lib"
 				GenerateDebugInformation="false"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -174,7 +174,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="P:\Fresco\Client\PostBuild.bat"
+				CommandLine="$(ProjectDir)PostBuild.bat"
 			/>
 		</Configuration>
 	</Configurations>
