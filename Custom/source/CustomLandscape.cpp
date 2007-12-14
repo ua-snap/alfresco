@@ -21,6 +21,7 @@ CustomLandscape::		    CustomLandscape(const int rows, const int cols) : Landsca
 	_pSiteSpatialInput				= 0;
 	_pTreeDensitySpatialInput		= 0;
 	_pAgeSpatialInput				= 0;
+	_pTopoSpatialInput				= 0;
 	_pIgnitionFactorSpatialInput	= 0;
 	_pSensitivitySpatialInput	    = 0;
 	_pHistoricalFireSpatialInput	= 0;
@@ -41,6 +42,7 @@ void CustomLandscape::		clear()
 	_siteInputFile			= "";
 	_treeDensityInputFile	= "";
 	_ageInputFile			= "";
+	_topoInputFile			= "";
 	_vegInputFile			= "";
 	_isForcedVegTransitions	= false;
 	_vegTransitionFile		= "";
@@ -77,37 +79,11 @@ void CustomLandscape::    	clearLayers()
 	if (_pSiteSpatialInput)			    {for (int r=0;r<gNumRows;r++) delete[] _pSiteSpatialInput[r];				delete[] _pSiteSpatialInput;			_pSiteSpatialInput				= 0; }
 	if (_pTreeDensitySpatialInput)		{for (int r=0;r<gNumRows;r++) delete[] _pTreeDensitySpatialInput[r];		delete[] _pTreeDensitySpatialInput;		_pTreeDensitySpatialInput		= 0; }
 	if (_pAgeSpatialInput)				{for (int r=0;r<gNumRows;r++) delete[] _pAgeSpatialInput[r];				delete[] _pAgeSpatialInput;				_pAgeSpatialInput				= 0; }
+	if (_pTopoSpatialInput)				{for (int r=0;r<gNumRows;r++) delete[] _pTopoSpatialInput[r];				delete[] _pTopoSpatialInput;			_pTopoSpatialInput				= 0; }
 	if (_pIgnitionFactorSpatialInput)	{for (int r=0;r<gNumRows;r++) delete[] _pIgnitionFactorSpatialInput[r];	    delete[] _pIgnitionFactorSpatialInput;	_pIgnitionFactorSpatialInput	= 0; }
 	if (_pSensitivitySpatialInput)      {for (int r=0;r<gNumRows;r++) delete[] _pSensitivitySpatialInput[r];	    delete[] _pSensitivitySpatialInput;	    _pSensitivitySpatialInput	    = 0; }
 	if (_pSuppressions)		            {for (int r=0;r<gNumRows;r++) delete[] _pSuppressions[r];	                delete[] _pSuppressions;		        _pSuppressions                  = 0; }
-	//Clear historical fire array.
-	if (_pHistoricalFireSpatialInput && gIsLargeMemoryModel) {
-		//Delete only for HISTORICAL fire years (other years aren't set).
-		for (std::vector<Fire::SFireTransition>::iterator Iter=Fire::fireTransitions.begin(); Iter<Fire::fireTransitions.end(); Iter++)	{
-			if (Iter->Type==Fire::HISTORICAL) {
-				firstYear = Iter->Year;
-                if ((Iter+1)<Fire::fireTransitions.end()) 
-                    lastYear = (Iter+1)->Year-1;
-                else 
-                    lastYear = gMaxYear; 
-            	for (int y=firstYear; y<=lastYear; y++) {
-                    for (int r=0; r<gNumRows; r++) {
-                        delete[] _pHistoricalFireSpatialInput[y][r];	
-                    }
-                    delete[] _pHistoricalFireSpatialInput[y];
-                }
-                delete[] _pHistoricalFireSpatialInput;	_pHistoricalFireSpatialInput = 0; 
-			}
-		}
-	}
-    else if (_pHistoricalFireSpatialInput) {
-        //Not large memory model, so just delete everything under first index.
-        for (int r=0; r<gNumRows; r++) {
-            delete[] _pHistoricalFireSpatialInput[0][r];	
-        }
-        delete[] _pHistoricalFireSpatialInput[0];
-        delete[] _pHistoricalFireSpatialInput;	_pHistoricalFireSpatialInput = 0; 
-    }
+    if (_pHistoricalFireSpatialInput)	{for (int r=0;r<gNumRows;r++) delete[] _pHistoricalFireSpatialInput[r];		delete[] _pHistoricalFireSpatialInput; _pHistoricalFireSpatialInput		= 0; }
 }
 
 void CustomLandscape::		setup() 
@@ -134,8 +110,10 @@ void CustomLandscape::		setup()
     _vegTransitionFile		        = FormatDirectory(FRESCO->fif().sGet("VegTransitionFile"));
     _isForcedVegTransitions	        = FRESCO->fif().bGet("IsForcedVegTransitions");
     _ageInputFile			        = FormatDirectory(FRESCO->fif().sGet("AgeInputFile"));
-    _treeDensityInputFile	        = FormatDirectory(FRESCO->fif().sGet("TreeDensityInputFile"));
+	_treeDensityInputFile	        = FormatDirectory(FRESCO->fif().sGet("TreeDensityInputFile"));
     _siteInputFile			        = FormatDirectory(FRESCO->fif().sGet("SiteInputFile"));
+	_topoInputFile					= FormatDirectory(FRESCO->fif().sGet("TopoInputFile"));
+	_burnSeverityInputFile			= FormatDirectory(FRESCO->fif().sGet("BurnSeverityInputFile"));
 
     Landscape::setup();
     
@@ -144,25 +122,34 @@ void CustomLandscape::		setup()
 	_pSiteSpatialInput				= new float*[gNumRows];
 	_pTreeDensitySpatialInput		= new int*[gNumRows];
 	_pAgeSpatialInput				= new int*[gNumRows];
+	_pTopoSpatialInput				= new int*[gNumRows];
 	_pIgnitionFactorSpatialInput	= new float*[gNumRows];
 	_pSensitivitySpatialInput	    = new float*[gNumRows];
+	_pBurnSeveritySpatialInput		= new int*[gNumRows];
 	_pSuppressions                  = new int*[gNumRows];
+	_pHistoricalFireSpatialInput	= new int*[gNumRows];
 	for (r=0;r<gNumRows;r++) {
 		_pVegSpatialInput[r]		    = new int[gNumCol];
 		_pSiteSpatialInput[r]			= new float[gNumCol];
 		_pTreeDensitySpatialInput[r]	= new int[gNumCol];
 		_pAgeSpatialInput[r]			= new int[gNumCol];
+		_pTopoSpatialInput[r]			= new int[gNumCol];
 		_pIgnitionFactorSpatialInput[r]	= new float[gNumCol];
 		_pSensitivitySpatialInput[r]	= new float[gNumCol];
-		_pSuppressions[r] = new int[gNumCol];
+		_pBurnSeveritySpatialInput[r]	= new int[gNumCol];
+		_pSuppressions[r]				= new int[gNumCol];
+		_pHistoricalFireSpatialInput[r] = new int[gNumCol];
         for (c=0;c<gNumCol;c++) {
 			_pVegSpatialInput[r][c]		        = 0;
 			_pSiteSpatialInput[r][c]		    = 0;
 			_pTreeDensitySpatialInput[r][c]	    = 0;
 			_pAgeSpatialInput[r][c]			    = 0;
+			_pTopoSpatialInput[r][c]		    = 0;
 			_pIgnitionFactorSpatialInput[r][c]	= 0;
 			_pSensitivitySpatialInput[r][c]     = 0;
+			_pBurnSeveritySpatialInput[r][c]    = 0;
 			_pSuppressions[r][c]	            = 0;
+			_pHistoricalFireSpatialInput[r][c]	= 0;
 		}
 	}
 
@@ -196,36 +183,6 @@ void CustomLandscape::		setup()
 		else if (iter->Type==Fire::HISTORICAL) {
 			stream	<< " HISTORICAL";
 			if (iter->HistoricalFile=="\"")	            throw Exception(Exception::INITFAULT,"Fire transition missing historical file name.\n");
-			if (gIsLargeMemoryModel) {
-				//If running large memory model, read in fire history now.
-				if (!_pHistoricalFireSpatialInput) _pHistoricalFireSpatialInput = new int**[gMaxYear+1];
-				
-				baseName = iter->HistoricalFile;
-				for (y=tranStart; y<=tranStop; y++) {
-					_pHistoricalFireSpatialInput[y] = new int*[gNumRows];
-					for (r=0;r<gNumRows;r++) {
-						_pHistoricalFireSpatialInput[y][r] = new int[gNumCol];
-						for (c=0;c<gNumCol;c++) 
-							_pHistoricalFireSpatialInput[y][r][c] = 0;
-					}
-					//Read in the historical fire maps for all years.
-					fileName = AppendYear(baseName,y);
-					ReadGISFile<int>(_pHistoricalFireSpatialInput[y], gNumRows, gNumCol, fileName.c_str(), std::ios::in, 0);
-				}
-			}
-            else
-            {
-                if(!_pHistoricalFireSpatialInput) 
-                {
-                    _pHistoricalFireSpatialInput = new int**[1];
-					_pHistoricalFireSpatialInput[0] = new int*[gNumRows];
-					for (r=0; r<gNumRows; r++) {
-						_pHistoricalFireSpatialInput[0][r] = new int[gNumCol];
-						for (c=0; c<gNumCol; c++) 
-							_pHistoricalFireSpatialInput[0][r][c] = 0;
-					}
-                }
-            }
 		}
 		stream	<< std::endl;
 		if (gDetailLevel>=MAXIMUM) ShowOutput(stream);
@@ -238,10 +195,14 @@ void CustomLandscape::		setup()
     }
 
 	//Read in layers.
+	ShowOutput(MODERATE, "\tReading topography layer.\n");
+	ReadGISFile<int>(_pTopoSpatialInput, gNumRows, gNumCol, _topoInputFile,std::ios::in, 0);
 	ShowOutput(MODERATE, "\tReading site layer.\n");
 	ReadGISFile<float>(_pSiteSpatialInput, gNumRows, gNumCol, _siteInputFile,std::ios::in, 0.);
 	ShowOutput(MODERATE, "\tReading tree density layer.\n");
 	ReadGISFile<int>(_pTreeDensitySpatialInput, gNumRows, gNumCol, _treeDensityInputFile,std::ios::in, 0);
+	ShowOutput(MODERATE, "\tReading burn severity layer.\n");
+	ReadGISFile<int>(_pBurnSeveritySpatialInput, gNumRows, gNumCol, _burnSeverityInputFile,std::ios::in, 0);
 }
 
 void CustomLandscape::		repStart() 
@@ -259,7 +220,7 @@ void CustomLandscape::		repStart()
 		ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, inputFileWithRepYear, std::ios::in,gNoVegID);
 		//Age
 		inputFileWithRepYear = AppendRepYear(_ageInputFile, gRep, _yearOfVegAndAgeFiles);
-		ShowOutput(MODERATE, "\t\tReading veg layer from "+inputFileWithRepYear+"\n");
+		ShowOutput(MODERATE, "\t\tReading age layer from "+inputFileWithRepYear+"\n");
 		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, inputFileWithRepYear,std::ios::in, 1);
 	}
 	else if (FRESCO->isRunningFirstRep()) {  //Use one input map for all reps.
@@ -270,17 +231,17 @@ void CustomLandscape::		repStart()
 		ShowOutput(MODERATE, "\t\tReading age layer from "+_ageInputFile+"\n");
 		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, _ageInputFile, std::ios::in, 1);
 	}
-	//Create new landscape.
+	//Create landscape cell-by-cell, assigning values from all the input 
 	Frame* pFrame = 0;
 	for (int r=0; r<gNumRows; r++) {
 		for (int c=0; c<gNumCol; c++) {
 			pFrame = _pFrames[r][c];
 			if (pFrame) delete pFrame;			
-				 if (_pVegSpatialInput[r][c]==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(-_pAgeSpatialInput[r][c], _pSiteSpatialInput[r][c], -1, _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (_pVegSpatialInput[r][c]==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(-_pAgeSpatialInput[r][c], _pSiteSpatialInput[r][c], -1, _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (_pVegSpatialInput[r][c]==gDecidID)	    { _pFrames[r][c] = new Decid(-_pAgeSpatialInput[r][c],   _pSiteSpatialInput[r][c], -1, _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (_pVegSpatialInput[r][c]==gTundraID)	{ _pFrames[r][c] = new Tundra(-_pAgeSpatialInput[r][c],  _pSiteSpatialInput[r][c], -1, _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
-			else if (_pVegSpatialInput[r][c]==gNoVegID)	    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pSiteSpatialInput[r][c], -1, _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+				 if (_pVegSpatialInput[r][c]==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (_pVegSpatialInput[r][c]==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (_pVegSpatialInput[r][c]==gDecidID)	    { _pFrames[r][c] = new Decid(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (_pVegSpatialInput[r][c]==gTundraID)	{ _pFrames[r][c] = new Tundra(-_pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
+			else if (_pVegSpatialInput[r][c]==gNoVegID)	    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
             else								            { throw Exception(Exception::INITFAULT, "Unknown vegetation type at cell [" + ToS(r) + "][" + ToS(c) + "]"); }
 		}
 	}
@@ -368,38 +329,40 @@ void CustomLandscape::		doFireTransitions()
 void CustomLandscape::		doIgnitions() 
 //This doIgnitions overloads the default ignitions by providing the option to read in prescribed fire maps.
 {
-	int		r,c			= 0;
-	Fire*	pFire		= 0;
-	int		fireSize	= 0;
-	std::string	filename;
-
 	ShowOutput(MODERATE, "\t\tIgnitions\n");
 	if (Fire::fireType==Fire::HISTORICAL) {
-		//Process historical fire maps.
 		ShowOutput(MAXIMUM, "\t\t\tFire set to HISTORICAL.\n");
-		if (!gIsLargeMemoryModel) {
-			//Not running large memory model: read in historical fire now.
-			filename = Fire::historicalFiresFileName;
-			filename = filename.substr(0,filename.size()-4) + "_" + ToS(gYear) + ".txt";
-			ShowOutput(MAXIMUM, "\t\t\tReading in historical fire map: " + filename + "\n");
-			ReadGISFile<int>(_pHistoricalFireSpatialInput[0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
-		}
-		//Force cells to burn as specified in the file.
-		for (r=0; r<gNumRows; r++) {
-			for (c=0; c<gNumCol; c++) {
-				if (_pHistoricalFireSpatialInput[(gIsLargeMemoryModel?gYear:0)][r][c]>0) {
+		//
+		// Read in historical fire map...
+		//
+		std::string	filename = AppendYear(Fire::historicalFiresFileName, gYear);
+		ShowOutput(MAXIMUM, "\t\t\tReading in historical fire map: " + filename + "\n");
+		ReadGISFile<int>(_pHistoricalFireSpatialInput, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
+		//
+		// Force cells to burn as specified in the file...
+		//
+		Frame*	pFrame		= 0;
+		int		fireSize	= 0;
+		int		numLow		= 0;
+		int		numHiLSS	= 0;
+		for (int r=0; r<gNumRows; r++) {
+			for (int c=0; c<gNumCol; c++) {
+				if (_pHistoricalFireSpatialInput[r][c]>0) {
 					if (_pFrames[r][c]->type() != gNoVegID) {
-						pFire = _pFrames[_row=r][_col=c];
-						pFire->historicalFire(this);
+						pFrame = _pFrames[_row=r][_col=c]; // <--be careful, spaghetti code: _row and _col are set here so Landscape::logFireStats() can access the species of this frame.  Should be cleaned.
+						pFrame->historicalFire(this);
 						fireSize++;
+						//Set burn severity...
+						if (pFrame->type() == gTundraID) { pFrame->burnSeverity=Fire::LOW; numLow++; }
+						else { pFrame->burnSeverity=Fire::HIGH_LSS; numHiLSS++; }
 					}
 				}
 			}
 		}
 		//Record fire size and fire num.
 		if (fireSize>0) {
-			_fireSizeStat.Add(gYear, gRep, fireSize, 0);   //0=Natural ignition cause.
-			_fireNumStat.Add(gYear, gRep, 1, 0);			//0=Natural ignition cause.
+			_fireSizeStat.Add(gYear, gRep, fireSize, 0, numLow, 0, numHiLSS, 0);   //0=Natural ignition cause.
+			_fireNumStat.Add(gYear, gRep, 1);			//0=Natural ignition cause.
 		}
 	}
 	else 
@@ -566,10 +529,6 @@ void CustomLandscape::      doFireSuppressionTransitions()
     }
 }
 
-
-//void CustomLandscape::      applySuppressionTransitionIfExists(int year)
-//{
-//}
 
 
 void CustomLandscape::		doVegetationTransitions() 

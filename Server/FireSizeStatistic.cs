@@ -5,23 +5,17 @@ using System.Text;
 
 namespace FRESCO_Server
 {
-    enum OutFlags
+    struct FireSizeEvent
     {
-        outYear = 0x1,									//Output the data averaged by year
-        outRep = 0x2,									//Output the data averaged by replicate
-        outFormat = 0x4,									//Format in a way to facilitate reading into a stats package for analysis
-        outNum = 0x10,									//Output the number of samples
-        outMean = 0x20,									//Output the mean of the data
-        outStdDev = 0x40,									//Output the standard deviation of the samples
-        outMin = 0x80,									//Output the minimum of the samples
-        outMax = 0x100,								//Output the maximum of the samples
-        outHist = 0x200,								//Output the histogram data if there is any
-        outData = 0x400,								//Output the file of data.
-        outEvents = 0x800									//Output the file of events.
+        public double Value;
+        public int Cause;
+        public int LowCount;
+        public int ModCount;
+        public int HighLssCount;
+        public int HighHssCount;
     };
 
-
-    class Statistic
+    class FireSizeStatistic
     {
         //Variables
         public long tally;                                  //For totaling incremental types.
@@ -33,7 +27,7 @@ namespace FRESCO_Server
         private List<List<double>> data;
         private List<BasicStatistic> basicStatYear;	        //Maintains the statistics across replicates
         private List<BasicStatistic> basicStatRep;		    //Maintains the statistics within a replicate
-        private LinkedList<List<double>>[,] eventLists;     //A bucket system is used to avoid finding contiguous memory for all events.  Instead a list of buckets containing data events is maintained.
+        private LinkedList<List<FireSizeEvent>>[,] eventLists;  //A bucket system is used to avoid finding contiguous memory for all events.  Instead a list of buckets containing FireSizeEvents is maintained.
         private const int BUCKET_CAPACITY = 10000;
 
 
@@ -45,7 +39,7 @@ namespace FRESCO_Server
         /// <param name="maxReps"></param>
         /// <param name="timeStep"></param>
         /// <param name="outflags"></param>
-        public Statistic(string title, int maxYears, int maxReps, int timeStep, int outflags)
+        public FireSizeStatistic(string title, int maxYears, int maxReps, int timeStep, int outflags)
         {
             //Setup the default values.
             this.tally = 0;
@@ -74,13 +68,13 @@ namespace FRESCO_Server
                     data[y].Add(0.0);
             }
 
-            eventLists = new LinkedList<List<double>>[numYears, maxReps];
+            eventLists = new LinkedList<List<FireSizeEvent>>[numYears, maxReps];
             for (int y = 0; y < numYears; y++)
             {
                 for (int r = 0; r < maxReps; r++)
                 {
-                    eventLists[y, r] = new LinkedList<List<double>>();
-                    eventLists[y, r].AddLast(new List<double>());
+                    eventLists[y, r] = new LinkedList<List<FireSizeEvent>>();
+                    eventLists[y, r].AddLast(new List<FireSizeEvent>());
                 }
             }
         }
@@ -109,7 +103,7 @@ namespace FRESCO_Server
         /// <param name="rep"></param>
         /// <param name="data"></param>
         /// <param name="cause"></param>
-        public void Add(int year, int rep, double value)
+        public void Add(int year, int rep, double value, int cause, int low, int mod, int hiLSS, int hiHSS)
         {
             //Error if year or rep is out of bounds.
             if (year > maxYears || year < 0) throw new Exception("Invalid year specified when adding a statisitc.\n");
@@ -122,7 +116,7 @@ namespace FRESCO_Server
             data[year / timeStep][rep] += value;
             //Add data to the event list. 
             if ((outFlags & (int)OutFlags.outEvents) > 0)
-                AddEvent(year, rep, value);
+                AddEvent(year, rep, value, cause, low, mod, hiLSS, hiHSS);
         }
 
         /// <summary>
@@ -130,7 +124,7 @@ namespace FRESCO_Server
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public static Statistic operator ++(Statistic a)
+        public static FireSizeStatistic operator ++(FireSizeStatistic a)
         {
             a.tally++;
             return a;
@@ -141,7 +135,7 @@ namespace FRESCO_Server
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public static Statistic operator --(Statistic a)
+        public static FireSizeStatistic operator --(FireSizeStatistic a)
         {
             a.tally--;
             return a;
@@ -188,89 +182,6 @@ namespace FRESCO_Server
         /// <param name="stream">The stream to be written to.</param>
         public void Save()
         {
-            ////Output title as header.
-            //sStream << title.c_str() << endl;
-            ////Output within year data
-            //int bFormat = outFlags & OutFlags.outFormat;
-            //if (outFlags & OutFlags.outYear) {
-            //    if (bFormat) {
-            //        sStream << "Year:";
-            //        for (int Year = 0; Year <= maxYears/timeStep; Year++)
-            //            sStream << "\t" << Year * timeStep;
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outNum) {
-            //        if (bFormat) sStream << "Num:";
-            //        for (int Year = 0; Year <= maxYears/timeStep; Year++)
-            //            sStream << "\t" << basicStatYear[Year].Num();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outMean) {
-            //        if (bFormat) sStream << "Mean:";
-            //        for (int Year = 0; Year <= maxYears/timeStep; Year++)
-            //            sStream << "\t" << basicStatYear[Year].Mean();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outStdDev) {
-            //        if (bFormat) sStream << "Std:";
-            //        for (int Year = 0; Year <= maxYears/timeStep; Year++)
-            //            sStream << "\t" << basicStatYear[Year].StdDev();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outMin) {
-            //        if (bFormat) sStream << "Min:";
-            //        for (int Year = 0; Year <= maxYears/timeStep; Year++)
-            //            sStream << "\t" << basicStatYear[Year].Min();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outMax) {
-            //        if (bFormat) sStream << "Max:";
-            //        for (int Year = 0; Year <= maxYears/timeStep; Year++)
-            //            sStream << "\t" << basicStatYear[Year].Max();
-            //        sStream << endl;
-            //    }
-            //}
-
-            ////Output across year data
-            //if (outFlags & outRep) {
-            //    if (!bFormat) {
-            //        sStream << "Rep:";
-            //        for (int Rep = 0; Rep < maxReps; Rep++)
-            //            sStream << "\t" << Rep;
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outNum) {
-            //        if (bFormat) sStream << "Num:";
-            //        for (int Rep = 0; Rep < maxReps; Rep++)
-            //            sStream << "\t" << basicStatRep[Rep].Num();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outMean) {
-            //        if (bFormat) sStream << "Mean:";
-            //        for (int Rep = 0; Rep < maxReps; Rep++)
-            //            sStream << "\t" << basicStatRep[Rep].Mean();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outStdDev) {
-            //        if (bFormat) sStream << "Std:";
-            //        for (int Rep = 0; Rep < maxReps; Rep++)
-            //            sStream << "\t" << basicStatRep[Rep].StdDev();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outMin) {
-            //        if (bFormat) sStream << "Min:";
-            //        for (int Rep = 0; Rep < maxReps; Rep++)
-            //            sStream << "\t" << basicStatRep[Rep].Min();
-            //        sStream << endl;
-            //    }
-            //    if (outFlags & outMax) {
-            //        if (bFormat) sStream << "Max:";
-            //        for (int Rep = 0; Rep < maxReps; Rep++)
-            //            sStream << "\t" << basicStatRep[Rep].Max();
-            //        sStream << endl;
-            //    }
-            //}
-
             //Output data.
             if ((outFlags & (int)OutFlags.outData) > 0)
             {
@@ -297,20 +208,18 @@ namespace FRESCO_Server
             {
                 System.IO.FileStream file = new System.IO.FileStream(Global.Instance.FIF.BaseDirectory + "\\" + Global.Instance.OutputDirectory + "\\" + title + "Events.txt", System.IO.FileMode.Create);
                 System.IO.StreamWriter stream = new System.IO.StreamWriter(file);
-                stream.WriteLine("Year\tRep\tValue");
-                string rep;
+                stream.WriteLine("Year\tRep\tValue\tCause\tLow\tMod\tHighLSS\tHighHSS");
                 string yearAndRep;
                 for (int r = 0; r < maxReps; r++)
                 {
-                    rep = r + "\t";
                     for (int y = 0; y <= maxYears / timeStep; y++)
                     {
-                        yearAndRep = y + "\t" + rep;
-                        foreach (List<double> eventList in eventLists[y, r])
+                        yearAndRep = y + "\t" + r + "\t";
+                        foreach (List<FireSizeEvent> eventList in eventLists[y, r])
                         {
-                            foreach (double value in eventList)
+                            foreach (FireSizeEvent e in eventList)
                             {
-                                stream.WriteLine(yearAndRep + value);
+                                stream.WriteLine(yearAndRep + e.Value + "\t" + e.Cause + "\t" + e.LowCount + "\t" + e.ModCount + "\t" + e.HighLssCount + "\t" + e.HighHssCount);
                             }
                         }
                     }
@@ -327,34 +236,42 @@ namespace FRESCO_Server
             {
                 for (int r = 0; r < maxReps; r++)
                 {
-                    foreach (List<double> eventList in eventLists[y, r])
+                    foreach (List<FireSizeEvent> eventList in eventLists[y, r])
                     {
                         eventList.Clear();
                         eventList.Capacity = 0;
                     }
                     eventLists[y, r].Clear();
-                    eventLists[y, r].AddLast(new List<double>());  //To return to state after Statistic constructor.
+                    eventLists[y, r].AddLast(new List<FireSizeEvent>());  //To return to state after Statistic constructor.
                 }
             }
         }
 
-        private void AddEvent(int year, int rep, double value)
+        private void AddEvent(int year, int rep, double value, int cause, int low, int mod, int hiLSS, int hiHSS)
         {
             try
             {
-                List<double> curentBucket = eventLists[year, rep].Last.Value;
-                try { curentBucket.Add(value); }
+                FireSizeEvent se;
+                se.Value = value;
+                se.Cause = cause;
+                se.LowCount = low;
+                se.ModCount = mod;
+                se.HighLssCount = hiLSS;
+                se.HighHssCount = hiHSS;
+
+                List<FireSizeEvent> curentBucket = eventLists[year, rep].Last.Value;
+                try { curentBucket.Add(se); }
                 catch (System.OutOfMemoryException)
                 {
                     //Ideally all new buckets are created when checking capacity below.
-                    curentBucket = eventLists[year, rep].AddLast(new List<double>(BUCKET_CAPACITY)).Value;
-                    curentBucket.Add(value);
+                    curentBucket = eventLists[year, rep].AddLast(new List<FireSizeEvent>(BUCKET_CAPACITY)).Value;
+                    curentBucket.Add(se);
                 }
                 // Check capacity and start new bucket if needed (First bucket might not be == 'capacity').
                 // ?lock?
                 if (curentBucket.Count == curentBucket.Capacity && curentBucket.Count >= BUCKET_CAPACITY)
                 {
-                    curentBucket = eventLists[year, rep].AddLast(new List<double>(BUCKET_CAPACITY)).Value;
+                    curentBucket = eventLists[year, rep].AddLast(new List<FireSizeEvent>(BUCKET_CAPACITY)).Value;
                 }
             }
             catch (System.OutOfMemoryException e)

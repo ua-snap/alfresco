@@ -6,19 +6,21 @@
 
 
 Frame::Frame(const int& rAge, 
+			 const bool& rIsTopoComplex,
              const float& rSite, 
-             const int& rLastBurn, 
+             const int& rYearOfLastBurn,
+			 const int& rLastBurnSeverity,
              const float& rFireIgnitionFactor, 
              const float& rFireSensitivity, 
              const Species& rSpeciesSubCanopy)
-    : Fire(rLastBurn, rFireIgnitionFactor, rFireSensitivity), _yearEstablished(rAge), _yearFrameEstablished(rAge), _site(rSite), _speciesSubCanopy(rSpeciesSubCanopy)
+    : Fire(rYearOfLastBurn, rLastBurnSeverity, rFireIgnitionFactor, rFireSensitivity), _yearEstablished(rAge), _yearFrameEstablished(rAge), _site(rSite), _isTopoComplex(rIsTopoComplex), _speciesSubCanopy(rSpeciesSubCanopy)
 {
 }
 
 
 //Frame::Frame(const Frame &Frame, const int &nAge) : 
 Frame::Frame(const Frame &Frame) 
-    : Fire(Frame), _yearEstablished(Frame._yearEstablished), _yearFrameEstablished(Frame._yearFrameEstablished), _site(Frame._site), _speciesSubCanopy(Frame.type())
+    : Fire(Frame), _yearEstablished(Frame._yearEstablished), _yearFrameEstablished(Frame._yearFrameEstablished), _site(Frame._site), _isTopoComplex(Frame._isTopoComplex),  _speciesSubCanopy(Frame.type())
 { 
 }
 
@@ -28,16 +30,18 @@ void Frame::clear()
 }
 
 
-std::ostream& operator<< (std::ostream& s, const Frame& rFram) 
+std::ostream& operator<< (std::ostream& s, const Frame& f) 
 {
-	int bFormat = rFram._outFlags & outFormat;
-	if (rFram._outFlags & outVeg)			{if (!bFormat) s<<"Veg="<<  rFram.type()                        <<"\t";         else s<<    rFram.type()                        <<" "; }
-	if (rFram._outFlags & outAge)			{if (!bFormat) s<<"Age="<<  gYear-rFram._yearEstablished        <<"\t";			else s<<    gYear-rFram._yearEstablished        <<" "; }
-	if (rFram._outFlags & outSite)		    {if (!bFormat) s<<"Site="<< rFram._site                         <<"\t";         else s<<    rFram._site                         <<" "; }
-	if (rFram._outFlags & outSub)			{if (!bFormat) s<<"Sub="<<  rFram._speciesSubCanopy             <<"\t";         else s<<    rFram._speciesSubCanopy             <<" "; }
-	if (rFram._outFlags & outFireAge)		{if (!bFormat) s<<"FAge="<< rFram.yearOfLastBurn                <<"\t";         else s<<    rFram.yearOfLastBurn                <<" "; }
-	if (rFram._outFlags & outFireScar)	    {if (!bFormat) s<<"FScar=";	s << (rFram.lastBurnWasOrigin?"-":"") << rFram.yearOfLastBurn << "." << rFram.fireScarID;	if (!bFormat) s << "\t"; else s << " ";	}
-	rFram.writeData (s);
+	int bFormat = f._outFlags & outFormat;
+	if (f._outFlags & outVeg)			{if (!bFormat) s<<"Veg="<<  f.type()                        <<"\t";         else s<<    f.type()                        <<" "; }
+	if (f._outFlags & outAge)			{if (!bFormat) s<<"Age="<<  gYear-f._yearEstablished        <<"\t";			else s<<    gYear-f._yearEstablished        <<" "; }
+	if (f._outFlags & outSite)		    {if (!bFormat) s<<"Site="<< f._site                         <<"\t";         else s<<    f._site                         <<" "; }
+	if (f._outFlags & outSub)			{if (!bFormat) s<<"Sub="<<  f._speciesSubCanopy             <<"\t";         else s<<    f._speciesSubCanopy             <<" "; }
+	if (f._outFlags & outFireAge)		{if (!bFormat) s<<"FAge="<< f.yearOfLastBurn                <<"\t";         else s<<    f.yearOfLastBurn                <<" "; }
+	if (f._outFlags & outFireScar)	    {if (!bFormat) s<<"FScar=";	s << (f.lastBurnWasOrigin?"-":"") << f.yearOfLastBurn << "." << f.fireScarID;	if (!bFormat) s << "\t"; else s << " ";	}
+	if (f._outFlags & outfireSeverity)  {if (!bFormat) s<<"FSev="<<	(f.yearOfLastBurn==gYear ? (int)f.burnSeverity : 0)	<<"\t";	else s<< (f.yearOfLastBurn==gYear ? (int)f.burnSeverity : 0) <<" "; }
+	if (f._outFlags & outfireSeverityHist) {if (!bFormat) s<<"FSevHist="<<	(int)f.burnSeverity		<<"\t";			else s<<	(int)f.burnSeverity				<<" "; }
+	f.writeData (s);
 	return s;
 }
 

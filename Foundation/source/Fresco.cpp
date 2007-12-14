@@ -19,7 +19,6 @@
 std::string  FrescoFoundation_API   gWorkingDirectory;
 std::string  FrescoFoundation_API   gBaseDirectory;
 std::string  FrescoFoundation_API   gOutputDirectory;
-bool  FrescoFoundation_API          gIsLargeMemoryModel	= true;
 int  FrescoFoundation_API           gNumRows			= 0;					//Number of rows in landscape.
 int  FrescoFoundation_API           gNumCol				= 0;					//Number of cols in landscape.
 int  FrescoFoundation_API           gMaxRep				= 0;					//Number of replications to run.
@@ -90,7 +89,6 @@ void Fresco::		clear()
     gWorkingDirectory	= "";
     gBaseDirectory		= "";
     gOutputDirectory	= "";
-    gIsLargeMemoryModel	= true;
     gDetailLevel		= MINIMAL;  	//Reset detail level last so that current detail level causes output during clearing.
 
 	setState(CLEARED);
@@ -113,7 +111,6 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
     gMaxRep			    = _fif.nGet("MaxReps");
     gMaxYear            = _fif.nGet("MaxYears");
     gTimeStep			= _fif.nGet("TimeStep");
-    gIsLargeMemoryModel = _fif.bGet("IsLargeMemoryModel");
 	gDetailLevel		= (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
 	_outputType			= (temp=_fif.sGet("Output.Type"))=="DELETE" ? DELETEOUTPUTDIRECTORY : (temp=="OVERWRITE" ? OVERWRITE : (temp=="APPEND" ? APPENDDATETIME : throw Poco::Exception("Invalid input for Output.Type: "+temp)));
     try { //Initialize the random number generator.

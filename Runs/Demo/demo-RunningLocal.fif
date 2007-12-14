@@ -4,7 +4,7 @@
 ; PROGRAM PARAMETERS
 ClusterBaseDirectory                     = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo"          ; Base directory for clients where input files can be found and map output will be saved.
 ServerBaseDirectory                      = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo"          ; Base directory for server where input files can be found and stat output will be saved.
-MaxYears                                 = 50                                                ; The number of years to run the simulation (starts at year zero  ends after completing the x'th year).
+MaxYears                                 = 19                                                ; The number of years to run the simulation (starts at year zero  ends after completing the x'th year).
 MaxReps                                  = 4                                                 ; The number of replicates to run the model (i.e. x replicates total).
 TimeStep                                 = 1                                                 ; The time step in years.
 RandSeed                                 = 1129759570                                        ; A manually set number used to seed the random number generator.  If not set  the current time is used to seed the random number generator.
@@ -12,10 +12,7 @@ NumHeader                                = 6                                    
 NoData                                   = -9999                                             ; No Data value specified by ARCgis.
 Output.Directory                         = "Output"                                          ; Sub directory of base directory where output files will be found.  Current date and time will be appended to the name given here.
 Output.Type                              = "APPEND"                                          ; DELETE: Delete current output directory.  OVERWRITE: Overwrite any existing output files.  APPEND: Append date on to output directory.
-Output.DotDisplay                        = 0                                                 ; No longer used.
-Output.ShowSeed                          = TRUE                                              ; Should the program display the random seed to the Progress Viewer?
-Output.DetailLevel                       = "MAXIMUM"                                         ; MINIMAL: Show only run progress.  MODERATE: Show some interim calculations along with run detail.  MAXIMUM: Show maximum detail along with run detail.
-IsLargeMemoryModel                       = FALSE                                             ; Should all data be loaded and stored into memory during setup? (Uses more memory)
+Output.DetailLevel                       = "MODERATE"                                         ; MINIMAL: Show only run progress.  MODERATE: Show some interim calculations along with run detail.  MAXIMUM: Show maximum detail along with run detail.
 
 
 ; LANDSCAPE PARAMETERS
@@ -35,16 +32,41 @@ IsForcedVegTransitions                   = FALSE                                
 AgeInputFile                             = "Input\Initialization\Age.txt"                    ; The initial age input file - years before present so positive values
 SiteInputFile                            = "Input\Initialization\Site.txt"                   ; The site input file
 TreeDensityInputFile                     = "Input\Initialization\TreeDensity.txt"            ; The initial tree density input file
+TopoInputFile                            = "Input\Initialization\Topography.txt"             ; The topography input file.  0=flat, 1=complex
+BurnSeverityInputFile                    = "Input\Initialization\BurnSeverity.txt"           ; The initial burn severity input file. 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity
 
+
+; MAP OUTPUT FLAGS
+; 0x000001 	On switch. Output is given only if this flag is specified.
+;Formatting
+; 0x000010	Output the data in a map (row,col) format rather than the default one column with fieldname.
+; 0x000020	Add number of years/reps to header of output file for reference purposes
+; 0x000040	Add ARCgis info to header of output file to facilitate import into ARCgis
+;Frame Specific
+; 0x000100	Decid: species trajectory; Tundra: basal area
+; 0x000200	Not in use
+; 0x000400	Not in use
+; 0x000800	Not in use
+;Data Type
+; 0x001000	Vegetation type
+; 0x002000	Stand age
+; 0x004000	Site variables
+; 0x008000	Subcanopy
+; 0x010000	Fire age (time since the cell last burned)
+; 0x020000	Temperature
+; 0x040000	Precipitation
+; 0x080000	The ID of each fire scar [If ignition cell, '-'][LastBurnYear].[FireID]
+; 0x100000	Burn severity for burns occuring in the given year
+; 0x200000	Burn severity for for the last known burn of each cell
 
 ; MAP OUTPUT PARAMETERS
-MapFiles                                 = {"Maps\Veg.txt", "Maps\Fire.txt", "Maps\Age.txt", "Maps\FireScar.txt"}          ; The base names for the output maps.
-MapCodes                                 = {"Veg", "Fire", "Age", "FireScar"}                ; The code to output so the user knows  this map has been written.
-MapFlags                                 = {0x84640, 0x63800, 0x30400, 0x12110}              ; The output codes for the map in question.
-MapRepStart                              = {0, 0, 0, 0}                                      ; The first replication that outputs maps.
-MapRepFreq                               = {1, 1, 1, 1}                                      ; The year frequency to output maps.
-MapYearStart                             = {0, 0, 0, 0}                                      ; The first year that outputs maps.
-MapYearFreq                              = {1, 1, 1, 1}                                      ; The year frequency to output maps.
+MapFiles                                 = {"Maps\BurnSeverityHistory.txt", "Maps\BurnSeverity.txt", "Maps\Veg.txt", "Maps\Fire.txt", "Maps\Age.txt", "Maps\FireScar.txt"}          ; The base names for the output maps.
+MapCodes                                 = {"FSevHist", "FSev", "Veg", "Fire", "Age", "FScar"}              ; The code to output so the user knows  this map has been written.
+MapFlags                                 = {0x200051, 0x100051, 0x001051, 0x010051, 0x002051, 0x080051}   ; The output codes for the map in question.
+MapRepStart                              = {0, 0, 0, 0, 0, 0}                                      ; The first replication that outputs maps.
+MapRepFreq                               = {1, 1, 1, 1, 1, 1}                                      ; The year frequency to output maps.
+MapYearStart                             = {0, 0, 0, 0, 0, 0}                                      ; The first year that outputs maps.
+MapYearFreq                              = {1, 1, 1, 1, 1, 1}                                      ; The year frequency to output maps.
 
 
 ; STAT OUTPUT FLAGS
@@ -62,6 +84,7 @@ MapYearFreq                              = {1, 1, 1, 1}                         
 ;0x800  Output the event data for the statistic.  Event data is a record of individual events rather than an average or sum.
 ; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
 ; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,  A,  B,  C,  D,  E,  F
+
 ; STAT OUTPUT PARAMETERS
 Stat.Summary.File                        = "StatOut.txt"                                     ; The name of the statistical data output file (will be created in the output directory specified under the General settings).
 Stat.FireNum.Flags                       = 0xc21                                             ; Output flags for the fire num stats.
@@ -142,6 +165,11 @@ Fire.Suppression.Tran.Class5             = {1.0, 1.0, 1.0}                      
 Fire.Suppression.Tran.Threshold.FireSize = {50,60,70}                                        ; The cutting point where suppressions stop being applied  because the sum of the year's fire sizes exceeds the capability of available suppression resources.
 Fire.Suppression.Tran.Threshold.Ignitions = {5,6,7}                                          ; The cutting point where suppressions stop being applied  because the amount of ignitions for the year exceeds the capability of available suppression resources.
 
+BurnSeverity.FxnOfFireSize = {0.05, 0.001}	; The intercept and slope for logistic regression fxn returning probability of High Severity (level 3 or 4) 
+BurnSeverity.LSS-vs-HSS.wt = .5 		; (0,1); Probability that a burn that is assigned High Severity has HSS.  Low value is more likely to be LSS (level 3), high value is more likely to be HSS (level 4). 
+BurnSeverity.Low-vs-Moderate.wt = .5		; (0,1); Probability that a burn not assigned High Severity has Moderate Severity. Low value is more likely to give Low Severity (level 1), high value is more likely give Moderate (level 2)
+BurnSeverity.FlatTopo.wt = .6			; (0,1); Prob that Topo spatial correlation overrides initial Severity assignment; eg takes on Severity of ‘Spreader cell’ 
+BurnSeverity.ComplexTopo.wt = .2 		; (0,1); Prob that Topo spatial correlation overrides initial Severity assignment 
 
 
 ; PARAMETERS FOR THE TUNDRA FRAME
@@ -185,5 +213,15 @@ Decid.FireProb                           = 0.333885                             
 Decid.HumanFireProb                      = 0.003060109                                       ; Probability of human causes will cause this species type  to burn.
 Decid.History                            = 20                                                ; The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.
 Decid->Tundra.Parms                      = {4., 19.32}                                       ; Degree-years are integrated from base A (i.e. temp < A).  A transition occurs if the integrand exceeds B*(The maximum number of steps i.e. History/TimeStep).
-Decid->BSpruce.Parms                     = {0.5, -2}                                         ; Two coefficients used in a linear function relating age to the probability of transitioning to BLACK spruce: A*Age + B
-Decid->WSpruce.Parms                     = {0.5, -4.5}                                       ; Two coefficients used in a linear function relating age to the probability of transitioning to WHITE spruce: A*Age + B
+
+; The following 8 fields are sets of two coefficients, {A, B}, used depending on the trajectory and last burn severity of the given decid cell.  
+; The chosen values are used in a linear function relating age to the probability of transitioning to white or black spruce: A*Age + B. 
+Decid->WSpruce.BurnSeverity[1] = {0.01, -0.9}			;1 = Low Severity	
+Decid->WSpruce.BurnSeverity[2] = {0.01, -0.9}			;2 = Moderate Severity
+Decid->WSpruce.BurnSeverity[3] = {0.01, -0.9}			;3 = High Severity + Low Surface Severity
+Decid->WSpruce.BurnSeverity[4] = {0.01, -0.9}	                ;4 = High Severity + High Surface Severity
+
+Decid->BSpruce.BurnSeverity[1] = {0.02, -0.3}			;1 = Low Severity	
+Decid->BSpruce.BurnSeverity[2] = {0.02, -0.3}			;2 = Moderate Severity
+Decid->BSpruce.BurnSeverity[3] = {0.01, -0.3}			;3 = High Severity + Low Surface Severity
+Decid->BSpruce.BurnSeverity[4] = {0.002857143, -0.1428571}	;4 = High Severity + High Surface Severity

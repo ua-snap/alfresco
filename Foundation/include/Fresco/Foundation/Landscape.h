@@ -76,8 +76,9 @@ public:
 protected:
 	//Ignition worker functions.
 	bool				testNaturalIgnition(Frame* pFrame);
-	bool				testHumanIgnition(Frame* pFrame);
-	bool				testFireSpread(Frame* pFrame, int rowOfNeighbor, int colOfNeighbor, float fireSuppressionFactor);
+	bool				testHumanIgnition(const Frame* pFrame);
+	bool				testFireSpread(Frame* pFrame, const int rowOfNeighbor, const int colOfNeighbor, const float fireSuppressionFactor);
+	Fire::EBurnSeverity selectSpreadBurnSeverity(const Frame* pFrame, const Frame* pSpreaderFrame, const int fireSize);
     virtual const float getCustomFireSpreadMultiplier(const unsigned int row, const unsigned int col, const unsigned int fireSizeTotal, const unsigned int fireNum) { return 1.0; }
 	float				getCellDistanceToNeighbor(int rowOfNeighbor, int colOfNeighbor);
 };

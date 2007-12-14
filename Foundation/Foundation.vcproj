@@ -93,7 +93,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(OutDir)\FrescoFoundationd.dll P:\Fresco\lib&#x0D;&#x0A;copy $(OutDir)\FrescoFoundationd.lib P:\Fresco\lib&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoFoundationd.dll p:\Fresco\Client\Debug\&#x0D;&#x0A;"
+				CommandLine="copy $(OutDir)\FrescoFoundationd.dll $(SolutionDir)lib\&#x0D;&#x0A;copy $(OutDir)\FrescoFoundationd.lib $(SolutionDir)lib\&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoFoundationd.dll $(SolutionDir)$(ConfigurationName)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

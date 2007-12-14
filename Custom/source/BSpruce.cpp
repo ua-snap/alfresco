@@ -22,12 +22,14 @@ EStartAgeType	BSpruce::_startAgeType;
 
 BSpruce::BSpruce (
         const int& rAge, 
+        const bool& rIsTopoComplex, 
         const float& rSite, 
-        const int& rLastBurn, 
+        const int& rYearOfLastBurn,
+		const int& rLastBurnSeverity,
         const double& rFireIgnitionFactor, 
         const double& rFireSensitivity, 
         const Species& rSpecSubCanopy) 
-    : Frame (rAge, rSite, rLastBurn, rFireIgnitionFactor, rFireSensitivity, rSpecSubCanopy) 
+    : Frame (rAge, rIsTopoComplex, rSite, rYearOfLastBurn, rLastBurnSeverity, rFireIgnitionFactor, rFireSensitivity, rSpecSubCanopy) 
 { 
     _BSpruce(); 
 }

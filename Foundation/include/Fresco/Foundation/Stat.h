@@ -71,17 +71,32 @@ struct SStatAddEventArgs
     const int           Year;
     const int           Rep;
     const double        Data;
-    const int           Cause;
-    SStatAddEventArgs(const std::string title, const int year, const int rep, const double data, const int cause)
-        : Title(title), Year(year), Rep(rep), Data(data), Cause(cause) {}
+    SStatAddEventArgs(const std::string title, const int year, const int rep, const double data)
+        : Title(title), Year(year), Rep(rep), Data(data) {}
+};
+
+struct SFireSizeStatAddEventArgs
+{
+    const std::string   Title;
+    const int           Year;
+    const int           Rep;
+    const double        Data;
+	const int			Cause;
+	const int			LowCount;
+	const int			ModerateCount;
+	const int			HighLssCount;
+	const int			HighHssCount;
+    SFireSizeStatAddEventArgs(const std::string title, const int year, const int rep, const double data, const int cause, const int lowCount, const int moderateCount, const int highLssCount, const int highHssCount)
+        : Title(title), Year(year), Rep(rep), Data(data), Cause(cause), LowCount(lowCount), ModerateCount(moderateCount), HighLssCount(highLssCount), HighHssCount(highHssCount) {}
 };
 
 class FrescoFoundation_API CStat 
 {
 //Data
 public:
-    static Poco::BasicEvent<const SStatAddEventArgs>     StatAddEvent;              //Event raised when calling CStat::Add()
-    static Poco::BasicEvent<const SStatSetupEventArgs>   StatSetupEvent;            //Event raised when calling CStat::setup()
+    static Poco::BasicEvent<const SStatAddEventArgs> StatAddEvent;					//Event raised when calling CStat::Add()
+    static Poco::BasicEvent<const SFireSizeStatAddEventArgs> FireSizeStatAddEvent;  //Event raised when calling CStat::Add() with firesize specific params
+    static Poco::BasicEvent<const SStatSetupEventArgs> StatSetupEvent;				//Event raised when calling CStat::setup()
 	long					    m_lTally;											//Variable for totaling incremental types
 	std::string			        m_sTitle;											//Title of the stat contents.
 private:
@@ -105,7 +120,7 @@ public:
 	void					clear();												//Resets the stat to values at creation.
 	void					Add(const int nYear, const int nRep);					//Add the Tally to the year and replicate
 	void					Add(const int nYear, const int nRep, const double dData);	//Adds a given statistic to the year and replicate
-	void					Add(const int nYear, const int nRep, const double dData, const int nCause);	//Adds a given statistic to the year and replicate
+	void					Add(const int nYear, const int nRep, const double dData, const int nCause, const int low, const int mod, const int highLSS, const int highHSS);	//Adds a given statistic to the year and replicate
 	long					operator++ (int)	{return ++m_lTally;}				//Increment the Tally by one and return Tally
 	long					operator-- (int)	{return --m_lTally;}				//Decrement the Tally by one and return Tally
 	enum 

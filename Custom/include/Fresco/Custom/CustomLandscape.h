@@ -58,14 +58,20 @@ private:
 	//Age Layer
 	std::string			_ageInputFile;
 	int**				_pAgeSpatialInput;
+	//Topography Layer
+	std::string			_topoInputFile;
+	int**				_pTopoSpatialInput;
 	//Site Layer
 	std::string			_siteInputFile;
 	float**				_pSiteSpatialInput;
 	//Tree Density Layer
 	std::string			_treeDensityInputFile;
 	int**				_pTreeDensitySpatialInput;
+	//Burn Severity Layer
+	std::string			_burnSeverityInputFile;
+	int**				_pBurnSeveritySpatialInput;
 	//Fire Layer
-	int***				_pHistoricalFireSpatialInput;
+	int**				_pHistoricalFireSpatialInput;
 	float**				_pIgnitionFactorSpatialInput;
 	float**				_pSensitivitySpatialInput;
 	int**				_pSuppressions;											//Suppression Map values 0-5 where 0 is always represents no suppression.

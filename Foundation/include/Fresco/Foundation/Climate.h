@@ -119,7 +119,7 @@ private:
 inline SClimate Climate::getClimate(const int row, const int col, const int yearBP) const 
 {
 	//Calculate year to get climate.
-	if (yearBP+1 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
+	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - yearBP;  
 	
     //Get climate from the spatial circular array and temporal array.
@@ -132,7 +132,7 @@ inline SClimate Climate::getClimate(const int row, const int col, const int year
 inline const float Climate::getTemp(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
-	if (yearBP+1 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
+	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - yearBP;
 	
     //Get climate from the spatial circular array and offset array.
@@ -142,7 +142,7 @@ inline const float Climate::getTemp(const int row, const int col, const int mont
 inline const float Climate::getPrecip(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
-	if (yearBP+1 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
+	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - yearBP;
 	
     //Get climate from the spatial circular array and offset array.

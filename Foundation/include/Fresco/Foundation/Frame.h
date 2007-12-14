@@ -25,17 +25,22 @@ public:
 	const int				frameAge() const { return gYear - _yearFrameEstablished; }	    //Report the frame age or residence time
     Species                 speciesSubCanopy() const { return _speciesSubCanopy; }
     const float             site() const { return _site; }
+	const bool				hasComplexTopo() const { return _isTopoComplex; }
 protected:
 	static int				_outFlags;												        //A flag indicating which data to output when the object is written
 	int						_yearEstablished;												//The year this stand was established
 	int						_yearFrameEstablished;											//The year this frame type was established - i.e. residence times
 	float					_site;													        //A surrogate variable to describe the site characteristics (currently just wet/dry)
+	bool					_isTopoComplex;													//Topography is categorized as either flat or complex (hilly/mountainous)
 	Species				    _speciesSubCanopy;											    //Store the type of the subcanopy if there is one. Should this be a linked list so we could potentially store more than one subcanopy.  Maybe with a percent cover type thing.  Maybe for a later implementation!?
 
 //Functions
 public:
-							Frame(const int& rAge=0, const float& rSite=0., 
-                                const int& rLastBurn=-1, 
+							Frame(const int& rAge=0, 
+								const bool& rIsTopoComplex=false,
+								const float& rSite=0., 
+                                const int& rYearOfLastBurn=-1, 
+								const int& rLastBurnSeverity=0,
                                 const float& rFireIgnitionFactor=0., 
                                 const float& rFireSensitivity=0., 
                                 const Species& rSpeciesSubCanopy=0);

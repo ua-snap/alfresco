@@ -328,7 +328,10 @@ namespace FRESCO_Server
                     SetupStat(parms[0], Convert.ToInt32(parms[1]), Convert.ToInt32(parms[2]), Convert.ToInt32(parms[3]), Convert.ToInt32(parms[4]), Convert.ToBoolean(parms[5]));
                     break;
                 case "STAT_ADD":
-                    AddStat(parms[0], Convert.ToInt32(parms[1]), Convert.ToInt32(parms[2]), Convert.ToDouble(parms[3]), Convert.ToInt32(parms[4]));
+                    AddStat(parms[0], Convert.ToInt32(parms[1]), Convert.ToInt32(parms[2]), Convert.ToDouble(parms[3]));
+                    break;
+                case "FIRESIZE_STAT_ADD":
+                    AddFireSizeStat(parms[0], Convert.ToInt32(parms[1]), Convert.ToInt32(parms[2]), Convert.ToDouble(parms[3]), Convert.ToInt32(parms[4]), Convert.ToInt32(parms[5]), Convert.ToInt32(parms[6]), Convert.ToInt32(parms[7]), Convert.ToInt32(parms[8]));
                     break;
                 default:
                     throw new Exception("SelectProcedure Failed: invalid command.");
@@ -342,34 +345,59 @@ namespace FRESCO_Server
         {
             clientLogDisplay.AddText(text);
         }
-        public void     SetupStat(string title, int maxYear, int maxRep, int timeStep, int outFlags, bool saveEventCause)
+        public void     SetupStat(string title, int maxYear, int maxRep, int timeStep, int outFlags, bool isFireSizeStat)
         {
-            lock(statLock)
+            lock (statLock)
             {
                 if (!stats.Contains(title))
-                    stats.Add(title, new Statistic(title, maxYear, maxRep, timeStep, outFlags, saveEventCause));
+                {
+                    if (isFireSizeStat)
+                        stats.Add(title, new FireSizeStatistic(title, maxYear, maxRep, timeStep, outFlags));
+                    else
+                        stats.Add(title, new Statistic(title, maxYear, maxRep, timeStep, outFlags));
+                }
                 //else, it was already setup and is ready for any client to add to.
             }
         }
-        public void     AddStat(string title, int year, int rep, double value, int cause)
+        public void     AddStat(string title, int year, int rep, double value)
         {
             lock (statLock)
             {
                 if (stats.Contains(title))
-                    ((Statistic)stats[title]).Add(year, rep, value, cause);
+                    ((Statistic)stats[title]).Add(year, rep, value);
+                else
+                    throw new Exception("Client attempted to add to a non-existant statistic titled " + title);
+            }
+        }
+        public void     AddFireSizeStat(string title, int year, int rep, double value, int cause, int low, int mod, int hiLSS, int hiHSS)
+        {
+            lock (statLock)
+            {
+                if (stats.Contains(title))
+                    ((FireSizeStatistic)stats[title]).Add(year, rep, value, cause, low, mod, hiLSS, hiHSS);
                 else
                     throw new Exception("Client attempted to add to a non-existant statistic titled " + title);
             }
         }
         public void     SaveStats()
-        { 
-            for (int i=0; i<stats.Count; i++)
-                ((Statistic)stats[i]).Save();
+        {
+            for (int i = 0; i < stats.Count; i++)
+            {
+                if (stats[i].GetType().Name == "FireSizeStatistic")
+                    ((FireSizeStatistic)stats[i]).Save();
+                else
+                    ((Statistic)stats[i]).Save();
+            }
         }
         public void     ClearStats()
-        { 
-            for (int i=0; i<stats.Count; i++)
-                ((Statistic)stats[i]).Clear();
+        {
+            for (int i = 0; i < stats.Count; i++)
+            {
+                if (stats[i].GetType().Name == "FireSizeStatistic")
+                    ((FireSizeStatistic)stats[i]).Clear();
+                else
+                    ((Statistic)stats[i]).Clear();
+            }
             stats.Clear();
         }
         public void     RaiseAfterYearEnd()

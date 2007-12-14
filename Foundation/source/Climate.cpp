@@ -226,7 +226,7 @@ void Climate::			repStart()
 	int firstYear, lastYear;
 	for (T=_transitions.begin(); T!=_transitions.end(); T++) {
 		firstYear = T->Year;
-		lastYear = (T+1)!=_transitions.end() ? (T+1)->Year-1 : gMaxYear;
+		lastYear = (T+1)!=_transitions.end() ? (T+1)->Year-0 : gMaxYear;
 		if (!T->OffsetsType==OTNONE) {
             if (T->OffsetsType==OTCONSTANT && FRESCO->isRunningFirstRep())	
 				setOffsetsConstant(T->ConstantTempOffset,T->ConstantPrecipOffset,firstYear,lastYear);

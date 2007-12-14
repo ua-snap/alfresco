@@ -8,8 +8,9 @@
 #include "Fresco/Foundation/Fresco.h"
 
 //Declare static variables.
-Poco::BasicEvent<const SStatSetupEventArgs>   CStat::StatSetupEvent;
-Poco::BasicEvent<const SStatAddEventArgs>     CStat::StatAddEvent;
+Poco::BasicEvent<const SStatSetupEventArgs>			CStat::StatSetupEvent;
+Poco::BasicEvent<const SStatAddEventArgs>			CStat::StatAddEvent;
+Poco::BasicEvent<const SFireSizeStatAddEventArgs>   CStat::FireSizeStatAddEvent;
 
 #ifndef Fresco_Is_Client //BasicStat not needed in client.
 CBasicStat::			CBasicStat() 
@@ -123,15 +124,14 @@ void CStat::			clear()
 
 
 
-void CStat::			setup(std::string sTitle, const int nYears, const int nReps, const int nTimeStep, const int nFlags, const bool bSaveEventCause) 
-//setup run.
+void CStat::			setup(std::string sTitle, const int nYears, const int nReps, const int nTimeStep, const int nFlags, const bool bHasFireEventFields) 
 {
 #ifdef Fresco_Is_Client
 	m_sTitle		= sTitle;
 	m_lTally		= 0;
 	m_nOutFlags		= nFlags;
-    SStatSetupEventArgs stat(sTitle,nYears,nReps,nTimeStep,nFlags,bSaveEventCause);
-    StatSetupEvent.notify(this,  stat);
+    SStatSetupEventArgs stat(sTitle,nYears,nReps,nTimeStep,nFlags,bHasFireEventFields);
+    StatSetupEvent.notify(this, stat);
 #else
 	//setup the default values.
 	m_sTitle		= sTitle;
@@ -151,27 +151,28 @@ void CStat::			setup(std::string sTitle, const int nYears, const int nReps, cons
 }
 
 
-void CStat::			Add(int nYear, int nRep) 
+void CStat::			Add(const int nYear, const int nRep) 
 //This version of Add incorporates the m_nTally variable into the current dataset
 //by calling the expanded version of Add.
 {
 	Add (nYear, nRep, m_lTally);
 }
 
-void CStat::			Add(int nYear, int nRep, double dData) 
+void CStat::			Add(const int nYear, const int nRep, const double dData) 
 //This version of Add incorporates a new piece of data (dData) into the current dataset
 //as specified by nYear and nRep.  If an invalid Year/Rep is specified, an error is thrown.
 {
-	Add(nYear, nRep, dData, 0);
+	if (m_nOutFlags > 0)
+	    StatAddEvent.notify(this, SStatAddEventArgs(m_sTitle,nYear,nRep,dData) );
 }
 
-void CStat::			Add(int nYear, int nRep, double dData, int nCause) 
+void CStat::			Add(const int nYear, const int nRep, const double dData, const int nCause, const int low, const int mod, const int highLSS, const int highHSS)
 //This version of Add incorporates a the cause of an event into the current dataset
 //as specified by nYear and nRep.  If an invalid Year/Rep is specified, an error is thrown.
 {
 #ifdef Fresco_Is_Client
 	if (m_nOutFlags > 0)
-	    StatAddEvent.notify(this, SStatAddEventArgs(m_sTitle,nYear,nRep,dData,nCause) );
+	    FireSizeStatAddEvent.notify(this, SFireSizeStatAddEventArgs(m_sTitle,nYear,nRep,dData,nCause,low,mod,highLSS,highHSS) );
 #else
 	int nPos = 0;
 	//Error if year or rep is out of bounds.
@@ -188,6 +189,7 @@ void CStat::			Add(int nYear, int nRep, double dData, int nCause)
 		AddEvent(nYear, nRep, dData, nCause);
 #endif
 }
+
 
 #ifndef Fresco_Is_Client
 void CStat::			AddEvent(int nYear, int nRep, double dData, int nCause)

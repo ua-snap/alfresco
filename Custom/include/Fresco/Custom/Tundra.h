@@ -41,8 +41,10 @@ private:
 public:
 							Tundra(
                                 const int& rAge=0, 
+								const bool& rIsTopoComplex=false, 
                                 const float& rSite=0., 
-                                const int& rLastBurn=-1, 
+                                const int& rYearOfLastBurn=-1, 
+								const int& rLastBurnSeverity=0,
                                 const double& rFireIgnitionFactor=0, 
                                 const double& rFireSensitivity=0,  
                                 const Species& rSpecSubCanopy=0, 

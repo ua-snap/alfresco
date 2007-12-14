@@ -16,15 +16,15 @@ class FrescoCustom_API Decid : public Frame
 {
 //Data
 private:
-	float					_degrees;								//Running sum of degree years used to determine succession.
-	Species				    _speciesTrajectory;						//The long term trajectory of the current cell (black or white spruce)
+	float					_degrees;						//Running sum of degree years used to determine succession.
+	Species				    _speciesTrajectory;				//The long term trajectory of the current cell (black or white spruce)
 	static bool				_isStaticSetupAlready;
 	static float			_decidFireProb;
 	static int				_decidHistory;
 	static double			_tundraSpruceBasalArea;
 	static const double*	_pDecidTundraParams;
-	static const double*	_pDecidBSpruceParams;
-	static const double*	_pDecidWSpruceParams;
+	static double**			_pDecidToBSpruceParams;			//Seperate parameters per burn severity.
+	static double**			_pDecidToWSpruceParams;
 	static EStartAgeType	_bspruceStartAgeType;
 	static EStartAgeType	_wspruceStartAgeType;
 	static double*			_pBSpruceWeibullIntegral;
@@ -36,9 +36,11 @@ private:
 public:
 							Decid(
                                 const int& rAge=0, 
+								const bool& rIsTopoComplex=false, 
                                 const double& rSite=0., 
-                                const int& rLastBurn=-1, 
-                                const double& rFireIgnitionFactor=0, 
+                                const int& rYearOfLastBurn=-1, 
+								const int& rLastBurnSeverity=0,
+								const double& rFireIgnitionFactor=0, 
                                 const double& rFireSensitivity=0, 
                                 const Species& rSpecSubCanopy=gNoVegID);
 							Decid(const Frame& Frame);

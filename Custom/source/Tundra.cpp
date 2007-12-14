@@ -31,13 +31,15 @@ EStartAgeType	Tundra::_startAgeType;
 
 Tundra::Tundra(
         const int& rAge, 
+        const bool& rIsTopoComplex, 
         const float& rSite, 
-        const int& rLastBurn, 
+        const int& rYearOfLastBurn,
+		const int& rLastBurnSeverity,
         const double& rFireIgnitionFactor, 
         const double& rFireSensitivity,  
         const Species& rSpecSubCanopy, 
         const int treeDensity)  
-    : Frame (rAge, rSite, rLastBurn, rFireIgnitionFactor, rFireSensitivity, rSpecSubCanopy)
+    : Frame (rAge, rIsTopoComplex, rSite, rYearOfLastBurn, rLastBurnSeverity, rFireIgnitionFactor, rFireSensitivity, rSpecSubCanopy)
 { 
     _Tundra(treeDensity); 
 }

@@ -17,10 +17,10 @@ namespace FRESCO_Server
         {
             try
             {
-                Statistic s = new Statistic("test", 100, 100, 1, 0x831, false);
+                Statistic s = new Statistic("test", 100, 100, 1, 0x831);
                 while (true)
                 {
-                    s.Add(0, 0, 1, 0);
+                    s.Add(0, 0, 1);
                 }
             }
             catch (Exception e)

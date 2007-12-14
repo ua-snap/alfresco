@@ -37,7 +37,8 @@ public:
         CLIENT_LOG_ENTRY,
         DISCONNECT_REPORT,
         STAT_SETUP,
-        STAT_ADD
+        STAT_ADD,
+		FIRESIZE_STAT_ADD
     };
     const int                       clientID() const  { return _clientID; }
     const std::string               commandString() const { return _command; }

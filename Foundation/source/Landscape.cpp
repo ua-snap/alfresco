@@ -199,7 +199,7 @@ void Landscape::		yearStart()
 {
 	//Tell climate to do any start of year processing.
 	_pClimate->yearStart();
-	//Reset and fire species stats.
+	//Reset fire species stats.
 	for (int s=0; s<gNumSpecies; s++) {
 		_fireSpeciesStat[s].m_lTally = 0;
 	}
@@ -269,6 +269,8 @@ void Landscape::		doIgnitions()
 
 	int					fireScarID			= 0;				// ID of a single fire ignition and its spread.
 	int					fireSize			= 0;				// Size of each individual fire cluster.
+	int*				severitySizes		= new int[5];		// Tallies of for each severity level.
+	severitySizes[0]=0; severitySizes[1]=0; severitySizes[2]=0; severitySizes[3]=0; severitySizes[4]=0;
 	int					fireSizeTotal		= 0;				// Sum of all fire sizes.
 	int					fireNum			    = 0;				// Tally of individual fire clusters.
 
@@ -302,12 +304,17 @@ void Landscape::		doIgnitions()
 				if (!isTestingSpread) { //New fire.
 					fireScarID++;
 					currentBurnCause = (isHumanIgnition ? Fire::HUMAN : Fire::NATURAL);
+					pFrame->burnSeverity = Fire::LOW;
+					severitySizes[Fire::LOW]++;
 					pFrame->lastBurnWasOrigin = true;
 					rowStored = _row;   //Remember where to pick up when this fire is done spreading.
 					colStored = _col;
 				}
 				else { //Existing (spreading) fire.
-					pFrame->lastBurnWasOrigin = false;  
+					pFrame->lastBurnWasOrigin = false;
+					const Frame* pSpreaderFrame = _pFrames[currRow][currCol];
+					pFrame->burnSeverity = selectSpreadBurnSeverity(pFrame, pSpreaderFrame, fireSize);
+					severitySizes[pFrame->burnSeverity]++;
 				}
                 ////////////////////////////////////////////////
                 //Burn this frame and spread to its neighbors.
@@ -344,10 +351,13 @@ void Landscape::		doIgnitions()
 			_maxFireSizeEventWeight = 1;    //Stop applying fire size cap wieght.
 			if (fireSize>0) {  
                 //This fire burned frames.  Record fire stats.
-				_fireSizeStat.Add(gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0);
+				
+				_fireSizeStat.Add(gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
+				
 				fireSizeTotal += fireSize;
 				fireNum++;
 				fireSize = 0;
+				severitySizes[0]=0; severitySizes[1]=0; severitySizes[2]=0; severitySizes[3]=0; severitySizes[4]=0;
 			}	
 			
             //Continue testing for new fires at next landscape cell.
@@ -383,7 +393,7 @@ bool Landscape::		testNaturalIgnition(Frame* pFrame)
 }
 
 
-bool Landscape::		testHumanIgnition(Frame* pFrame)
+bool Landscape::		testHumanIgnition(const Frame* pFrame)
 //Worker function for doIgnitions().  Returns true if the frame ignites.
 {
 	//Was a human ignitions map provided for this year?
@@ -396,7 +406,7 @@ bool Landscape::		testHumanIgnition(Frame* pFrame)
 }
 
 
-bool Landscape::        testFireSpread(Frame* pFrame, int rowOfNeighbor, int colOfNeighbor, float fireSuppressionFactor)
+bool Landscape::        testFireSpread(Frame* pFrame, const int rowOfNeighbor, const int colOfNeighbor, const float fireSuppressionFactor)
 //Worker function for doIgnitions().  Returns true if the frame burns due to spread.
 {
 	_pfireSpreadParams[0] = getCellDistanceToNeighbor(rowOfNeighbor, colOfNeighbor);
@@ -412,7 +422,45 @@ bool Landscape::        testFireSpread(Frame* pFrame, int rowOfNeighbor, int col
 }
 
 
-float Landscape::       getCellDistanceToNeighbor(int rowOfNeighbor, int colOfNeighbor)
+Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, const Frame* pSpreaderFrame, const int fireSize)
+{
+	if (pFrame->type() == gTundraID) return Fire::LOW;
+	else if (pFrame->type() == gDecidID) return pSpreaderFrame->burnSeverity;
+	// else BSpruce or WSpruce continue...
+
+	// Test for spatial corellation (a.k.a: should severity be adopted from spreading cell?)
+	const float test = GetNextRandom();
+	if (!pFrame->hasComplexTopo() && test<Fire::burnSeveritySettings.FlatTopoWeight  
+	  || pFrame->hasComplexTopo() && test<Fire::burnSeveritySettings.ComplexTopoWeight)
+	{
+		return pSpreaderFrame->burnSeverity;
+	}
+	
+	// Didn't inherit from spreader frame, so select severity using the following logic...
+	const float a = Fire::burnSeveritySettings.FxnIntercept;
+	const float b = Fire::burnSeveritySettings.FxnSlope;
+	const float ex = exp(a + b * fireSize);
+	const float highSevProb = ex / (1+ex); //no worries of divide-by-zero
+	if (GetNextRandom() < highSevProb)
+	{   
+		// ok, high crown severity, but what is the surface severity?
+		if (GetNextRandom() < Fire::burnSeveritySettings.LssVsHssWeight) 
+			return Fire::HIGH_LSS;    
+		else 
+			return Fire::HIGH_HSS;
+	}
+	else
+	{
+		// ok, not high crown severity, so either low or moderate...
+		if (GetNextRandom() < Fire::burnSeveritySettings.LowVsModerateWeight)
+			return Fire::MODERATE;
+		else
+			return Fire::LOW;
+	}
+}
+
+
+float Landscape::       getCellDistanceToNeighbor(const int rowOfNeighbor, const int colOfNeighbor)
 //Worker function for doIgnitions.  Returns the distance to the specified cell.
 {
 	int dY = rowOfNeighbor - _row;

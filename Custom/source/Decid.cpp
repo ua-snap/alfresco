@@ -15,8 +15,8 @@ float			Decid::_decidFireProb;
 int				Decid::_decidHistory;
 double			Decid::_tundraSpruceBasalArea;
 const double*	Decid::_pDecidTundraParams;
-const double*	Decid::_pDecidBSpruceParams;
-const double*	Decid::_pDecidWSpruceParams;
+double**		Decid::_pDecidToBSpruceParams = 0;
+double**		Decid::_pDecidToWSpruceParams = 0;
 EStartAgeType	Decid::_bspruceStartAgeType;
 EStartAgeType	Decid::_wspruceStartAgeType;
 double*			Decid::_pBSpruceWeibullIntegral;
@@ -28,12 +28,14 @@ const double*	Decid::_pWSpruceStartAge;
 
 Decid::Decid (
         const int& rAge, 
+        const bool& rIsTopoComplex, 
         const double& rSite, 
-        const int& rLastBurn, 
+        const int& rYearOfLastBurn, 
+		const int& rLastBurnSeverity,
         const double& rFireIgnitionFactor, 
         const double& rFire_Sensitivity, 
         const Species& rSpecSubCanopy)
-    : Frame (rAge, rSite, rLastBurn, rFireIgnitionFactor, rFire_Sensitivity, rSpecSubCanopy) 
+    : Frame (rAge, rIsTopoComplex, rSite, rYearOfLastBurn, rLastBurnSeverity, rFireIgnitionFactor, rFire_Sensitivity, rSpecSubCanopy) 
 {
     _Decid();
 }
@@ -92,14 +94,40 @@ void Decid::setStaticData()
         if (2 != FRESCO->fif().pdGet("Decid->Tundra.Parms", _pDecidTundraParams))  {
             throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Decid->Tundra.Parms");
         }
-        if (2 != FRESCO->fif().pdGet("Decid->BSpruce.Parms", _pDecidBSpruceParams)) {
-            throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Decid->BSpruce.Parms");
-        }
-        if (2 != FRESCO->fif().pdGet("Decid->WSpruce.Parms", _pDecidWSpruceParams)) {
-            throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Decid->WSpruce.Parms");
-        }
 
-		//If using weibull, calculate start age parameters for use in startAge().  Otherwise, constant will be used.
+		//
+		//Setup decid to bspruce and wspruce parameters per burn severity.
+		//
+		if (_pDecidToBSpruceParams == 0) { 
+			_pDecidToBSpruceParams = new double*[5]; //for each burn severity.
+			for (int i=0; i<5; i++, _pDecidToBSpruceParams[i]=new double[2]);
+		}
+		for (int i=1; i<5; i++){
+			const double* parms;
+			std::string key("Decid->BSpruce.BurnSeverity["+ToS(i)+"]");
+			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
+				throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: " + key);
+			}
+			_pDecidToBSpruceParams[i][0] = parms[0];
+			_pDecidToBSpruceParams[i][1] = parms[1];
+		}
+		if (_pDecidToWSpruceParams == 0) { 
+			_pDecidToWSpruceParams = new double*[5]; //for each burn severity.
+			for (int i=0; i<5; i++, _pDecidToWSpruceParams[i]=new double[2]);
+		}
+		for (int i=1; i<5; i++){
+			const double* parms;
+			std::string key("Decid->WSpruce.BurnSeverity["+ToS(i)+"]");
+			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
+				throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: " + key);
+			}
+			_pDecidToWSpruceParams[i][0] = parms[0];
+			_pDecidToWSpruceParams[i][1] = parms[1];
+		}
+
+		//
+		// If using weibull, calculate start age parameters for use in startAge().  Otherwise, constant will be used.
+		//
 		if (_bspruceStartAgeType==WEIBULL) {						
 			//Compute the Weibull pIntegral
 			const int length = (int)(5*_pBSpruceStartAge[0]);
@@ -130,7 +158,11 @@ void Decid::clear()
 	_wspruceStartAgeType			= CONSTANT;
 	_pBSpruceWeibullIntegral		= 0;
 	_pWSpruceWeibullIntegral		= 0;
-
+	//if (_pDecidToBSpruceParams!=0) {
+	//	for (int i=0; i<5; i++) delete[] _pDecidToBSpruceParams[i];
+	//	delete[] _pDecidToBSpruceParams;
+	//	_pDecidToBSpruceParams = 0;
+	//}
 }
 void Decid::repStart()
 //Set values to beginning of a rep.
@@ -156,63 +188,38 @@ void Decid::writeData (std::ostream &s, const int outFlags, const int doFormatti
 
 
 Frame* Decid::success(Landscape* Parent) 
-// Process succession: change to another frame type.
+// Process succession: test for change to another frame type with a linear function 
+// of years since last burn.  Parameters vary by speciesTrajectory and burn severity.
 // Return NULL if no successional change.
-// The general approach is:
-// 1 Keep a running sum of "degree years": the sum of temperature during the years since last burn up to a historical limit.
-// 2 Transition if degree years exceeds a limit.
-// 3 Otherwise test for a random transition using a linear function of years since last burn.
 {
-	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear-yearOfLastBurn;
 	if (yearsSinceLastBurn == gTimeStep) {
-    	//This frame burned last year, so reset degree years to start tracking again.
-		_yearEstablished = gYear;														
+		_yearEstablished = gYear;
 		_speciesSubCanopy = gDecidID;
-		_degrees = -1;
 	}
 
-    //Check time dependant transitions
-	//if (yearsSinceLastBurn < _decidHistory) {
-	//	double	inc;    //What does "inc" mean?
-	//	if (-1 == _degrees) {
-	//		_degrees = 0.;
-	//		int history = yearsSinceLastBurn;
-	//		if (yearsSinceLastBurn > gYear)     history = gYear;
-	//		if (history >= _decidHistory)       history = _decidHistory-gTimeStep;            //Don't let history exceed _decidHistory.
-	//		for (int i=0; i<=history/gTimeStep; i++) {
-	//			inc = 0;//_pDecidTundraParams[0] - Parent->cellClimate(i).Temp;
-	//			_degrees += (inc>0) ? inc : 0.;
-	//		}
-	//	} 
-	//	else {
-	//		//Update degree years with current year.
-	//		inc = _pDecidTundraParams[0] - Parent->cellClimate(0).Temp;
-	//		_degrees += (inc>0) ? inc : 0.;
-	//	}
+	if (burnSeverity==0) return NULL;  // no transition values are given for no burn.  But with a correct BurnSeverityInputFile, no Decid should ever have burnSeverity==0;
 
-	//	//Succeed to tundra if degree years exceeds decid to tundra trigger.
-	//	if (_degrees>_pDecidTundraParams[1] * (_decidHistory/gTimeStep))
-	//		//Return a tundra frame.  Current sub canopy is passed so that tundra can succeed back.
-	//		return new Tundra(gYear, _site, yearOfLastBurn, _speciesSubCanopy);
-	//}
-
-	//If no degree year succession occured, test for random succession.
-	//Probability is a linear function of years since last burn.
-	if (_speciesTrajectory == gBSpruceID) {
-		//If succession is to be to BSpruce, use BSpruce parameters.
-		const double prob = _pDecidBSpruceParams[0] * (gYear-_yearEstablished) + _pDecidBSpruceParams[1];
-		if (prob>GetNextRandom())
-			return new BSpruce(*this, _yearEstablished);
-	} 
-	else {
-		//All other succession trajectories will lead to WSpruce.
-		const double prob = _pDecidWSpruceParams[0] * (gYear-_yearEstablished) + _pDecidWSpruceParams[1];
-		if (prob>GetNextRandom())
+	const float test = GetNextRandom();
+	if (_speciesTrajectory == gWSpruceID)
+	{
+		const float a = _pDecidToWSpruceParams[burnSeverity][0];
+		const float b = _pDecidToWSpruceParams[burnSeverity][1];
+		const float prob = a * (gYear-_yearEstablished) + b;
+		if (test < prob)
 			return new WSpruce(*this, _yearEstablished);
+	}
+	else if (_speciesTrajectory == gBSpruceID)
+	{
+		const float a = _pDecidToBSpruceParams[burnSeverity][0];
+		const float b = _pDecidToBSpruceParams[burnSeverity][1];
+		const float prob = a * (gYear-_yearEstablished) + b;
+		if (test < prob)
+			return new BSpruce(*this, _yearEstablished);
 	}
 	return NULL;
 }
+
 
 
 int Decid::startAge(Species speciesTrajectory) 

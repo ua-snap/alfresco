@@ -64,7 +64,7 @@
 				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib FrescoFoundationd.lib"
 				OutputFile="$(OutDir)\FrescoCustomd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="p:\fresco\lib;p:\poco\lib"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;p:\poco\lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				MapExports="false"
@@ -94,7 +94,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(OutDir)\FrescoCustomd.dll p:\Fresco\lib&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.lib  p:\Fresco\lib&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.dll  p:\Fresco\Client\Debug\&#x0D;&#x0A;"
+				CommandLine="copy $(OutDir)\FrescoCustomd.dll $(SolutionDir)lib\&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.lib  $(SolutionDir)lib\&#x0D;&#x0A;&#x0D;&#x0A;copy $(OutDir)\FrescoCustomd.dll  $(SolutionDir)$(ConfigurationName)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

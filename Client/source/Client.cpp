@@ -239,8 +239,26 @@ void Client::               sendStatAdd(const SStatAddEventArgs& addArgs)
     params.push_back(ToS(addArgs.Year));
     params.push_back(ToS(addArgs.Rep));
     params.push_back(ToS(addArgs.Data));
-    params.push_back(ToS(addArgs.Cause));
     RemoteNotification* rn = new RemoteNotification(_clientID, RemoteNotification::STAT_ADD, params);
+
+    _messenger.sendDataToServer(rn); 
+    
+    delete rn;
+}
+
+void Client::               sendFireSizeStatAdd(const SFireSizeStatAddEventArgs& addArgs)
+{
+    std::vector<std::string> params;
+    params.push_back(addArgs.Title);
+    params.push_back(ToS(addArgs.Year));
+    params.push_back(ToS(addArgs.Rep));
+    params.push_back(ToS(addArgs.Data));
+    params.push_back(ToS(addArgs.Cause));
+    params.push_back(ToS(addArgs.LowCount));
+    params.push_back(ToS(addArgs.ModerateCount));
+    params.push_back(ToS(addArgs.HighLssCount));
+    params.push_back(ToS(addArgs.HighHssCount));
+    RemoteNotification* rn = new RemoteNotification(_clientID, RemoteNotification::FIRESIZE_STAT_ADD, params);
 
     _messenger.sendDataToServer(rn); 
     

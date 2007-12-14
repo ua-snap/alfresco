@@ -63,10 +63,10 @@ enum outCode  //Landscape
 {
 	//General codes - if not specified, nothing will get printed  
 	outData				= 0x1,							//Output the data
-    outYearStats		= 0x2,							//Output the statistical data by year
-	outRepStats			= 0x4,							//Output the statistical data by rep
+	//outYearStats		= 0x2,							//Output the statistical data by year
+	//outRepStats		= 0x4,							//Output the statistical data by rep
 	//Format codes - specify the format of the output data and headers
-	outFormat			= 0x10,							//Output the data so it is conducive to read it in into a stats package for analysis
+	outFormat			= 0x10,							//Output the data so it is conducive to read it into a stats package for analysis
 	outHeader			= 0x20,							//Tack a header onto the output with the number of years/reps for reference purposes
 	outARC				= 0x40,							//Attach an header to the output file to facilitate import into ARCgis
 	//Frame codes - used with outFrame
@@ -83,7 +83,8 @@ enum outCode  //Landscape
 	outTemp				= 0x20000,						//The temp offset
 	outPrecip			= 0x40000,						//The precip offset
 	outFireScar			= 0x80000,						//The ID of each fire scar [If ignition cell, '-'][LastBurnYear].[FireID]
-//	outFireScarSum		= 0x100000
+	outfireSeverity		= 0x100000,						//The burn severity in a given year
+	outfireSeverityHist	= 0x200000						//The last burn severity.
 };
 enum EStartAgeType		{CONSTANT, WEIBULL};    //Frame or Species
 enum EDetailLevel		{MINIMAL, MODERATE, MAXIMUM};
@@ -105,7 +106,6 @@ extern float        FrescoFoundation_API    gCellSize;
 extern int          FrescoFoundation_API    gNumRows;
 extern int          FrescoFoundation_API    gNumCol;
 extern long         FrescoFoundation_API    gNumSpecies;
-extern bool         FrescoFoundation_API    gIsLargeMemoryModel;
 extern EDetailLevel FrescoFoundation_API    gDetailLevel;
 extern long         FrescoFoundation_API    gNoDataID;
 extern int          FrescoFoundation_API    gNoVegID;

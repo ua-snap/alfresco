@@ -12,8 +12,10 @@ class FrescoFoundation_API NoVeg : public Frame
 {
 public:
 							NoVeg(const int& rAge=0, 
+						        const bool& rIsTopoComplex=false, 
                                 const float& rSite=0., 
-                                const int& rLastBurned=-1, 
+                                const int& rYearOfLastBurn=-1, 
+								const int& rLastBurnSeverity=0,
                                 const float& rFireIgnitionFactor=0., 
                                 const float& rFireSensitivity=0.,  
                                 const Species& rSpeciesSubCanopy=gNoVegID);

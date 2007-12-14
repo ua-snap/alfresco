@@ -10,6 +10,8 @@ struct SClimate;
 //struct SFireTransition;
 
 
+
+
 class FrescoFoundation_API Fire 
 //Fire provides functionality for the fire probability function.  
 {
@@ -17,10 +19,11 @@ class FrescoFoundation_API Fire
 public:
 	enum EType				{FIXED, SPATIAL, HISTORICAL};
 	enum ECause             {NATURAL, HUMAN};		
+	enum EBurnSeverity		{NO_BURN=0, LOW=1, MODERATE=2, HIGH_LSS=3, HIGH_HSS=4};
     struct SFireTransition
     {
 	    int				Year;
-	    Fire::EType	Type;
+	    Fire::EType		Type;
 	    float			Ignition;
 	    float			Sensitivity;
 	    std::string		SpatialIgnitionFile;
@@ -28,7 +31,18 @@ public:
 	    std::string		HistoricalFile;
 	    SFireTransition() : Year(0), Type(Fire::FIXED), Ignition(0), Sensitivity(0), SpatialIgnitionFile(""), SpatialSensitivityFile(""), HistoricalFile("") {};
     };
+	struct SBurnSeveritySettings
+	{
+		float FxnIntercept;
+		float FxnSlope;
+		float LssVsHssWeight;
+		float LowVsModerateWeight;
+		float FlatTopoWeight;
+		float ComplexTopoWeight;
+		SBurnSeveritySettings() : FxnIntercept(0), FxnSlope(0), LssVsHssWeight(0), LowVsModerateWeight(0), FlatTopoWeight(0), ComplexTopoWeight(0) 	{};
+	};
 	ECause					lastBurnCause;										//Cause of the most recent fire.
+	EBurnSeverity			burnSeverity;										//Severity of the most recent fire.
 	bool					lastBurnWasOrigin;	
 	int						yearOfLastBurn;										//The last year this cell burned - if it is the current year then it has burned this year
 	int						fireScarID;											//The ID of the last burn.
@@ -36,6 +50,7 @@ public:
 	float					fireIgnitionFactor;
 
 	static std::vector<SFireTransition>	fireTransitions;
+	static SBurnSeveritySettings burnSeveritySettings;
     static EType			fireType;
 	static std::string		historicalFiresFileName;
     static const float&     fireSpreadRadius()                  { return _fireSpreadRadius; }
@@ -62,7 +77,7 @@ private:
 
 //Functions
 public:
-							Fire(const int& rLastBurned=-1, const float& rFireIgnitionFactor=0., const float& rFireSensitivity=0.);
+							Fire(const int& rYearOfLastBurn=-1, const int& rLastBurnSeverity=0, const float& rFireIgnitionFactor=0., const float& rFireSensitivity=0.);
 							Fire(const Fire& rFire);
 	virtual					~Fire();
     static void				clear();

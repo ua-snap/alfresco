@@ -1,0 +1,68 @@
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+New FIF Fields for version 1.0
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+TopoInputFile                            = "Input\Initialization\Topography.txt"             ; The topography input file.  0=flat, 1=complex
+BurnSeverityInputFile                    = "Input\Initialization\BurnSeverity.txt"           ; The initial burn severity input file. 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity
+
+BurnSeverity.FxnOfFireSize = {0.05, 0.001}	; The intercept and slope for logistic regression fxn returning probability of High Severity (level 3 or 4) 
+BurnSeverity.LSS-vs-HSS.wt = .5 		; (0,1); Probability that a burn that is assigned High Severity has HSS.  Low value is more likely to be LSS (level 3), high value is more likely to be HSS (level 4). 
+BurnSeverity.Low-vs-Moderate.wt = .5		; (0,1); Probability that a burn not assigned High Severity has Moderate Severity. Low value is more likely to give Low Severity (level 1), high value is more likely give Moderate (level 2)
+BurnSeverity.FlatTopo.wt = .6			; (0,1); Prob that Topo spatial correlation overrides initial Severity assignment; eg takes on Severity of ‘Spreader cell’ 
+BurnSeverity.ComplexTopo.wt = .2 		; (0,1); Prob that Topo spatial correlation overrides initial Severity assignment 
+
+; The following 8 fields are sets of two coefficients, {A, B}, used depending on the trajectory and last burn severity of the given decid cell.  
+; The chosen values are used in a linear function relating age to the probability of transitioning to white or black spruce: A*Age + B. 
+Decid->WSpruce.BurnSeverity[1] = {0.01, -0.9}			;1 = Low Severity	
+Decid->WSpruce.BurnSeverity[2] = {0.01, -0.9}			;2 = Moderate Severity
+Decid->WSpruce.BurnSeverity[3] = {0.01, -0.9}			;3 = High Severity + Low Surface Severity
+Decid->WSpruce.BurnSeverity[4] = {0.01, -0.9}	                ;4 = High Severity + High Surface Severity
+
+Decid->BSpruce.BurnSeverity[1] = {0.02, -0.3}			;1 = Low Severity	
+Decid->BSpruce.BurnSeverity[2] = {0.02, -0.3}			;2 = Moderate Severity
+Decid->BSpruce.BurnSeverity[3] = {0.01, -0.3}			;3 = High Severity + Low Surface Severity
+Decid->BSpruce.BurnSeverity[4] = {0.002857143, -0.1428571}	;4 = High Severity + High Surface Severity
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+New Data Types For Map Output
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Two new data type flags:
+; 0x100000	Burn severity for burns occuring in the given year
+; 0x200000	Burn severity for for the last known burn of each cell
+
+Here's the complete map flag list (I put it into the new demo fifs.):
+; MAP OUTPUT FLAGS
+; 0x000001 	On switch. Output is given only if this flag is specified.
+;Formatting
+; 0x000010	Output the data in a map (row,col) format rather than the default one column with fieldname.
+; 0x000020	Add number of years/reps to header of output file for reference purposes
+; 0x000040	Add ARCgis info to header of output file to facilitate import into ARCgis
+;Frame Specific
+; 0x000100	Decid: species trajectory; Tundra: basal area
+; 0x000200	Not in use
+; 0x000400	Not in use
+; 0x000800	Not in use
+;Data Type
+; 0x001000	Vegetation type
+; 0x002000	Stand age
+; 0x004000	Site variables
+; 0x008000	Subcanopy
+; 0x010000	Fire age (time since the cell last burned)
+; 0x020000	Temperature
+; 0x040000	Precipitation
+; 0x080000	The ID of each fire scar [If ignition cell, '-'][LastBurnYear].[FireID]
+; 0x100000	Burn severity for burns occuring in the given year
+; 0x200000	Burn severity for for the last known burn of each cell
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Retired FIF Fields
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Output.DotDisplay                        = 0                                                 ; No longer used.
+Output.ShowSeed                          = TRUE                                              ; Should the program display the random seed to the Progress Viewer?
+IsLargeMemoryModel                       = FALSE                                             ; Should all data be loaded and stored into memory during setup? (Uses more memory)
+Decid->BSpruce.Parms                     = {0.5, -2}                                         ; Two coefficients used in a linear function relating age to the probability of transitioning to BLACK spruce: A*Age + B
+Decid->WSpruce.Parms                     = {0.5, -4.5}                                       ; Two coefficients used in a linear function relating age to the probability of transitioning to WHITE spruce: A*Age + B

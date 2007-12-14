@@ -58,6 +58,7 @@ private:
     void                _onAfterRunEnd(const void* sender, const std::string& dummy);
     void                _onStatSetup(const void* sender, const SStatSetupEventArgs& stat);
     void                _onStatAdd(const void* sender, const SStatAddEventArgs& stat);
+	void				_onFireSizeStatAdd(const void* sender, const SFireSizeStatAddEventArgs& addArgs);
 };
 
 

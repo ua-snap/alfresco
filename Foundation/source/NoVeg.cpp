@@ -14,12 +14,14 @@ NoVeg::NoVeg (const Frame& rFrame)
 
 
 NoVeg::NoVeg (const int& rAge, 
+			  const bool& rIsTopoComplex, 
               const float& rSite, 
-              const int& rLastBurned, 
+              const int& rYearOfLastBurn, 
+			  const int& rLastBurnSeverity,
               const float& rFireIgnitionFactor, 
               const float& rFireSensitivity,  
               const Species& rSpeciesSubCanopy) 
-        : Frame (rAge, rSite, rLastBurned, rFireIgnitionFactor, rFireSensitivity, rSpeciesSubCanopy) 
+        : Frame (rAge, rIsTopoComplex, rSite, rYearOfLastBurn, rLastBurnSeverity, rFireIgnitionFactor, rFireSensitivity, rSpeciesSubCanopy) 
 {
 } 
 

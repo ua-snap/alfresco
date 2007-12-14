@@ -27,6 +27,7 @@ FrescoEngine::FrescoEngine(Client* owner) :
 {
     CStat::StatSetupEvent += Poco::Delegate<FrescoEngine, const SStatSetupEventArgs>  (this, &FrescoEngine::_onStatSetup);
     CStat::StatAddEvent += Poco::Delegate<FrescoEngine, const SStatAddEventArgs>  (this, &FrescoEngine::_onStatAdd);
+    CStat::FireSizeStatAddEvent += Poco::Delegate<FrescoEngine, const SFireSizeStatAddEventArgs>  (this, &FrescoEngine::_onFireSizeStatAdd);
 }
 
 FrescoEngine::~FrescoEngine()
@@ -325,3 +326,9 @@ void FrescoEngine::_onStatAdd(const void* sender, const SStatAddEventArgs& addAr
 {
     _ownerClient->sendStatAdd(addArgs);
 }
+
+void FrescoEngine::_onFireSizeStatAdd(const void* sender, const SFireSizeStatAddEventArgs& addArgs)
+{
+    _ownerClient->sendFireSizeStatAdd(addArgs);
+}
+

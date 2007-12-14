@@ -145,6 +145,8 @@ const RemoteNotification::OutgoingCommand   RemoteNotification::toOutgoingComman
         c = STAT_SETUP;
     else if ("StatAdd" == command)
         c = STAT_ADD;
+    else if ("FireSizeStatAdd" == command)
+        c = FIRESIZE_STAT_ADD;
     else
         throw Poco::Exception("Invalid outgoing command.");
     return c;
@@ -199,6 +201,8 @@ const std::string RemoteNotification::      toString(const OutgoingCommand comma
         return "STAT_SETUP";
     case STAT_ADD:
         return "STAT_ADD";
+    case FIRESIZE_STAT_ADD:
+        return "FIRESIZE_STAT_ADD";
     default:
         throw Poco::Exception("Error converting an OutgoingCommand to a string.");
     }

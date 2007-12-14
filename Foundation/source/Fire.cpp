@@ -26,18 +26,19 @@ float			Fire::_climateFireProb			        = -1;
 SClimate		Fire::_previousClimate;
 int				Fire::_yearsOfHistory			        = -9999999;
 float			Fire::_humanIgnitionsProb		        = 0;
+Fire::SBurnSeveritySettings Fire::burnSeveritySettings;
 
-
-Fire::Fire(const int& rLastBurned, const float& rFireIgnitionFactor, const float& rFireSensitivity) 
+Fire::Fire(const int& rYearOfLastBurn, const int& rLastBurnSeverity, const float& rFireIgnitionFactor, const float& rFireSensitivity) 
 //Constructor for the fire class.  Initializes the global scope optimization variables and the fire age member
 //variables.
 {
 	fireScarID			= 0;												            //Initial value for all cells when landscape is created.  Changed on new fires.  Successions pass on previous ID.
-	yearOfLastBurn		= (rLastBurned==-1) ? -1 - _yearsOfHistory : rLastBurned;	    //Set the default value to beyond what we could want to check
+	yearOfLastBurn		= (rYearOfLastBurn==-1) ? -1 - _yearsOfHistory : rYearOfLastBurn;	    //Set the default value to beyond what we could want to check
 	lastBurnWasOrigin	= false;
 	lastBurnCause		= NATURAL;
 	fireIgnitionFactor	= rFireIgnitionFactor;
 	fireSensitivity		= rFireSensitivity;
+	burnSeverity		= (Fire::EBurnSeverity)rLastBurnSeverity;
 }
 
 
@@ -49,6 +50,7 @@ Fire::Fire(const Fire& rFire)
 	lastBurnCause		= rFire.lastBurnCause; 
 	fireIgnitionFactor	= rFire.fireIgnitionFactor;
 	fireSensitivity		= rFire.fireSensitivity;
+	burnSeverity		= rFire.burnSeverity;
 }
 
 
@@ -93,6 +95,19 @@ void Fire::setup()
     _maxEmpiricalFireSizeEvent          = FRESCO->fif().nGet("Fire.MaxEmpiricalFireSizeEvent");
     _maxEmpiricalFireSizeEventWeight    = FRESCO->fif().dGet("Fire.MaxEmpiricalFireSizeEventWeight");
     _yearsOfHistory                     = FRESCO->fif().nGet("Climate.NumHistory");
+
+
+	numParams = 2;
+	const double* params = new double[2];
+	if (FRESCO->fif().pdGet("BurnSeverity.FxnOfFireSize", params) != numParams)		throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	burnSeveritySettings.FxnIntercept = params[0];
+	burnSeveritySettings.FxnSlope = params[1];
+	burnSeveritySettings.LssVsHssWeight			= FRESCO->fif().dGet("BurnSeverity.LSS-vs-HSS.wt");
+	burnSeveritySettings.LowVsModerateWeight	= FRESCO->fif().dGet("BurnSeverity.Low-vs-Moderate.wt");
+	burnSeveritySettings.FlatTopoWeight			= FRESCO->fif().dGet("BurnSeverity.FlatTopo.wt");
+	burnSeveritySettings.ComplexTopoWeight		= FRESCO->fif().dGet("BurnSeverity.ComplexTopo.wt");
+
+
 }
 
 

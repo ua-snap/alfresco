@@ -73,6 +73,7 @@ public:
     void                        sendClientLogEntry(const std::string& logEntry, bool isError);
     void                        sendStatSetup(const SStatSetupEventArgs& setupArgs);
     void                        sendStatAdd(const SStatAddEventArgs& addArgs);
+	void						sendFireSizeStatAdd(const SFireSizeStatAddEventArgs& addArgs);
 };
 
 
