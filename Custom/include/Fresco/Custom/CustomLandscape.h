@@ -54,7 +54,7 @@ private:
 	bool				_isForcedVegTransitions;
 	std::string			_vegTransitionFile;
 	bool				_isUsingUniqueVegAndAgePerRep;
-    int					_yearOfVegAndAgeFiles;
+    int					_yearOfUniqueInputPerRep;
 	//Age Layer
 	std::string			_ageInputFile;
 	int**				_pAgeSpatialInput;
@@ -70,6 +70,7 @@ private:
 	//Burn Severity Layer
 	std::string			_burnSeverityInputFile;
 	int**				_pBurnSeveritySpatialInput;
+	bool				_isUsingUniqueBurnSeverityPerRep;
 	//Fire Layer
 	int**				_pHistoricalFireSpatialInput;
 	float**				_pIgnitionFactorSpatialInput;

@@ -105,7 +105,8 @@ void CustomLandscape::		setup()
     setupMapStats();
     
     _isUsingUniqueVegAndAgePerRep   = FRESCO->fif().bGet("UseUniqueVegAndAgePerRep");
-    _yearOfVegAndAgeFiles           = FRESCO->fif().nGet("YearOfVegAndAgeFiles");
+    _isUsingUniqueBurnSeverityPerRep= FRESCO->fif().bGet("UseUniqueBurnSeverityPerRep");
+    _yearOfUniqueInputPerRep        = FRESCO->fif().nGet("YearOfUniqueInputPerRep");
     _vegInputFile			        = FormatDirectory(FRESCO->fif().sGet("VegInputFile"));
     _vegTransitionFile		        = FormatDirectory(FRESCO->fif().sGet("VegTransitionFile"));
     _isForcedVegTransitions	        = FRESCO->fif().bGet("IsForcedVegTransitions");
@@ -113,7 +114,9 @@ void CustomLandscape::		setup()
 	_treeDensityInputFile	        = FormatDirectory(FRESCO->fif().sGet("TreeDensityInputFile"));
     _siteInputFile			        = FormatDirectory(FRESCO->fif().sGet("SiteInputFile"));
 	_topoInputFile					= FormatDirectory(FRESCO->fif().sGet("TopoInputFile"));
-	_burnSeverityInputFile			= FormatDirectory(FRESCO->fif().sGet("BurnSeverityInputFile"));
+	_burnSeverityInputFile = "";
+	if (FRESCO->fif().CheckKey("BurnSeverityInputFile"))  
+		_burnSeverityInputFile = FormatDirectory(FRESCO->fif().sGet("BurnSeverityInputFile"));
 
     Landscape::setup();
     
@@ -201,8 +204,6 @@ void CustomLandscape::		setup()
 	ReadGISFile<float>(_pSiteSpatialInput, gNumRows, gNumCol, _siteInputFile,std::ios::in, 0.);
 	ShowOutput(MODERATE, "\tReading tree density layer.\n");
 	ReadGISFile<int>(_pTreeDensitySpatialInput, gNumRows, gNumCol, _treeDensityInputFile,std::ios::in, 0);
-	ShowOutput(MODERATE, "\tReading burn severity layer.\n");
-	ReadGISFile<int>(_pBurnSeveritySpatialInput, gNumRows, gNumCol, _burnSeverityInputFile,std::ios::in, 0);
 }
 
 void CustomLandscape::		repStart() 
@@ -212,14 +213,14 @@ void CustomLandscape::		repStart()
 	ShowOutput(MODERATE, "\t\tCreating landscape of " + ToS(gNumRows) + " rows by " + ToS(gNumCol) + " cols.\n");
 
 
-    //Read in Veg and Age layers.
+    //Read in layers that might be unique per rep.
 	if (_isUsingUniqueVegAndAgePerRep) {
 		//Veg
-		std::string inputFileWithRepYear = AppendRepYear(_vegInputFile, gRep,_yearOfVegAndAgeFiles);
+		std::string inputFileWithRepYear = AppendRepYear(_vegInputFile, gRep,_yearOfUniqueInputPerRep);
 		ShowOutput(MODERATE, "\t\tReading veg layer from "+inputFileWithRepYear+"\n");
 		ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, inputFileWithRepYear, std::ios::in,gNoVegID);
 		//Age
-		inputFileWithRepYear = AppendRepYear(_ageInputFile, gRep, _yearOfVegAndAgeFiles);
+		inputFileWithRepYear = AppendRepYear(_ageInputFile, gRep, _yearOfUniqueInputPerRep);
 		ShowOutput(MODERATE, "\t\tReading age layer from "+inputFileWithRepYear+"\n");
 		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, inputFileWithRepYear,std::ios::in, 1);
 	}
@@ -231,6 +232,24 @@ void CustomLandscape::		repStart()
 		ShowOutput(MODERATE, "\t\tReading age layer from "+_ageInputFile+"\n");
 		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, _ageInputFile, std::ios::in, 1);
 	}
+
+
+	//Burn Severity	
+	if (_isUsingUniqueBurnSeverityPerRep && _burnSeverityInputFile != "") {
+		//Use unique map per rep.
+		std::string inputFileWithRepYear = AppendRepYear(_burnSeverityInputFile, gRep,_yearOfUniqueInputPerRep);
+		ShowOutput(MODERATE, "\t\tReading burn severity layer from "+inputFileWithRepYear+"\n");
+		ReadGISFile<int>(_pBurnSeveritySpatialInput, gNumRows, gNumCol, inputFileWithRepYear, std::ios::in, 3);
+	}
+	else if (FRESCO->isRunningFirstRep()) {  
+		//Use one input map for all reps.
+		std::string message = _burnSeverityInputFile==""? 
+			"\t\tSetting burn severity to default, HighLSS (level 3), for all cells.\n" :
+			"\t\tReading burn severity layer from "+_burnSeverityInputFile+"\n";
+		ShowOutput(MODERATE, message);
+		ReadGISFile<int>(_pBurnSeveritySpatialInput, gNumRows, gNumCol, _burnSeverityInputFile, std::ios::in, 3);
+	}	
+ 
 	//Create landscape cell-by-cell, assigning values from all the input 
 	Frame* pFrame = 0;
 	for (int r=0; r<gNumRows; r++) {
