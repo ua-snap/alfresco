@@ -24,8 +24,9 @@ NumSpecies                               = 5                                    
 NoVeg                                    = 0                                                 ; The species number for the default frame type - should be 0 if possible
 XLLCorner                                = -59982.863281                                     ; X Corner specified by ARCgis
 YLLCorner                                = 1851083.022172                                    ; Y Corner specified by ARCgis
-UseUniqueVegAndAgePerRep                 = FALSE                                             ; Use unique input files for veg and age.  This can be used to prevent a bias due to all reps starting from the same veg and age input data.
-YearOfVegAndAgeFiles                     = 300                                               ; The year to be appended to the base filename when using unique veg and age files per rep.  File format: filename_REP#_YEAR#.txt
+UseUniqueVegAndAgePerRep                 = FALSE                                             ; Use unique input files for veg and age.  This prevents a bias due to all reps starting from the same input data.
+UseUniqueBurnSeverityPerRep              = FALSE                                             ; Use unique input files for burn severity per rep.  This prevents a bias due to all reps starting from the same input data.
+YearOfUniqueInputPerRep                  = 300                                               ; The year to be appended to the base filename when using unique veg, age and/or burn severity files per rep.  File format: filename_REP#_YEAR#.txt
 VegInputFile                             = "Input\Initialization\Veg.txt"                    ; The vegetation input file
 VegTransitionFile                        = "Input\Initialization\VegTransitions.txt"         ; Base filename for forced vegetation transitions.  Year is appended as  _YR
 IsForcedVegTransitions                   = FALSE                                             ; TRUE: Succession trajectories are read from files as well as simulated.  FALSE: Succession is simulated only.
@@ -214,14 +215,14 @@ Decid.HumanFireProb                      = 0.003060109                          
 Decid.History                            = 20                                                ; The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.
 Decid->Tundra.Parms                      = {4., 19.32}                                       ; Degree-years are integrated from base A (i.e. temp < A).  A transition occurs if the integrand exceeds B*(The maximum number of steps i.e. History/TimeStep).
 
-; The following 8 fields are sets of two coefficients, {A, B}, used depending on the trajectory and last burn severity of the given decid cell.  
-; The chosen values are used in a linear function relating age to the probability of transitioning to white or black spruce: A*Age + B. 
-Decid->WSpruce.BurnSeverity[1] = {0.01, -0.9}			;1 = Low Severity	
-Decid->WSpruce.BurnSeverity[2] = {0.01, -0.9}			;2 = Moderate Severity
-Decid->WSpruce.BurnSeverity[3] = {0.01, -0.9}			;3 = High Severity + Low Surface Severity
-Decid->WSpruce.BurnSeverity[4] = {0.01, -0.9}	                ;4 = High Severity + High Surface Severity
+; The following 8 fields are sets of two coefficients, {A, B}, used depending on the trajectory and last burn severity of the given decid cell.
+; The chosen values are used in a linear function relating age to the probability of transitioning to white or black spruce: A*Age + B.
+Decid->WSpruce.BurnSeverity[1] = {0.006666667, -0.1000000}                      ;1 = Low Severity 20:40 years
+Decid->WSpruce.BurnSeverity[2] = {0.010000000, -0.4000000}                      ;2 = Moderate Severity 40:60 years
+Decid->WSpruce.BurnSeverity[3] = {0.006666667, -0.4000000}                      ;3 = High Severity + Low Surface Severity 60:90 years
+Decid->WSpruce.BurnSeverity[4] = {0.003333333, -0.3000000}                      ;4 = High Severity + High Surface Severity 90:130 years
 
-Decid->BSpruce.BurnSeverity[1] = {0.02, -0.3}			;1 = Low Severity	
-Decid->BSpruce.BurnSeverity[2] = {0.02, -0.3}			;2 = Moderate Severity
-Decid->BSpruce.BurnSeverity[3] = {0.01, -0.3}			;3 = High Severity + Low Surface Severity
-Decid->BSpruce.BurnSeverity[4] = {0.002857143, -0.1428571}	;4 = High Severity + High Surface Severity
+Decid->BSpruce.BurnSeverity[1] = {0.050000000, -0.2500000}                      ;1 = Low Severity 5:15 years
+Decid->BSpruce.BurnSeverity[2] = {0.020000000, -0.3000000}                      ;2 = Moderate Severity 15:30 years
+Decid->BSpruce.BurnSeverity[3] = {0.010000000, -0.3000000}                      ;3 = High Severity + Low Surface Severity 30:50 years
+Decid->BSpruce.BurnSeverity[4] = {0.002857143, -0.1428571}                      ;4 = High Severity + High Surface Severity 50:90 years
