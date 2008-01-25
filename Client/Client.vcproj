@@ -65,7 +65,7 @@
 				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib FrescoFoundationd.lib FrescoCustomd.lib"
 				Version="0.2.2"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;p:\poco\lib"
+				AdditionalLibraryDirectories="..\lib;p:\poco\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
