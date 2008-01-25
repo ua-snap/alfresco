@@ -187,7 +187,7 @@ namespace FRESCO_Server
                 //if (EditorFIF == null) EditFIF();
                 //else EditorFIF.Refresh();
                 Global.ProgramState = EnumProgramState.LOADED;
-                ViewerProgress.AddText("\tFIF Input\t\t" + FIFName + "\n");
+                ViewerProgress.AddText("\tFIF Input\t\tfile:" + FIFName.Replace(" ","%20") + "\n");
                 this.Text = Global.Title + " - " + FIFName.Substring(FIFName.LastIndexOf("\\") + 1);
                 isFileOpened = true;
             }
@@ -496,21 +496,17 @@ namespace FRESCO_Server
         //File
         void FileOpen_Click(object sender, EventArgs e)
         {
-            FileOpen();
+            fileList.addExistingFile();
         }
         void FileSave_Click(object sender, EventArgs e)
         {
-            FileSave();
+            //FileSave();
         }
         void FileExit_Click(object sender, EventArgs e)
         {
             FileExit();
         }
-        //View
-        void ViewScenarioFiles_Click(object sender, EventArgs e)
-        {
-            ViewFileList();
-        }
+
         //Simulation
         void SimulationRun_Click(object sender, EventArgs e)
         {

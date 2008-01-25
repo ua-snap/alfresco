@@ -12654,9 +12654,9 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FRESCO Server 1.0.1"
-        "ProductCode" = "8:{B5C905CE-2DA2-4ED4-8D36-96ACEB239B10}"
-        "PackageCode" = "8:{40BEAB3E-E3D8-4E29-813D-F992E47581CB}"
-        "UpgradeCode" = "8:{82650CA6-B9DD-4327-8EC0-0328A9BBD4EC}"
+        "ProductCode" = "8:{773D2A47-92EE-4AE3-AF66-940C40FF96DB}"
+        "PackageCode" = "8:{C106FB98-8083-4E23-9B87-AA7954D21D69}"
+        "UpgradeCode" = "8:{445A0937-9538-4BB5-BF7E-2B693F057EE8}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"

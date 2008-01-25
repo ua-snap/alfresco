@@ -57,6 +57,7 @@ namespace FRESCO_Server
             this.DockManager = new WeifenLuo.WinFormsUI.DockPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.addScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuFileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSimulation = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,11 +65,8 @@ namespace FRESCO_Server
             this.mnuSimulationRun = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSimulationStop = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuRunTests = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.scenarioFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.addScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             tblSimulation = new System.Windows.Forms.ToolStrip();
             tblSimulation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.stbRep)).BeginInit();
@@ -183,7 +181,7 @@ namespace FRESCO_Server
             this.stbSpacer.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.None;
             this.stbSpacer.Name = "stbSpacer";
             this.stbSpacer.Style = System.Windows.Forms.StatusBarPanelStyle.OwnerDraw;
-            this.stbSpacer.Width = 676;
+            this.stbSpacer.Width = 675;
             // 
             // stbTime
             // 
@@ -211,7 +209,6 @@ namespace FRESCO_Server
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFile,
-            this.viewToolStripMenuItem,
             this.mnuSimulation});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -229,10 +226,18 @@ namespace FRESCO_Server
             this.mnuFile.Size = new System.Drawing.Size(35, 20);
             this.mnuFile.Text = "File";
             // 
+            // addScenarioToolStripMenuItem
+            // 
+            this.addScenarioToolStripMenuItem.Image = global::FRESCO_Server.Properties.Resources.document_open;
+            this.addScenarioToolStripMenuItem.Name = "addScenarioToolStripMenuItem";
+            this.addScenarioToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addScenarioToolStripMenuItem.Text = "Add Scenario";
+            this.addScenarioToolStripMenuItem.Click += new System.EventHandler(this.FileOpen_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(120, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // mnuFileExit
             // 
@@ -266,7 +271,7 @@ namespace FRESCO_Server
             this.mnuSimulationRun.Image = global::FRESCO_Server.Properties.Resources.SimulationRun;
             this.mnuSimulationRun.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
             this.mnuSimulationRun.Name = "mnuSimulationRun";
-            this.mnuSimulationRun.Size = new System.Drawing.Size(133, 22);
+            this.mnuSimulationRun.Size = new System.Drawing.Size(152, 22);
             this.mnuSimulationRun.Text = "Run";
             this.mnuSimulationRun.Click += new System.EventHandler(this.SimulationRun_Click);
             // 
@@ -282,25 +287,9 @@ namespace FRESCO_Server
             // mnuRunTests
             // 
             this.mnuRunTests.Name = "mnuRunTests";
-            this.mnuRunTests.Size = new System.Drawing.Size(133, 22);
+            this.mnuRunTests.Size = new System.Drawing.Size(152, 22);
             this.mnuRunTests.Text = "Run Tests";
             this.mnuRunTests.Visible = false;
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.scenarioFilesToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // scenarioFilesToolStripMenuItem
-            // 
-            this.scenarioFilesToolStripMenuItem.Image = global::FRESCO_Server.Properties.Resources.system_file_manager;
-            this.scenarioFilesToolStripMenuItem.Name = "scenarioFilesToolStripMenuItem";
-            this.scenarioFilesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.scenarioFilesToolStripMenuItem.Text = "Scenario Files";
-            this.scenarioFilesToolStripMenuItem.Click += new System.EventHandler(this.ViewScenarioFiles_Click);
             // 
             // toolStripContainer1
             // 
@@ -332,12 +321,6 @@ namespace FRESCO_Server
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(121, 12);
             this.progressBar.TabIndex = 25;
-            // 
-            // addScenarioToolStripMenuItem
-            // 
-            this.addScenarioToolStripMenuItem.Name = "addScenarioToolStripMenuItem";
-            this.addScenarioToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.addScenarioToolStripMenuItem.Text = "Add Scenario";
             // 
             // Server
             // 
@@ -404,8 +387,6 @@ namespace FRESCO_Server
         private ToolStripSeparator toolStripSeparator3;
         private ProgressBar progressBar;
         private ToolStripMenuItem mnuRunTests;
-        private ToolStripMenuItem viewToolStripMenuItem;
-        private ToolStripMenuItem scenarioFilesToolStripMenuItem;
         private ToolStripMenuItem addScenarioToolStripMenuItem;
 	}
 }

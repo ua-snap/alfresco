@@ -100,13 +100,16 @@ namespace FRESCO_Server
                     clientList.ByID(selectedClientID).Log.ClearSubscriptions();
                 //Show saved log for newly selected client.
                 selectedClientID = GetSelectedClientID();
-                clientLogDisplay.Clear();
-                clientLogDisplay.AddText(clientList.ByID(selectedClientID).Log.GetContents().ToString());
-                //Start listening to currently selected client.
-                clientList.ByID(selectedClientID).Log.LogEntryEvent += new ClientOutputEventHandler(OnLogEntryDisplay);
-                //Update label.
-                lblClientLog.Text = "Log of Client " + GetSelectedClientID() + ": ";
-                splitContainer.Panel2Collapsed = false;
+                if (selectedClientID > 0)
+                {
+                    clientLogDisplay.Clear();
+                    clientLogDisplay.AddText(clientList.ByID(selectedClientID).Log.GetContents().ToString());
+                    //Start listening to currently selected client.
+                    clientList.ByID(selectedClientID).Log.LogEntryEvent += new ClientOutputEventHandler(OnLogEntryDisplay);
+                    //Update label.
+                    lblClientLog.Text = "Log of Client " + GetSelectedClientID() + ": ";
+                    splitContainer.Panel2Collapsed = false;
+                }
             }
         }
         private int     GetSelectedClientID()
@@ -260,7 +263,12 @@ namespace FRESCO_Server
                             break;
                         case ClientState.AVAILABLE:
                             client.IsCompleted = false;
-                            if (oldState == ClientState.CLEARING)
+                            if (oldState == ClientState.UNKNOWN)
+                            {
+                                if (Global.Instance.ProgramState <= EnumProgramState.LOADED)
+                                    client.IsParticipating = true;
+                            }
+                            else if (oldState == ClientState.CLEARING)
                             {
                                 bool allClientsAreCleared = true;
                                 foreach (Client c in clientList) {
@@ -270,7 +278,12 @@ namespace FRESCO_Server
                                     }
                                 }
                                 if (allClientsAreCleared)
+                                {
                                     Global.Instance.RaiseSimulationCleared(this, new EventArgs());
+                                    foreach (Client c in clientList)
+                                        if (c.State == ClientState.AVAILABLE)
+                                            c.IsParticipating = true;
+                                }
                             }
                             break;
                         case ClientState.STOPPED:
@@ -462,33 +475,35 @@ namespace FRESCO_Server
         }
         public void     SendRepAssignmentsToClients(int numReps)
         {
+            //How many clients are available?
+            List<Client> readyClients = new List<Client>();
+            foreach (Client c in clientList)
+                if (c.State == ClientState.AVAILABLE && c.IsParticipating)
+                    readyClients.Add(c);
             //Divi up reps between all available clients.
-            int numClients = clientList.Count;
+            int numClients = readyClients.Count;
             int numRepsPerClient = numReps / numClients;
             int remainder = numReps % numClients;
             int repStart = 0;
             int repStop = numRepsPerClient + (remainder>0?1:0);
             remainder--;
-            for (int i=0; i<numClients; i++) {
-                if (clientList[i].State == ClientState.AVAILABLE) {
-                    clientList[i].IsParticipating = true;
-                    //Set local copy.
-                    clientList[i].RepStart = repStart;
-                    clientList[i].RepStop = repStop;
-                    //Set remote client.
-                    string[] parms = { repStart.ToString(), repStop.ToString() };
-                    RemoteProcedureCall rpc = new RemoteProcedureCall(clientList[i].ID, OutgoingCommand.REP_ASSIGNMENT.ToString(), parms);
-                    messenger.SendData(rpc, clientList[i].Socket);
-                    //Prepare for next client.
-                    repStart = repStop;
-                    repStop += numRepsPerClient + (remainder > 0 ? 1 : 0);
-                    remainder--;
-                }
-                else
-                    clientList[i].IsParticipating = false;
+            foreach (Client client in readyClients) {
+                //Set local copy.
+                client.RepStart = repStart;
+                client.RepStop = repStop;
+                //Set remote client.
+                string[] parms = { repStart.ToString(), repStop.ToString() };
+                RemoteProcedureCall rpc = new RemoteProcedureCall(client.ID, OutgoingCommand.REP_ASSIGNMENT.ToString(), parms);
+                messenger.SendData(rpc, client.Socket);
+                //Prepare for next client.
+                repStart = repStop;
+                repStop += numRepsPerClient + (remainder > 0 ? 1 : 0);
+                remainder--;
             }
         }
+        //
         //Events.
+        //
         private void    Messenger_RPCReceived(Object sender, RPCReceivedEventArgs e)
         {
             SelectProcedure(e.RemoteProcedureCall);

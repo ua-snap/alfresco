@@ -67,48 +67,6 @@ namespace FRESCO_Server.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap applications_multimedia {
-            get {
-                object obj = ResourceManager.GetObject("applications_multimedia", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap appointment_new {
-            get {
-                object obj = ResourceManager.GetObject("appointment_new", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap computer {
-            get {
-                object obj = ResourceManager.GetObject("computer", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap dialog_error {
-            get {
-                object obj = ResourceManager.GetObject("dialog_error", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap dialog_information {
-            get {
-                object obj = ResourceManager.GetObject("dialog_information", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap dialog_warning {
-            get {
-                object obj = ResourceManager.GetObject("dialog_warning", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap document_new {
             get {
                 object obj = ResourceManager.GetObject("document_new", resourceCulture);
@@ -119,20 +77,6 @@ namespace FRESCO_Server.Properties {
         internal static System.Drawing.Bitmap document_open {
             get {
                 object obj = ResourceManager.GetObject("document_open", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap document_properties {
-            get {
-                object obj = ResourceManager.GetObject("document_properties", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap drive_harddisk {
-            get {
-                object obj = ResourceManager.GetObject("drive_harddisk", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -151,44 +95,9 @@ namespace FRESCO_Server.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap EditorFIF {
-            get {
-                object obj = ResourceManager.GetObject("EditorFIF", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap emblem_important {
-            get {
-                object obj = ResourceManager.GetObject("emblem_important", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap emblem_system {
             get {
                 object obj = ResourceManager.GetObject("emblem_system", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap emblem_unreadable {
-            get {
-                object obj = ResourceManager.GetObject("emblem_unreadable", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap FileOpen {
-            get {
-                object obj = ResourceManager.GetObject("FileOpen", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap FormSave {
-            get {
-                object obj = ResourceManager.GetObject("FormSave", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -207,34 +116,6 @@ namespace FRESCO_Server.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap help_browser {
-            get {
-                object obj = ResourceManager.GetObject("help_browser", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap internet_mail {
-            get {
-                object obj = ResourceManager.GetObject("internet_mail", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap internet_news_reader {
-            get {
-                object obj = ResourceManager.GetObject("internet_news_reader", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap internet_web_browser {
-            get {
-                object obj = ResourceManager.GetObject("internet_web_browser", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap list_add {
             get {
                 object obj = ResourceManager.GetObject("list_add", resourceCulture);
@@ -249,13 +130,6 @@ namespace FRESCO_Server.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap media_eject {
-            get {
-                object obj = ResourceManager.GetObject("media_eject", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap media_floppy {
             get {
                 object obj = ResourceManager.GetObject("media_floppy", resourceCulture);
@@ -266,90 +140,6 @@ namespace FRESCO_Server.Properties {
         internal static System.Drawing.Bitmap media_floppy_all {
             get {
                 object obj = ResourceManager.GetObject("media_floppy_all", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap media_playback_pause {
-            get {
-                object obj = ResourceManager.GetObject("media_playback_pause", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap media_playback_start {
-            get {
-                object obj = ResourceManager.GetObject("media_playback_start", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap media_playback_stop {
-            get {
-                object obj = ResourceManager.GetObject("media_playback_stop", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_error {
-            get {
-                object obj = ResourceManager.GetObject("network_error", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_idle {
-            get {
-                object obj = ResourceManager.GetObject("network_idle", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_offline {
-            get {
-                object obj = ResourceManager.GetObject("network_offline", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_receive {
-            get {
-                object obj = ResourceManager.GetObject("network_receive", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_server {
-            get {
-                object obj = ResourceManager.GetObject("network_server", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_transmit {
-            get {
-                object obj = ResourceManager.GetObject("network_transmit", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_transmit_receive {
-            get {
-                object obj = ResourceManager.GetObject("network_transmit_receive", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap network_workgroup {
-            get {
-                object obj = ResourceManager.GetObject("network_workgroup", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap package_x_generic {
-            get {
-                object obj = ResourceManager.GetObject("package_x_generic", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -396,20 +186,6 @@ namespace FRESCO_Server.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap system_software_update {
-            get {
-                object obj = ResourceManager.GetObject("system_software_update", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap system_users {
-            get {
-                object obj = ResourceManager.GetObject("system_users", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap text_x_generic {
             get {
                 object obj = ResourceManager.GetObject("text_x_generic", resourceCulture);
@@ -417,51 +193,9 @@ namespace FRESCO_Server.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap video_x_generic {
-            get {
-                object obj = ResourceManager.GetObject("video_x_generic", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap ViewerAge {
-            get {
-                object obj = ResourceManager.GetObject("ViewerAge", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap ViewerFire {
-            get {
-                object obj = ResourceManager.GetObject("ViewerFire", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap ViewerFireAge {
-            get {
-                object obj = ResourceManager.GetObject("ViewerFireAge", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap ViewerFireSuppression {
-            get {
-                object obj = ResourceManager.GetObject("ViewerFireSuppression", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap ViewerProgress {
             get {
                 object obj = ResourceManager.GetObject("ViewerProgress", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap ViewerVegetation {
-            get {
-                object obj = ResourceManager.GetObject("ViewerVegetation", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

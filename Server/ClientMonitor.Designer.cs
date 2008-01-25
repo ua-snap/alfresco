@@ -30,6 +30,7 @@ namespace FRESCO_Server
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientMonitor));
             this.lblClientLog = new System.Windows.Forms.Label();
             this.clientContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuViewLog = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,12 +83,12 @@ namespace FRESCO_Server
             this.clientContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuViewLog});
             this.clientContextMenu.Name = "clientContextMenu";
-            this.clientContextMenu.Size = new System.Drawing.Size(117, 26);
+            this.clientContextMenu.Size = new System.Drawing.Size(128, 26);
             // 
             // mnuViewLog
             // 
             this.mnuViewLog.Name = "mnuViewLog";
-            this.mnuViewLog.Size = new System.Drawing.Size(116, 22);
+            this.mnuViewLog.Size = new System.Drawing.Size(127, 22);
             this.mnuViewLog.Text = "View Log";
             this.mnuViewLog.Click += new System.EventHandler(this.mnuViewLog_Click);
             // 
@@ -352,6 +353,7 @@ namespace FRESCO_Server
             this.ClientSize = new System.Drawing.Size(748, 459);
             this.CloseButton = false;
             this.Controls.Add(this.toolStripContainer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ClientMonitor";
             this.TabText = "Client Manager";
             this.Text = "Client Manager";

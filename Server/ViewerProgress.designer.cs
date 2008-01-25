@@ -57,7 +57,7 @@ namespace FRESCO_Server
             // 
             this.ImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ImageList.ImageStream")));
             this.ImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.ImageList.Images.SetKeyName(0, "Clear.ico");
+            this.ImageList.Images.SetKeyName(0, "SimulationClear.bmp");
             // 
             // ToolBar
             // 
@@ -82,7 +82,7 @@ namespace FRESCO_Server
             // 
             // btnClear
             // 
-            this.btnClear.ImageKey = "Clear.ico";
+            this.btnClear.ImageKey = "SimulationClear.bmp";
             this.btnClear.Name = "btnClear";
             this.btnClear.Tag = "Clear";
             this.btnClear.ToolTipText = "Clear Viewer";
