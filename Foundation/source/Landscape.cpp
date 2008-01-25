@@ -382,6 +382,7 @@ void Landscape::		doIgnitions()
 
 	}
 	_fireNumStat.Add(gYear, gRep, fireNum);
+	delete[] severitySizes;
 }
 
 

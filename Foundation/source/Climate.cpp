@@ -30,6 +30,7 @@ Climate::				Climate ()
 Climate::				~Climate () 
 {
     deleteArrays();
+    delete _pCurrentTransition;
 }
 
 

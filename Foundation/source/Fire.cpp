@@ -16,12 +16,12 @@ std::vector<Fire::SFireTransition> Fire::fireTransitions;
 Fire::EType	    Fire::fireType						    = Fire::FIXED;
 std::string     Fire::historicalFiresFileName           = "";
 float		    Fire::_fireSpreadRadius			        = 0;
-const double*	Fire::_pFireSpreadParms			        = new double[2];
+const double*	Fire::_pFireSpreadParms;
 bool			Fire::_ignoringFirstInterval	        = false;
 bool			Fire::_isMonthly						= false;
 int				Fire::_maxEmpiricalFireSizeEvent        = -1;
 float			Fire::_maxEmpiricalFireSizeEventWeight  = 1;
-const double*	Fire::_pFireClimate				        = new double[3];
+const double*	Fire::_pFireClimate;
 float			Fire::_climateFireProb			        = -1;
 SClimate		Fire::_previousClimate;
 int				Fire::_yearsOfHistory			        = -9999999;
@@ -96,18 +96,14 @@ void Fire::setup()
     _maxEmpiricalFireSizeEventWeight    = FRESCO->fif().dGet("Fire.MaxEmpiricalFireSizeEventWeight");
     _yearsOfHistory                     = FRESCO->fif().nGet("Climate.NumHistory");
 
-
-	numParams = 2;
-	const double* params = new double[2];
-	if (FRESCO->fif().pdGet("BurnSeverity.FxnOfFireSize", params) != numParams)		throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	const double* params;
+	if (FRESCO->fif().pdGet("BurnSeverity.FxnOfFireSize", params) != 2)		throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
 	burnSeveritySettings.FxnIntercept = params[0];
 	burnSeveritySettings.FxnSlope = params[1];
 	burnSeveritySettings.LssVsHssWeight			= FRESCO->fif().dGet("BurnSeverity.LSS-vs-HSS.wt");
 	burnSeveritySettings.LowVsModerateWeight	= FRESCO->fif().dGet("BurnSeverity.Low-vs-Moderate.wt");
 	burnSeveritySettings.FlatTopoWeight			= FRESCO->fif().dGet("BurnSeverity.FlatTopo.wt");
 	burnSeveritySettings.ComplexTopoWeight		= FRESCO->fif().dGet("BurnSeverity.ComplexTopo.wt");
-
-
 }
 
 
