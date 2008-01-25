@@ -1,0 +1,49 @@
+#!/bin/bash
+# Creates zipped setup for FrescoClient.
+
+
+## Set Script Variables
+Version=[ver]
+TarName=FrescoClientInstall-$Version-linux
+InstallDir=$HOME/fresco
+if [ -d ../$TarName ]; then
+   echo ' '
+   echo 'Installing FRESCO Client '$Version
+else
+   echo ' '
+   echo "Error: must run this install program from the base directory of the un-zipped package.  Not starting installation."
+   exit 1
+fi
+
+
+## Ensure Directories Exist
+if [ -d $InstallDir ]; then
+   echo ' '
+else
+   mkdir $InstallDir 
+fi
+if [ -d $InstallDir/bin ]; then
+   echo ' '
+else
+   mkdir $InstallDir/bin 
+fi
+if [ -d $InstallDir/lib ]; then
+   echo ' '
+else
+   mkdir $InstallDir/lib 
+fi
+if [ -d $InstallDir/runs ]; then
+   echo ' '
+else
+   mkdir $InstallDir/runs
+fi
+
+
+## Copy Executables, Scripts and Libraries
+cp -f fresco/bin/* $InstallDir/bin
+cp -f fresco/lib/* $InstallDir/lib
+
+echo ' '
+echo 'Installation Complete'
+echo ' '
+echo 'You may delete the unzipped directory.'

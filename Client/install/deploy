@@ -1,0 +1,91 @@
+#!/bin/bash
+# Creates setup for FrescoClient and installs it on remote machine.
+
+
+## Set Script Variables
+if [ -n "$1" ]; then
+   if [ $1 = "-v" ]; then
+      if [ -n "$2" ]; then
+         Version=$2
+      fi
+   fi
+fi 
+if [ -n "$3" ]; then
+   if [ $3 = "-u" ]; then
+      if [ -n "$4" ]; then
+         RemoteUser=$4
+      fi
+   fi
+fi 
+if [ -n "$5" ]; then
+   if [ $5 = "-h" ]; then
+      if [ -n "$6" ]; then
+         RemoteHost=$6
+      fi
+   fi
+fi 
+if [ -z $Version ]; then
+   echo "  Error: expected version number."
+   echo "  Usage: makeInstall -v <version number> -u <user> -h <host>"
+   exit 1
+fi
+if [ -z $RemoteUser ]; then
+   echo "  Error: expected username for remote host."
+   echo "  Usage: makeInstall -v <version number> -u <user> -h <host>"
+   exit 1
+fi
+if [ -z $RemoteHost ]; then
+   echo "  Error: expected hostname for remote host."
+   echo "  Usage: makeInstall -v <version number> -u <user> -h <host>"
+   exit 1
+fi
+
+
+## Set version on install scripts
+sed "s/\[ver\]/$Version/g" install.ver > install
+sed "s/\[ver\]/$Version/g" unpackage.ver > unpackage
+chmod 775 install unpackage
+
+echo ' '
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='
+echo '         Deploy Script'
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='
+echo ' '
+echo ' STAY SEATED FOR PASSWORD ENTRY'
+sleep 1
+echo ' '
+echo ' STAY SEATED FOR PASSWORD ENTRY'
+sleep 1
+echo ' '
+echo ' STAY SEATED FOR PASSWORD ENTRY'
+sleep 2
+
+echo ' '
+echo ' '
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-='
+echo '  Step 1 of 4: Package...'
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-='
+$HOME/projects/Fresco/Client/install/package -v $Version
+
+echo ' '
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-='
+echo '  Step 2 of 4: Send...'
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-='
+mv FrescoClientInstall-$Version-linux.tar.gz FrescoInstall.tar.gz
+scp -P 55000 $HOME/projects/Fresco/Client/install/FrescoInstall.tar.gz $HOME/projects/Fresco/Client/install/unpackage  $RemoteUser@$RemoteHost:
+
+echo ' '
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-='
+echo '  Step 3 of 4: Install...'
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-='
+ssh -p 55000 $RemoteUser@$RemoteHost chmod 775 unpackage FrescoInstall.tar.gz 
+ssh -p 55000 $RemoteUser@$RemoteHost /home/$RemoteUser/unpackage 
+
+echo ' '
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='
+echo '  Step 4 of 4: Verify... (with your eyes)'
+echo '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='
+ssh -p 55000 $RemoteUser@$RemoteHost
+
+## Cleanup (Remove versioned install scripts)
+rm install unpackage
