@@ -1,0 +1,14 @@
+#!/bin/bash
+# Summary: Starts the client process.  Uses the IP address provided below to target the server.
+
+# Set server IP Address here (no spaces).
+IP=svn.snap.uaf.edu
+
+## DO NOT CHANGE ###########
+# Set path for libraries used by FrescoClient and run the client with IP from above.
+
+LD_LIBRARY_PATH=$HOME/fresco/lib $HOME/fresco/bin/FrescoClient --ip $IP --daemon $1 $2 $3 $4			
+
+#
+############################
+

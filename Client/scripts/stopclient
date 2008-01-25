@@ -1,0 +1,13 @@
+#!/bin/bash
+# Gets the pid of the FRESCO client and terminates it.  If more than one 
+# of the process exist, then all will be terminated.
+
+ProgramName=FrescoClient
+
+pid=$(ps -C $ProgramName -o pid=)
+if [ "$pid" != "" ]; then
+        kill -s SIGTERM $pid
+        echo 'Terminated '$ProgramName' ('$pid')'
+fi
+
+exit 0
