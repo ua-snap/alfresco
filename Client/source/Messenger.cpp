@@ -47,7 +47,6 @@ Messenger::         ~Messenger(void)
     delete _connectTimer; _connectTimer = 0;
     delete _inTimer; _inTimer = 0;
     delete _outTimer; _outTimer = 0;
-    Poco::Timer t;
 }
 
 // Connecting
@@ -85,11 +84,35 @@ void Messenger::    _connectToServer(Poco::Timer& timer)
         _connection->setReusePort(false);
         _out = new SocketOutputStream(*_connection);
         _in = new SocketInputStream(*_connection);
-        _ownerClient->isConnected = true;
-        std::cout << "Connected to server at " << _connection->peerAddress().toString() << " from local " << _connection->address().toString() << std::endl;
-        //Start using connection.
-        _startReceivingNotificationsFromServer();
-        _startActingOnNotifications();
+		//Shake hands.
+		*_out << "FC-" << Global::getInstance()->version << "&" << std::flush;
+		const int bufferLength=20; char buffer[bufferLength]; int byteCount=0;
+		Poco::Timespan bookmark=_connection->getReceiveTimeout(); Poco::Timespan fourSec(4,0); _connection->setReceiveTimeout(fourSec);
+		try { byteCount=_connection->receiveBytes(buffer, bufferLength); } catch (Poco::Exception) {}
+		_connection->setReceiveTimeout(bookmark);
+		std::string received = "";
+		if(byteCount > 0) {
+			std::string data(buffer, byteCount);
+			received = data;
+		}
+		std::string::size_type loc = received.find( "FS-" + Global::getInstance()->version, 0);
+		if(loc != std::string::npos) {
+			//Finalize connection and start using it.
+			_ownerClient->isConnected = true;
+			std::cout << "Connected to server at " << _connection->peerAddress().toString() << " from local " << _connection->address().toString() << std::endl;
+			_startReceivingNotificationsFromServer();
+			_startActingOnNotifications();
+		}
+		else 
+		{
+			//Dispose connection and try again.
+			_connection->shutdown();
+            _connection->close();
+            if (_connection != 0) delete _connection;  _connection = 0;
+			if (_out != 0) delete _out; _out = 0;
+			if (_in != 0) delete _in; _in = 0;
+			_connectTimer->restart(500);
+		}
     }
     catch (Poco::Exception& e)
     {
@@ -97,6 +120,7 @@ void Messenger::    _connectToServer(Poco::Timer& timer)
         if (_connection != 0) delete _connection; _connection = 0;
         if (_out != 0) delete _out; _out = 0;
         if (_in != 0) delete _in; _in = 0;
+		_connectTimer->restart(500);
     }
 }
 
@@ -121,22 +145,22 @@ void Messenger::    disconnect(bool restartConnection)
             delete rn;
 
             //Disconnect.
+            _ownerClient->isConnected = false;
             _connection->shutdown();
             _connection->close();
+//            if (_out != 0) delete _out; _out = 0;
+//            if (_in != 0) delete _in; _in = 0;
             delete _connection;  _connection = 0;
-            //delete out;         out = 0;
-            //delete in;          in = 0;
-            _ownerClient->isConnected = false;
             std::cout << "Disconnected from server." << std::endl;
-
-            if (restartConnection) {
-                Poco::Thread::sleep(10000);
-                startConnectingToServer();
-            }
         }
     } catch(Poco::Exception& e)
     {
         std::cout << "Error disconnecting from server: " << e.displayText() << std::endl;
+    }
+    
+    if (restartConnection) {
+        Poco::Thread::sleep(10000); // seconds converted to milliseconds
+        startConnectingToServer();
     }
 }
 
