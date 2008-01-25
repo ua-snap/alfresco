@@ -100,7 +100,8 @@ void Decid::setStaticData()
 		//
 		if (_pDecidToBSpruceParams == 0) { 
 			_pDecidToBSpruceParams = new double*[5]; //for each burn severity.
-			for (int i=0; i<5; i++, _pDecidToBSpruceParams[i]=new double[2]);
+			for (int i=0; i<5; i++)
+				_pDecidToBSpruceParams[i]=new double[2];
 		}
 		for (int i=1; i<5; i++){
 			const double* parms;
@@ -113,7 +114,8 @@ void Decid::setStaticData()
 		}
 		if (_pDecidToWSpruceParams == 0) { 
 			_pDecidToWSpruceParams = new double*[5]; //for each burn severity.
-			for (int i=0; i<5; i++, _pDecidToWSpruceParams[i]=new double[2]);
+			for (int i=0; i<5; i++)
+				_pDecidToWSpruceParams[i]=new double[2];
 		}
 		for (int i=1; i<5; i++){
 			const double* parms;

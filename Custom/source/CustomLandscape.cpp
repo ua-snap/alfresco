@@ -24,6 +24,7 @@ CustomLandscape::		    CustomLandscape(const int rows, const int cols) : Landsca
 	_pTopoSpatialInput				= 0;
 	_pIgnitionFactorSpatialInput	= 0;
 	_pSensitivitySpatialInput	    = 0;
+	_pBurnSeveritySpatialInput		= 0;
 	_pHistoricalFireSpatialInput	= 0;
     _pSuppressions	                = 0;
 }
@@ -82,6 +83,7 @@ void CustomLandscape::    	clearLayers()
 	if (_pTopoSpatialInput)				{for (int r=0;r<gNumRows;r++) delete[] _pTopoSpatialInput[r];				delete[] _pTopoSpatialInput;			_pTopoSpatialInput				= 0; }
 	if (_pIgnitionFactorSpatialInput)	{for (int r=0;r<gNumRows;r++) delete[] _pIgnitionFactorSpatialInput[r];	    delete[] _pIgnitionFactorSpatialInput;	_pIgnitionFactorSpatialInput	= 0; }
 	if (_pSensitivitySpatialInput)      {for (int r=0;r<gNumRows;r++) delete[] _pSensitivitySpatialInput[r];	    delete[] _pSensitivitySpatialInput;	    _pSensitivitySpatialInput	    = 0; }
+	if (_pBurnSeveritySpatialInput)     {for (int r=0;r<gNumRows;r++) delete[] _pBurnSeveritySpatialInput[r];	    delete[] _pBurnSeveritySpatialInput;    _pBurnSeveritySpatialInput	    = 0; }
 	if (_pSuppressions)		            {for (int r=0;r<gNumRows;r++) delete[] _pSuppressions[r];	                delete[] _pSuppressions;		        _pSuppressions                  = 0; }
     if (_pHistoricalFireSpatialInput)	{for (int r=0;r<gNumRows;r++) delete[] _pHistoricalFireSpatialInput[r];		delete[] _pHistoricalFireSpatialInput; _pHistoricalFireSpatialInput		= 0; }
 }

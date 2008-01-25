@@ -11,8 +11,8 @@
 
 
 //Declare static private members
-bool			WSpruce::_isStaticSetupAlready		= false;
-double*			WSpruce::_pWSpruceFireParms			= new double[3];
+bool			WSpruce::_isStaticSetupAlready = false;
+double*			WSpruce::_pWSpruceFireParms = 0;
 float			WSpruce::_decidFireProb;
 double			WSpruce::_tundraSpruceBasalArea;
 const double*	WSpruce::_pStartAgeParms;
@@ -101,7 +101,7 @@ void WSpruce::clear()
 	_startAgeType			= CONSTANT;
 	_decidFireProb			= 0.f;
 	_tundraSpruceBasalArea	= 0.;
-	_pWSpruceFireParms[0]=0;	_pWSpruceFireParms[1]=0;	_pWSpruceFireParms[2]=0;
+	if (_pWSpruceFireParms) delete[] _pWSpruceFireParms; 	_pWSpruceFireParms = 0;
 	delete[] _pIntegral; _pIntegral = 0;
 }
 

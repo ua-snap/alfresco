@@ -11,8 +11,8 @@
 
 
 //Declare static members
-bool			BSpruce::_isStaticSetupAlready		= false;
-double*			BSpruce::_pBSpruceFireParms			= new double[3];
+bool			BSpruce::_isStaticSetupAlready = false;
+double*			BSpruce::_pBSpruceFireParms = 0;
 float			BSpruce::_decidFireProb;
 double			BSpruce::_tundraSpruceBasalArea;
 const double*	BSpruce::_pStartAgeParms;
@@ -102,7 +102,7 @@ void BSpruce::clear()
 	_startAgeType			= CONSTANT;
 	_decidFireProb			= 0.;
 	_tundraSpruceBasalArea	= 0;
-	_pBSpruceFireParms[0]=0;	_pBSpruceFireParms[1]=0;	_pBSpruceFireParms[2]=0;
+	if (_pBSpruceFireParms) delete[] _pBSpruceFireParms; 	_pBSpruceFireParms = 0;
 	delete[] _pIntegral; _pIntegral = 0;
 }
 
