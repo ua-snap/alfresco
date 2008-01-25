@@ -74,8 +74,6 @@ void CustomLandscape::		clear()
 
 void CustomLandscape::    	clearLayers()
 {
-	int firstYear, lastYear;
-
 	if (_pVegSpatialInput)				{for (int r=0;r<gNumRows;r++) delete[] _pVegSpatialInput[r];				delete[] _pVegSpatialInput;				_pVegSpatialInput				= 0; }
 	if (_pSiteSpatialInput)			    {for (int r=0;r<gNumRows;r++) delete[] _pSiteSpatialInput[r];				delete[] _pSiteSpatialInput;			_pSiteSpatialInput				= 0; }
 	if (_pTreeDensitySpatialInput)		{for (int r=0;r<gNumRows;r++) delete[] _pTreeDensitySpatialInput[r];		delete[] _pTreeDensitySpatialInput;		_pTreeDensitySpatialInput		= 0; }
