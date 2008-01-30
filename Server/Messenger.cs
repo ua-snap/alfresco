@@ -147,59 +147,62 @@ namespace FRESCO_Server
         }
         public void             EndReceiveDataFrom(IAsyncResult asyncResult)
         {
-            Socket client = null;
-            RemoteProcedureCall[] rpcArray;
-            RemoteProcedureCall rpc;
-            string asciiData = "";
+            lock (receiveLock)
+            {
+                Socket client = null;
+                RemoteProcedureCall[] rpcArray;
+                RemoteProcedureCall rpc;
+                string asciiData = "";
 
-            //Get data from socket.
-            try
-            {
-                StateObject so = (StateObject)asyncResult.AsyncState;
-                client = so.socket;
-                if (!client.Connected)
-                    return;
-                int bytesReceived = client.EndReceive(asyncResult);
-                asciiData = Encoding.ASCII.GetString(so.buffer, 0, bytesReceived);
-            }
-            catch (SocketException e)
-            {
-                Global.Instance.AddClientLogEntry("Failed to retreive data from socket: " + e.Message + "\n", client);
-            }
-
-            //Add data to appropriate client stream.
-            int clientID = global.Main.clientMonitor.clientList.IndexOf((IPEndPoint)client.RemoteEndPoint);
-            global.Main.clientMonitor.clientList[clientID].Stream.Add(asciiData);
-            asciiData = global.Main.clientMonitor.clientList[clientID].Stream.GetCompleteMesseges();
-
-            //Parse all complete RPCs from client stream, leave uncompleted for later.
-            try
-            {
-                rpcArray = RemoteProcedureCall.ParseMessage(asciiData);
-            }
-            catch (RemoteProcedureCallParseException e)
-            {
-                rpcArray = e.IncompleteRpcArray;  //Retreive any successful 
-                Exception wrapperException = new Exception("Failed to parse data received from " + client.RemoteEndPoint.ToString() + ": \n" + e.CustomMessage + "\n" + e.ToString() + "\n\n");
-                Global.Instance.RaiseSimulationFailed(this, new SimulationFailedEventArgs(wrapperException));
-            }
-
-            //Advertise the RPCs parsed from above.
-            if(rpcArray != null)
-            {
-                for (int i=0; i<rpcArray.Length; i++)
+                //Get data from socket.
+                try
                 {
-                    rpc = rpcArray[i];
-                    if (rpc != null)
+                    StateObject so = (StateObject)asyncResult.AsyncState;
+                    client = so.socket;
+                    if (!client.Connected)
+                        return;
+                    int bytesReceived = client.EndReceive(asyncResult);
+                    asciiData = Encoding.ASCII.GetString(so.buffer, 0, bytesReceived);
+                }
+                catch (SocketException e)
+                {
+                    Global.Instance.AddClientLogEntry("Failed to retreive data from socket: " + e.Message + "\n", client);
+                }
+
+                //Add data to appropriate client stream.
+                int clientID = global.Main.clientMonitor.clientList.IndexOf((IPEndPoint)client.RemoteEndPoint);
+                global.Main.clientMonitor.clientList[clientID].Stream.Add(asciiData);
+                asciiData = global.Main.clientMonitor.clientList[clientID].Stream.GetCompleteMesseges();
+
+                //Parse all complete RPCs from client stream, leave uncompleted for later.
+                try
+                {
+                    rpcArray = RemoteProcedureCall.ParseMessage(asciiData);
+                }
+                catch (RemoteProcedureCallParseException e)
+                {
+                    rpcArray = e.IncompleteRpcArray;  //Retreive any successful 
+                    Exception wrapperException = new Exception("Failed to parse data received from " + client.RemoteEndPoint.ToString() + ": \n" + e.CustomMessage + "\n" + e.ToString() + "\n\n");
+                    Global.Instance.RaiseSimulationFailed(this, new SimulationFailedEventArgs(wrapperException));
+                }
+
+                //Advertise the RPCs parsed from above.
+                if (rpcArray != null)
+                {
+                    for (int i = 0; i < rpcArray.Length; i++)
                     {
-                        //Global.Instance.AddDebugToClientLog("Received " + rpc.Command.PadRight(rpc.Command.Length + (24 - rpc.Command.Length), ' ') + "from client " + rpc.ClientID + "\tto   server " + 1 + "\twith parameters=" + rpc.ParameterString + "\n", client);
-                        OnRPCReceived(rpc);
+                        rpc = rpcArray[i];
+                        if (rpc != null)
+                        {
+                            //Global.Instance.AddDebugToClientLog("Received " + rpc.Command.PadRight(rpc.Command.Length + (24 - rpc.Command.Length), ' ') + "from client " + rpc.ClientID + "\tto   server " + 1 + "\twith parameters=" + rpc.ParameterString + "\n", client);
+                            OnRPCReceived(rpc);
+                        }
                     }
                 }
-            }
 
-            //Resume receiving data.
-            BeginReceiveDataFrom(client);
+                //Resume receiving data.
+                BeginReceiveDataFrom(client);
+            }
         }
         protected virtual void  OnRPCReceived(RemoteProcedureCall rpc)
         {

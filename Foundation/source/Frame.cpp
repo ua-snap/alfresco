@@ -34,7 +34,7 @@ std::ostream& operator<< (std::ostream& s, const Frame& f)
 {
 	int bFormat = f._outFlags & outFormat;
 	if (f._outFlags & outVeg)			{if (!bFormat) s<<"Veg="<<  f.type()                        <<"\t";         else s<<    f.type()                        <<" "; }
-	if (f._outFlags & outAge)			{if (!bFormat) s<<"Age="<<  gYear-f._yearEstablished        <<"\t";			else s<<    gYear-f._yearEstablished        <<" "; }
+	if (f._outFlags & outAge)			{if (!bFormat) s<<"Age="<<  f.age()                         <<"\t";			else s<<    f.age()                         <<" "; }
 	if (f._outFlags & outSite)		    {if (!bFormat) s<<"Site="<< f._site                         <<"\t";         else s<<    f._site                         <<" "; }
 	if (f._outFlags & outSub)			{if (!bFormat) s<<"Sub="<<  f._speciesSubCanopy             <<"\t";         else s<<    f._speciesSubCanopy             <<" "; }
 	if (f._outFlags & outFireAge)		{if (!bFormat) s<<"FAge="<< f.yearOfLastBurn                <<"\t";         else s<<    f.yearOfLastBurn                <<" "; }

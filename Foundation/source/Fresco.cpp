@@ -69,7 +69,6 @@ void Fresco::		clear()
     _outputType			= DELETEOUTPUTDIRECTORY;
     _randomSeed			= 0;
     _numGisHeaderRows	= 6;
-    _noData				= -9999;
     //Clear global settings.
     gNumRows			= 0;
     gNumCol				= 0;
@@ -117,7 +116,7 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
     } catch (Exception& e) {throw Exception(Exception::INITFAULT,"Initializing random number generator failed.\n", e.message);}
-    _noData             = _fif.nGet("NoData"); 
+    gNoDataID           = _fif.nGet("NoData"); 
     gNumSpecies         = _fif.nGet("NumSpecies");
     gNoVegID            = _fif.nGet("NoVeg"); 
         

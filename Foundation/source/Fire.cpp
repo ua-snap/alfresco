@@ -115,23 +115,37 @@ const float Fire::getClimateFireProb (const Landscape* l)
 //of fire probability.  The model was then calibrated to produce observed mean # fires and 
 //area burned to get the overall rate constant.
 {
+
 	if (_isMonthly)  //use monthly equation
 	{
+		const float t3 = l->cellTempByMonth(3);
+		const float t4 = l->cellTempByMonth(4);
+		const float t5 = l->cellTempByMonth(5);
+		const float t6 = l->cellTempByMonth(6);
+		const float p6 = l->cellPrecipByMonth(6);
+		const float p7 = l->cellPrecipByMonth(7);
+		const int nd = gNoDataID;
+		if (nd==t3 || nd==t4 || nd==t5 || nd==t6 || nd==p6 || nd==p7)
+			return 0;
+
 		_climateFireProb =    _pFireClimate[0]	//intercept
 							//Temps: mar apr may jun
-							+ _pFireClimate[1]*l->cellTempByMonth(3) 
-							+ _pFireClimate[2]*l->cellTempByMonth(4) 
-							+ _pFireClimate[3]*l->cellTempByMonth(5) 
-							+ _pFireClimate[4]*l->cellTempByMonth(6)
+							+ _pFireClimate[1] * t3 
+							+ _pFireClimate[2] * t4 
+							+ _pFireClimate[3] * t5 
+							+ _pFireClimate[4] * t6
 							//Precips: jun jul
-							+ _pFireClimate[5]*l->cellPrecipByMonth(6) 
-							+ _pFireClimate[6]*l->cellPrecipByMonth(7)
+							+ _pFireClimate[5] * p6 
+							+ _pFireClimate[6] * p7
 							//aprT*julP
-							+ _pFireClimate[7]*l->cellTempByMonth(4)*l->cellPrecipByMonth(7);
+							+ _pFireClimate[7] * t4 * p7;
 	}
 	else //use growing season equation
 	{
 		const SClimate climate = l->cellClimate();
+		const int nd = gNoDataID;
+		if (nd==climate.Temp || nd==climate.Precip)
+			return 0;
 		_climateFireProb = _pFireClimate[0] + _pFireClimate[1]*climate.Temp + _pFireClimate[2]*climate.Precip;
 	}
 	return _climateFireProb;

@@ -254,7 +254,7 @@ namespace FRESCO_Server
                 case "CLIENT_STATE_REPORT":
                     ClientState oldState = client.State;
                     client.State = (ClientState)Convert.ToInt32(incomingRPC.Parameters[0]);
-                    RefreshGrid();
+                    //RefreshGrid();
 
                     switch (client.State) 
                     {

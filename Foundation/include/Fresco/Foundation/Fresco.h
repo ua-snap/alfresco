@@ -73,7 +73,6 @@ private:
     EOutputType				_outputType;
     bool                    _isRunningFirstRep;
     bool                    _stopped;
-	int						_noData;            //Not being used.  Remove?
 	int						_numGisHeaderRows;
     bool					_isFireEnabled;
 
