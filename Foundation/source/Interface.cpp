@@ -111,18 +111,25 @@ void CInterface::ParseFile (const char *pszFileName) {
 			// We have a simple string, a simple array or an error
 			if (nWords == 4 || nWords == 5) {												
 				if (pcWordList[2][0] == '\"') {										// Potential string data
-					if ( strpbrk(pcWordList[3],ResSep) ) {							// Check the assignment does not contain any reserved seperators
-                        throw Exception(Exception::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected STRING VALUE but found: " + pcWordList[3] + "\n");
-						continue;
+					if (pcWordList[3][0] =='\"')									// Empty String
+					{
+						pcTmp = new char[1];
+						pcTmp[0] = 0;
 					}
-					if ( pcWordList[4][0] != '\"') {								// Check for a closing string
-						throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4] + "\n");
-						continue;
+					else 
+					{
+						if ( strpbrk(pcWordList[3],ResSep) ) {						// Check the assignment does not contain any reserved seperators
+							throw Exception(Exception::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected STRING VALUE but found: " + pcWordList[3] + "\n");
+							continue;
+						}
+						if ( pcWordList[4][0] != '\"') {							// Check for a closing string
+							throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4] + "\n");
+							continue;
+						}
+						size_t destSize = strlen(pcWordList[3])+1; 
+						pcTmp = new char[destSize];
+						strcpy(pcTmp,pcWordList[3]);
 					}
-                    size_t destSize = strlen(pcWordList[3])+1; 
-					pcTmp = new char[destSize];
-//					strcpy_s (pcTmp, destSize, pcWordList[3]);
-					strcpy(pcTmp,pcWordList[3]);
 					Value = new CVariable(pcTmp);
 				} else if (pcWordList[2][0] != '{') {								// Make sure we don't have a simple array
 					if (pcWordList[nWords-1][0] == '\"') {							// Closed in a string so assume a string was intended
@@ -236,7 +243,6 @@ void CInterface::ParseFile (const char *pszFileName) {
 								if (pcWordList[4*i+(nAdj--)][0] == '}') break;				// We are guarenteed an close brace bracket by nVars counting algorithm
 							}
 							if ( strpbrk(pcWordList[4*i+nAdj+1],ResSep) ) {					// Check the assignment does not contain any reserved seperators
-                                //TODO...
 								if ( pcWordList[4*i+nAdj+1][0] != '\"' ) {					// Check the case of the empty string
                                     throw Exception(Exception::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected STRING VALUE but found: " + pcWordList[4*i+nAdj+1] + "\n");
 									bValid = false;

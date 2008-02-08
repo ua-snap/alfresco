@@ -289,8 +289,9 @@ namespace FRESCO_Server
                         case ClientState.STOPPED:
                             bool allClientsAreStopped = true;
                             foreach (Client c in clientList) {
-                                if (c.State != ClientState.STOPPED)
-                                    if (c.IsParticipating) allClientsAreStopped = false;
+                                if (c.State != ClientState.STOPPED && c.State != ClientState.COMPLETED)
+                                    if (c.IsParticipating) 
+                                        allClientsAreStopped = false;
                             }
                             if (allClientsAreStopped) Global.Instance.RaiseSimulationStopped(this, new EventArgs());
                             break;

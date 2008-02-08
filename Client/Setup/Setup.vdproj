@@ -49,6 +49,12 @@
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -246,6 +252,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
+            {
+            "SourcePath" = "8:P:\\Tango\\ico\\emblems\\emblem-system.ico"
+            "TargetName" = "8:emblem-system.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -283,7 +309,7 @@
                         {
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_D922CF252A2B4CBC906CF8C5B00C5A06"
                             {
-                            "Name" = "8:FRESCO Client 1.0.1"
+                            "Name" = "8:FRESCO Client"
                             "AlwaysCreate" = "11:FALSE"
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
@@ -323,8 +349,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FRESCO Client 1.0.1"
-        "ProductCode" = "8:{4E5E23F0-21FA-46D5-96E8-51483F405C28}"
-        "PackageCode" = "8:{187DBB37-6F3A-4B6C-8A99-FE052C33C368}"
+        "ProductCode" = "8:{AEB8BDD9-5683-4EC0-AA1B-20394B16AF51}"
+        "PackageCode" = "8:{05B71B5C-6EBD-4CFF-B1AA-133EB0B691AC}"
         "UpgradeCode" = "8:{4BD0A2E6-E520-4A1A-80CD-F73E04AF1095}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -454,7 +480,7 @@
             "Target" = "8:_75C8ABB424E344E39D00A85D7BD66DB8"
             "Folder" = "8:_1F03554A8EAB4C30B76F21D3D3A5CE76"
             "WorkingFolder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
-            "Icon" = "8:"
+            "Icon" = "8:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D05EF91D734D4295B599F46A9163CE3E"
@@ -468,7 +494,7 @@
             "Target" = "8:_75C8ABB424E344E39D00A85D7BD66DB8"
             "Folder" = "8:_D922CF252A2B4CBC906CF8C5B00C5A06"
             "WorkingFolder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
-            "Icon" = "8:"
+            "Icon" = "8:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
             "Feature" = "8:"
             }
         }
