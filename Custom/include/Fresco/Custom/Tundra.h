@@ -21,6 +21,7 @@ private:
 	float					_degrees;				//Number of degree days - used to kill young seedlings
 	static bool				_isStaticSetupAlready;
 	static float			_fireProb;
+	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type Tundra.
 	static double			_seedRange;
 	static const double*	_pSeedSource;
 	static double			_seedBasalArea;
@@ -56,6 +57,7 @@ public:
 	Frame*					success(Landscape* pParent);
 	const int				type() const;
 	const float				getHumanIgnitionProb() const;
+	const float				getIgnitionDepressor();
 	void					writeData(std::ostream& s, const int outFlags, const int isFormatting=false) const;
 private:
 	void					_Tundra(const int treeDensity);
@@ -70,6 +72,11 @@ inline float                Tundra::getFireProb(const Landscape* pLandscape)
 // by multiplying this frame's climate and species fire probabilities.
 {
 	return getClimateFireProb(pLandscape) * ((WSpruce::getFireParam(0)-_fireProb) * _basalArea/_tundraSpruceBasalArea + _fireProb);
+}
+
+inline const float			Tundra::getIgnitionDepressor()
+{
+	return _ignitionDepressor;
 }
 
 inline const float			Tundra::getHumanIgnitionProb() const 

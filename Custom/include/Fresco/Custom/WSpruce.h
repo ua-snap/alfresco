@@ -19,6 +19,7 @@ private:
 	static bool				_isStaticSetupAlready;
 	static double*			_pIntegral;
 	static float			_decidFireProb;
+	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type WSpruce.
 	static double			_tundraSpruceBasalArea;
 	static const double*	_pStartAgeParms;
 	static EStartAgeType	_startAgeType;
@@ -42,6 +43,7 @@ public:
 	Frame*					success(Landscape* pParent);
 	const int				type() const;
 	const float				getHumanIgnitionProb() const {return _humanIgnitionsProb; }
+	const float				getIgnitionDepressor();
     static double           getFireParam(const int index);
 private:
 	void					_WSpruce();
@@ -58,6 +60,10 @@ inline float                WSpruce::getFireProb(const Landscape* pLandscape)
 	return getClimateFireProb(pLandscape) * (_pWSpruceFireParms[0] + _decidFireProb);
 }
 
+inline const float			WSpruce::getIgnitionDepressor()
+{
+	return _ignitionDepressor;
+}
 
 inline double               WSpruce::getFireParam(const int index)
 {

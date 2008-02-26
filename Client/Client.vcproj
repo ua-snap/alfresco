@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib FrescoFoundationd.lib FrescoCustomd.lib"
-				Version="0.2.2"
+				Version="1.0.2"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\lib;p:\poco\lib"
 				GenerateDebugInformation="true"

@@ -389,7 +389,7 @@ void Landscape::		doIgnitions()
 bool Landscape::		testNaturalIgnition(Frame* pFrame)
 //Worker function for doIgnitions().  Returns true if the frame ignites.
 {
-	float test =  pFrame->fireIgnitionFactor * pFrame->getFireProb(this);
+	float test =  pFrame->fireIgnitionFactor * pFrame->getFireProb(this) * pFrame->getIgnitionDepressor();
 	return (test > GetNextRandom());
 }
 

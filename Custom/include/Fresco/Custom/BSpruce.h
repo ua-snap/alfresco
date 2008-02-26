@@ -19,6 +19,7 @@ private:
 	static bool				_isStaticSetupAlready;
 	static double*			_pIntegral;
     static float			_decidFireProb;
+	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type BSpruce.
 	static double*	        _pBSpruceFireParms;
 	static double			_tundraSpruceBasalArea;
 	static const double*	_pStartAgeParms;
@@ -43,6 +44,7 @@ public:
 	Frame*					success(Landscape *Parent);
 	const int				type() const;
 	const float				getHumanIgnitionProb() const;
+	const float				getIgnitionDepressor();
 private:
 	float			        getFireProb(const Landscape* pLandscape);
 	double					queryReply(Landscape* pParent, const double weight, const double* pParams=NULL);
@@ -57,6 +59,12 @@ inline float BSpruce::getFireProb(const Landscape* pLandscape)
 //OLD TODO	return getClimateFireProb(Clim) * (Logistic (gYear - _yearEstablished, _pBSpruceFireParms) + _decidFireProb);
 	return getClimateFireProb(pLandscape) * (_pBSpruceFireParms[0] + _decidFireProb);
 }
+
+inline const float			BSpruce::getIgnitionDepressor()
+{
+	return _ignitionDepressor;
+}
+
 
 inline const int            BSpruce::type() const
 {

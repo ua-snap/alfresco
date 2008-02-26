@@ -12,6 +12,7 @@
 //Declare static private members
 bool			Tundra::_isStaticSetupAlready		= false;
 float			Tundra::_fireProb;
+float			Tundra::_ignitionDepressor;
 double			Tundra::_seedRange;
 const double*	Tundra::_pSeedSource;
 double			Tundra::_seedBasalArea;
@@ -98,6 +99,10 @@ void Tundra::           setStaticData()
     {
         _humanIgnitionsProb	    = FRESCO->fif().dGet("Tundra.HumanFireProb");
         _fireProb			    = FRESCO->fif().dGet("Tundra.FireProb");
+		if (FRESCO->fif().CheckKey("Tundra.IgnitionDepressor"))
+			_ignitionDepressor = FRESCO->fif().dGet("Tundra.IgnitionDepressor");
+		else
+			_ignitionDepressor = 1;
         _history			    = FRESCO->fif().nGet("Tundra.History");
         _seedRange		        = FRESCO->fif().dGet("Tundra.SeedRange");
         _seedBasalArea	        = FRESCO->fif().dGet("Tundra.Seed.BasalArea");
@@ -144,6 +149,7 @@ void Tundra::			clear()
 {
 	_isStaticSetupAlready	= false;
 	_fireProb				= 0;
+	_ignitionDepressor		= 1;
 	_seedRange				= 0;
 	_seedBasalArea		    = 0;
 	_seedlingBasalArea		= 0;

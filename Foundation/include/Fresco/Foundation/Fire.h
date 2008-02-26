@@ -85,11 +85,17 @@ public:
 	virtual void			repStart();
 	virtual void			historicalFire(Landscape* pParent);
 	virtual float			getFireProb(const Landscape* pLandscape) = 0;			    //The function will be redefined in each frame to be specific for the fire factor relating to that cell type.
+	virtual const float		getIgnitionDepressor();
 	virtual const float		getHumanIgnitionProb() const = 0;
 	const float				getClimateFireProb(const Landscape* pLandscape);				//Returns the base fire prob based on the climate factors (temp/precip)
 private:
     static void			    setupFireTransitions();
 };
 
+//Overridden in specific frames to give a depressed value. 
+inline const float Fire::getIgnitionDepressor()
+{
+	return 1; //1 == no depression
+}
 
 #endif

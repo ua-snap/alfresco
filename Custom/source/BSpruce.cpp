@@ -14,6 +14,7 @@
 bool			BSpruce::_isStaticSetupAlready = false;
 double*			BSpruce::_pBSpruceFireParms = 0;
 float			BSpruce::_decidFireProb;
+float			BSpruce::_ignitionDepressor;
 double			BSpruce::_tundraSpruceBasalArea;
 const double*	BSpruce::_pStartAgeParms;
 double*			BSpruce::_pIntegral;
@@ -78,6 +79,10 @@ void BSpruce::setStaticData()
     {
         _humanIgnitionsProb     = FRESCO->fif().dGet("BSpruce.HumanFireProb");
         _decidFireProb		    = FRESCO->fif().dGet("Decid.FireProb");
+		if (FRESCO->fif().CheckKey("BSpruce.IgnitionDepressor"))
+			_ignitionDepressor = FRESCO->fif().dGet("BSpruce.IgnitionDepressor");
+		else
+			_ignitionDepressor = 1;
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
         _pBSpruceFireParms      = FRESCO->getSpruceFireParms("BSpruce.FireParms");
         _pStartAgeParms         = FRESCO->getStartAgeParms("BSpruce.StartAge", &_startAgeType);
@@ -101,6 +106,7 @@ void BSpruce::clear()
 	_isStaticSetupAlready	= false;
 	_startAgeType			= CONSTANT;
 	_decidFireProb			= 0.;
+	_ignitionDepressor		= 1;
 	_tundraSpruceBasalArea	= 0;
 	if (_pBSpruceFireParms) delete[] _pBSpruceFireParms; 	_pBSpruceFireParms = 0;
 	delete[] _pIntegral; _pIntegral = 0;

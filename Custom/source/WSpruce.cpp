@@ -14,6 +14,7 @@
 bool			WSpruce::_isStaticSetupAlready = false;
 double*			WSpruce::_pWSpruceFireParms = 0;
 float			WSpruce::_decidFireProb;
+float			WSpruce::_ignitionDepressor;
 double			WSpruce::_tundraSpruceBasalArea;
 const double*	WSpruce::_pStartAgeParms;
 double*			WSpruce::_pIntegral;
@@ -77,7 +78,11 @@ void WSpruce::setStaticData()
     {
         _humanIgnitionsProb	    = FRESCO->fif().dGet("WSpruce.HumanFireProb");
         _decidFireProb          = FRESCO->fif().dGet("Decid.FireProb");
-        _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
+		if (FRESCO->fif().CheckKey("WSpruce.IgnitionDepressor"))
+			_ignitionDepressor = FRESCO->fif().dGet("WSpruce.IgnitionDepressor");
+		else
+			_ignitionDepressor = 1;
+		_tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
         _pWSpruceFireParms      = FRESCO->getSpruceFireParms("WSpruce.FireParms");
         _pStartAgeParms         = FRESCO->getStartAgeParms("WSpruce.StartAge", &_startAgeType);
 
@@ -100,6 +105,7 @@ void WSpruce::clear()
 	_isStaticSetupAlready   = false;
 	_startAgeType			= CONSTANT;
 	_decidFireProb			= 0.f;
+	_ignitionDepressor		= 1;
 	_tundraSpruceBasalArea	= 0.;
 	if (_pWSpruceFireParms) delete[] _pWSpruceFireParms; 	_pWSpruceFireParms = 0;
 	delete[] _pIntegral; _pIntegral = 0;

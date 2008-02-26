@@ -12,6 +12,7 @@
 //Declare static private members
 bool			Decid::_isStaticSetupAlready    = false;
 float			Decid::_decidFireProb;
+float			Decid::_ignitionDepressor;
 int				Decid::_decidHistory;
 double			Decid::_tundraSpruceBasalArea;
 const double*	Decid::_pDecidTundraParams;
@@ -86,6 +87,10 @@ void Decid::setStaticData()
 	if (!_isStaticSetupAlready) 
     {
         _decidFireProb          = FRESCO->fif().dGet("Decid.FireProb");
+		if (FRESCO->fif().CheckKey("Decid.IgnitionDepressor"))
+			_ignitionDepressor = FRESCO->fif().dGet("Decid.IgnitionDepressor");
+		else
+			_ignitionDepressor = 1;
         _humanIgnitionsProb	    = FRESCO->fif().dGet("Decid.HumanFireProb");
         _decidHistory           = FRESCO->fif().nGet("Decid.History");
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
@@ -154,6 +159,7 @@ void Decid::clear()
 {
 	_isStaticSetupAlready			= false;
 	_decidFireProb				    = 0.;
+	_ignitionDepressor				= 1;
 	_decidHistory				    = 0;
 	_tundraSpruceBasalArea		    = 0;
 	_bspruceStartAgeType			= CONSTANT;

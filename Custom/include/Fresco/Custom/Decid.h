@@ -20,6 +20,7 @@ private:
 	Species				    _speciesTrajectory;				//The long term trajectory of the current cell (black or white spruce)
 	static bool				_isStaticSetupAlready;
 	static float			_decidFireProb;
+	static float			_ignitionDepressor;				//Dampens the ignition factor for any cells of type Decid.
 	static int				_decidHistory;
 	static double			_tundraSpruceBasalArea;
 	static const double*	_pDecidTundraParams;
@@ -51,6 +52,7 @@ public:
 	Frame*					success(Landscape *Parent);
 	const int				type() const;
 	const float				getHumanIgnitionProb() const;
+	const float				getIgnitionDepressor();
 	void					writeData(std::ostream& s, const int outFlags, const int formatting=false) const;
 private:
 	void					_Decid();
@@ -65,6 +67,11 @@ inline float                Decid::getFireProb(const Landscape* pLandscape)
 // by multiplying this frame's climate and species fire probabilities.
 {
 	return getClimateFireProb(pLandscape) * _decidFireProb;
+}
+
+inline const float			Decid::getIgnitionDepressor()
+{
+	return _ignitionDepressor;
 }
 
 inline const float			Decid::getHumanIgnitionProb() const
