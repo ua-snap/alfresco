@@ -11,6 +11,8 @@
 
 //Declare static private members
 bool			Decid::_isStaticSetupAlready    = false;
+bool			Decid::_isFireProbAgeDependent;
+const double*	Decid::_pAgeDependentFireParams;
 float			Decid::_decidFireProb;
 float			Decid::_ignitionDepressor;
 int				Decid::_decidHistory;
@@ -86,7 +88,13 @@ void Decid::setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-        _decidFireProb          = FRESCO->fif().dGet("Decid.FireProb");
+		_isFireProbAgeDependent = FRESCO->fif().bGet("Decid.FireProb.IsAgeDependent");
+		if (_isFireProbAgeDependent) {
+			if (3 != FRESCO->fif().pdGet("Decid.FireProb", _pAgeDependentFireParams))
+				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 3 for key: Decid.FireProb (because Decid.FireProb.IsAgeDependent is set to TRUE)");
+		}
+		else
+	        _decidFireProb = FRESCO->fif().dGet("Tundra.FireProb");
 		if (FRESCO->fif().CheckKey("Decid.IgnitionDepressor"))
 			_ignitionDepressor = FRESCO->fif().dGet("Decid.IgnitionDepressor");
 		else
@@ -97,7 +105,7 @@ void Decid::setStaticData()
         _pBSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.BSpruce", &_bspruceStartAgeType);
         _pWSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.WSpruce", &_wspruceStartAgeType);
         if (2 != FRESCO->fif().pdGet("Decid->Tundra.Parms", _pDecidTundraParams))  {
-            throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Decid->Tundra.Parms");
+            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
         }
 
 		//
@@ -112,7 +120,7 @@ void Decid::setStaticData()
 			const double* parms;
 			std::string key("Decid->BSpruce.BurnSeverity["+ToS(i)+"]");
 			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
-				throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: " + key);
+				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: " + key);
 			}
 			_pDecidToBSpruceParams[i][0] = parms[0];
 			_pDecidToBSpruceParams[i][1] = parms[1];

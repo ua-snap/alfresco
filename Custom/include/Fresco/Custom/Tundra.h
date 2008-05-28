@@ -20,6 +20,8 @@ private:
 	int						_yearOfEstablishment;	//Date of tree establishment
 	float					_degrees;				//Number of degree days - used to kill young seedlings
 	static bool				_isStaticSetupAlready;
+	static bool				_isFireProbAgeDependent;
+	static const double*	_pAgeDependentFireParams;		
 	static float			_fireProb;
 	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type Tundra.
 	static double			_seedRange;
@@ -71,6 +73,8 @@ inline float                Tundra::getFireProb(const Landscape* pLandscape)
 // Overrides Fire::getFireProb() for the deciduous frame.  Returns this frame's fire probability calculated 
 // by multiplying this frame's climate and species fire probabilities.
 {
+	if (_isFireProbAgeDependent)
+		_fireProb = Logistic(age(), _pAgeDependentFireParams);
 	return getClimateFireProb(pLandscape) * ((WSpruce::getFireParam(0)-_fireProb) * _basalArea/_tundraSpruceBasalArea + _fireProb);
 }
 

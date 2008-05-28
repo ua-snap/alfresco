@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 //[assembly: AssemblyTitle("FRESCO Server")]
 //[assembly: AssemblyDescription("")]
 //[assembly: AssemblyConfiguration("")]
-//[assembly: AssemblyCompany("Assisi Software")]
+//[assembly: AssemblyCompany("University of Alaska")]
 //[assembly: AssemblyProduct("FRESCO Server")]
-//[assembly: AssemblyCopyright("Copyright © Assisi Software 2006")]
+//[assembly: AssemblyCopyright("Copyright © University of Alaska 2008")]
 //[assembly: AssemblyTrademark("")]
 //[assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 ////      Build Number
 ////      Revision
 ////
-//[assembly: AssemblyVersion("1.0.2.0")]
-//[assembly: AssemblyFileVersion("1.0.2.0")]
+//[assembly: AssemblyVersion("1.0.3.0")]
+//[assembly: AssemblyFileVersion("1.0.3.0")]

@@ -110,9 +110,10 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
     gMaxRep			    = _fif.nGet("MaxReps");
     gMaxYear            = _fif.nGet("MaxYears");
     gTimeStep			= _fif.nGet("TimeStep");
+	_numGisHeaderRows	= _fif.nGet("NumHeader");
 	gDetailLevel		= (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
 	_outputType			= (temp=_fif.sGet("Output.Type"))=="DELETE" ? DELETEOUTPUTDIRECTORY : (temp=="OVERWRITE" ? OVERWRITE : (temp=="APPEND" ? APPENDDATETIME : throw Poco::Exception("Invalid input for Output.Type: "+temp)));
-    try { //Initialize the random number generator.
+	try { //Initialize the random number generator.
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
     } catch (Exception& e) {throw Exception(Exception::INITFAULT,"Initializing random number generator failed.\n", e.message);}

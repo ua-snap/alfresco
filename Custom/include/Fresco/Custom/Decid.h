@@ -19,6 +19,8 @@ private:
 	float					_degrees;						//Running sum of degree years used to determine succession.
 	Species				    _speciesTrajectory;				//The long term trajectory of the current cell (black or white spruce)
 	static bool				_isStaticSetupAlready;
+	static bool				_isFireProbAgeDependent;
+	static const double*	_pAgeDependentFireParams;		
 	static float			_decidFireProb;
 	static float			_ignitionDepressor;				//Dampens the ignition factor for any cells of type Decid.
 	static int				_decidHistory;
@@ -66,6 +68,8 @@ inline float                Decid::getFireProb(const Landscape* pLandscape)
 // Overrides Fire::getFireProb() for the deciduous frame.  Returns this frame's fire probability calculated 
 // by multiplying this frame's climate and species fire probabilities.
 {
+	if (_isFireProbAgeDependent)
+		_decidFireProb = Logistic(age(), _pAgeDependentFireParams);
 	return getClimateFireProb(pLandscape) * _decidFireProb;
 }
 

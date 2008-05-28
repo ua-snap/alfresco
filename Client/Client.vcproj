@@ -142,7 +142,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="PocoFoundation.lib PocoNet.lib PocoXML.lib FrescoFoundation.lib FrescoCustom.lib"
-				Version="1.0.1"
+				Version="1.0.3"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\lib;p:\poco\lib"
 				GenerateDebugInformation="false"

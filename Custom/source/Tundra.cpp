@@ -11,6 +11,8 @@
 
 //Declare static private members
 bool			Tundra::_isStaticSetupAlready		= false;
+bool			Tundra::_isFireProbAgeDependent;
+const double*	Tundra::_pAgeDependentFireParams;		
 float			Tundra::_fireProb;
 float			Tundra::_ignitionDepressor;
 double			Tundra::_seedRange;
@@ -98,7 +100,13 @@ void Tundra::           setStaticData()
 	if (!_isStaticSetupAlready) 
     {
         _humanIgnitionsProb	    = FRESCO->fif().dGet("Tundra.HumanFireProb");
-        _fireProb			    = FRESCO->fif().dGet("Tundra.FireProb");
+		_isFireProbAgeDependent = FRESCO->fif().bGet("Tundra.FireProb.IsAgeDependent");
+		if (_isFireProbAgeDependent) {
+			if (3 != FRESCO->fif().pdGet("Tundra.FireProb", _pAgeDependentFireParams))
+				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 3 for key: Tundra.FireProb (because Tundra.FireProb.IsAgeDependent is set to TRUE)");
+		}
+		else
+	        _fireProb = FRESCO->fif().dGet("Tundra.FireProb");
 		if (FRESCO->fif().CheckKey("Tundra.IgnitionDepressor"))
 			_ignitionDepressor = FRESCO->fif().dGet("Tundra.IgnitionDepressor");
 		else
@@ -112,16 +120,16 @@ void Tundra::           setStaticData()
         _pStartAgeParms         = FRESCO->getStartAgeParms("Tundra.StartAge", &_startAgeType);
         _meanGrowth             = FRESCO->fif().dGet("Tundra.MeanGrowth");
         if (2 != FRESCO->fif().pdGet("Tundra.SeedEstParms", _pSeedEstParams)) {
-            throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Tundra.SeedEstParms");
+            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: Tundra.SeedEstParms");
         }
         if (3 != FRESCO->fif().pdGet("Tundra.ClimGrowth", _pClimateGrowth)) {
-            throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Tundra.ClimGrowth");
+            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 3 for key: Tundra.ClimGrowth");
         }
         if (2 != FRESCO->fif().pdGet("Tundra.CalFactor", _pCalibrationFactor)) {
-            throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Tundra.CalFactor");
+            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: Tundra.CalFactor");
         }
         if (2 != FRESCO->fif().pdGet("Tundra.SeedSource", _pSeedSource)) {
-            throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: Tundra.SeedSource");
+            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: Tundra.SeedSource");
         }
 
 		//Calculate _ratioAK for use in getInitialBasalAreaI()

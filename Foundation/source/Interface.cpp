@@ -706,7 +706,7 @@ const int CVariable::pnVal(const int *&pnArg) const {
 		pnArg = pn;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid pointer type, expected integer array call for key retreival");
+	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of integers");
 	return 0;
 }
 
@@ -749,7 +749,7 @@ const int CVariable::pdVal(const double *&pdArg) const {
 		pdArg = pd;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid pointer type, expected double array call for key retreival");
+	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of doubles");
 	return 0;
 }
 
@@ -804,7 +804,7 @@ const int CVariable::pbVal(const bool*&pbArg) const {
 		pbArg = pb;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid pointer type, expected boolean array call for key retreival");
+	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of booleans");
 	return 0;
 }
 
@@ -819,7 +819,7 @@ const char *CVariable::sVal() const {
 	if (tag == psTag) {
 		return ps[0];
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid pointer type, expected string call for key retreival");
+	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected a string");
 	return NULL;
 }
 
@@ -832,7 +832,7 @@ const int CVariable::psVal(char *const*&psArg) const {
 		psArg = ps;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid pointer type, expected array string call for key retreival");
+	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of strings");
 	return NULL;
 }
 
