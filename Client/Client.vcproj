@@ -187,31 +187,31 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\source\Client.cpp"
+				RelativePath=".\src\Client.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\demon_me.cpp"
+				RelativePath=".\src\demon_me.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\FrescoEngine.cpp"
+				RelativePath=".\src\FrescoEngine.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Global.cpp"
+				RelativePath=".\src\Global.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Main.cpp"
+				RelativePath=".\src\Main.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Messenger.cpp"
+				RelativePath=".\src\Messenger.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\RemoteNotification.cpp"
+				RelativePath=".\src\RemoteNotification.cpp"
 				>
 			</File>
 		</Filter>

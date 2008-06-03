@@ -189,47 +189,47 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\source\Climate.cpp"
+				RelativePath=".\src\Climate.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Except.cpp"
+				RelativePath=".\src\Except.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Fire.cpp"
+				RelativePath=".\src\Fire.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Frame.cpp"
+				RelativePath=".\src\Frame.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Fresco.cpp"
+				RelativePath=".\src\Fresco.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Interface.cpp"
+				RelativePath=".\src\Interface.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Landscape.cpp"
+				RelativePath=".\src\Landscape.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\NoVeg.cpp"
+				RelativePath=".\src\NoVeg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\PreCompiled.cpp"
+				RelativePath=".\src\PreCompiled.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Species.cpp"
+				RelativePath=".\src\Species.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Stat.cpp"
+				RelativePath=".\src\Stat.cpp"
 				>
 			</File>
 		</Filter>

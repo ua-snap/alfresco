@@ -189,27 +189,27 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\source\BSpruce.cpp"
+				RelativePath=".\src\BSpruce.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\CustomFresco.cpp"
+				RelativePath=".\src\CustomFresco.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\CustomLandscape.cpp"
+				RelativePath=".\src\CustomLandscape.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Decid.cpp"
+				RelativePath=".\src\Decid.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\Tundra.cpp"
+				RelativePath=".\src\Tundra.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\source\WSpruce.cpp"
+				RelativePath=".\src\WSpruce.cpp"
 				>
 			</File>
 		</Filter>
