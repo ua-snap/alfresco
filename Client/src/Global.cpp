@@ -14,7 +14,7 @@ Poco::Mutex     Global::_localLogMutex;
 Global*         Global::_instance = 0;
 
 
-Global::            Global(void) : isDebugOn(false), version("1.0.3")
+Global::            Global(void) : isDebugOn(false), version("1.0.4")
 //Global is a singleton.  Keep this a private contructor and use getInstance().
 { 
 }
