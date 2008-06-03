@@ -94,7 +94,7 @@ void Decid::setStaticData()
 				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 3 for key: Decid.FireProb (because Decid.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
-	        _decidFireProb = FRESCO->fif().dGet("Tundra.FireProb");
+	        _decidFireProb = FRESCO->fif().dGet("Decid.FireProb");
 		if (FRESCO->fif().CheckKey("Decid.IgnitionDepressor"))
 			_ignitionDepressor = FRESCO->fif().dGet("Decid.IgnitionDepressor");
 		else
