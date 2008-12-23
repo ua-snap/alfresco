@@ -19,7 +19,7 @@
 #include "Fresco/Foundation/Climate.h"
 #include "Fresco/Foundation/Except.h"
 #include <stack>
-
+#include <limits>
 
 //Declare  static variables
 int				Frame::_outFlags					= 0;				//A flag indicating which data to output when the object is written
@@ -438,10 +438,12 @@ Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, co
 	}
 	
 	// Didn't inherit from spreader frame, so select severity using the following logic...
-	const float a = Fire::burnSeveritySettings.FxnIntercept;
-	const float b = Fire::burnSeveritySettings.FxnSlope;
-	const float ex = exp(a + b * fireSize);
-	const float highSevProb = ex / (1+ex); //no worries of divide-by-zero
+	const double a = Fire::burnSeveritySettings.FxnIntercept;
+	const double b = Fire::burnSeveritySettings.FxnSlope;
+	const double ex = exp(a + b * fireSize); // possible overflow
+	double highSevProb = ex / (1+ex); //no worries of divide-by-zero
+	if (highSevProb != highSevProb) highSevProb = 1.0; // test for NaN due to overflow.
+	if (highSevProb == std::numeric_limits<double>::infinity()) highSevProb = 1.0;
 	if (GetNextRandom() < highSevProb)
 	{   
 		// ok, high crown severity, but what is the surface severity?
