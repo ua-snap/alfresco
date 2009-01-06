@@ -1,253 +1,135 @@
-{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf480
-{\fonttbl\f0\fswiss\fcharset77 Arial-BoldMT;\f1\fswiss\fcharset77 ArialMT;\f2\fswiss\fcharset77 Arial-BoldItalicMT;
-\f3\fswiss\fcharset77 Arial-ItalicMT;}
-{\colortbl;\red255\green255\blue255;}
-\vieww9000\viewh8400\viewkind0
-\deftab720
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60\qc
-
-\f0\b\fs40 \cf0 Fresco Client Server Change Log
-\f1\b0 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\f0\b\fs20 \cf0 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60\ql\qnatural
-
-\fs24 \cf0 1.0.4
-\f1\b0\fs20    \
-Released: 6/2/2008\
-- Bug Fixed: Decid.FireProb was being set to the value of Tundra.FireProb when Decid.FireProb.IsAgeDependent was FALSE.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\f0\b \cf0 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs24 \cf0 1.0.3
-\f1\b0\fs20    \
-Released: 5/28/2008\
-- New FIF Field: Tundra.FireProb.IsAgeDependent = <TRUE or FALSE>.  If TRUE: Tundra.FirePorb requires an array of three parameters \{k,a,b\} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Tundra.FireProb requires a single constant value (no array).\
-- New FIF Field: Decid.FireProb.IsAgeDependent = <TRUE or FALSE>.  If TRUE: Decid.FirePorb requires an array of three parameters \{k,a,b\} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Decid.FireProb requires a single constant value (no array).\
-- Bug Fixed: the NumHeader FIF field was being ignored.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\ri0\sb60
-
-\f0\b \cf0 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs24 \cf0 1.0.2
-\f1\b0\fs20    \
-Released: 2/25/2008\
-- Added an optional FIF field, IgnitionDepressor, for each species (e.g., Tundra.IgnitionDepressor).\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\ri0\sb60
-
-\f0\b \cf0 	\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs24 \cf0 1.0.1
-\f1\b0\fs20 \
-Released: 12/21/2007\ul \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-\cf0 \ulnone Summary: More burn severity features and bug fixes.\
-- Added FIF field, UseUniqueBurnSeverityPerRep:\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li540\ri0\sb60
-
-\fs16 \cf0 UseUniqueBurnSeverityPerRep = TRUE \
-; Use unique burn severity input file per rep.  This can prevent a bias due to all reps starting from the same input data.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs20 \cf0 - Changed FIF field, YearOfVegAndAgeFiles, to YearOfUniqueInputPerRep.  This field now supplies the year to be used for Veg, Age and/or Burn Severity input maps that are unique per rep.\
-- When the BurnSeverityInputFile FIF field is NOT provided, all cells default to HighLSS (level 3) at year 0 for all reps (regardless of how UseUniqueBurnSeverityPerRep is set).\
-- Fixed a linux client crash.\
-- Fixed a few memory leaks in client (introduced in 1.0.0).\
-- Fixed bug when client connects to server while simulation already in progress.  In such cases, the server would not report that the simulation was complete upon all participating clients completing.\
-- Fixed bug when a client disconnects and remaining clients start a new simulation.  Reps were being distributed inappropriately in such a case.\
-- Fixed a menu button on the server.\
-- Fixed the Progress Viewer clear button icon and the Client Manager icon.\'ca They were displaying defaults.\
-- Fixed NoData_value field in GIS headings.  Was showing -1 instead of value provided in FIF.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\f0\b\fs24 \cf0 \
-1.0.0
-\f1\b0\fs20 	\
-Released: 12/13/2007\ul \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-\cf0 \ulnone Summary: Added burn severity features to the model.\
-- Added FIF field, BurnSeverityInputFile, to initialize the burn severity levels of the landscape before the simulation starts.  The burn severity levels are:
-\fs6 	\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li540\ri0\sb60
-
-\fs16 \cf0 	0=no burn\
-	1=Low severity\
-	2=Moderate severity\
-	3=High crown severity with low surface severity\
-	4=High crown severity with high surface severity\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li540\ri0\sb60
-
-\fs6 \cf0 \
-\pard\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs20 \cf0 - Burn severity levels are also generated and assigned to cells during historical fire:\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs16 \cf0 		Tundra, always Low (level 1)\
-    		Decid, BSpruce and WSpruce, always HighLSS (level 3)\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs20 \cf0 - Burn severity levels are also generated \'d4real-time\'d5 during non-historical fire:\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs16 \cf0     		Tundra, always Low (level 1)\
-    		Decid, always adopts severity from the cell that spread the fire\
-		BSpruce and WSpruce, take on any burn severity based on topography and size of the growing fire spread.  \
-\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs20 \cf0  -Here are the new FIF fields used to generate burn severity levels for BSpruce and WSpruce:\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li540\ri0\sb60
-
-\fs16 \cf0 TopoInputFile = "Input\\Initialization\\Topography.txt" \
-; Spatial topogrphy input file.  0=flat, 1=complex\
-BurnSeverity.FxnOfFireSize = \{0.05, 0.001\}  \
-; Intercept and slope for logistic regression fxn returning probability of High Severity (level 3 or 4) \
-BurnSeverity.LSS-vs-HSS.wt = .5  \
-; Range: (0,1).  The probability that a burn that is assigned High Severity has HSS.  Low value is more likely to be LSS (level 3), high value is more likely to be HSS (level 4). \
-BurnSeverity.Low-vs-Moderate.wt = .5  \
-; Range: (0,1);  The probability that a burn not assigned High Severity has Moderate Severity. Low value is more likely to give Low Severity (level 1), high value is more likely give Moderate (level 2).\
-BurnSeverity.FlatTopo.wt = .6  \
-; Range: (0,1); Prob that Topo spatial correlation overrides initial Severity assignment; eg takes on Severity of \'d4Spreader cell\'d5 \
-BurnSeverity.ComplexTopo.wt = .2  \
-; Range: (0,1); Prob that Topo spatial correlation overrides initial Severity assignment\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\ri0\sb60
-
-\fs6 \cf0 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs20 \cf0 - Decid cells transition over different time frames depending on species trajectory (as before) and the severity of their last burn.  New FIF fields were added in replacement of Decid->BSpruce.Parms and Decid->WSpruce.Parms.  These new fields provide different succession parameters per burn severity level (A*age+B = probability of transition):\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs16 \cf0 	Decid->BSpruce.BurnSeverity[1] = \{A, B\}\
-	Decid->BSpruce.BurnSeverity[2] = \{A, B\}	\
-	Decid->BSpruce.BurnSeverity[3] = \{A, B\} \
-	Decid->BSpruce.BurnSeverity[4] = \{A, B\} 	\
-\
-	Decid->WSpruce.BurnSeverity[1] = \{A, B\}		\
-	Decid->WSpruce.BurnSeverity[2] = \{A, B\}		\
-	Decid->WSpruce.BurnSeverity[3] = \{A, B\}		\
-	Decid->WSpruce.BurnSeverity[4] = \{A, B\}		\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs6 \cf0 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs20 \cf0 - Added two spatial output types.  1) burn severity of fire activity within a given year.  2) the burn severity of the last burn for each cell.\
-- Added four new columns \'d0 one for each of the burn severities \'d0  to the Fire Size Events stat file: Low, Mod, HighLSS, HighHSS.  Added up, they equal the Value column.\
-- Removed three fields from FIF: IsLargeMemoryModel, Output.DotDisplay and Output.ShowSeed (no harm done if fields still exist in your files, but the fields will not be used).\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\ri0\sb60
-
-\f0\b \cf0 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\fs24 \cf0 Beta 0.2.3
-\f1\b0\fs20 	\
-Released: 8/2/2007\ul \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-\cf0 \ulnone Summary: New features.\ul \
-\ulnone - Added monthly climate input capabilities.  Only compatible with explicit climate input types.  Can still use growing season input.\
-- Added new fire equation used when monthly climate input is provided.  Growing season equation still used with growing season climate input.\
-- Turned off growth factor in the Tundra succession.  Due to the dependency on growing season climate and because the feature has been turned off via FIF settings for a long time, the growth factor is being set to zero.  The growth factor is used to calculate the portion of new basal area of Black Spruce or White Spruce due to growth.\
-- Turned off climate history dependant transitions in Tundra and Decid successions.  Again, this is being turned off due to the dependency on growing season climate and because the feature has been turned off via FIF settings for a long time.\
-- Added batch run ability via the new file list.  Just add more files to the list and run.
-\f0\b\fs24 \
-\
-Beta 0.2.2
-\f1\b0\fs20 	\
-Released: 6/29/2007\ul \
-\ulnone Summary: Bug fixes\ul \
-\ulnone - Habitat Stats Were Not Using Age Criteria Correctly.  Fixed\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\f0\b\fs24 \cf0 \
-Beta 0.2.1
-\f1\b0\fs20 	\
-Released: 6/28/2007\ul \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-\cf0 \ulnone Summary: Bug fixes.\ul \
-\ulnone - Increased Stat Event Capacity\
-- Excluded NoVeg Cells From Historical Fires\
-- Set /LARGEADDRESSAWARE On Server To Use 3GB of Memory Instead of 2GB\
-\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\f0\b\fs24 \cf0 Beta 0.2.0\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\f1\b0\fs20 \cf0 Released: 	6/21/2007\ul \
-\ulnone Summary:	Bug fixes and new features for existing tools.\ul \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 \ulnone 	Added Suppression Transitions Functionality\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 FIF fields changed.  See new demo FIF.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Suppression Stats\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 When suppression is on, stat files are produced showing the area burned within by suppression class.  Each class has its own stat output.  New FIF field: Stat.BurnsBySupp.Flags.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Habitat Stats\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 New FIF fields describe the habitat criteria so that stat files can be produced showing the count of frames that match the criteria.  Right now the only criteria are valid veg types and the age range of vegetation.  New habitats can be tracked by adding new entires into the FIF.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Client Running on Linux and Windows\
-	Client Logs on Server Filtered by Selected Client\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 Double click or press enter on a client in the Client Manager and the client\'d5s log is shown.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Client Can Run as Daemon\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 A daemon is a process that runs continuously even when the user that started it is no longer logged on.  The \'d0daemon command line argument starts the client as a daemon.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Simple Client Install\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 Installation of client on Linux no longer requires changing the LD_LIBRARY_PATH environment variable.  Follow ReadMe instructions included in Linux install.\
-ServerAddress.ini files are no longer used to specify the server\'d5s address.  Instead, the \'d4startclient\'d5 script contains the server\'d5s IP address within command line argument, --ip.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Time Estimation\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 Time to completion estimates are given in the Server\'d5s status bar.  The progress viewer provides start and stop timestamps.  The Client Manager shows percent completed for each client.  \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Version Assertion\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 Makes sure all clients are running the same version.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb120
-
-\f2\i\b \cf0 	Separate Base Directories\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 At the moment, the server is not able to access the cluster\'d5s storage space.  As a temporary work around, the server uses a different base directory than the clients and therefore uses a separate copy of the FIF with the same filename.\
-This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.
-\f3\i\fs32 \
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li180\ri0\sb60
-
-\f2\b\fs20 \cf0 	\'d4Unknown\'d5 Connections and Delayed Connections Fixed\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\li900\ri0\sb60
-
-\f1\i0\b0 \cf0 Clients were connecting, but sometimes with an unknown state.  As a result they would not participate in simulations.  Fixed.\
-Clients were also experiencing a delayed connection by more than 15 seconds.  Now clients should all connect within 2-5 seconds.\
-\pard\tx540\tx900\tx1170\tx7200\pardeftab720\ri0\sb60
-
-\f0\b \cf0 \
+{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fswiss\fcharset77 Arial-BoldItalicMT;}{\f4\fswiss\fcharset77 Arial-ItalicMT;}}
+{\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
+\fs24 1.0.\f2 5\b0\f1\fs20    \par
+Released: \f2 1\f1 /\f2 6\f1 /200\f2 9\f1\par
+- Bug Fixed\f2 : unexpected behavior was possible when calculating the spread of burn severity.\f1\par
+\b\f0\fs24\par
+1.0.4\b0\f1\fs20    \par
+Released: 6/2/2008\par
+- Bug Fixed: Decid.FireProb was being set to the value of Tundra.FireProb when Decid.FireProb.IsAgeDependent was FALSE.\par
+\b\f0\par
+\fs24 1.0.3\b0\f1\fs20    \par
+Released: 5/28/2008\par
+- New FIF Field: Tundra.FireProb.IsAgeDependent = <TRUE or FALSE>.  If TRUE: Tundra.FirePorb requires an array of three parameters \{k,a,b\} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Tundra.FireProb requires a single constant value (no array).\par
+- New FIF Field: Decid.FireProb.IsAgeDependent = <TRUE or FALSE>.  If TRUE: Decid.FirePorb requires an array of three parameters \{k,a,b\} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Decid.FireProb requires a single constant value (no array).\par
+- Bug Fixed: the NumHeader FIF field was being ignored.\par
+\pard\sb60\tx540\tx900\tx1170\tx7200\b\f0\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\fs24 1.0.2\b0\f1\fs20    \par
+Released: 2/25/2008\par
+- Added an optional FIF field, IgnitionDepressor, for each species (e.g., Tundra.IgnitionDepressor).\par
+\pard\sb60\tx540\tx900\tx1170\tx7200\b\f0\tab\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\fs24 1.0.1\b0\f1\fs20\par
+Released: 12/21/2007\ul\par
+\ulnone Summary: More burn severity features and bug fixes.\par
+- Added FIF field, UseUniqueBurnSeverityPerRep:\par
+\pard\li540\sb60\tx540\tx900\tx1170\tx7200\fs16 UseUniqueBurnSeverityPerRep = TRUE \par
+; Use unique burn severity input file per rep.  This can prevent a bias due to all reps starting from the same input data.\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\fs20 - Changed FIF field, YearOfVegAndAgeFiles, to YearOfUniqueInputPerRep.  This field now supplies the year to be used for Veg, Age and/or Burn Severity input maps that are unique per rep.\par
+- When the BurnSeverityInputFile FIF field is NOT provided, all cells default to HighLSS (level 3) at year 0 for all reps (regardless of how UseUniqueBurnSeverityPerRep is set).\par
+- Fixed a linux client crash.\par
+- Fixed a few memory leaks in client (introduced in 1.0.0).\par
+- Fixed bug when client connects to server while simulation already in progress.  In such cases, the server would not report that the simulation was complete upon all participating clients completing.\par
+- Fixed bug when a client disconnects and remaining clients start a new simulation.  Reps were being distributed inappropriately in such a case.\par
+- Fixed a menu button on the server.\par
+- Fixed the Progress Viewer clear button icon and the Client Manager icon.\~ They were displaying defaults.\par
+- Fixed NoData_value field in GIS headings.  Was showing -1 instead of value provided in FIF.\par
+\b\f0\fs24\par
+1.0.0\b0\f1\fs20\tab\par
+Released: 12/13/2007\ul\par
+\ulnone Summary: Added burn severity features to the model.\par
+- Added FIF field, BurnSeverityInputFile, to initialize the burn severity levels of the landscape before the simulation starts.  The burn severity levels are:\fs6\tab\par
+\pard\li540\sb60\tx540\tx900\tx1170\tx7200\fs16\tab 0=no burn\par
+\tab 1=Low severity\par
+\tab 2=Moderate severity\par
+\tab 3=High crown severity with low surface severity\par
+\tab 4=High crown severity with high surface severity\par
+\fs6\par
+\pard\li180\sb60\tx900\tx1170\tx7200\fs20 - Burn severity levels are also generated and assigned to cells during historical fire:\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\fs16\tab\tab Tundra, always Low (level 1)\par
+    \tab\tab Decid, BSpruce and WSpruce, always HighLSS (level 3)\par
+\fs20 - Burn severity levels are also generated \lquote real-time\rquote  during non-historical fire:\par
+\fs16     \tab\tab Tundra, always Low (level 1)\par
+    \tab\tab Decid, always adopts severity from the cell that spread the fire\par
+\tab\tab BSpruce and WSpruce, take on any burn severity based on topography and size of the growing fire spread.  \par
+\par
+\fs20  -Here are the new FIF fields used to generate burn severity levels for BSpruce and WSpruce:\par
+\pard\li540\sb60\tx540\tx900\tx1170\tx7200\fs16 TopoInputFile = "Input\\Initialization\\Topography.txt" \par
+; Spatial topogrphy input file.  0=flat, 1=complex\par
+BurnSeverity.FxnOfFireSize = \{0.05, 0.001\}  \par
+; Intercept and slope for logistic regression fxn returning probability of High Severity (level 3 or 4) \par
+BurnSeverity.LSS-vs-HSS.wt = .5  \par
+; Range: (0,1).  The probability that a burn that is assigned High Severity has HSS.  Low value is more likely to be LSS (level 3), high value is more likely to be HSS (level 4). \par
+BurnSeverity.Low-vs-Moderate.wt = .5  \par
+; Range: (0,1);  The probability that a burn not assigned High Severity has Moderate Severity. Low value is more likely to give Low Severity (level 1), high value is more likely give Moderate (level 2).\par
+BurnSeverity.FlatTopo.wt = .6  \par
+; Range: (0,1); Prob that Topo spatial correlation overrides initial Severity assignment; eg takes on Severity of \lquote Spreader cell\rquote  \par
+BurnSeverity.ComplexTopo.wt = .2  \par
+; Range: (0,1); Prob that Topo spatial correlation overrides initial Severity assignment\par
+\pard\sb60\tx540\tx900\tx1170\tx7200\fs6\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\fs20 - Decid cells transition over different time frames depending on species trajectory (as before) and the severity of their last burn.  New FIF fields were added in replacement of Decid->BSpruce.Parms and Decid->WSpruce.Parms.  These new fields provide different succession parameters per burn severity level (A*age+B = probability of transition):\par
+\fs16\tab Decid->BSpruce.BurnSeverity[1] = \{A, B\}\par
+\tab Decid->BSpruce.BurnSeverity[2] = \{A, B\}\tab\par
+\tab Decid->BSpruce.BurnSeverity[3] = \{A, B\} \par
+\tab Decid->BSpruce.BurnSeverity[4] = \{A, B\} \tab\par
+\par
+\tab Decid->WSpruce.BurnSeverity[1] = \{A, B\}\tab\tab\par
+\tab Decid->WSpruce.BurnSeverity[2] = \{A, B\}\tab\tab\par
+\tab Decid->WSpruce.BurnSeverity[3] = \{A, B\}\tab\tab\par
+\tab Decid->WSpruce.BurnSeverity[4] = \{A, B\}\tab\tab\par
+\fs6\par
+\fs20 - Added two spatial output types.  1) burn severity of fire activity within a given year.  2) the burn severity of the last burn for each cell.\par
+- Added four new columns \endash  one for each of the burn severities \endash   to the Fire Size Events stat file: Low, Mod, HighLSS, HighHSS.  Added up, they equal the Value column.\par
+- Removed three fields from FIF: IsLargeMemoryModel, Output.DotDisplay and Output.ShowSeed (no harm done if fields still exist in your files, but the fields will not be used).\par
+\pard\sb60\tx540\tx900\tx1170\tx7200\b\f0\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\fs24 Beta 0.2.3\b0\f1\fs20\tab\par
+Released: 8/2/2007\ul\par
+\ulnone Summary: New features.\ul\par
+\ulnone - Added monthly climate input capabilities.  Only compatible with explicit climate input types.  Can still use growing season input.\par
+- Added new fire equation used when monthly climate input is provided.  Growing season equation still used with growing season climate input.\par
+- Turned off growth factor in the Tundra succession.  Due to the dependency on growing season climate and because the feature has been turned off via FIF settings for a long time, the growth factor is being set to zero.  The growth factor is used to calculate the portion of new basal area of Black Spruce or White Spruce due to growth.\par
+- Turned off climate history dependant transitions in Tundra and Decid successions.  Again, this is being turned off due to the dependency on growing season climate and because the feature has been turned off via FIF settings for a long time.\par
+- Added batch run ability via the new file list.  Just add more files to the list and run.\b\f0\fs24\par
+\par
+Beta 0.2.2\b0\f1\fs20\tab\par
+Released: 6/29/2007\ul\par
+\ulnone Summary: Bug fixes\ul\par
+\ulnone - Habitat Stats Were Not Using Age Criteria Correctly.  Fixed\par
+\b\f0\fs24\par
+Beta 0.2.1\b0\f1\fs20\tab\par
+Released: 6/28/2007\ul\par
+\ulnone Summary: Bug fixes.\ul\par
+\ulnone - Increased Stat Event Capacity\par
+- Excluded NoVeg Cells From Historical Fires\par
+- Set /LARGEADDRESSAWARE On Server To Use 3GB of Memory Instead of 2GB\par
+\par
+\b\f0\fs24 Beta 0.2.0\par
+\b0\f1\fs20 Released: \tab 6/21/2007\ul\par
+\ulnone Summary:\tab Bug fixes and new features for existing tools.\ul\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\ulnone\b\i\f3\tab Added Suppression Transitions Functionality\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 FIF fields changed.  See new demo FIF.\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Suppression Stats\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 When suppression is on, stat files are produced showing the area burned within by suppression class.  Each class has its own stat output.  New FIF field: Stat.BurnsBySupp.Flags.\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Habitat Stats\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 New FIF fields describe the habitat criteria so that stat files can be produced showing the count of frames that match the criteria.  Right now the only criteria are valid veg types and the age range of vegetation.  New habitats can be tracked by adding new entires into the FIF.\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Client Running on Linux and Windows\par
+\tab Client Logs on Server Filtered by Selected Client\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Double click or press enter on a client in the Client Manager and the client\rquote s log is shown.\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Client Can Run as Daemon\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 A daemon is a process that runs continuously even when the user that started it is no longer logged on.  The \endash daemon command line argument starts the client as a daemon.\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Simple Client Install\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Installation of client on Linux no longer requires changing the LD_LIBRARY_PATH environment variable.  Follow ReadMe instructions included in Linux install.\par
+ServerAddress.ini files are no longer used to specify the server\rquote s address.  Instead, the \lquote startclient\rquote  script contains the server\rquote s IP address within command line argument, --ip.\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Time Estimation\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Time to completion estimates are given in the Server\rquote s status bar.  The progress viewer provides start and stop timestamps.  The Client Manager shows percent completed for each client.  \par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Version Assertion\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Makes sure all clients are running the same version.\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Separate Base Directories\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 At the moment, the server is not able to access the cluster\rquote s storage space.  As a temporary work around, the server uses a different base directory than the clients and therefore uses a separate copy of the FIF with the same filename.\par
+This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.\i\f4\fs32\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f3\fs20\tab\lquote Unknown\rquote  Connections and Delayed Connections Fixed\par
+\pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Clients were connecting, but sometimes with an unknown state.  As a result they would not participate in simulations.  Fixed.\par
+Clients were also experiencing a delayed connection by more than 15 seconds.  Now clients should all connect within 2-5 seconds.\par
+\pard\sb60\tx540\tx900\tx1170\tx7200\b\f0\par
 }
+ 

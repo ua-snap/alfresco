@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7513A7C712FB46798FA5CC3D8F9C252B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_75C8ABB424E344E39D00A85D7BD66DB8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -46,12 +52,6 @@
         "Entry"
         {
         "MsmKey" = "8:_D9A6D8E7FF6147EFA5EBC2BAD475F1AB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -136,6 +136,26 @@
             {
             "SourcePath" = "8:..\\Release\\FrescoFoundation.dll"
             "TargetName" = "8:FrescoFoundation.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7513A7C712FB46798FA5CC3D8F9C252B"
+            {
+            "SourcePath" = "8:..\\icon.ico"
+            "TargetName" = "8:icon.ico"
             "Tag" = "8:"
             "Folder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
             "Condition" = "8:"
@@ -252,26 +272,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
-            {
-            "SourcePath" = "8:P:\\Tango\\ico\\emblems\\emblem-system.ico"
-            "TargetName" = "8:emblem-system.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
         }
         "FileType"
         {
@@ -348,19 +348,19 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:FRESCO Client 1.0.4"
-        "ProductCode" = "8:{80923CC0-FD75-4B5F-8648-BAF2CAF15461}"
-        "PackageCode" = "8:{4BB6343E-7F77-4018-B282-365572FADAF0}"
+        "ProductName" = "8:FRESCO Client 1.0.5"
+        "ProductCode" = "8:{04F206DF-003B-414E-82C1-CA9995B1421C}"
+        "PackageCode" = "8:{A31DD23C-37F1-445A-A95F-DC76D291543B}"
         "UpgradeCode" = "8:{4BD0A2E6-E520-4A1A-80CD-F73E04AF1095}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.4"
+        "ProductVersion" = "8:1.0.5"
         "Manufacturer" = "8:UAF"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:FRESCO Client 1.0.4 Setup"
+        "Title" = "8:FRESCO Client 1.0.5 Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:UAF"
         "Keywords" = "8:"
@@ -471,7 +471,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_052F5394B025404D896DF8427D99250B"
             {
-            "Name" = "8:FRESCO Client 1.0.4"
+            "Name" = "8:FRESCO Client 1.0.5"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -480,12 +480,12 @@
             "Target" = "8:_75C8ABB424E344E39D00A85D7BD66DB8"
             "Folder" = "8:_1F03554A8EAB4C30B76F21D3D3A5CE76"
             "WorkingFolder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
-            "Icon" = "8:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
+            "Icon" = "8:_7513A7C712FB46798FA5CC3D8F9C252B"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D05EF91D734D4295B599F46A9163CE3E"
             {
-            "Name" = "8:FRESCO Client 1.0.4"
+            "Name" = "8:FRESCO Client 1.0.5"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -494,7 +494,7 @@
             "Target" = "8:_75C8ABB424E344E39D00A85D7BD66DB8"
             "Folder" = "8:_D922CF252A2B4CBC906CF8C5B00C5A06"
             "WorkingFolder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
-            "Icon" = "8:_FC13A9E1EDAC4BD0803BEA3C14DFD623"
+            "Icon" = "8:_7513A7C712FB46798FA5CC3D8F9C252B"
             "Feature" = "8:"
             }
         }
