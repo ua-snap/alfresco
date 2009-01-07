@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IP=10.0.1.187
+IP=127.0.0.1
 PORT=9051
 
 $HOME/fresco/bin/FrescoClient --ip $IP --port $PORT --daemon $1 $2 $3 $4
