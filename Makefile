@@ -52,7 +52,7 @@ custom:
 client:
 	@cd $(CLIENTDIR) ; make
 poco: 
-	@cd $(POCODIR) ; ./configure ; make
+	@cd $(POCODIR) ; ./configure ; make libexecs
 
 clean:
 	rm -f *~
