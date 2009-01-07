@@ -31,7 +31,7 @@ cp ~/fresco/lib/libPocoXML.*             $FRESCO/lib/
 rm $FRESCO/bin/FrescoClientd
 
 #FOR LINUX: 
-rm $FRESCO/bin/startclientOSX
+rm $FRESCO/bin/startclient-OSX
 #FOR OS X: mv $FRESCO/bin/startclient-OSX $FRESCO/bin/startclient 
 
 
