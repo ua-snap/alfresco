@@ -446,11 +446,12 @@ Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, co
 	if (highSevProb == std::numeric_limits<double>::infinity()) highSevProb = 1.0;
 	if (GetNextRandom() < highSevProb)
 	{   
-		// ok, high crown severity, but what is the surface severity?
+		// ok, high crown severity, but what is the surface severity?  
+		// Lower weight is more likely to give LSS
 		if (GetNextRandom() < Fire::burnSeveritySettings.LssVsHssWeight) 
-			return Fire::HIGH_LSS;    
-		else 
 			return Fire::HIGH_HSS;
+		else 
+			return Fire::HIGH_LSS;    
 	}
 	else
 	{
