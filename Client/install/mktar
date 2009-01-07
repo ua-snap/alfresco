@@ -1,0 +1,40 @@
+#!/bin/bash
+# Summary: Creates an install package from the ALFRESCO build.  
+# Package will contain:
+#    ReadMe.txt
+#    fresco/bin/*
+#    fresco/lib/*
+
+
+VERSION=1.0.5
+BASE=InstallPackagePrep
+FRESCO=$BASE/fresco
+
+
+rm -r $BASE
+mkdir $BASE
+mkdir $BASE/fresco
+mkdir $FRESCO/bin
+mkdir $FRESCO/lib
+
+
+cp ~/fresco/Client/install/ReadMe.txt    $FRESCO/
+cp ~/fresco/bin/*                        $FRESCO/bin/
+cp ~/fresco/lib/libFrescoCustom.*        $FRESCO/lib/
+cp ~/fresco/lib/libFrescoFoundation.*    $FRESCO/lib/
+cp ~/fresco/lib/libFrescoCustom.*        $FRESCO/lib/
+cp ~/fresco/lib/libPocoFoundation.*      $FRESCO/lib/
+cp ~/fresco/lib/libPocoNet.*             $FRESCO/lib/
+cp ~/fresco/lib/libPocoXML.*             $FRESCO/lib/
+
+#Clean
+rm $FRESCO/bin/FrescoClientd
+
+#FOR LINUX: 
+rm $FRESCO/bin/startclientOSX
+#FOR OS X: mv $FRESCO/bin/startclient-OSX $FRESCO/bin/startclient 
+
+
+cd $BASE
+tar -czvf FrescoClientInstall-$VERSION-linux.tar.gz fresco
+
