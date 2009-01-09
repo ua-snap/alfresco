@@ -6,8 +6,15 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Foundation", "..\Foundation\Foundation.vcproj", "{E6CB1372-3415-4CF0-8B30-CE3F128928B9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Custom", "..\Custom\Custom.vcproj", "{6631EAC8-1091-415D-BF8F-98DF13DFB095}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6CB1372-3415-4CF0-8B30-CE3F128928B9} = {E6CB1372-3415-4CF0-8B30-CE3F128928B9}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client.vcproj", "{C9B5A7B2-6F9C-4ABF-BC0D-C2FDD9C7632B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6631EAC8-1091-415D-BF8F-98DF13DFB095} = {6631EAC8-1091-415D-BF8F-98DF13DFB095}
+		{E6CB1372-3415-4CF0-8B30-CE3F128928B9} = {E6CB1372-3415-4CF0-8B30-CE3F128928B9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
