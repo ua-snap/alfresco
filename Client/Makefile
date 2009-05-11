@@ -1,6 +1,7 @@
 #
 # Makefile for FrescoClient executable
 #
+# deleted this line: only  added to test the svn repository.
 
 export PROJECT_BASE = $(HOME)/fresco
 export POCO_BASE = $(PROJECT_BASE)/Poco
