@@ -12601,19 +12601,19 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:FRESCO Server 1.0.5"
-        "ProductCode" = "8:{B604052F-C360-4866-A0D7-86F4DF2A497F}"
-        "PackageCode" = "8:{8E62E184-6E4C-4865-86DE-199E97F9369B}"
+        "ProductName" = "8:FRESCO Server 1.0.6"
+        "ProductCode" = "8:{FC464035-5499-4689-9509-DB9CB3600190}"
+        "PackageCode" = "8:{C2AE9CAA-B1F6-4C35-9DD6-43673B0C06D9}"
         "UpgradeCode" = "8:{445A0937-9538-4BB5-BF7E-2B693F057EE8}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.5"
+        "ProductVersion" = "8:1.0.6"
         "Manufacturer" = "8:UAF"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:FRESCO Server 1.0.5 Setup"
+        "Title" = "8:FRESCO Server 1.0.6 Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:UAF"
         "Keywords" = "8:"
@@ -12724,7 +12724,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_4FD62AD1387043B19F23DE9723B7AC63"
             {
-            "Name" = "8:FRESCO Server 1.0.5"
+            "Name" = "8:FRESCO Server 1.0.6"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -12738,7 +12738,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7934C3F8F8524C1CB47C790638E3F606"
             {
-            "Name" = "8:FRESCO Server 1.0.5"
+            "Name" = "8:FRESCO Server 1.0.6"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
