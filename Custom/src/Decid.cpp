@@ -20,6 +20,7 @@ double			Decid::_tundraSpruceBasalArea;
 const double*	Decid::_pDecidTundraParams;
 double**		Decid::_pDecidToBSpruceParams = 0;
 double**		Decid::_pDecidToWSpruceParams = 0;
+double			Decid::_decidToGrasslandProb = -1;
 EStartAgeType	Decid::_bspruceStartAgeType;
 EStartAgeType	Decid::_wspruceStartAgeType;
 double*			Decid::_pBSpruceWeibullIntegral;
@@ -107,6 +108,13 @@ void Decid::setStaticData()
         if (2 != FRESCO->fif().pdGet("Decid->Tundra.Parms", _pDecidTundraParams))  {
             throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
         }
+		
+		///////////////////////////////
+		// TEMPORARY FOR PAUL AND MARK
+		if (FRESCO->fif().CheckKey("Decid->Grassland.Prob"))
+			_decidToGrasslandProb =  FRESCO->fif().dGet("Decid->Grassland.Prob");
+		//
+		//////////////////////////////
 
 		//
 		//Setup decid to bspruce and wspruce parameters per burn severity.
@@ -174,6 +182,7 @@ void Decid::clear()
 	_wspruceStartAgeType			= CONSTANT;
 	_pBSpruceWeibullIntegral		= 0;
 	_pWSpruceWeibullIntegral		= 0;
+	_decidToGrasslandProb			= -1;
 	//if (_pDecidToBSpruceParams!=0) {
 	//	for (int i=0; i<5; i++) delete[] _pDecidToBSpruceParams[i];
 	//	delete[] _pDecidToBSpruceParams;
@@ -219,6 +228,15 @@ Frame* Decid::success(Landscape* Parent)
 	const float test = GetNextRandom();
 	if (_speciesTrajectory == gWSpruceID)
 	{
+		//////////////////////////////////////////////
+		// TEMPORARY FOR PAUL AND MARK AS FIRST ROUND 
+		// First see if a switch to grassland happens
+		if (_decidToGrasslandProb != -1  &&  test < _decidToGrasslandProb)
+			return new Grassland(*this, _yearEstablished);
+		// TODO: incorporate more ecologically sensible logic.
+		//
+		//////////////////////////////////////////////
+
 		const float a = _pDecidToWSpruceParams[burnSeverity][0];
 		const float b = _pDecidToWSpruceParams[burnSeverity][1];
 		const float prob = a * (gYear-_yearEstablished) + b;

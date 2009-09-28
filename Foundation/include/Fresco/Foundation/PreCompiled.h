@@ -113,6 +113,7 @@ extern int          FrescoFoundation_API    gTundraID;
 extern int          FrescoFoundation_API    gDecidID;
 extern int          FrescoFoundation_API    gBSpruceID;
 extern int          FrescoFoundation_API    gWSpruceID;
+extern int          FrescoFoundation_API    gGrasslandID;
 
 //Global IO functions.
 void	    FrescoFoundation_API            ShowOutput(const EDetailLevel detailLevel, const std::string output);

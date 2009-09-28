@@ -33,6 +33,7 @@ int  FrescoFoundation_API           gTundraID			= -1;
 int  FrescoFoundation_API           gDecidID			= -1;
 int  FrescoFoundation_API           gWSpruceID			= -1;
 int  FrescoFoundation_API           gBSpruceID			= -1;
+int  FrescoFoundation_API           gGrasslandID		= -1;
 long  FrescoFoundation_API          gNoDataID			= -1;
 EDetailLevel    FrescoFoundation_API gDetailLevel		= MINIMAL;
 Fresco  FrescoFoundation_API    *FRESCO				= 0;
@@ -84,6 +85,7 @@ void Fresco::		clear()
     gDecidID			= -1;
     gWSpruceID			= -1;
     gBSpruceID			= -1;
+    gGrasslandID		= -1;
     gNoDataID			= -1;
     gWorkingDirectory	= "";
     gBaseDirectory		= "";
@@ -118,7 +120,6 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
     } catch (Exception& e) {throw Exception(Exception::INITFAULT,"Initializing random number generator failed.\n", e.message);}
     gNoDataID           = _fif.nGet("NoData"); 
-    gNumSpecies         = _fif.nGet("NumSpecies");
     gNoVegID            = _fif.nGet("NoVeg"); 
         
     //Fire

@@ -205,6 +205,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Grassland.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Tundra.cpp"
 				>
 			</File>
@@ -236,6 +240,10 @@
 			</File>
 			<File
 				RelativePath=".\include\Fresco\Custom\Decid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Fresco\Custom\Grassland.h"
 				>
 			</File>
 			<File

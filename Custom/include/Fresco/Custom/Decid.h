@@ -28,6 +28,7 @@ private:
 	static const double*	_pDecidTundraParams;
 	static double**			_pDecidToBSpruceParams;			//Seperate parameters per burn severity.
 	static double**			_pDecidToWSpruceParams;
+	static double			_decidToGrasslandProb;
 	static EStartAgeType	_bspruceStartAgeType;
 	static EStartAgeType	_wspruceStartAgeType;
 	static double*			_pBSpruceWeibullIntegral;

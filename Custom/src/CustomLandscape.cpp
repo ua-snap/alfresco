@@ -255,13 +255,17 @@ void CustomLandscape::		repStart()
 	for (int r=0; r<gNumRows; r++) {
 		for (int c=0; c<gNumCol; c++) {
 			pFrame = _pFrames[r][c];
-			if (pFrame) delete pFrame;			
-				 if (_pVegSpatialInput[r][c]==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (_pVegSpatialInput[r][c]==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (_pVegSpatialInput[r][c]==gDecidID)	    { _pFrames[r][c] = new Decid(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (_pVegSpatialInput[r][c]==gTundraID)	{ _pFrames[r][c] = new Tundra(-_pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
-			else if (_pVegSpatialInput[r][c]==gNoVegID)	    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-            else								            { throw Exception(Exception::INITFAULT, "Unknown vegetation type at cell [" + ToS(r) + "][" + ToS(c) + "]"); }
+			if (pFrame) delete pFrame;
+			int frameTypeID = _pVegSpatialInput[r][c];
+			if (frameTypeID==-1)                { throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS(frameTypeID)); }
+			else if (frameTypeID==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gGrasslandID)	{ _pFrames[r][c] = new Grassland(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gDecidID)	    { _pFrames[r][c] = new Decid(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gTundraID)	{ _pFrames[r][c] = new Tundra(-_pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
+			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gNoDataID)    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else								{ throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS(frameTypeID)); }
 		}
 	}
 
@@ -577,12 +581,15 @@ void CustomLandscape::		doVegetationTransitions()
 					newType		= _pVegSpatialInput[r][c];
 					if (newType!=curType) {
 						//Get the new frame type.
-						if (newType==gBSpruceID)		pNewFrame = new BSpruce(*pCurFrame);
+						if (newType==-1)				throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS(newType) + ".\n");
+						else if (newType==gBSpruceID)	pNewFrame = new BSpruce(*pCurFrame);
 						else if (newType==gWSpruceID)	pNewFrame = new WSpruce(*pCurFrame);
+						else if (newType==gGrasslandID)	pNewFrame = new Grassland(*pCurFrame);
 						else if (newType==gDecidID)		pNewFrame = new Decid(*pCurFrame);
 						else if (newType==gTundraID)	pNewFrame = new Tundra(*pCurFrame);
 						else if (newType==gNoVegID)		pNewFrame = new NoVeg(*pCurFrame);
-						else							throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has unknown type (" + ToS(newType) + ".\n");
+						else if (newType==gNoDataID)	pNewFrame = new NoVeg(*pCurFrame);
+						else							throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS(newType) + ".\n");
 						//Decrement cell count for old species and increment cell count for new species.
 						_vegDistributionStat[curType]--;
 						_vegDistributionStat[newType]++;

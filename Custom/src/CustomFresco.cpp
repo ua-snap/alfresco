@@ -7,6 +7,7 @@
 #include "Fresco/Custom/Decid.h"
 #include "Fresco/Custom/Tundra.h"
 #include "Fresco/Custom/WSpruce.h"
+#include "Fresco/Custom/Grassland.h"
 #include "Fresco/Foundation/Fresco.h"
 #include "Fresco/Foundation/Landscape.h"
 #include <set>
@@ -41,4 +42,14 @@ void CustomFresco::	customSetup()
     WSpruce::setStaticData();
     Decid::setStaticData();
     Tundra::setStaticData();
+
+	// Handle Grassland here for backwards compatibility.
+	if (fif().CheckKey("Grassland"))
+	{
+		gGrasslandID = fif().nGet("Grassland");
+		validVegTypes.insert(gGrasslandID);
+		Grassland::setStaticData();
+	}
+
+	gNumSpecies = validVegTypes.size();
 }

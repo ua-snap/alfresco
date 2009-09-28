@@ -176,8 +176,8 @@ void Climate::			setup()
 			Stream	<< " RANDEXPLICIT";
 			int min = iter->RandExplicitMinYear;
 			int max = iter->RandExplicitMaxYear;
-			if (min<0 || min>gMaxYear)		    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMin Rand Year must be between 0 and Max Year.\n");
-			if (max<0 || max>gMaxYear)		    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be between 0 and Max Year.\n");
+			if (min<0)						    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMin Rand Year must be greater than or equal to 0.\n");
+			if (max<0)						    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be greater than or equal to 0.\n");
 			if (max-min < 1)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be less than Min Rand Year.\n");
 			if (iter->SpatialTempFile=="")		throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit temperature file name.\n");
 			if (iter->SpatialPrecipFile=="")	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit precipitation file name.\n");
