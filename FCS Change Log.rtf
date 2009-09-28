@@ -1,7 +1,15 @@
 {\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fswiss\fcharset77 Arial-BoldItalicMT;}{\f4\fswiss\fcharset77 Arial-ItalicMT;}}
 {\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
-\fs24 1.0.\f2 5\b0\f1\fs20    \par
+\fs24 1.0.\f2 6\b0\f1\fs20\par
+Released: \f2 9\f1 /\f2 24\f1 /200\f2 9\par
+- Note: FIF files from version 1.0.5 still work with this version.\f1\par
+- Bug Fixed\f2 : Climate.Values.RandExplicit.MinYear and Climate.Values.RandExplicit.MaxYear FIF parameters can now have values outside the range of the min and max year for the simulation, but still must be greater or equal to 0.\f1\par
+- \f2 Spatial vegetation input files that contain the value given for the \i NoData\i0  FIF field are now used to create NoVeg grid cells.  This pertains to both landscape initialization and vegetation transitions.  Note that the \i NoVeg\i0  FIF parameter can also be changed to the same value used for \i NoData\i0  for a similar effect.\par
+- Depricated the \i NumSpecies\i0  FIF field since it can be easily calculated in within the code.\par
+- Added a Grassland vegetation type.  It is in a very\i  \i0 preliminary stage for internal testing.\b\f0\fs24\par
+\par
+1.0.\f2 5\b0\f1\fs20    \par
 Released: \f2 1\f1 /\f2 6\f1 /200\f2 9\f1\par
 - Bug Fixed\f2 : unexpected behavior was possible when calculating the spread of burn severity.\f1\par
 - Bug Fixed\f2 : the FIF value, BurnSeverity.LSS-vs-HSS.wt, was evaluating the reverse of what is documented.  Now a low value (closer to 0.0) truely indicates that low surface severity (LSS) is more likely, and a high value (closer to 1.0) truely indicates a higher chance of HSS.\f1\par
