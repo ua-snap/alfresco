@@ -70,6 +70,8 @@ public:
 	const SClimate		cellClimate(const int yearsBeforePresent=0) const;	        //Get climate data for a give year before present
 	const float			cellPrecipByMonth(const int month, const int yearsBeforePresent=0) const;
 	const float			cellTempByMonth(const int month, const int yearsBeforePresent=0) const;
+	const bool			usingExternalClimateFlammabilityFile() const;
+	const float			cellClimateFlammability() const;
 
 	virtual void		logFireStats(int interval, bool ignoreFirstInterval);	//Update the fire stats - this is just the by-species stats which need to be updated as that cell burns and is called from Fire
 	void				saveMaps(const std::string filename, const int mapFlags);
@@ -99,5 +101,14 @@ inline const float			Landscape::cellPrecipByMonth(const int month, const int yea
     return _pClimate->getPrecip(_row, _col, month, yearsBeforePresent); 
 }	
 
+inline const bool			Landscape::usingExternalClimateFlammabilityFile() const
+{
+	return _pClimate->usingExternalFlammabiltiyFile();
+}
+
+inline const float			Landscape::cellClimateFlammability() const
+{
+	return _pClimate->getClimateFlammability(_row, _col);
+}
 
 #endif

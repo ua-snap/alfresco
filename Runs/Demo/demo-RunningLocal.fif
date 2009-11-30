@@ -136,6 +136,7 @@ Climate.Offsets.PrecipStepYear           = {}                                   
 Climate.Offsets.PrecipStep               = {}                                                ; The amount of the step that occurs in the specified year.
 Climate.Offsets.PrecipRampYear           = {}                                                ; The year that precipitation ramps change  i.e. the new ramp is applied if the year is >  the specified year.
 Climate.Offsets.PrecipRamp               = {}                                                ; The ramp (amount per year) that starts in the specified year.
+;Climate.Flammability.File                = "Input\Climate\Flammability\flam.txt"            ; (optional) Reads in predetermined climate-flammability values. If not used, the values are generated internally.
 
 
 ; FIRE PARAMETERS

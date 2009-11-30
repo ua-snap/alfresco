@@ -61,8 +61,11 @@ private:
     SClimateTransition*		_pCurrentTransition;
     int						_yearsOfArchivedHistory;
 	bool					_isMonthlyClimate;
+	bool					_isExternFlam;
 	std::list<int>			_precipMonths;
 	std::list<int>			_tempMonths;
+    float**					_pSpatialFlammability;				//The climate flammability values pre calculated outside of this model. If not used, values are calculated internally.
+	std::string				_SpatialFlamabilityFile;
     float****				_pSpatialTemp;						//The climate values per frame for the number of years we need to remember climate conditions.  The first index (year) is treated as a circular array to avoid allocating new blocks of memory.  Example: _pSpatialTemp[year][month][row][col];   
     float****				_pSpatialPrecip;					//"
 	SClimate*				_pOffsets;							//The mean climate for the number of years we need to remember climate conditions.
@@ -74,7 +77,7 @@ private:
 	std::vector<SOffset>	_precipRamp;
 public:
 	const bool				isMonthly() const { return _isMonthlyClimate; }
-
+	const bool				usingExternalFlammabiltiyFile() const { return _isExternFlam; }
 
 //Functions
 public:
@@ -93,6 +96,7 @@ public:
 	SClimate			    getClimate (const int row, const int col, const int yearBP=0) const;	//Overload the function operator to return the climate for a given row/col/year combination.
 	const float				getTemp(const int row, const int col, const int month, const int yearBP=0) const; 
 	const float				getPrecip(const int row, const int col, const int month, const int yearBP=0) const; 
+	float					getClimateFlammability(int row, int col);
 private:
     void                    deleteArrays();
 	int						getRandExplicitYear();

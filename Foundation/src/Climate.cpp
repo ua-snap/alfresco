@@ -19,6 +19,7 @@ std::vector<Climate::SClimateTransition> Climate::_transitions;
 
 Climate::				Climate () 
 {
+	_pSpatialFlammability = 0;
 	_pSpatialTemp		= 0;
 	_pSpatialPrecip		= 0;
 	_pOffsets	        = 0;
@@ -61,6 +62,11 @@ void Climate::          deleteArrays()
 		} 
 		delete[] _pSpatialPrecip; _pSpatialPrecip=0; 
 	}
+	if (_pSpatialFlammability) { 
+		for (int r=0;r<gNumRows;r++) 
+			delete[] _pSpatialFlammability[r];
+		delete[] _pSpatialFlammability;  _pSpatialFlammability=0;
+	}
 }
 
 
@@ -84,8 +90,21 @@ void Climate::			setup()
 //setup a run.
 {
     _yearsOfArchivedHistory  = FRESCO->fif().nGet("Climate.NumHistory");
+	_isExternFlam = FRESCO->fif().CheckKey("Climate.Flammability.File");
     setupTransitions();
     setupStepsAndRamps();
+
+	if (_isExternFlam) {
+		_pSpatialFlammability = new float*[gNumRows];
+		for (int r=0; r<gNumRows; r++) {
+			_pSpatialFlammability[r] = new float[gNumCol];
+			for (int c=0; c<gNumCol; c++) {
+				_pSpatialFlammability[r][c] = 0.;
+			}
+		}
+		_SpatialFlamabilityFile = FRESCO->fif().sGet("Climate.Flammability.File");
+		if (_SpatialFlamabilityFile == "") 	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
+	}
 
 	//Set monthly status.
 	_isMonthlyClimate = false;
@@ -160,12 +179,14 @@ void Climate::			setup()
 		case VTCONSTANT:
 			Stream	<< " CONSTANT";
 			if (_isMonthlyClimate)				throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tCONSTANT climate value type is not valid when using the monthly climate input option.\n");
+			if (_isExternFlam)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tCONSTANT climate value type is not valid when using the optional Climate.Flammability.File field. You can comment it out with a semi-colon at the beginning of the line.\n");
 			break;
 		case VTSPATIAL:
 			Stream	<< " SPATIAL";
 			if (_isMonthlyClimate)				throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tSPATIAL climate value type is not valid when using the monthly climate input option.\n");
 			if (iter->SpatialTempFile=="")		throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing spatial temperature file name.\n");
 			if (iter->SpatialPrecipFile=="")	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing spatial precipitation file name.\n");
+			if (_isExternFlam)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tSPATIAL climate value type is not valid when using the optional Climate.Flammability.File field. You can comment it out with a semi-colon at the beginning of the line.\n");
 			break;
 		case VTEXPLICIT:
 			Stream	<< " EXPLICIT";
@@ -302,6 +323,12 @@ void Climate::			yearStart()
 	
 	case VTEXPLICIT :
 		//Read in spatial temp and precip files each year.
+		if (_isExternFlam)
+		{
+			filename = AppendYear(_SpatialFlamabilityFile, gYear);
+			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+		}
 		if (_isMonthlyClimate)
 		{
 			for (month=_tempMonths.begin(); month!=_tempMonths.end(); month++) {
@@ -333,6 +360,12 @@ void Climate::			yearStart()
 	case VTRANDEXPLICIT :
 		//Read in temp and precip values from randomly picked spatial file.
 		int year = this->getRandExplicitYear();
+		if (_isExternFlam)
+		{
+			filename = AppendYear(_SpatialFlamabilityFile, year);
+			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+		}
 		if (_isMonthlyClimate)
 		{
 			for (month=_tempMonths.begin(); month!=_tempMonths.end(); month++) {
@@ -541,6 +574,14 @@ std::string Climate::	climateValuesTypeToString(EValuesType type)
     return result;
 }
 
+
+float Climate::			getClimateFlammability(int row, int col)
+{
+	if (_pSpatialFlammability)
+		return _pSpatialFlammability[row][col];
+	else
+		throw Poco::Exception("Climate Flammabiltiy file did not load correctly.");
+}
 
 //Offsets
 void Climate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffsetType OffsetType, int Year, float Amount)

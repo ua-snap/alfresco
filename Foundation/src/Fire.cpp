@@ -115,8 +115,11 @@ const float Fire::getClimateFireProb (const Landscape* l)
 //of fire probability.  The model was then calibrated to produce observed mean # fires and 
 //area burned to get the overall rate constant.
 {
-
-	if (_isMonthly)  //use monthly equation
+	if (l->usingExternalClimateFlammabilityFile())
+	{
+		_climateFireProb = l->cellClimateFlammability();
+	}
+	else if (_isMonthly)  //use monthly equation
 	{
 		const float t3 = l->cellTempByMonth(3);
 		const float t4 = l->cellTempByMonth(4);

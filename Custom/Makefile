@@ -13,7 +13,7 @@ include $(POCO_BASE)/build/rules/global
 
 INCLUDE := $(INCLUDE) -I../Foundation/include
 
-objects        = WSpruce Tundra Decid CustomLandscape CustomFresco BSpruce
+objects        = WSpruce Tundra Decid CustomLandscape CustomFresco BSpruce Grassland
 target         = FrescoCustom
 target_version = 1
 target_libs    = PocoFoundation FrescoFoundation
