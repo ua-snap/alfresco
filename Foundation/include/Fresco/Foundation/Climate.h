@@ -65,7 +65,7 @@ private:
 	std::list<int>			_precipMonths;
 	std::list<int>			_tempMonths;
     float**					_pSpatialFlammability;				//The climate flammability values pre calculated outside of this model. If not used, values are calculated internally.
-	std::string				_SpatialFlamabilityFile;
+	std::string				_spatialFlamabilityFile;
     float****				_pSpatialTemp;						//The climate values per frame for the number of years we need to remember climate conditions.  The first index (year) is treated as a circular array to avoid allocating new blocks of memory.  Example: _pSpatialTemp[year][month][row][col];   
     float****				_pSpatialPrecip;					//"
 	SClimate*				_pOffsets;							//The mean climate for the number of years we need to remember climate conditions.

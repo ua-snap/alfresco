@@ -102,8 +102,8 @@ void Climate::			setup()
 				_pSpatialFlammability[r][c] = 0.;
 			}
 		}
-		_SpatialFlamabilityFile = FRESCO->fif().sGet("Climate.Flammability.File");
-		if (_SpatialFlamabilityFile == "") 	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
+		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().sGet("Climate.Flammability.File"));
+		if (_spatialFlamabilityFile == "") 	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
 	}
 
 	//Set monthly status.
@@ -325,7 +325,7 @@ void Climate::			yearStart()
 		//Read in spatial temp and precip files each year.
 		if (_isExternFlam)
 		{
-			filename = AppendYear(_SpatialFlamabilityFile, gYear);
+			filename = AppendYear(_spatialFlamabilityFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + filename); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 		}
@@ -362,7 +362,7 @@ void Climate::			yearStart()
 		int year = this->getRandExplicitYear();
 		if (_isExternFlam)
 		{
-			filename = AppendYear(_SpatialFlamabilityFile, year);
+			filename = AppendYear(_spatialFlamabilityFile, year);
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + filename); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 		}
