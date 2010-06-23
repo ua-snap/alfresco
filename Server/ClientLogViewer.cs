@@ -9,7 +9,7 @@ using WeifenLuo.WinFormsUI;
 
 namespace FRESCO_Server
 {
-    public partial class ClientLogViewer : DockContent
+    public partial class ClientLogViewer : WeifenLuo.WinFormsUI.Docking.DockContent
     {
         public ClientLogViewer(ClientLog log)
         {

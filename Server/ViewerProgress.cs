@@ -38,8 +38,10 @@ namespace FRESCO_Server
 		public override void		Clear()
 		{   
 			txbOutput.Clear();
-            AddHeading1(Global.Title + " " + Global.Version + "\n");
-		}
+            AddHeading1(Global.Instance.Title + " " + Global.Instance.Version + "\n");
+            string msg = "\nUsing port " + Global.Instance.TcpPort.ToString() + "\n";
+            AddText(msg, "Arial", 9, true, false, Color.FromArgb(0, 0, 0));
+        }
         public void                 Save(string filePath)
         {
             AddText("\tSaving  " + filePath + "... ");
@@ -67,6 +69,12 @@ namespace FRESCO_Server
 		{
 			txbOutput.AddWarning(Warning);
 		}
+
+        //SafeAddWarning(string Warning)
+        //{
+        //    SafeInvokeHelper.Invoke(this,
+        //}
+
 		public void					AddSystemMessage(string Message)
 		{
 			txbOutput.AddSystemMessage(Message);

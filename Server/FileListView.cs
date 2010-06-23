@@ -15,7 +15,7 @@ using WeifenLuo.WinFormsUI;
 //TODO: Update main menu.
 namespace FRESCO_Server
 {
-    public partial class FileListView : DockContent
+    public partial class FileListView : WeifenLuo.WinFormsUI.Docking.DockContent
     {
         #region PROPERTIES
         List<FileHandler> filesList = new List<FileHandler>();
@@ -31,7 +31,7 @@ namespace FRESCO_Server
             boundListView.DataSource = filesList;
             boundListView.DisplayMember = "Name";
             boundListView.DrawItem += new DevExpress.XtraEditors.ListBoxDrawItemEventHandler(boundListView_DrawItem);
-
+            
             UpdateMenu(false);
             Global.Instance.ProgramStateEvent += new ProgramStateEventHandler(ProgramStateChanged);
         }

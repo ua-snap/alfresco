@@ -37,12 +37,29 @@ namespace FRESCO_Server
             this.btnClear = new System.Windows.Forms.ToolBarButton();
             this.SuspendLayout();
             // 
+            // Icons
+            // 
+            this.Icons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("Icons.ImageStream")));
+            this.Icons.Images.SetKeyName(0, "Unit");
+            this.Icons.Images.SetKeyName(1, "Stand");
+            this.Icons.Images.SetKeyName(2, "Cruise");
+            this.Icons.Images.SetKeyName(3, "History");
+            this.Icons.Images.SetKeyName(4, "Plot");
+            this.Icons.Images.SetKeyName(5, "SubPlot");
+            this.Icons.Images.SetKeyName(6, "Tree");
+            this.Icons.Images.SetKeyName(7, "Vegetation");
+            this.Icons.Images.SetKeyName(8, "Log");
+            this.Icons.Images.SetKeyName(9, "DownWoodyDebris");
+            this.Icons.Images.SetKeyName(10, "Plan");
+            // 
             // txbOutput
             // 
             this.txbOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.txbOutput.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txbOutput.HideSelection = false;
+            this.txbOutput.HostForm = this;
             this.txbOutput.IsRequired = false;
             this.txbOutput.Location = new System.Drawing.Point(2, 30);
             this.txbOutput.Margin = new System.Windows.Forms.Padding(0);
@@ -93,6 +110,7 @@ namespace FRESCO_Server
             this.CloseButton = false;
             this.Controls.Add(this.ToolBar);
             this.Controls.Add(this.txbOutput);
+            this.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(0, 500);
             this.Name = "ViewerProgress";

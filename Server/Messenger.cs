@@ -137,6 +137,7 @@ namespace FRESCO_Server
                     StateObject so = new StateObject(socket);
                     socket.BeginReceive(so.buffer, 0, StateObject.BUFFER_SIZE, SocketFlags.None, new AsyncCallback(EndReceiveDataFrom), so);
                 }
+
             }
             catch (Exception e)
             {
@@ -147,6 +148,8 @@ namespace FRESCO_Server
         }
         public void             EndReceiveDataFrom(IAsyncResult asyncResult)
         {
+            //StateObject soTest = (StateObject)asyncResult.AsyncState;
+            //Socket clientTest = soTest.socket;
             lock (receiveLock)
             {
                 Socket client = null;
@@ -166,7 +169,7 @@ namespace FRESCO_Server
                 }
                 catch (SocketException e)
                 {
-                    Global.Instance.AddClientLogEntry("Failed to retreive data from socket: " + e.Message + "\n", client);
+                    Global.Instance.AddClientLogEntry("Failed to retreive data from socket. The client may simply have terminated without proper notification to the server. System Message: " + e.Message + "\n", client);
                 }
 
                 //Add data to appropriate client stream.
@@ -214,7 +217,7 @@ namespace FRESCO_Server
         {
             if (client.Connected)
             {
-                byte[] byteData = Encoding.ASCII.GetBytes(rpc.GetXml()+"&");
+                byte[] byteData = Encoding.ASCII.GetBytes(rpc.GetXml() + "&");
                 client.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(SentData), client);
 
                 //Global.Instance.AddDebugToClientLog("Sent     " + rpc.Command.PadRight(rpc.Command.Length + (24 - rpc.Command.Length), ' ') + "to   client " + rpc.ClientID + "\tfrom server " + 1 + "\twith parameters=" + rpc.ParameterString + "\n", client);
@@ -225,6 +228,21 @@ namespace FRESCO_Server
             Socket client = (Socket)asyncResult.AsyncState;
             if (client.Connected)
                 client.EndSend(asyncResult);
+
         }
+
+        //Sending
+        public void SendDataWait(RemoteProcedureCall rpc, Socket client)
+        {
+            if (client.Connected)
+            {
+                byte[] byteData = Encoding.ASCII.GetBytes(rpc.GetXml() + "&");
+                client.Send(byteData, 0, byteData.Length, SocketFlags.None);
+                //client.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(SentData), client);
+
+                //Global.Instance.AddDebugToClientLog("Sent     " + rpc.Command.PadRight(rpc.Command.Length + (24 - rpc.Command.Length), ' ') + "to   client " + rpc.ClientID + "\tfrom server " + 1 + "\twith parameters=" + rpc.ParameterString + "\n", client);
+            }
+        }
+
     }
 }

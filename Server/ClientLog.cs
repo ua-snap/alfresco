@@ -11,7 +11,7 @@ namespace FRESCO_Server
         public event ClientOutputEventHandler   LogEntryEvent;
 
         static readonly object                  fileLock = new object();
-        const string                            TEMP_FOLDER_NAME = "Temporary";
+        static string                           TEMP_FOLDER_NAME = "Temporary";
         static string                           tempDirectory;
         private int                             clientID;
         private string                          logFilePath;
@@ -21,6 +21,7 @@ namespace FRESCO_Server
         public                  ClientLog(int clientID)
         {
             this.clientID = clientID;
+            TEMP_FOLDER_NAME = "TemporaryForPort" + FRESCO_Server.Properties.Settings.Default.port.ToString();
             try
             {
                 //Create temp directory.
@@ -46,16 +47,23 @@ namespace FRESCO_Server
         {
             text.Replace("\n", "\r\n");
             lock (fileLock) {
-                if (isError)
+                try
                 {
-                    logWriter.WriteLine("\n============================\n");
-                    logWriter.WriteLine("ERROR: " + text + "\n");
-                    logWriter.WriteLine("\n============================\n");
+                    if (isError)
+                    {
+                        logWriter.WriteLine("\n============================\n");
+                        logWriter.WriteLine("ERROR: " + text + "\n");
+                        logWriter.WriteLine("\n============================\n");
+                    }
+                    else logWriter.WriteLine(text);
+                    logWriter.Flush();
+                    if (LogEntryEvent != null)  //Notify subscribers (ClientLogViewer).
+                        LogEntryEvent(this, new ClientOutputEventArgs(text, clientID, isError));
                 }
-                else logWriter.WriteLine(text);
-                logWriter.Flush(); 
-                if (LogEntryEvent != null)  //Notify subscribers (ClientLogViewer).
-                    LogEntryEvent(this,new ClientOutputEventArgs(text,clientID,isError));
+                catch (Exception e)
+                {
+                    //exit and continue
+                }
             }
         }
 
@@ -89,7 +97,7 @@ namespace FRESCO_Server
             if (Directory.Exists(tempDirectory) && File.Exists(logFilePath))
             {
                 Close();
-                MoveTo(Global.Instance.LogOutputDirectory);
+                bool isCompleted = MoveTo(Global.Instance.LogOutputDirectory);
                 logWriter = File.CreateText(logFilePath);
             }
         }
@@ -106,6 +114,8 @@ namespace FRESCO_Server
         public bool             MoveTo(string destinationFolder)
         {
             if (!File.Exists(logFilePath)) 
+                return false;
+            if (String.Empty == destinationFolder)
                 return false;
             if (!Directory.Exists(destinationFolder)) 
                 Directory.CreateDirectory(destinationFolder);

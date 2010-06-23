@@ -184,7 +184,7 @@ void Messenger::    _startReceivingNotificationsFromServer()
     else 
     {
         Poco::TimerCallback<Messenger> callback(*this, &Messenger::_getNotificationFromServer);
-        _inTimer = new Poco::Timer(200,100);
+        _inTimer = new Poco::Timer(10,100);
         _inTimer->start(callback);
         Global::writeToLocalLog("Starting to receive notifications from server.\n");
     }
@@ -219,7 +219,13 @@ void Messenger::    _getNotificationFromServer(Poco::Timer& timer)
             Global::writeDebug("Error getting data from socket: " + e.displayText());
             Global::writeToLocalLog("Error getting data from socket: " + e.displayText() + ".\n");
         }
-        
+
+		if (byteCount >= bufferLength)
+		{
+			Global::writeDebug("BUFFER IS FULL" );
+			throw new Poco::Net::NetException("Notifications buffer is full.");
+		}
+
         if(byteCount > 0 && ch == '&') 
         {
         	std::string data(buffer, byteCount);
@@ -229,7 +235,23 @@ void Messenger::    _getNotificationFromServer(Poco::Timer& timer)
             //Reset for next round.
             byteCount = 0; 
         }
-    }
+		else if(byteCount == 1)
+		{
+			// When the server window closes the client socket, some 
+			// clients running on windows receive a lone byte that can
+			// leave their buffer in an awkward state when time to connect 
+			// to the server again. So here we empty it out.
+			std::cout << std::endl << std::endl << "Received " << ToS(byteCount) << " bytes. BUFFER CONTENTS: " << std::string(buffer, byteCount) << std::endl << std::endl << std::endl;
+			Global::writeDebug("Received " + ToS(byteCount) + " bytes. BUFFER CONTENTS: " + std::string(buffer, byteCount));
+			byteCount = 0;
+		}
+		else
+		{
+			std::cout << std::endl << std::endl << "EE Received " << ToS(byteCount) << " bytes. BUFFER CONTENTS: " << std::string(buffer, byteCount) << std::endl << std::endl << std::endl;
+			byteCount = 0;
+		}
+
+	}
 }
 
 void Messenger::    _startActingOnNotifications()

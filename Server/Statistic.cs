@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace FRESCO_Server
@@ -274,7 +275,7 @@ namespace FRESCO_Server
             //Output data.
             if ((outFlags & (int)OutFlags.outData) > 0)
             {
-                System.IO.StreamWriter file = new System.IO.StreamWriter(Global.Instance.FIF.BaseDirectory + "\\" + Global.Instance.OutputDirectory + "\\" + title + ".txt", false);
+                System.IO.StreamWriter file = new System.IO.StreamWriter(Path.Combine(Global.Instance.StatOutputDirectory, title + ".txt"), false);
                 file.Write("Year");
                 for (int r = 0; r < maxReps; r++) file.Write("\tRep " + r);
                 file.WriteLine("");
@@ -295,7 +296,7 @@ namespace FRESCO_Server
             //Output events.
             if ((outFlags & (int)OutFlags.outEvents) > 0)
             {
-                System.IO.FileStream file = new System.IO.FileStream(Global.Instance.FIF.BaseDirectory + "\\" + Global.Instance.OutputDirectory + "\\" + title + "Events.txt", System.IO.FileMode.Create);
+                System.IO.FileStream file = new System.IO.FileStream(Path.Combine(Global.Instance.StatOutputDirectory, title + "Events.txt"), System.IO.FileMode.Create);
                 System.IO.StreamWriter stream = new System.IO.StreamWriter(file);
                 stream.WriteLine("Year\tRep\tValue");
                 string rep;

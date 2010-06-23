@@ -72,10 +72,10 @@ std::string				AppendYear(const std::string file, const int year)
 	return result;
 }
 
-bool                    FileExistsInBaseDirectory(std::string partialPath)
+bool                    InputFileExists(std::string absoluteOrRelativeFilePath)
 {
-    std::string fullPath = gBaseDirectory + Poco::Path::separator() + FormatDirectory(partialPath);
-    std::fstream file(fullPath.c_str(), std::ios_base::in);
+	std::string f = GetFullPath(gInputBasePath, absoluteOrRelativeFilePath);
+    std::fstream file(f.c_str(), std::ios_base::in);
     bool doesFileExist = file.is_open();
     file.close();    
     return doesFileExist;
@@ -98,8 +98,32 @@ void                    EnsureDirectoryExists(std::string path, bool includesFil
     {
         dir += Poco::Path::separator() + p.directory(i);
         Poco::File f(dir);
-        try { f.createDirectory(); } catch (Poco::Exception& e) {throw Exception(Exception::UNKNOWN, "Unable to create the client output directory:"+dir+",  System message:"+e.displayText()+"\n");}
+        try { f.createDirectory(); } catch (Poco::Exception& e) 
+		{
+			if (!f.exists())
+				throw Exception(Exception::UNKNOWN, "Unable to create the client output directory:"+dir+",  System message:"+e.displayText()+"\n");
+		}
     }
+}
+
+std::string GetFullPath(const std::string base, const std::string path)
+{
+	if (path.empty())
+		return path;
+
+	Poco::Path p(path, Poco::Path::PATH_GUESS);
+	Poco::Path b(base, Poco::Path::PATH_GUESS);
+	Poco::Path fp;
+	bool isAlreadyFullPath = (!p.getDevice().empty() || !p.getNode().empty());
+	if (!isAlreadyFullPath) 
+	{
+		fp = p.absolute(b);
+	}
+	else
+	{
+		fp.assign(p);
+	}
+	return fp.toString(Poco::Path::PATH_NATIVE);
 }
 
 
@@ -122,7 +146,7 @@ template<class T> void	ReadGISFile(T** Array, const int Rows, const int Cols, co
 	//Open file.
 	bIsFile = (FN.size()>0);
 	if (bIsFile) {
-		Filename = gBaseDirectory + Poco::Path::separator() + FN;
+		Filename = GetFullPath(gInputBasePath, FN);
         fp.open(Filename.c_str(), (IosOpenMode)Flags);
 		if (!fp.is_open()) throw Exception(Exception::FILEBAD,"Failed to open file: " + Filename + ".\n");
 	}

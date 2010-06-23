@@ -474,7 +474,7 @@ void CustomLandscape::      setupSuppressionTransitions()
         if (t.HasNewMap || t.Year==0) {
             if (_suppressionFilename.empty()) throw Poco::Exception("Developer note: Suppression filename expected during suppression transition setup.");
             std::string filepath(AppendYear(_suppressionFilename, t.Year));
-            if (!FileExistsInBaseDirectory(filepath)) 
+            if (!InputFileExists(filepath)) 
                 throw Exception(Exception::INITFAULT, "Expected suppression map for year " + ToS(t.Year) + " at " + filepath);
         }
     }
@@ -526,7 +526,7 @@ void CustomLandscape::      setCurrentSuppressionTransition(std::vector<SSuppres
     //Process map
     if (transition->HasNewMap || transition->Year==0) { 
         std::string filename(AppendYear(_suppressionFilename));
-	    if (FileExistsInBaseDirectory(filename)) {
+	    if (InputFileExists(filename)) {
 		    ShowOutput(MAXIMUM, "\t\t\tProcessing suppression file: " + filename + ".\n");
             //if (_pSuppressions != 0)  { for (int r=0;r<gNumRows;r++) delete[] _pSuppressions[r];  delete[] _pSuppressions;  _pSuppressions = 0; }
 		    ReadGISFile<int>(_pSuppressions, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
@@ -833,8 +833,8 @@ void CustomLandscape::    	writeMaps()
 				if (!isShown)  ShowOutput(MODERATE, "\t\tSave Maps: ");
 				ShowOutput(MODERATE, iter->Code + ", ");
 				isShown = true;
-				filename = std::string(iter->File);
-				filename = gOutputDirectory + Poco::Path::separator() + filename.substr(0,filename.size()-4) + "_" + ToS(gRep) + "_" + ToS(gYear) + ".txt";
+				filename = GetFullPath(gOutputDirectory, iter->File);
+				filename = AppendRepYear(filename);
 				saveMaps(filename,iter->Flags);	//Output the data.
 			}
 		}

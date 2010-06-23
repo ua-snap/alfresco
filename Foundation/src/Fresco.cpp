@@ -17,7 +17,8 @@
 
 //Global variables
 std::string  FrescoFoundation_API   gWorkingDirectory;
-std::string  FrescoFoundation_API   gBaseDirectory;
+std::string  FrescoFoundation_API   gInputBasePath;
+std::string  FrescoFoundation_API   gOutputBasePath;
 std::string  FrescoFoundation_API   gOutputDirectory;
 int  FrescoFoundation_API           gNumRows			= 0;					//Number of rows in landscape.
 int  FrescoFoundation_API           gNumCol				= 0;					//Number of cols in landscape.
@@ -67,7 +68,6 @@ void Fresco::		clear()
     //Clear FRESCO settings.	
     _isRunningFirstRep  = true;
     _isFireEnabled		= true;
-    _outputType			= DELETEOUTPUTDIRECTORY;
     _randomSeed			= 0;
     _numGisHeaderRows	= 6;
     //Clear global settings.
@@ -88,7 +88,8 @@ void Fresco::		clear()
     gGrasslandID		= -1;
     gNoDataID			= -1;
     gWorkingDirectory	= "";
-    gBaseDirectory		= "";
+    gInputBasePath		= "";
+    gOutputBasePath		= "";
     gOutputDirectory	= "";
     gDetailLevel		= MINIMAL;  	//Reset detail level last so that current detail level causes output during clearing.
 
@@ -96,7 +97,7 @@ void Fresco::		clear()
 }
 
 
-void Fresco::		setup(std::string basePath, std::string fifName, std::string outputDirectory, long randSeed)
+void Fresco::		setup(std::string basePath, std::string fifName, std::string outputTimestamp, long randSeed)
 {
 	setState(SETTING_UP);
 	
@@ -106,15 +107,15 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
     output("Loading General settings.\n");
     std::string temp = "";
     //Get class variables with parsed FIF values.
-    gBaseDirectory      = FormatDirectory(_fif.sGet("ClusterBaseDirectory"));
-    gOutputDirectory    = gBaseDirectory + Poco::Path::separator() + FormatDirectory(outputDirectory);
+    gInputBasePath      = FormatDirectory(_fif.sGet("ClientInputBasePath"));
+    gOutputBasePath     = FormatDirectory(_fif.sGet("ClientOutputBasePath"));
+    gOutputDirectory    = GetFullPath(gOutputBasePath, outputTimestamp);
     EnsureDirectoryExists(gOutputDirectory, false);
     gMaxRep			    = _fif.nGet("MaxReps");
     gMaxYear            = _fif.nGet("MaxYears");
     gTimeStep			= _fif.nGet("TimeStep");
 	_numGisHeaderRows	= _fif.nGet("NumHeader");
 	gDetailLevel		= (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
-	_outputType			= (temp=_fif.sGet("Output.Type"))=="DELETE" ? DELETEOUTPUTDIRECTORY : (temp=="OVERWRITE" ? OVERWRITE : (temp=="APPEND" ? APPENDDATETIME : throw Poco::Exception("Invalid input for Output.Type: "+temp)));
 	try { //Initialize the random number generator.
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));

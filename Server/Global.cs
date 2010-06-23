@@ -107,7 +107,8 @@ namespace FRESCO_Server
             } 
             else {
                 //Client not in ClientList.  Write message to ProgressViewer.
-                Main.ViewerProgress.AddWarning(message);
+                SafeInvokeHelper.Invoke(Main.ViewerProgress, "AddWarning", message);
+                //Main.ViewerProgress.AddWarning(message);
             }
         }
  
@@ -149,17 +150,14 @@ namespace FRESCO_Server
         }
         public bool IsRunningLocal;
         public string WorkingDirectory;
-        public string OutputDirectory;
-        public string OutputPathForClients;
+
+        public string TimeStampedOutputPath;
         public string LogOutputDirectory
         {
             get 
             {
-                string result = "";
-                if (Global.Instance.FIF.BaseDirectory != null)
-                    if (Global.Instance.FIF.BaseDirectory != "")
-                        result = Global.Instance.FIF.BaseDirectory + "\\" + Global.Instance.OutputDirectory + "\\" + "Logs";
-                return result;
+                string o = Path.Combine(Global.Instance.FIF.ServerOutputBasePath, Global.Instance.TimeStampedOutputPath);
+                return Path.Combine(o, "Logs");
             }
         }
         public string MapOutputDirectory
@@ -168,12 +166,12 @@ namespace FRESCO_Server
             {
                 string result = "";
                 string seperator = "\\";
-                if (Global.Instance.FIF.ClusterBaseDirectory != null)
-                    if (Global.Instance.FIF.ClusterBaseDirectory != "")
+                if (Global.Instance.FIF.ClientOutputBasePath != null)
+                    if (Global.Instance.FIF.ClientOutputBasePath != "")
                     {
-                        if (Global.Instance.FIF.ClusterBaseDirectory.Contains("/"))
+                        if (Global.Instance.FIF.ClientOutputBasePath.Contains("/"))
                             seperator = "/";
-                        result = Global.Instance.FIF.ClusterBaseDirectory + seperator + Global.Instance.OutputDirectory + seperator + "Maps";
+                        result = Global.Instance.FIF.ClientOutputBasePath + seperator + Global.Instance.TimeStampedOutputPath + seperator + "Maps";
                     }
                 return result;
             }
@@ -182,11 +180,7 @@ namespace FRESCO_Server
         {
             get
             {
-                string result = "";
-                if (Global.Instance.FIF.BaseDirectory != null)
-                    if (Global.Instance.FIF.BaseDirectory != "")
-                        result = Global.Instance.FIF.BaseDirectory + "\\" + Global.Instance.OutputDirectory;
-                return result;
+                return Path.Combine(Global.Instance.FIF.ServerOutputBasePath, Global.Instance.TimeStampedOutputPath);
             }
         }
         public event ProgramStateEventHandler ProgramStateEvent;
@@ -198,7 +192,7 @@ namespace FRESCO_Server
         public readonly string Title = "FRESCO Server";
         public readonly string Version = "1.0.7";
         public readonly int UdpPort = 9050;
-        public readonly int TcpPort = 9051;
+        public int TcpPort = 9051;
         public readonly short asNull = -1;
         public readonly float PI = 3.1415927f;
     }

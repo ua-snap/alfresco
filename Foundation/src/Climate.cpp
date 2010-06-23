@@ -91,7 +91,7 @@ void Climate::			setup()
 {
     _yearsOfArchivedHistory  = FRESCO->fif().nGet("Climate.NumHistory");
 	_isExternFlam = FRESCO->fif().CheckKey("Climate.Flammability.File");
-    setupTransitions();
+	setupTransitions();
     setupStepsAndRamps();
 
 	if (_isExternFlam) {
@@ -253,7 +253,7 @@ void Climate::			repStart()
             if (T->OffsetsType==OTCONSTANT && FRESCO->isRunningFirstRep())	
 				setOffsetsConstant(T->ConstantTempOffset,T->ConstantPrecipOffset,firstYear,lastYear);
 			else if (T->OffsetsType==OTFILE && FRESCO->isRunningFirstRep())	
-				setOffsetsFromFile(gBaseDirectory+ Poco::Path::separator() +T->OffsetsFile,firstYear,lastYear);
+				setOffsetsFromFile(gInputBasePath+ Poco::Path::separator() +T->OffsetsFile,firstYear,lastYear);
 			else if (T->OffsetsType==OTRANDOM && (FRESCO->isRunningFirstRep() || !T->IsRandOffsetReplicated))	{
 				setOffsetsRandom(T->RandomOffsetsTempMean,T->RandomOffsetsTempStdDev,T->RandomOffsetsPrecipMean,T->RandomOffsetsPrecipStdDev,T->IsRandOffsetReplicated,firstYear,lastYear);
 				if (!FRESCO->isRunningFirstRep())	setStepsAndRampsInTimeRange(firstYear, lastYear);

@@ -21,7 +21,12 @@ namespace FRESCO_Server
 		public							FRESCOForm()
 		{
 			InitializeComponent();
-			IsHidden = true;
+            Global.Instance.ProgramStateEvent += new ProgramStateEventHandler(ProgramStateChanged);
+            //Global.FRESCO.AfterSetup		+= new FRESCOOL.AfterSetupEventHandler(OnAfterSetup);
+            FormClosed += new System.Windows.Forms.FormClosedEventHandler(OnFormClosed);
+            Shown += new System.EventHandler(OnShown);
+            Activated += new System.EventHandler(OnActivated);
+            IsHidden = true;
 		}
 		public							FRESCOForm(Global G)
 		{

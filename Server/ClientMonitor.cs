@@ -40,6 +40,7 @@ namespace FRESCO_Server
         private string fifPath;
         private Messenger messenger;
         public ClientList clientList;
+        private static readonly object newClientLock = new Object();
         private static readonly object clientLogLock = new Object();
         private static readonly object nextRepLock = new Object();
         private static readonly object statLock = new Object();
@@ -181,9 +182,14 @@ namespace FRESCO_Server
         }
         public void     SetupNewClient(Socket client)
         {
-            int clientID = clientList.Add(client);
+            int clientID = -1;
+
+            lock (newClientLock)
+            {
+                clientID = clientList.Add(client);
+            }
+            
             Global.Instance.AddDebugToClientLog("ClientManager: New client connected.\tClientID=" + clientID + "\tEndPoint=" + clientList.ByID(clientID).EndPoint.ToString() + "\n", client);
-            //AddClientLogEntry(clientID, "Connected.\n", false);
             
             //Start listening to client.
             messenger.BeginReceiveDataFrom(clientList.ByID(clientID).Socket);
@@ -437,42 +443,23 @@ namespace FRESCO_Server
         {
             if (clientList.ByID(clientID).RandomSeed == -1)
                 clientList.ByID(clientID).RandomSeed = GetNextRandomSeed();
-            messenger.SendData(new RemoteProcedureCall(clientID, OutgoingCommand.FIF_PATH_REPORT.ToString(), new string[] { fifPath.Substring(fifPath.LastIndexOf("\\") + 1), Global.Instance.FIF.ClusterBaseDirectory, Global.Instance.OutputDirectory, clientList.ByID(clientID).RandomSeed.ToString() }), clientList.ByID(clientID).Socket);
+            messenger.SendData(new RemoteProcedureCall(clientID, OutgoingCommand.FIF_PATH_REPORT.ToString(), new string[] { fifPath.Substring(fifPath.LastIndexOf("\\") + 1), Global.Instance.FIF.ClientFifPath, Global.Instance.TimeStampedOutputPath, clientList.ByID(clientID).RandomSeed.ToString() }), clientList.ByID(clientID).Socket);
         }
-        public void     CreateOutputDirectory(string dir, EOutputType type)
+        public void     CreateOutputDirectory()
         {
-            string baseDir = Global.Instance.FIF.BaseDirectory + "\\";
-            switch (type)
+            // Create time stamped directory.
+            Global.Instance.TimeStampedOutputPath = DateTime.Now.ToString("yyyy-MM-dd_ttHHmm");
+            string dir = Path.Combine(Global.Instance.FIF.ServerOutputBasePath, Global.Instance.TimeStampedOutputPath);
+            if (Directory.Exists(dir))
             {
-                case EOutputType.DELETEOUTPUTDIRECTORY:
-                    //Delete existing output tree and create new tree.
-                    Directory.Delete(baseDir + dir, true);
-                    Directory.CreateDirectory(baseDir + dir);
-                    Directory.CreateDirectory(baseDir + dir + "\\Maps");
-                    break;
-                case EOutputType.OVERWRITE:
-                    //Make sure output directories exist and replace any existing files.
-                    Directory.CreateDirectory(baseDir + dir);
-                    Directory.CreateDirectory(baseDir + dir + "\\Maps");
-                    break;
-                case EOutputType.APPENDDATETIME:
-                    //Create new output directory by appending time.
-                    dir += "\\" + DateTime.Now.ToString("yyyy-MM-dd_ttHHmm");
-                    if (Directory.Exists(baseDir + dir))
-                    {
-                        //Folder for this date-time already exists, append "(count)".
-                        int length = dir.Length;
-                        int count = 2;
-                        while (Directory.Exists(baseDir + dir))
-                            dir = dir.Substring(0, length) + "_(" + (count++).ToString() + ")";
-                    }
-                    Directory.CreateDirectory(baseDir + dir);
-                    Directory.CreateDirectory(baseDir + dir + "\\Maps");
-                    break;
-                default:
-                    throw new Exception("Invalid output type.\n");
+                //Folder for this date-time already exists, append "(count)".
+                int length = dir.Length;
+                int count = 2;
+                while (Directory.Exists(dir))
+                    dir = dir.Substring(0, length) + "_(" + (count++).ToString() + ")";
             }
-            Global.Instance.OutputDirectory = dir;
+            Directory.CreateDirectory(dir);
+            //Directory.CreateDirectory(dir + "\\Maps");
         }
         public void     SendRepAssignmentsToClients(int numReps)
         {

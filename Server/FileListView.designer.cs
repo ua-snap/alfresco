@@ -33,18 +33,18 @@ namespace FRESCO_Server
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.boundListView = new DevExpress.XtraEditors.ImageListBoxControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.btnNew = new System.Windows.Forms.ToolStripButton();
             this.btnOpen = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnSave = new System.Windows.Forms.ToolStripButton();
             this.btnSaveAll = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnRemove = new System.Windows.Forms.ToolStripButton();
             this.btnMoveDown = new System.Windows.Forms.ToolStripButton();
             this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -58,11 +58,11 @@ namespace FRESCO_Server
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.boundListView);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(298, 319);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(492, 319);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(298, 347);
+            this.toolStripContainer1.Size = new System.Drawing.Size(492, 347);
             this.toolStripContainer1.TabIndex = 1;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -77,7 +77,7 @@ namespace FRESCO_Server
             this.boundListView.Location = new System.Drawing.Point(0, 0);
             this.boundListView.Name = "boundListView";
             this.boundListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.boundListView.Size = new System.Drawing.Size(298, 319);
+            this.boundListView.Size = new System.Drawing.Size(492, 319);
             this.boundListView.TabIndex = 1;
             this.boundListView.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.list_KeyPress);
             this.boundListView.SelectedIndexChanged += new System.EventHandler(this.list_SelectedIndexChanged);
@@ -101,31 +101,9 @@ namespace FRESCO_Server
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(298, 28);
+            this.toolStrip1.Size = new System.Drawing.Size(492, 28);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 0;
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
-            this.toolStripSeparator2.Visible = false;
-            // 
-            // imageList1
-            // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Navy;
-            this.imageList1.Images.SetKeyName(0, "text-x-generic.png");
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.Filter = "FIF files (*.fif)|*.fif|All files (*.*)|*.*";
-            this.openFileDialog.Multiselect = true;
             // 
             // btnNew
             // 
@@ -150,6 +128,11 @@ namespace FRESCO_Server
             this.btnOpen.ToolTipText = "Add Existing...";
             this.btnOpen.Click += new System.EventHandler(this.addExistingScenario_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
+            // 
             // btnSave
             // 
             this.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -173,6 +156,12 @@ namespace FRESCO_Server
             this.btnSaveAll.ToolTipText = "Save All";
             this.btnSaveAll.Visible = false;
             this.btnSaveAll.Click += new System.EventHandler(this.saveAllScenarios);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            this.toolStripSeparator2.Visible = false;
             // 
             // btnRemove
             // 
@@ -205,16 +194,28 @@ namespace FRESCO_Server
             this.btnMoveUp.Text = "toolStripButton2";
             this.btnMoveUp.Click += new System.EventHandler(this.moveUp_Click);
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Navy;
+            this.imageList1.Images.SetKeyName(0, "text-x-generic.png");
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "FIF files (*.fif)|*.fif|All files (*.*)|*.*";
+            this.openFileDialog.Multiselect = true;
+            // 
             // FileListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(298, 347);
+            this.ClientSize = new System.Drawing.Size(492, 347);
             this.CloseButton = false;
             this.Controls.Add(this.toolStripContainer1);
-            this.DockableAreas = WeifenLuo.WinFormsUI.DockAreas.DockLeft;
+            this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft;
             this.HideOnClose = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(500, 0);
             this.Name = "FileListView";
             this.TabText = "Scenario Files";
             this.Text = "Scenario Files";

@@ -16,7 +16,7 @@ namespace FRESCO_Server
         #region Public Data Members
         public FileListView             fileList;
         public ClientMonitor            clientMonitor;
-        public EditorFIF                EditorFIF;
+        //public EditorFIF                EditorFIF;
         public ViewerProgress           ViewerProgress;
         #endregion
 
@@ -30,7 +30,7 @@ namespace FRESCO_Server
         private System.Collections.Generic.IEnumerator<FileHandler> scenarioFiles;
         delegate void                   ClearCallback();
         static ClearCallback            clearCallback;
-        private DeserializeDockContent  MyDeserializeDockContent;
+        private WeifenLuo.WinFormsUI.Docking.DeserializeDockContent MyDeserializeDockContent;
         private bool                    allScenariosCompleted = false;
         #endregion
 
@@ -38,14 +38,31 @@ namespace FRESCO_Server
         #region Init and Exit Code...
         public                          Server()
 		{
-            MyDeserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
+            MyDeserializeDockContent = new WeifenLuo.WinFormsUI.Docking.DeserializeDockContent(GetContentFromPersistString);
 			InitializeComponent();
 		}
 		void					        Server_Shown(object sender, EventArgs e)
 		{
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(LastChanceHandler);
+
             progressBar.Visible = false;
             Global = Global.Instance;
             Global.Main = this;
+
+            try
+            {
+                Global.TcpPort = FRESCO_Server.Properties.Settings.Default.port;
+            }
+            catch (Exception)
+            {
+                string invalid = FRESCO_Server.Properties.Settings.Default.port.ToString();
+                string msg = "Invalid value for the \"port\" setting.  The default port 9051 will be used for now.\n\n" +
+                    "Invalid value: " + invalid + "\n" +
+                    "Expected an integer.\n";
+                MessageBox.Show(msg, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
             Global.ProgramStateEvent        += new ProgramStateEventHandler(ProgramStateChanged);
             Global.SimulationStoppedEvent   += new SimulationStoppedEventHandler(SimulationStopped);
             Global.SimulationClearedEvent   += new SimulationClearedEventHandler(SimulationCleared);
@@ -96,7 +113,7 @@ namespace FRESCO_Server
                 DockManager.SaveAsXml(path);
             }
         }
-        IDockContent                    GetContentFromPersistString(string persistString)
+        WeifenLuo.WinFormsUI.Docking.IDockContent GetContentFromPersistString(string persistString)
         {
             switch (persistString)
             {
@@ -115,11 +132,11 @@ namespace FRESCO_Server
         }
         void                            CloseAllForms()
         {
-            IDockContent[] c = new IDockContent[DockManager.Contents.Count];
+            WeifenLuo.WinFormsUI.Docking.IDockContent[] c = new WeifenLuo.WinFormsUI.Docking.IDockContent[DockManager.Contents.Count];
             int i = 0;
 
             //Must build an array from enumerator, because the Close() call interupts the enumerator.
-            foreach (IDockContent content in DockManager.Contents)
+            foreach (WeifenLuo.WinFormsUI.Docking.IDockContent content in DockManager.Contents)
                 c[i++] = content;
             for (i = 0; i < c.Length; i++)
                 c[i].DockHandler.Close();  //Raises OnFormClosed event for clean up.
@@ -221,7 +238,7 @@ namespace FRESCO_Server
                 fileList.Load += new System.EventHandler(this.MDIClient_Load);
                 fileList.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FileList_FormClosed);
                 fileList.HideOnClose = true;
-                fileList.Show(DockManager, DockState.DockLeft);
+                fileList.Show(DockManager, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
             }
             else if (fileList.IsHidden)
                 fileList.Show(DockManager);
@@ -232,12 +249,24 @@ namespace FRESCO_Server
         {
             if (ViewerProgress==null) 
             {
-                ViewerProgress				= new ViewerProgress(Global);			
-                ViewerProgress.Load			+= new System.EventHandler(this.MDIClient_Load); 
+                ViewerProgress				= new ViewerProgress();		
+                //ViewerProgress.Load			+= new System.EventHandler(this.MDIClient_Load); 
                 ViewerProgress.FormClosed	+= new System.Windows.Forms.FormClosedEventHandler(this.ViewerProgress_FormClosed);
+                
+                //Global.ProgramStateEvent += new ProgramStateEventHandler(ProgramStateChanged);
+                //ViewerProgress.FormClosed += new System.Windows.Forms.FormClosedEventHandler(ViewerProgress.OnFormClosed);
+                //ViewerProgress.Shown += new System.EventHandler(ViewerProgress.OnShown);
+                //ViewerProgress.Activated += new System.EventHandler(ViewerProgress.OnActivated);
+                //ViewerProgress.IsHidden = true;
+
                 //ViewerProgress.Show(DockManager, DockState.DockBottom);
-                ViewerProgress.Show(DockManager.Panes[1], DockAlignment.Bottom, 0.5);
-                ViewerProgress.Clear();
+                //ViewerProgress.MdiParent = this;
+                //ViewerProgress.Show(();
+                //ViewerProgress.Show(DockManager);
+                //ViewerProgress.MdiParent = this;
+                //ViewerProgress.Show();
+                ViewerProgress.Show(DockManager.Panes[1], WeifenLuo.WinFormsUI.Docking.DockAlignment.Bottom, 0.5);
+                //ViewerProgress.Clear();
             }
             else
                 ViewerProgress.Close();
@@ -346,7 +375,7 @@ namespace FRESCO_Server
                     progressBar.Visible = true;
                     yearsCompleted = 0;
                     repsCompleted = 0;
-                    clientMonitor.CreateOutputDirectory(Global.Instance.FIF.OutputDirectory, Global.Instance.FIF.OutputType);
+                    clientMonitor.CreateOutputDirectory();
 
                     ViewerProgress.AddText("\tStat Output\t\tfile:" + Global.Instance.StatOutputDirectory + "\n");
                     ViewerProgress.AddText("\tMap Output\t\tfile:" + Global.Instance.MapOutputDirectory + "\n");
@@ -478,10 +507,39 @@ namespace FRESCO_Server
             stbRep.Text = "  Reps Completed: "+ repsCompleted + " of " + Global.FIF.MaxReps;
         }
 
+
+        void LastChanceHandler(object sender,  UnhandledExceptionEventArgs args)
+        {
+            bool isProgressViewerSaved = false;
+            string logFile = "";
+            try
+            {
+                if (ViewerProgress != null)
+                {
+                    if (!Directory.Exists(Global.LogOutputDirectory))
+                        Directory.CreateDirectory(Global.LogOutputDirectory);
+                    logFile = Global.LogOutputDirectory + "\\ProgressViewerLog--" + System.DateTime.Now.ToString("yyyy-MM-dd_ttHHmm") + ".rtf";
+                    ViewerProgress.Save(logFile);
+                    isProgressViewerSaved = true;
+                }
+            }
+            catch (Exception e)
+            { 
+                // oh well, let's continue
+            }
+
+            Exception ex = ((Exception)(args.ExceptionObject));
+            string msg = "Unhandled Error in FRESCO Server: " + ex.Message + "\n\n";
+            if (isProgressViewerSaved) msg += "Progress viewer saved to " + logFile + "\n\n";
+            msg += "It might be a good idea to take a screenshot of this message to send in for debugging: \n\n";
+            msg += ex.ToString();
+            MessageBox.Show(msg, "Unhandled Error in FRESCO Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         #region Form Events
         //Loading and Closing Child Forms
         void MDIClient_Load(object O, System.EventArgs EventArgs)												  {SetMenu();}
-        void CloseDockContent<D>(ref D dockContent) where D : DockContent
+        void CloseDockContent<D>(ref D dockContent) where D : WeifenLuo.WinFormsUI.Docking.DockContent
         {
             dockContent.Hide();
             dockContent.DockPanel = null;
@@ -490,7 +548,6 @@ namespace FRESCO_Server
         }
         void FileList_FormClosed(object O, System.Windows.Forms.FormClosedEventArgs EventArgs)                   {CloseDockContent<FileListView>(ref fileList); }
         void ClientMonitor_FormClosed(object O, System.Windows.Forms.FormClosedEventArgs EventArgs)              {CloseDockContent<ClientMonitor>(ref clientMonitor); }
-        void EditorFIF_FormClosed(object O, System.Windows.Forms.FormClosedEventArgs EventArgs)                  {CloseDockContent<EditorFIF>(ref EditorFIF);}
         void ViewerProgress_FormClosed(object O, System.Windows.Forms.FormClosedEventArgs EventArgs)             {CloseDockContent<ViewerProgress>(ref ViewerProgress);}
 
         //File
@@ -559,5 +616,11 @@ namespace FRESCO_Server
             }
         }
         #endregion
+
+        private void changeSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsEditor editor = new SettingsEditor();
+            editor.ShowDialog();
+        }
 	}
 }

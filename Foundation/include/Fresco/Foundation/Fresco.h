@@ -64,13 +64,11 @@ public:
 	BasicEvent<const int>           raiseBeforeYearEnd;
 	BasicEvent<const int>           raiseAfterYearEnd;
 private:
-    enum EOutputType		{DELETEOUTPUTDIRECTORY,OVERWRITE,APPENDDATETIME};
     CInterface              _fif;
     Landscape*				_landscape;
     FrescoState				_state;
     bool                    _isDebugOn;
     long					_randomSeed;
-    EOutputType				_outputType;
     bool                    _isRunningFirstRep;
     bool                    _stopped;
 	int						_numGisHeaderRows;

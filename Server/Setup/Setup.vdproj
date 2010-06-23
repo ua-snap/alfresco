@@ -298,7 +298,7 @@
         "Entry"
         {
         "MsmKey" = "8:_1C8096CA7CDA1C36330EE2CD7821D21A"
-        "OwnerKey" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+        "OwnerKey" = "8:_FFDF144E4A64490BAB007C7D16427950"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -322,7 +322,7 @@
         "Entry"
         {
         "MsmKey" = "8:_1E3E4AA91DDCF8DA5A747CCA2F0F1868"
-        "OwnerKey" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+        "OwnerKey" = "8:_FFDF144E4A64490BAB007C7D16427950"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -880,7 +880,7 @@
         "Entry"
         {
         "MsmKey" = "8:_49F2817600BDCE1C41FFA283B34AA88F"
-        "OwnerKey" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+        "OwnerKey" = "8:_FFDF144E4A64490BAB007C7D16427950"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -934,7 +934,7 @@
         "Entry"
         {
         "MsmKey" = "8:_4EACBA1C8F4247B44452730E619F6CA0"
-        "OwnerKey" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+        "OwnerKey" = "8:_FFDF144E4A64490BAB007C7D16427950"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -988,12 +988,6 @@
         "Entry"
         {
         "MsmKey" = "8:_53414B03C611482387EAA224B659F437"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1090,6 +1084,12 @@
         "Entry"
         {
         "MsmKey" = "8:_5B0C3E8BB2C04AE7850CD7EC3E4A0D53"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5B16D88465B0430789E26ED764888CF5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2482,7 +2482,7 @@
         "Entry"
         {
         "MsmKey" = "8:_E1C77F4FD8F59FC173C5A080ABA84BBC"
-        "OwnerKey" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+        "OwnerKey" = "8:_FFDF144E4A64490BAB007C7D16427950"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2859,14 +2859,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EBCC11BC48310D5845A42C73B2F099F7"
+        "MsmKey" = "8:_FFDF144E4A64490BAB007C7D16427950"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E1C77F4FD8F59FC173C5A080ABA84BBC"
+        "OwnerKey" = "8:_EBCC11BC48310D5845A42C73B2F099F7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2884,7 +2884,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+        "OwnerKey" = "8:_FFDF144E4A64490BAB007C7D16427950"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_49F2817600BDCE1C41FFA283B34AA88F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2896,12 +2902,44 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_49F2817600BDCE1C41FFA283B34AA88F"
+        "OwnerKey" = "8:_E1C77F4FD8F59FC173C5A080ABA84BBC"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
     "Configurations"
     {
+        "64bit Release"
+        {
+        "DisplayName" = "8:64bit Release"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:64bit Release\\Setup.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.2.0"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 2.0"
+                    "ProductCode" = "8:Microsoft.Net.Framework.2.0"
+                    }
+                }
+            }
+        }
         "Debug"
         {
         "DisplayName" = "8:Debug"
@@ -4004,7 +4042,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:WeifenLuo.WinFormsUI.Docking, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:WeifenLuo.WinFormsUI.Docking, Version=2.3.1.40309, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_1E3E4AA91DDCF8DA5A747CCA2F0F1868"
@@ -6253,37 +6291,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5358BD84EBAD4F6992B77404F2DEB643"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FRESCO Server, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_5358BD84EBAD4F6992B77404F2DEB643"
-                    {
-                    "Name" = "8:FRESCO Server.exe"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:..\\bin\\Release\\FRESCO Server.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_DCE1941A73994468A2DD71115DC263EA"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_542EDAB5D44E44B29298B7FC8AE9A54B"
             {
             "SourcePath" = "8:..\\..\\Runs\\Demo\\Input\\Climate\\GenericMonthly\\ExplicitTemp_15.txt"
@@ -6590,6 +6597,26 @@
             "TargetName" = "8:ExplicitTemp_5.txt"
             "Tag" = "8:"
             "Folder" = "8:_56D7EBC5AAA641F088C6B25DE517DF0A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5B16D88465B0430789E26ED764888CF5"
+            {
+            "SourcePath" = "8:..\\bin\\Release\\FRESCO Server.exe.config"
+            "TargetName" = "8:FRESCO Server.exe.config"
+            "Tag" = "8:"
+            "Folder" = "8:_DCE1941A73994468A2DD71115DC263EA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -12426,6 +12453,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FFDF144E4A64490BAB007C7D16427950"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FRESCO Server, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_FFDF144E4A64490BAB007C7D16427950"
+                    {
+                    "Name" = "8:FRESCO Server.exe"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\bin\\Release\\FRESCO Server.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_DCE1941A73994468A2DD71115DC263EA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -12603,7 +12661,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FRESCO Server 1.0.7"
         "ProductCode" = "8:{F3E7A90A-BCEF-4CD6-9834-DA5B328F3FB8}"
-        "PackageCode" = "8:{0CC5A5C2-E4A0-414B-AF12-908EE509D5D7}"
+        "PackageCode" = "8:{E06ABA30-147A-4852-9765-FC4E98F5C8E9}"
         "UpgradeCode" = "8:{445A0937-9538-4BB5-BF7E-2B693F057EE8}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -12730,7 +12788,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+            "Target" = "8:_FFDF144E4A64490BAB007C7D16427950"
             "Folder" = "8:_F13E76E3F0AC4381A014279552403598"
             "WorkingFolder" = "8:_DCE1941A73994468A2DD71115DC263EA"
             "Icon" = "8:_2AC2F3E8E04945ADA967C1592EC64588"
@@ -12744,7 +12802,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5358BD84EBAD4F6992B77404F2DEB643"
+            "Target" = "8:_FFDF144E4A64490BAB007C7D16427950"
             "Folder" = "8:_0B6F1DC44F4640FFAD09DE3F3F3B0351"
             "WorkingFolder" = "8:_DCE1941A73994468A2DD71115DC263EA"
             "Icon" = "8:_2AC2F3E8E04945ADA967C1592EC64588"

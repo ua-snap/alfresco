@@ -5,10 +5,13 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup.vdproj", "{C
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		64bit Release|Default = 64bit Release|Default
 		Debug|Default = Debug|Default
 		Release|Default = Release|Default
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5C216FF-25B6-44F1-88AF-30BB67C721FD}.64bit Release|Default.ActiveCfg = 64bit Release
+		{C5C216FF-25B6-44F1-88AF-30BB67C721FD}.64bit Release|Default.Build.0 = 64bit Release
 		{C5C216FF-25B6-44F1-88AF-30BB67C721FD}.Debug|Default.ActiveCfg = Debug
 		{C5C216FF-25B6-44F1-88AF-30BB67C721FD}.Debug|Default.Build.0 = Debug
 		{C5C216FF-25B6-44F1-88AF-30BB67C721FD}.Release|Default.ActiveCfg = Release

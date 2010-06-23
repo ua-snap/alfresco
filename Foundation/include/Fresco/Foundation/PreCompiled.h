@@ -95,7 +95,8 @@ class Fresco;
 extern Fresco       FrescoFoundation_API    *FRESCO;
 //Global simulation settings.
 extern std::string  FrescoFoundation_API    gWorkingDirectory;
-extern std::string  FrescoFoundation_API    gBaseDirectory;
+extern std::string  FrescoFoundation_API    gInputBasePath;
+extern std::string  FrescoFoundation_API    gOutputBasePath;
 extern std::string  FrescoFoundation_API    gOutputDirectory;
 extern int          FrescoFoundation_API    gMaxRep;
 extern int          FrescoFoundation_API    gRep;
@@ -124,9 +125,10 @@ void	    FrescoFoundation_API            WriteDebug(const std::string message);
 std::string FrescoFoundation_API            AppendRepYear(const std::string file, const int rep=gRep, const int year=gYear);
 std::string	FrescoFoundation_API			AppendYearMonth(const std::string file, const int year, const int month);
 std::string FrescoFoundation_API            AppendYear(const std::string file, const int year=gYear);
-bool	    FrescoFoundation_API            FileExistsInBaseDirectory(std::string path);
+bool	    FrescoFoundation_API            InputFileExists(std::string path);
 std::string FrescoFoundation_API            FormatDirectory(std::string path);
 void	    FrescoFoundation_API            EnsureDirectoryExists(std::string path, bool includesFilename);
+std::string FrescoFoundation_API            GetFullPath(const std::string base, const std::string path);
 template <class nonString> 
 std::string FrescoFoundation_API            ToS(nonString nonString);
 std::string FrescoFoundation_API            ToS(bool nonString);

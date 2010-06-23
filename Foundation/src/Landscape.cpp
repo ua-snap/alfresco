@@ -247,7 +247,7 @@ void Landscape::		doIgnitions()
 {
 	//Is there a human ignitions file for this year?
 	std::string filename = AppendYear(_humanIgnitionsFilename);
-	if (FileExistsInBaseDirectory(filename)) {
+	if (InputFileExists(filename)) {
       ShowOutput(MAXIMUM, "\t\t\tProcessing human ignitions file: " + filename + ".\n");
       ReadGISFile<int>(_pHumanIgnitions,gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
 	}
