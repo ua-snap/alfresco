@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 //[assembly: AssemblyConfiguration("")]
 //[assembly: AssemblyCompany("University of Alaska")]
 //[assembly: AssemblyProduct("FRESCO Server")]
-//[assembly: AssemblyCopyright("Copyright © University of Alaska 2008")]
+//[assembly: AssemblyCopyright("Copyright © University of Alaska 2010")]
 //[assembly: AssemblyTrademark("")]
 //[assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 ////      Build Number
 ////      Revision
 ////
-//[assembly: AssemblyVersion("1.0.7.0")]
-//[assembly: AssemblyFileVersion("1.0.7.0")]
+//[assembly: AssemblyVersion("1.0.8.0")]
+//[assembly: AssemblyFileVersion("1.0.8.0")]

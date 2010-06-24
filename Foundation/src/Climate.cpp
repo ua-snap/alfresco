@@ -253,7 +253,7 @@ void Climate::			repStart()
             if (T->OffsetsType==OTCONSTANT && FRESCO->isRunningFirstRep())	
 				setOffsetsConstant(T->ConstantTempOffset,T->ConstantPrecipOffset,firstYear,lastYear);
 			else if (T->OffsetsType==OTFILE && FRESCO->isRunningFirstRep())	
-				setOffsetsFromFile(gInputBasePath+ Poco::Path::separator() +T->OffsetsFile,firstYear,lastYear);
+				setOffsetsFromFile(GetFullPath(gInputBasePath, T->OffsetsFile),firstYear,lastYear);
 			else if (T->OffsetsType==OTRANDOM && (FRESCO->isRunningFirstRep() || !T->IsRandOffsetReplicated))	{
 				setOffsetsRandom(T->RandomOffsetsTempMean,T->RandomOffsetsTempStdDev,T->RandomOffsetsPrecipMean,T->RandomOffsetsPrecipStdDev,T->IsRandOffsetReplicated,firstYear,lastYear);
 				if (!FRESCO->isRunningFirstRep())	setStepsAndRampsInTimeRange(firstYear, lastYear);
@@ -326,7 +326,7 @@ void Climate::			yearStart()
 		if (_isExternFlam)
 		{
 			filename = AppendYear(_spatialFlamabilityFile, gYear);
-			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 		}
 		if (_isMonthlyClimate)
@@ -334,13 +334,13 @@ void Climate::			yearStart()
 			for (month=_tempMonths.begin(); month!=_tempMonths.end(); month++) {
 				//Read temp file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, gYear, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + filename); ShowOutput(MAXIMUM, " \n");
+				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 				ReadGISFile<float>(_pSpatialTemp[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 			}
 			for (month=_precipMonths.begin(); month!=_precipMonths.end(); month++) {
 				//Read precip file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, gYear, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + filename); ShowOutput(MAXIMUM, " \n");
+				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 				ReadGISFile<float>(_pSpatialPrecip[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 			}
 		}
@@ -348,11 +348,11 @@ void Climate::			yearStart()
 		{
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, gYear);
-			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialTemp[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 			//Read precip file.
 			filename = AppendYear(_pCurrentTransition->SpatialPrecipFile, gYear);
-			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialPrecip[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 		}
 		break;
@@ -363,7 +363,7 @@ void Climate::			yearStart()
 		if (_isExternFlam)
 		{
 			filename = AppendYear(_spatialFlamabilityFile, year);
-			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 		}
 		if (_isMonthlyClimate)
@@ -371,13 +371,13 @@ void Climate::			yearStart()
 			for (month=_tempMonths.begin(); month!=_tempMonths.end(); month++) {
 				//Read temp file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, year, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + filename); ShowOutput(MAXIMUM, " \n");
+				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 				ReadGISFile<float>(_pSpatialTemp[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 			}
 			for (month=_precipMonths.begin(); month!=_precipMonths.end(); month++) {
 				//Read precip file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, year, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + filename); ShowOutput(MAXIMUM, " \n");
+				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 				ReadGISFile<float>(_pSpatialPrecip[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 			}
 		}
@@ -385,11 +385,11 @@ void Climate::			yearStart()
 		{
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, year);
-			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialTemp[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 			//Read precip file.
 			filename = AppendYear(_pCurrentTransition->SpatialPrecipFile, year);
-			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + filename); ShowOutput(MAXIMUM, " \n");
+			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			ReadGISFile<float>(_pSpatialPrecip[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
 		}
 		break;

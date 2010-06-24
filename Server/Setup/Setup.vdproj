@@ -2890,7 +2890,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_49F2817600BDCE1C41FFA283B34AA88F"
+        "OwnerKey" = "8:_E1C77F4FD8F59FC173C5A080ABA84BBC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2902,7 +2902,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E1C77F4FD8F59FC173C5A080ABA84BBC"
+        "OwnerKey" = "8:_49F2817600BDCE1C41FFA283B34AA88F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -12659,19 +12659,19 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:FRESCO Server 1.0.7"
-        "ProductCode" = "8:{F3E7A90A-BCEF-4CD6-9834-DA5B328F3FB8}"
-        "PackageCode" = "8:{E06ABA30-147A-4852-9765-FC4E98F5C8E9}"
+        "ProductName" = "8:FRESCO Server 1.0.8"
+        "ProductCode" = "8:{8DE2A43C-998A-4DC9-ADE5-B6A049F3CEA0}"
+        "PackageCode" = "8:{A1ACA343-CCBE-453E-A233-7FBC2BEB6395}"
         "UpgradeCode" = "8:{445A0937-9538-4BB5-BF7E-2B693F057EE8}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.7"
+        "ProductVersion" = "8:1.0.8"
         "Manufacturer" = "8:UAF"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:FRESCO Server 1.0.7 Setup"
+        "Title" = "8:FRESCO Server 1.0.8 Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:UAF"
         "Keywords" = "8:"
@@ -12782,7 +12782,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_4FD62AD1387043B19F23DE9723B7AC63"
             {
-            "Name" = "8:FRESCO Server 1.0.7"
+            "Name" = "8:FRESCO Server 1.0.8"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -12796,7 +12796,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7934C3F8F8524C1CB47C790638E3F606"
             {
-            "Name" = "8:FRESCO Server 1.0.7"
+            "Name" = "8:FRESCO Server 1.0.8"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"

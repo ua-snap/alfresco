@@ -92,16 +92,21 @@ void                    EnsureDirectoryExists(std::string path, bool includesFil
 //Ensure each part of the path exists.
 {
     Poco::Path p(path, Poco::Path::PATH_GUESS);
-    std::string dir("");
+	Poco::Path d(true);
+	if (!p.getDevice().empty())
+		d.setDevice(p.getDevice());
+	else if(!p.getNode().empty())
+		d.setNode(p.getNode());
+
     int depth = includesFilename ? p.depth() : p.depth() + 1;
     for (int i=0; i<depth; i++)
     {
-        dir += Poco::Path::separator() + p.directory(i);
-        Poco::File f(dir);
+        d.pushDirectory(p.directory(i));
+        Poco::File f(d);
         try { f.createDirectory(); } catch (Poco::Exception& e) 
 		{
 			if (!f.exists())
-				throw Exception(Exception::UNKNOWN, "Unable to create the client output directory:"+dir+",  System message:"+e.displayText()+"\n");
+				throw Exception(Exception::UNKNOWN, "Unable to create the client output directory: "+f.path()+",  System message:"+e.displayText()+"\n");
 		}
     }
 }
@@ -149,22 +154,22 @@ template<class T> void	ReadGISFile(T** Array, const int Rows, const int Cols, co
 		Filename = GetFullPath(gInputBasePath, FN);
         fp.open(Filename.c_str(), (IosOpenMode)Flags);
 		if (!fp.is_open()) throw Exception(Exception::FILEBAD,"Failed to open file: " + Filename + ".\n");
-	}
-	//Read in data.
-	try {
-		for (int h=0; h<FRESCO->numGisHeaderRows(); h++) getline(fp,Temp,'\n');	//Dump header lines.
-		for (r=0;r<Rows;r++) {
-			for (c=0;c<Cols;c++) {
-				if (bIsFile) fp >> Array[r][c];
-				else Array[r][c] = Default;
+		//Read in data.
+		try {
+			for (int h=0; h<FRESCO->numGisHeaderRows(); h++) getline(fp,Temp,'\n');	//Dump header lines.
+			for (r=0;r<Rows;r++) {
+				for (c=0;c<Cols;c++) {
+					if (bIsFile) fp >> Array[r][c];
+					else Array[r][c] = Default;
+				}
+				//Discard remaining cols if user is running less than the file columns.
+				getline(fp,Temp,'\n');
 			}
-			//Discard remaining cols if user is running less than the file columns.
-			getline(fp,Temp,'\n');
 		}
-	}
-	catch (...) 
-	{						
-		throw Exception(Exception::FILEEOF, "Failed to read in file: " + Filename + ".  Check that file includes correct number of rows and columns.  Setting rest of cells to default value.\n");
+		catch (...) 
+		{						
+			throw Exception(Exception::FILEEOF, "Failed to read in file: " + Filename + ".  Check that file includes correct number of rows and columns.  Setting rest of cells to default value.\n");
+		}
 	}
 }
 

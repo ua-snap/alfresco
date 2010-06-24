@@ -190,7 +190,7 @@ namespace FRESCO_Server
         public event SimulationFailedEventHandler SimulationFailedEvent;
         public event ClientOutputEventHandler ClientOutputEvent;
         public readonly string Title = "FRESCO Server";
-        public readonly string Version = "1.0.7";
+        public readonly string Version = "1.0.8";
         public readonly int UdpPort = 9050;
         public int TcpPort = 9051;
         public readonly short asNull = -1;

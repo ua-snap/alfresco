@@ -217,19 +217,19 @@ void CustomLandscape::		repStart()
 	if (_isUsingUniqueVegAndAgePerRep) {
 		//Veg
 		std::string inputFileWithRepYear = AppendRepYear(_vegInputFile, gRep,_yearOfUniqueInputPerRep);
-		ShowOutput(MODERATE, "\t\tReading veg layer from "+inputFileWithRepYear+"\n");
+		ShowOutput(MODERATE, "\t\tReading veg layer from "+ GetFullPath(gInputBasePath, inputFileWithRepYear) +"\n");
 		ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, inputFileWithRepYear, std::ios::in,gNoVegID);
 		//Age
 		inputFileWithRepYear = AppendRepYear(_ageInputFile, gRep, _yearOfUniqueInputPerRep);
-		ShowOutput(MODERATE, "\t\tReading age layer from "+inputFileWithRepYear+"\n");
+		ShowOutput(MODERATE, "\t\tReading age layer from "+ GetFullPath(gInputBasePath, inputFileWithRepYear)+"\n");
 		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, inputFileWithRepYear,std::ios::in, 1);
 	}
 	else if (FRESCO->isRunningFirstRep()) {  //Use one input map for all reps.
 		//Veg
-		ShowOutput(MODERATE, "\t\tReading veg layer from "+_vegInputFile+"\n");
+		ShowOutput(MODERATE, "\t\tReading veg layer from "+GetFullPath(gInputBasePath, _vegInputFile)+"\n");
 		ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, _vegInputFile, std::ios::in, gNoVegID);
 		//Age
-		ShowOutput(MODERATE, "\t\tReading age layer from "+_ageInputFile+"\n");
+		ShowOutput(MODERATE, "\t\tReading age layer from "+GetFullPath(gInputBasePath, _ageInputFile)+"\n");
 		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, _ageInputFile, std::ios::in, 1);
 	}
 
@@ -238,7 +238,7 @@ void CustomLandscape::		repStart()
 	if (_isUsingUniqueBurnSeverityPerRep && _burnSeverityInputFile != "") {
 		//Use unique map per rep.
 		std::string inputFileWithRepYear = AppendRepYear(_burnSeverityInputFile, gRep,_yearOfUniqueInputPerRep);
-		ShowOutput(MODERATE, "\t\tReading burn severity layer from "+inputFileWithRepYear+"\n");
+		ShowOutput(MODERATE, "\t\tReading burn severity layer from "+GetFullPath(gInputBasePath, inputFileWithRepYear)+"\n");
 		ReadGISFile<int>(_pBurnSeveritySpatialInput, gNumRows, gNumCol, inputFileWithRepYear, std::ios::in, 3);
 	}
 	else if (FRESCO->isRunningFirstRep()) {  
@@ -324,8 +324,8 @@ void CustomLandscape::		doFireTransitions()
 			//Set ignition and sensitivity to spatially explicit values.
 			ShowOutput(MODERATE, "\t\tFire Transition changed to SPATIAL.\n");
 			if (gDetailLevel>=MAXIMUM) {	
-				ShowOutput("\t\t\tIgnition file = " + transition->SpatialIgnitionFile + "\n");
-				ShowOutput("\t\t\tSensitivity file = " + transition->SpatialSensitivityFile + "\n");
+				ShowOutput("\t\t\tIgnition file = " + GetFullPath(gInputBasePath, transition->SpatialIgnitionFile) + "\n");
+				ShowOutput("\t\t\tSensitivity file = " + GetFullPath(gInputBasePath, transition->SpatialSensitivityFile) + "\n");
 			}
 			//Read spatial data files.
 			ReadGISFile<float>	(_pIgnitionFactorSpatialInput, gNumRows, gNumCol, transition->SpatialIgnitionFile, std::ios::in, transition->Ignition);
@@ -340,7 +340,7 @@ void CustomLandscape::		doFireTransitions()
 			break;
 		case Fire::HISTORICAL :
 			ShowOutput(MODERATE, "\t\tFire Transition changed to HISTORICAL.\n");
-			ShowOutput(MAXIMUM, "\t\t\thistorical file = " + transition->HistoricalFile + "\n");
+			ShowOutput(MAXIMUM, "\t\t\thistorical file = " + GetFullPath(gInputBasePath, transition->HistoricalFile) + "\n");
             pFire->historicalFiresFileName = transition->HistoricalFile;
 			break;
 		}
@@ -359,7 +359,7 @@ void CustomLandscape::		doIgnitions()
 		// Read in historical fire map...
 		//
 		std::string	filename = AppendYear(Fire::historicalFiresFileName, gYear);
-		ShowOutput(MAXIMUM, "\t\t\tReading in historical fire map: " + filename + "\n");
+		ShowOutput(MAXIMUM, "\t\t\tReading in historical fire map: " + GetFullPath(gInputBasePath, filename) + "\n");
 		ReadGISFile<int>(_pHistoricalFireSpatialInput, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
 		//
 		// Force cells to burn as specified in the file...
@@ -475,7 +475,7 @@ void CustomLandscape::      setupSuppressionTransitions()
             if (_suppressionFilename.empty()) throw Poco::Exception("Developer note: Suppression filename expected during suppression transition setup.");
             std::string filepath(AppendYear(_suppressionFilename, t.Year));
             if (!InputFileExists(filepath)) 
-                throw Exception(Exception::INITFAULT, "Expected suppression map for year " + ToS(t.Year) + " at " + filepath);
+                throw Exception(Exception::INITFAULT, "Expected suppression map for year " + ToS(t.Year) + " at " + GetFullPath(gInputBasePath, filepath));
         }
     }
     //Show a summary of scheduled suppression transitions.
@@ -527,11 +527,11 @@ void CustomLandscape::      setCurrentSuppressionTransition(std::vector<SSuppres
     if (transition->HasNewMap || transition->Year==0) { 
         std::string filename(AppendYear(_suppressionFilename));
 	    if (InputFileExists(filename)) {
-		    ShowOutput(MAXIMUM, "\t\t\tProcessing suppression file: " + filename + ".\n");
+		    ShowOutput(MAXIMUM, "\t\t\tProcessing suppression file: " + GetFullPath(gInputBasePath, filename) + ".\n");
             //if (_pSuppressions != 0)  { for (int r=0;r<gNumRows;r++) delete[] _pSuppressions[r];  delete[] _pSuppressions;  _pSuppressions = 0; }
 		    ReadGISFile<int>(_pSuppressions, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
         } 
-        else throw Poco::Exception("Expected suppression map for year " + ToS(gYear) + " at " + filename);
+        else throw Poco::Exception("Expected suppression map for year " + ToS(gYear) + " at " + GetFullPath(gInputBasePath, filename));
     }
     else ShowOutput(MAXIMUM, "\t\t\tNo new map.\n");
 }
@@ -571,7 +571,7 @@ void CustomLandscape::		doVegetationTransitions()
 		try {ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, filename.c_str(), std::ios::in, -21);}
 		catch (...) {return;}
 		ShowOutput(MODERATE, "\t\tProcessing Vegetation Transitions\n");
-		ShowOutput(MAXIMUM, "\t\t\tReading in veg transition file: " + filename + "\n");
+		ShowOutput(MAXIMUM, "\t\t\tReading in veg transition file: " + GetFullPath(gInputBasePath, filename) + "\n");
 		//Force cells to succeed to new types.
 		for (r=0; r<gNumRows; r++) {
 			for (c=0; c<gNumCol; c++) {
