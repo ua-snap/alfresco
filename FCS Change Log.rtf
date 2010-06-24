@@ -1,13 +1,27 @@
-{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fswiss\fcharset77 Arial-BoldItalicMT;}{\f4\fswiss\fcharset77 Arial-ItalicMT;}}
+{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset77 Arial MT;}{\f4\fnil\fcharset0 Arial MT;}{\f5\fswiss\fcharset77 Arial-BoldItalicMT;}{\f6\fswiss\fcharset77 Arial-ItalicMT;}}
 {\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
 \f2\fs24 1.0.8\par
-\b0\f1\fs20 Released: \f2 3\f1 /\f2 10\f1 /20\f2 10\par
-- Note: this version is NOT backwards compatible due to necessary FIF field changes.\par
-- FRESCO Server can now be configured to accept client connections over ports other than the default 9051. In the top menu, select \i Settings | Edit Settings.\b\i0\f0\fs24\par
-\b0\f2\fs20 - Depricated FIF fields\par
+\b0\f3\fs20 Released: \f4 6\f3 /\f4 24\f3 /20\f4 10\par
+- Bug Fixed: in some circumstances an empty directory tree was created -- typically at the root of the C drive.\b\f3\par
+\b0\f4 - FRESCO Server can now be configured to accept client connections over ports other than the default 9051. In the top menu, select \i Settings | Edit Settings.\b\i0\f3\par
+\b0\f4 - Input and output can now live in very separate locations (eg: different storage volumes) and any FIF field that specifies a path can be either absolute (eg: C:\\absolute\\path\\to\\something\\) or relative as has been the case (relative\\path\\to\\something\\). FIF fields were changed to allow this.  These changes break backward compatibility with old FIFs.  \par
 \par
-- Bug Fixed: in some circumstances an empty directory tree was created -- typically at the root of the C drive.\b\f0\fs24\par
+New Fields\par
+----------\par
+ClientFifPath\par
+ClientInputBasePath\par
+ClientOutputBasePath\par
+ServerOutputBasePath\par
+\b\f0\fs24\par
+\b0\f4\fs20 Depricated Fields (they can now be removed from your FIF files for use with 1.0.8 and beyond)\par
+-----------------\par
+ServerBaseDirectory\par
+ClusterBaseDirectory\par
+Output.Directory\par
+Output.Type\par
+NumSpecies\par
+\b\f0\fs24\par
 \par
 1.0.\f2 7\b0\f1\fs20\par
 Released: \f2 11\f1 /\f2 24\f1 /200\f2 9\par
@@ -128,28 +142,28 @@ Released: 6/28/2007\ul\par
 \b\f0\fs24 Beta 0.2.0\par
 \b0\f1\fs20 Released: \tab 6/21/2007\ul\par
 \ulnone Summary:\tab Bug fixes and new features for existing tools.\ul\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\ulnone\b\i\f3\tab Added Suppression Transitions Functionality\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\ulnone\b\i\f5\tab Added Suppression Transitions Functionality\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 FIF fields changed.  See new demo FIF.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Suppression Stats\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Suppression Stats\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 When suppression is on, stat files are produced showing the area burned within by suppression class.  Each class has its own stat output.  New FIF field: Stat.BurnsBySupp.Flags.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Habitat Stats\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Habitat Stats\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 New FIF fields describe the habitat criteria so that stat files can be produced showing the count of frames that match the criteria.  Right now the only criteria are valid veg types and the age range of vegetation.  New habitats can be tracked by adding new entires into the FIF.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Client Running on Linux and Windows\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Client Running on Linux and Windows\par
 \tab Client Logs on Server Filtered by Selected Client\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Double click or press enter on a client in the Client Manager and the client\rquote s log is shown.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Client Can Run as Daemon\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Client Can Run as Daemon\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 A daemon is a process that runs continuously even when the user that started it is no longer logged on.  The \endash daemon command line argument starts the client as a daemon.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Simple Client Install\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Simple Client Install\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Installation of client on Linux no longer requires changing the LD_LIBRARY_PATH environment variable.  Follow ReadMe instructions included in Linux install.\par
 ServerAddress.ini files are no longer used to specify the server\rquote s address.  Instead, the \lquote startclient\rquote  script contains the server\rquote s IP address within command line argument, --ip.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Time Estimation\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Time Estimation\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Time to completion estimates are given in the Server\rquote s status bar.  The progress viewer provides start and stop timestamps.  The Client Manager shows percent completed for each client.  \par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Version Assertion\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Version Assertion\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Makes sure all clients are running the same version.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f3\tab Separate Base Directories\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Separate Base Directories\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 At the moment, the server is not able to access the cluster\rquote s storage space.  As a temporary work around, the server uses a different base directory than the clients and therefore uses a separate copy of the FIF with the same filename.\par
-This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.\i\f4\fs32\par
-\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f3\fs20\tab\lquote Unknown\rquote  Connections and Delayed Connections Fixed\par
+This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.\i\f6\fs32\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f5\fs20\tab\lquote Unknown\rquote  Connections and Delayed Connections Fixed\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Clients were connecting, but sometimes with an unknown state.  As a result they would not participate in simulations.  Fixed.\par
 Clients were also experiencing a delayed connection by more than 15 seconds.  Now clients should all connect within 2-5 seconds.\par
 \pard\sb60\tx540\tx900\tx1170\tx7200\b\f0\par

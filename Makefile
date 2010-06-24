@@ -6,6 +6,8 @@
 #
 ########################################################
 
+PROJECT_BASE = $(HOME)/fresco
+export PROJECT_BASE
 POCO_BASE = $(HOME)/fresco/Poco
 export POCO_BASE
 
