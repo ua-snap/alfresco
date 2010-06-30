@@ -493,7 +493,7 @@ namespace FRESCO_Server
             TimeSpan avgTimePerYear = new TimeSpan(timeSoFar.Ticks / (yearsCompleted+1));
             TimeSpan timeToFinish   = new TimeSpan(avgTimePerYear.Ticks * (yearsTotal - (yearsCompleted+1)));
             TimeSpan totalTime      = new TimeSpan(avgTimePerYear.Ticks * yearsTotal);
-            stbTime.Text = "Time Remaining " + timeToFinish.Hours + ":" + timeToFinish.Minutes.ToString("00") + ":" + timeToFinish.Seconds.ToString("00") + "    ";
+            stbTime.Text = "Hours Remaining " + timeToFinish.Hours + ":" + timeToFinish.Minutes.ToString("00") + ":" + timeToFinish.Seconds.ToString("00") + "    ";
             
             //Set progress bar percentage.
             float percentDone = (float)yearsCompleted / yearsTotal * 100;
@@ -518,7 +518,7 @@ namespace FRESCO_Server
                 {
                     if (!Directory.Exists(Global.LogOutputDirectory))
                         Directory.CreateDirectory(Global.LogOutputDirectory);
-                    logFile = Global.LogOutputDirectory + "\\ProgressViewerLog--" + System.DateTime.Now.ToString("yyyy-MM-dd_ttHHmm") + ".rtf";
+                    logFile = Path.Combine(Global.LogOutputDirectory, "ProgressViewerLog--" + System.DateTime.Now.ToString("yyyy-MM-dd_ttHHmm") + ".rtf");
                     ViewerProgress.Save(logFile);
                     isProgressViewerSaved = true;
                 }

@@ -156,6 +156,8 @@ namespace FRESCO_Server
         {
             get 
             {
+                if (Global.Instance.FIF.ServerOutputBasePath == null || Global.Instance.TimeStampedOutputPath == null)
+                    return "";
                 string o = Path.Combine(Global.Instance.FIF.ServerOutputBasePath, Global.Instance.TimeStampedOutputPath);
                 return Path.Combine(o, "Logs");
             }

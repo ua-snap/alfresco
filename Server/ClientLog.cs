@@ -97,7 +97,11 @@ namespace FRESCO_Server
             if (Directory.Exists(tempDirectory) && File.Exists(logFilePath))
             {
                 Close();
-                bool isCompleted = MoveTo(Global.Instance.LogOutputDirectory);
+                string destination = Global.Instance.LogOutputDirectory;
+                if (destination != "")
+                {
+                    bool isCompleted = MoveTo(destination);
+                }
                 logWriter = File.CreateText(logFilePath);
             }
         }
