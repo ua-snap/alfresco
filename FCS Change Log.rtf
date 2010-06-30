@@ -5,7 +5,7 @@
 \b0\f3\fs20 Released: \f4 6\f3 /\f4 24\f3 /20\f4 10\par
 - Bug Fixed: in some circumstances an empty directory tree was created -- typically at the root of the C drive.\b\f3\par
 \b0\f4 - FRESCO Server can now be configured to accept client connections over ports other than the default 9051. In the top menu, select \i Settings | Edit Settings.\b\i0\f3\par
-\b0\f4 - Input and output can now live in very separate locations (eg: different storage volumes) and any FIF field that specifies a path can be either absolute (eg: C:\\absolute\\path\\to\\something\\) or relative as has been the case (relative\\path\\to\\something\\). FIF fields were changed to allow this.  These changes break backward compatibility with old FIFs.  \par
+\b0\f4 - Input and output can now live in very separate locations (eg: different storage volumes) and any FIF field that specifies a path can be either an absolute path (eg: C:\\absolute\\path\\to\\something\\) or a relative path (relative\\path\\to\\something\\).  Relative paths are appended to the input base path if it is an input field or to the output base path if it is an output field.  Some FIF fields were changed to allow this.  These changes break backward compatibility with old FIFs.  \par
 \par
 New Fields\par
 ----------\par
@@ -19,9 +19,7 @@ ServerOutputBasePath\par
 ServerBaseDirectory\par
 ClusterBaseDirectory\par
 Output.Directory\par
-Output.Type\par
-NumSpecies\par
-\b\f0\fs24\par
+Output.Type  -- now defaults to using the timestamp output directory.\b\f0\fs24\par
 \par
 1.0.\f2 7\b0\f1\fs20\par
 Released: \f2 11\f1 /\f2 24\f1 /200\f2 9\par
