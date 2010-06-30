@@ -2,16 +2,16 @@
 
 
 ; PROGRAM PARAMETERS
-ClusterBaseDirectory                     = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo"          ; Base directory for clients where input files can be found and map output will be saved.
-ServerBaseDirectory                      = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo"          ; Base directory for server where input files can be found and stat output will be saved.
+ClientFifPath           = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo\"                          ; The directory that contains this .fif file and is accessible by the ALFRESCO Clients.
+ClientInputBasePath     = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo\Input\"                    ; The ALFRESCO Client(s) must be able to READ files here.
+ClientOutputBasePath    = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo\Output\"                   ; The ALFRESCO Client(s) must be able to WRITE files here.
+ServerOutputBasePath    = "C:\PROGRA~1\UAF\FrescoServer\Runs\Demo\Output\"                   ; The ALFRESCO Server must be able to WRITE files here.
 MaxYears                                 = 19                                                ; The number of years to run the simulation (starts at year zero  ends after completing the x'th year).
 MaxReps                                  = 4                                                 ; The number of replicates to run the model (i.e. x replicates total).
 TimeStep                                 = 1                                                 ; The time step in years.
 RandSeed                                 = 1129759570                                        ; A manually set number used to seed the random number generator.  If not set  the current time is used to seed the random number generator.
 NumHeader                                = 6                                                 ; The number of header rows in the input files.
 NoData                                   = -9999                                             ; No Data value specified by ARCgis.
-Output.Directory                         = "Output"                                          ; Sub directory of base directory where output files will be found.  Current date and time will be appended to the name given here.
-Output.Type                              = "APPEND"                                          ; DELETE: Delete current output directory.  OVERWRITE: Overwrite any existing output files.  APPEND: Append date on to output directory.
 Output.DetailLevel                       = "MODERATE"                                         ; MINIMAL: Show only run progress.  MODERATE: Show some interim calculations along with run detail.  MAXIMUM: Show maximum detail along with run detail.
 
 
@@ -20,21 +20,20 @@ MaxRow                                   = 100                                  
 MaxCol                                   = 100                                               ; The total number of columns in the landscape.
 CellSize                                 = 1000                                              ; The size of each cell. The current size is in meters
 CropNeighbors                            = FALSE                                             ; Should the neighbours algorithm crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.
-NumSpecies                               = 5                                                 ; The number of species present in the model (including the NoVeg type)
 NoVeg                                    = 0                                                 ; The species number for the default frame type - should be 0 if possible
 XLLCorner                                = -59982.863281                                     ; X Corner specified by ARCgis
 YLLCorner                                = 1851083.022172                                    ; Y Corner specified by ARCgis
 UseUniqueVegAndAgePerRep                 = FALSE                                             ; Use unique input files for veg and age.  This prevents a bias due to all reps starting from the same input data.
 UseUniqueBurnSeverityPerRep              = FALSE                                             ; Use unique input files for burn severity per rep.  This prevents a bias due to all reps starting from the same input data.
 YearOfUniqueInputPerRep                  = 300                                               ; The year to be appended to the base filename when using unique veg, age and/or burn severity files per rep.  File format: filename_REP#_YEAR#.txt
-VegInputFile                             = "Input\Initialization\Veg.txt"                    ; The vegetation input file
-VegTransitionFile                        = "Input\Initialization\VegTransitions.txt"         ; Base filename for forced vegetation transitions.  Year is appended as  _YR
+VegInputFile                             = "Initialization\Veg.txt"                    ; The vegetation input file
+VegTransitionFile                        = "Initialization\VegTransitions.txt"         ; Base filename for forced vegetation transitions.  Year is appended as  _YR
 IsForcedVegTransitions                   = FALSE                                             ; TRUE: Succession trajectories are read from files as well as simulated.  FALSE: Succession is simulated only.
-AgeInputFile                             = "Input\Initialization\Age.txt"                    ; The initial age input file - years before present so positive values
-SiteInputFile                            = "Input\Initialization\Site.txt"                   ; The site input file
-TreeDensityInputFile                     = "Input\Initialization\TreeDensity.txt"            ; The initial tree density input file
-TopoInputFile                            = "Input\Initialization\Topography.txt"             ; The topography input file.  0=flat, 1=complex
-BurnSeverityInputFile                    = "Input\Initialization\BurnSeverity.txt"           ; The initial burn severity input file. 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity
+AgeInputFile                             = "Initialization\Age.txt"                    ; The initial age input file - years before present so positive values
+SiteInputFile                            = "Initialization\Site.txt"                   ; The site input file
+TreeDensityInputFile                     = "Initialization\TreeDensity.txt"            ; The initial tree density input file
+TopoInputFile                            = "Initialization\Topography.txt"             ; The topography input file.  0=flat, 1=complex
+BurnSeverityInputFile                    = "Initialization\BurnSeverity.txt"           ; The initial burn severity input file. 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity
 
 
 ; MAP OUTPUT FLAGS
@@ -113,13 +112,13 @@ Climate.TransitionYears                  = {0}                                  
 Climate.Values.Type                      = {"SPATIAL"}                                       ; CONSTANT: Single temp and precip value used for every cell over all years and reps.  SPATIAL: Read in spatially unique temp and precip values from a file once and reuse it each year and rep.  EXPLICIT: Read in spatially unique temp and precip values from a different file each year.  Year is appended as _YR
 Climate.Values.Temp.Constant             = {0.}                                              ; Constant temperature value for entire simulation on all land cells.
 Climate.Values.Precip.Constant           = {0.}                                              ; Constant precipitation value for entire simulation on all land cells.
-Climate.Values.Temp.File                 = {"Input\Climate\SpatialTemp.txt"}                 ; Base filename for temperature maps used for fixed spatial climate.
-Climate.Values.Precip.File               = {"Input\Climate\SpatialPrecip.txt"}               ; Base filename for precipitation maps used for fixed spatial climate.
+Climate.Values.Temp.File                 = {"Climate\SpatialTemp.txt"}                 ; Base filename for temperature maps used for fixed spatial climate.
+Climate.Values.Precip.File               = {"Climate\SpatialPrecip.txt"}               ; Base filename for precipitation maps used for fixed spatial climate.
 Climate.Values.RandExplicit.MinYear      = {0}                                               ; For use with RANDEXPLICIT climate type: Minimum simulation year for the random selection of climate temperature and precipitation maps.
 Climate.Values.RandExplicit.MaxYear      = {0}                                               ; For use with RANDEXPLICIT climate type: Maximum simulation year for the random selection of climate temperature and precipitation maps.
 Climate.Values.RandExplicit.Replicate    = {FALSE}                                           ; If true  the RANDOMEXPLICIT climate type will apply the same random sequence of climate files every rep.  Otherwise a different sequence is genereated per rep.
 Climate.Offsets.Type                     = {"FILE"}                                          ; NONE: No offsets applied.  CONSTANT: Single temp and precip offset used for all cells on all years and reps. FILE: Offsets are read in from a file.  RANDOM: Offsets are generated stochastically.
-Climate.Offsets.File                     = {"Input\Climate\offset.static.txt"}               ; The file to use as input/output when using the FILE offset type.
+Climate.Offsets.File                     = {"Climate\offset.static.txt"}               ; The file to use as input/output when using the FILE offset type.
 Climate.Offsets.Constant.Temp            = {0.}                                              ; The temperature offset used when for CONSTANT offset type scenarios.
 Climate.Offsets.Constant.Precip          = {0.}                                              ; The precipitation offset used when for CONSTANT offset type scenarios.
 Climate.Offsets.Random.Temp.Mean         = {0.}                                              ; The mean of the offset from climate temperatures.  Mean is of course expected to be 0 as the mean difference from the mean for that cell should be 0.
@@ -136,7 +135,7 @@ Climate.Offsets.PrecipStepYear           = {}                                   
 Climate.Offsets.PrecipStep               = {}                                                ; The amount of the step that occurs in the specified year.
 Climate.Offsets.PrecipRampYear           = {}                                                ; The year that precipitation ramps change  i.e. the new ramp is applied if the year is >  the specified year.
 Climate.Offsets.PrecipRamp               = {}                                                ; The ramp (amount per year) that starts in the specified year.
-;Climate.Flammability.File                = "Input\Climate\Flammability\flam.txt"            ; (optional) Reads in predetermined climate-flammability values. If not used, the values are generated internally.
+;Climate.Flammability.File                = "Climate\Flammability\flam.txt"            ; (optional) Reads in predetermined climate-flammability values. If not used, the values are generated internally.
 
 
 ; FIRE PARAMETERS
@@ -152,11 +151,11 @@ Fire.Sensitivity                         = {800000.}                            
 Fire.MaxEmpiricalFireSizeEvent           = 1000                                              ; Maximum fire size event as observed in empirical data.
 Fire.MaxEmpiricalFireSizeEventWeight     = 0.5                                               ; Weight to be applied to fire spread probability when fire size exceeds the maximum.
 Fire.Historical                          = {""}                                              ; Base filename for historical fire maps.
-Fire.HumanIgnition.Basename              = "Input\Fire\HumanIgnition\HumanIgnition.txt"      ; Base filename for human igntion fire maps.   Map Legend: 0 No human ignition  1 Possible human ignition (dependent on Human Ignition Prob).
-Fire.Spatial.IgnitionFactor              = {"Input\Fire\Ignition.txt"}                       ; Filename for spatially explicit ignition map.
-Fire.Spatial.Sensitivity                 = {"Input\Fire\Sensitivity.txt"}                    ; Filename for spatially explicit sensitivity map.
+Fire.HumanIgnition.Basename              = "Fire\HumanIgnition\HumanIgnition.txt"      ; Base filename for human igntion fire maps.   Map Legend: 0 No human ignition  1 Possible human ignition (dependent on Human Ignition Prob).
+Fire.Spatial.IgnitionFactor              = {"Fire\Ignition.txt"}                       ; Filename for spatially explicit ignition map.
+Fire.Spatial.Sensitivity                 = {"Fire\Sensitivity.txt"}                    ; Filename for spatially explicit sensitivity map.
 Fire.Suppression.On                      = TRUE                                              ; Apply suppression maps to fire spread caclulations?
-Fire.Suppression.Basename                = "Input\Fire\Suppression\Suppression.txt"          ; Base filename for suppression maps. Map Legend: 1-5 where 1 Most Suppression and 5 Least.
+Fire.Suppression.Basename                = "Fire\Suppression\Suppression.txt"          ; Base filename for suppression maps. Map Legend: 1-5 where 1 Most Suppression and 5 Least.
 Fire.Suppression.Tran.Years              = {0,2,4}                                           ; Year of suppression transitions (## '0' redundant here, but would make it easier to keep track of multiplier arrays below ##)
 Fire.Suppression.Tran.HasNewMap          = {TRUE,FALSE,TRUE}                                 ; FALSE = do not input new map, TRUE = input new map (must be supplied w/ corresponding <base>_tran.year.txt)
 Fire.Suppression.Tran.Class1             = {1.0, 0.3, 0.1}                                   ; Highest suppression level.  Used as a multiplier in the fire spread function.
