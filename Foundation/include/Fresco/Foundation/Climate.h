@@ -4,6 +4,7 @@
 
 #include "PreCompiled.h"
 #include "Except.h"
+#include "Poco/Exception.h"
 #include <list>
 
 
@@ -128,8 +129,17 @@ inline SClimate Climate::getClimate(const int row, const int col, const int year
 	
     //Get climate from the spatial circular array and temporal array.
 	SClimate climate;
-    climate.Temp	= _pSpatialTemp[year % _yearsOfArchivedHistory][0][row][col]      + _pOffsets[year].Temp;
-	climate.Precip	= _pSpatialPrecip[year % _yearsOfArchivedHistory][0][row][col]    + _pOffsets[year].Precip;
+    climate.Temp	= _pSpatialTemp[year % _yearsOfArchivedHistory][0][row][col];
+	climate.Precip	= _pSpatialPrecip[year % _yearsOfArchivedHistory][0][row][col];
+
+	float nd = 0; GetNoData(nd);
+	if (climate.Temp == nd)
+		throw Poco::Exception("invalid nodata value in temperature at row "+ToS(row)+" and col "+ToS(col)+" for year "+ToS(year)+".");
+	if (climate.Precip == nd)
+		throw Poco::Exception("invalid nodata value in precipitation at row "+ToS(row)+" and col "+ToS(col)+" for year "+ToS(year)+".");
+
+	climate.Temp	+=_pOffsets[year].Temp;
+	climate.Precip	+=_pOffsets[year].Precip;
 	return climate;
 }
 
@@ -138,9 +148,14 @@ inline const float Climate::getTemp(const int row, const int col, const int mont
 	//Calculate year to get climate.
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - yearBP;
-	
+
+	float t = _pSpatialTemp[year % _yearsOfArchivedHistory][month][row][col];
+	float nd = 0; GetNoData(nd);
+	if (t == nd)
+		throw Poco::Exception("invalid nodata value in temperature at row "+ToS(row)+" and col "+ToS(col)+" for year "+ToS(year)+".");
+
     //Get climate from the spatial circular array and offset array.
-    return _pSpatialTemp[year % _yearsOfArchivedHistory][month][row][col] + _pOffsets[year].Temp;
+    return t + _pOffsets[year].Temp;
 }
 
 inline const float Climate::getPrecip(const int row, const int col, const int month, const int yearBP) const 
@@ -149,8 +164,13 @@ inline const float Climate::getPrecip(const int row, const int col, const int mo
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - yearBP;
 	
+	float p = _pSpatialPrecip[year % _yearsOfArchivedHistory][month][row][col];
+	float nd = 0; GetNoData(nd);
+	if (p == nd)
+		throw Poco::Exception("invalid nodata value in precipitation at row "+ToS(row)+" and col "+ToS(col)+" for year "+ToS(year)+".");
+
     //Get climate from the spatial circular array and offset array.
-    return _pSpatialPrecip[year % _yearsOfArchivedHistory][month][row][col] + _pOffsets[year].Precip;
+    return p + _pOffsets[year].Precip;
 }
 
 
