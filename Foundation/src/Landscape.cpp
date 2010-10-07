@@ -18,6 +18,7 @@
 #include "Fresco/Foundation/NoVeg.h"
 #include "Fresco/Foundation/Climate.h"
 #include "Fresco/Foundation/Except.h"
+#include "Fresco/Foundation/RasterIO.h"
 #include <stack>
 #include <limits>
 
@@ -52,6 +53,9 @@ Landscape::				~Landscape()
 	delete _pClimate;
 	if (_pHumanIgnitions)	{for (int r=0;r<gNumRows;r++) delete[] _pHumanIgnitions[r];	delete[] _pHumanIgnitions;	_pHumanIgnitions = 0; }
     //TODO: delete _pFrames[][]?
+	if (gIO != 0) {
+		delete gIO; gIO = 0;
+	}
 }
 
 
@@ -97,6 +101,10 @@ void Landscape::		clear()
 	_fireNumStat.clear();
     //Clear climate.
 	_pClimate->clear();
+
+	if (gIO != 0) {
+		delete gIO; gIO = 0;
+	}
 }
 
 
@@ -116,7 +124,22 @@ void Landscape::		setup()
     _fireIntervalStatFlags	    = FRESCO->fif().nGet("Stat.FireInterval.Flags");
     _fireSizeStatFlags		    = FRESCO->fif().nGet("Stat.FireSize.Flags");
     _fireNumStatFlags		    = FRESCO->fif().nGet("Stat.FireNum.Flags");
-    
+
+	std::string coordinateSystem = "NAD83";
+	int isNorthernHemisphere = TRUE;
+	int UTM = 6;
+	if (FRESCO->fif().CheckKey("CoordinateSystem"))
+		coordinateSystem = FRESCO->fif().sGet("CoordinateSystem");
+	if (FRESCO->fif().CheckKey("IsNorthernHemisphere"))
+		isNorthernHemisphere = FRESCO->fif().bGet("IsNorthernHemisphere") ? TRUE : FALSE;
+	if (FRESCO->fif().CheckKey("UTM"))
+		UTM = FRESCO->fif().nGet("UTM");
+
+	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
+	//       rather than assigning to a global variable.
+	gIO = new RasterIO(gNumCol, gNumRows, _xllCorner, _yllCorner, gCellSize, gCellSize, 0, 0,
+						UTM, isNorthernHemisphere, coordinateSystem);
+
     // Should this be in Fire?
     _humanIgnitionsFilename     = FormatDirectory(FRESCO->fif().sGet("Fire.HumanIgnition.Basename"));
 	_pfireSpreadParams = new double[3];
@@ -249,7 +272,7 @@ void Landscape::		doIgnitions()
 	std::string filename = AppendYear(_humanIgnitionsFilename);
 	if (InputFileExists(filename)) {
       ShowOutput(MAXIMUM, "\t\t\tProcessing human ignitions file: " + GetFullPath(gInputBasePath, filename) + ".\n");
-      ReadGISFile<int>(_pHumanIgnitions,gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
+      gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pHumanIgnitions, false);
 	}
 
 	//Iterate over cells.
@@ -399,8 +422,8 @@ bool Landscape::		testHumanIgnition(const Frame* pFrame)
 {
 	//Was a human ignitions map provided for this year?
 	if (_pHumanIgnitions) { 
-		//0 represents no human ignition, anything else represents a human ignition.
-		if (_pHumanIgnitions[_row][_col]!=0)
+		//0 or less represents no human ignition, 1 and above represents a human ignition.
+		if (_pHumanIgnitions[_row][_col]>0)
 			return (pFrame->getHumanIgnitionProb() > GetNextRandom());
 	}
 	return false;
@@ -415,7 +438,10 @@ bool Landscape::        testFireSpread(Frame* pFrame, const int rowOfNeighbor, c
 
 	if (isInSpreadRadius) {
 		//Spread fire from burning neighbor?
-		double test	= pFrame->getFireProb(this) * pFrame->fireSensitivity * NormDist(_pfireSpreadParams) * fireSuppressionFactor  * _maxFireSizeEventWeight;
+		float nodata = 0; GetNoData(nodata);
+		if (nodata == pFrame->fireSensitivity)
+			throw Poco::Exception("invalid use of nodata value ("+ToS(nodata)+") in fire sensitivity map. There should not be any nodata value for cells that have vegetation.");
+		float test	= pFrame->getFireProb(this) * pFrame->fireSensitivity * NormDist(_pfireSpreadParams) * fireSuppressionFactor  * _maxFireSizeEventWeight;
 		return (test > GetNextRandom());
 	}
 	else
@@ -512,75 +538,11 @@ void Landscape::		logFireStats (int interval, bool ignoreFirstInterval)
 //of each species type that burned, and the fire interval for each species type.
 {
 	Species specSp(_pFrames[_row][_col]->type());
-	_fireSpeciesStat[specSp]++;
+	_fireSpeciesStat[(int)specSp]++;
 	//Only update stats if it is the second time cell has burned to avoid startup bias
 	if (interval>0 || !ignoreFirstInterval)
-		_fireIntervalStat[specSp].Add(gYear, gRep, (interval > 0) ? interval : -interval);
+		_fireIntervalStat[(int)specSp].Add(gYear, gRep, (interval > 0) ? interval : -interval);
 }
 
 
-void Landscape::		saveMaps(const std::string filePath, const int mapFlags)
-//Save map files.
-{
-	if (mapFlags & outData) {
-		//Open output stream.
-        EnsureDirectoryExists(filePath, true);
-		std::fstream sStream(filePath.c_str(), std::ios::out);
-		if (!sStream.is_open()) throw Exception(Exception::FILEBAD,"Error opening output file:"+filePath+"\n");
-		sStream.flags(std::ios::fixed);														//Ensure it doesn't bump up into scientific notation
-		sStream.precision(1);
-		//Output title with max years and max reps included.
-		if (mapFlags & outHeader)
-			sStream << "Model execution output (" << gMaxYear << "," << gMaxRep << ")" << std::endl;
-		//Output ARCgis header to ensure formatting is correct for reading by ARC.
-		if (mapFlags & outARC) {
-			sStream << "ncols " << gNumCol << std::endl;
-			sStream << "nrows " << gNumRows << std::endl;
-			std::ios_base::fmtflags flags = sStream.flags();												//Store the current state of the output flags
-			int nPrecision = sStream.precision();
-			sStream.flags(std::ios::fixed);													//Set the state of the output flags
-			sStream.precision(6);
-			sStream << "xllcorner " << _xllCorner << std::endl;
-			sStream << "yllcorner " << _yllCorner << std::endl;
-			sStream << "cellsize " << gCellSize << std::endl;
-			sStream.precision(0);
-			sStream << "NODATA_value " << gNoDataID << std::endl;
-			sStream.flags(flags);														//Return the flags to their previous state
-			sStream.precision(nPrecision);
-		}
-		//Output data.
-		if (mapFlags & outData) {
-			int nMap = 0;																//Find out if more than one flag is set so we know if it can be a map file
-			for (int nMask=0x100; nMask; nMask <<= 1)									//Ignore the first hex decimal which is the general flag set
-				nMap += (nMask & mapFlags) ? 1 : 0;										//Basically just the number of true bits
-			if (!(mapFlags & outFormat)) nMap = 2;										//If we aren't formatting the data, show it as rows - only useful in the case where there is only one bit of data because otherwise it will end up as rows anyway
-            Frame::setOutFlagsForAllFrames(mapFlags);
-			for (int r=0; r<gNumRows; r++) {
-				for (int c=0; c<gNumCol; c++) {
-					//Output cell.
-					sStream << *_pFrames[r][c];
-					//Output cell climate.
-					int bFormat = mapFlags & outFormat;
-					if (mapFlags & outTemp) {
-						if (!bFormat) sStream << "Temp=";		
-						sStream << _pClimate->getClimate(r,c).Temp;	
-						if (!bFormat) sStream << "\t"; 
-						else sStream << " ";	
-					}
-					if (mapFlags & outPrecip) {
-						if (!bFormat) sStream << "Precip=";
-						sStream << _pClimate->getClimate(r,c).Precip;
-						if (!bFormat) sStream << "\t";
-						else sStream << " ";
-					}
-					if (nMap > 1) sStream << std::endl;
-				}
-				sStream << std::endl;
-			}
-		}
-		//Exit.
-		sStream << std::endl;
-		sStream.close();
-	}
-}
 

@@ -41,7 +41,7 @@ public:
     static void             setStaticData();
 	static void				clear();
 	Frame*					success(Landscape* pParent);
-	const int				type() const;
+	const unsigned char		type() const;
 	const float				getHumanIgnitionProb() const {return _humanIgnitionsProb; }
 	const float				getIgnitionDepressor();
     static double           getFireParam(const int index);
@@ -70,7 +70,7 @@ inline double               Grassland::getFireParam(const int index)
     return _pGrasslandFireParms[index];
 }
 
-inline const int            Grassland::type() const 
+inline const unsigned char	Grassland::type() const 
 { 
     return gGrasslandID; 
 }

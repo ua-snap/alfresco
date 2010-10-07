@@ -1,7 +1,82 @@
-{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset77 Arial MT;}{\f4\fnil\fcharset0 Arial MT;}{\f5\fswiss\fcharset77 Arial-BoldItalicMT;}{\f6\fswiss\fcharset77 Arial-ItalicMT;}}
+{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset77 Arial MT;}{\f4\fnil\fcharset0 Arial MT;}{\f5\fmodern\fprq1\fcharset0 Courier New;}{\f6\fswiss\fcharset77 Arial-BoldItalicMT;}{\f7\fswiss\fcharset77 Arial-ItalicMT;}}
+{\colortbl ;\red0\green0\blue0;\red255\green255\blue255;}
 {\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
-\f2\fs24 1.0.8\par
+\f2\fs24 1.0.9\par
+\b0\f3\fs20 Released: \f2 date \f4 pending\par
+- Spatial input files must now be in the GeoTIFF format and all spatial output is written in the GeoTIFF format. GeoTIFF is a binary file format that allows data to be stored more efficiently than the text based ASCII Grid format used until now. There are many tools available to convert from ASCII Grid files to GeoTIFF files including the free GDAL tools. \cf1\highlight2 If the NODATA value metadata tag is not specified, the default NODATA value for the given datatype is assumed (see Supported Datatypes below for defaults). Best performance is seen when input files use the default NODATA value for the given datatype and the NODATA metadata tag is set with the same value. \par
+\cf0\highlight0\par
+\pard\li180\sb60\cf1\highlight2\b Supported Datatypes:\b0\par
+\f5    TYPE   |    MIN VAL    |   MAX VAL    | DEFAULT NODATA\par
+----------------------------------------------------------\par
+  Byte    |            0  |         255  |          255\par
+  INT32   |  -2147483648  |  2147483648  |  -2147483648\par
+  FLOAT32 |     -3.4e+38  |     3.4e+38  |     -3.4e+38\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\cf0\highlight0\f4\par
+\par
+\b New Fields\par
+\b0 (optional) UTM = int                                 ; Universal Transverse Mercator -- defaults is 6\par
+(optional) CoordinateSystem = string        ; Well known geographic coordinate system -- default is "NAD83"\par
+(optional ) IsNorthernHemisphere = bool    ; Part of the map projection info -- default is TRUE\par
+\par
+\b Modified Fields\b0\par
+MapFlags -- the field hasn't changed, but the species specific output type flags for Decid and Tundra have been placed onto two separate flag values rather than sharing the 0x000100 flag. The FIF comments to describe the species specific options used to be this:\par
+; 0x000100\tab Decid: species trajectory; Tundra: basal area\par
+\par
+Now it should read like this: \par
+; 0x000100\tab Decid: species trajectory\par
+; 0x000200\tab Tundra: basal area\par
+\b\f0\fs24\par
+\f4\fs20 Depricated Fields \b0 (they can now be removed from your FIF files for use with 1.0.8 and beyond)\par
+NoData\par
+\b\f2\fs24\par
+\par
+Input Datatypes\par
+\b0\f4\fs20 Regarding the use of nodata in input files\par
+\b\tab Byte (value range of 0 through 255, default nodata = 255)\par
+\b0\tab Vegetation Type (any valid veg ID)\par
+\tab Vegetation Type Transition (any valid veg ID)\par
+\tab Topography (0 and 1)\par
+\tab Burn Severity (0 and 1)\par
+\tab Fire History (0 and 1)\par
+\tab Human Ignitions (0 and 1)\par
+\tab Fire Suppression Levels (0, 1, 2, 3, 4 and 5)\par
+\tab\par
+\b\tab Int (value range of -2147483648 through 2147483648, default nodata = -2147483648)\par
+\b0\tab Stand Age\par
+\tab Tree Density\par
+\par
+\b\tab Float (value range of -3.4e+38 through 3.4e+38, default nodata = -3.4e+38)\par
+\b0\tab Site\par
+\tab Temperature\par
+\tab Precipitation\par
+\tab External Flammability\par
+\tab Fire Ignition Factor\par
+\tab Fire Spread Sensitivity\par
+\b\f2\fs24\tab\tab\par
+\par
+Output Datatypes\par
+\f4\fs20\tab Byte (value range of 0 through 255, nodata = 255)\par
+\b0\tab Vegetation Type\par
+\tab Subcanopy\par
+\tab Burn Severity\par
+\tab Burn Severity History\par
+\tab Decid: Species Trajectory\par
+\tab\par
+\b\tab Int (value range of -2147483648 through 2147483648, nodata = -2147483648)\par
+\b0\tab Stand Age\par
+\tab Fire Age\par
+\tab\par
+\b\tab Float (value range of -3.4e+38 through 3.4e+38, nodata = -3.4e+38)\par
+\b0\tab Site\par
+\tab Temperature\par
+\tab Precipitation\par
+\tab Fire Scars\par
+\tab Tundra: Basal Area\par
+\b\f2\fs24\par
+\par
+\par
+1.0.8\par
 \b0\f3\fs20 Released: \f4 6\f3 /\f4 24\f3 /20\f4 10\par
 - Bug Fixed: in some circumstances an empty directory tree was created -- typically at the root of the C drive.\b\f3\par
 \b0\f4 - FRESCO Server can now be configured to accept client connections over ports other than the default 9051. In the top menu, select \i Settings | Edit Settings.\b\i0\f3\par
@@ -140,28 +215,28 @@ Released: 6/28/2007\ul\par
 \b\f0\fs24 Beta 0.2.0\par
 \b0\f1\fs20 Released: \tab 6/21/2007\ul\par
 \ulnone Summary:\tab Bug fixes and new features for existing tools.\ul\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\ulnone\b\i\f5\tab Added Suppression Transitions Functionality\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\ulnone\b\i\f6\tab Added Suppression Transitions Functionality\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 FIF fields changed.  See new demo FIF.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Suppression Stats\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Suppression Stats\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 When suppression is on, stat files are produced showing the area burned within by suppression class.  Each class has its own stat output.  New FIF field: Stat.BurnsBySupp.Flags.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Habitat Stats\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Habitat Stats\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 New FIF fields describe the habitat criteria so that stat files can be produced showing the count of frames that match the criteria.  Right now the only criteria are valid veg types and the age range of vegetation.  New habitats can be tracked by adding new entires into the FIF.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Client Running on Linux and Windows\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Client Running on Linux and Windows\par
 \tab Client Logs on Server Filtered by Selected Client\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Double click or press enter on a client in the Client Manager and the client\rquote s log is shown.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Client Can Run as Daemon\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Client Can Run as Daemon\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 A daemon is a process that runs continuously even when the user that started it is no longer logged on.  The \endash daemon command line argument starts the client as a daemon.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Simple Client Install\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Simple Client Install\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Installation of client on Linux no longer requires changing the LD_LIBRARY_PATH environment variable.  Follow ReadMe instructions included in Linux install.\par
 ServerAddress.ini files are no longer used to specify the server\rquote s address.  Instead, the \lquote startclient\rquote  script contains the server\rquote s IP address within command line argument, --ip.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Time Estimation\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Time Estimation\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Time to completion estimates are given in the Server\rquote s status bar.  The progress viewer provides start and stop timestamps.  The Client Manager shows percent completed for each client.  \par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Version Assertion\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Version Assertion\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Makes sure all clients are running the same version.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f5\tab Separate Base Directories\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Separate Base Directories\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 At the moment, the server is not able to access the cluster\rquote s storage space.  As a temporary work around, the server uses a different base directory than the clients and therefore uses a separate copy of the FIF with the same filename.\par
-This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.\i\f6\fs32\par
-\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f5\fs20\tab\lquote Unknown\rquote  Connections and Delayed Connections Fixed\par
+This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.\i\f7\fs32\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f6\fs20\tab\lquote Unknown\rquote  Connections and Delayed Connections Fixed\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Clients were connecting, but sometimes with an unknown state.  As a result they would not participate in simulations.  Fixed.\par
 Clients were also experiencing a delayed connection by more than 15 seconds.  Now clients should all connect within 2-5 seconds.\par
 \pard\sb60\tx540\tx900\tx1170\tx7200\b\f0\par

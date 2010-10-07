@@ -9,6 +9,7 @@
 #include "Fresco/Foundation/Except.h"
 #include "Fresco/Foundation/Fresco.h"
 #include "Fresco/Foundation/Interface.h"
+#include "Fresco/Foundation/RasterIO.h"
 #include "Poco/Path.h"
 #include <sstream>
 
@@ -40,12 +41,16 @@ void Climate::          deleteArrays()
     if (_pRandomYears)      { delete[] _pRandomYears; _pRandomYears = 0; }
 	if (_pOffsets)			{ delete[] _pOffsets; _pOffsets = 0; }	
 	std::list<int>::iterator m;
-	if (_pSpatialTemp) { 
+	if (_pSpatialTemp != 0) {
 		for (int y=0;y<_yearsOfArchivedHistory;y++) { 
 			for (m=_tempMonths.begin(); m!=_tempMonths.end(); m++) {
-				for (int r=0;r<gNumRows;r++) 
-					delete[] _pSpatialTemp[y][*m][r];
-				delete[] _pSpatialTemp[y][*m];
+				if (&_pSpatialTemp[y][*m] != 0)
+				{
+					if (&_pSpatialTemp[y][*m][0] != 0)
+						for (int r=0;r<gNumRows;r++)
+							delete[] _pSpatialTemp[y][*m][r];
+					delete[] _pSpatialTemp[y][*m];
+				}
 			}
 			delete[] _pSpatialTemp[y]; 
 		} 
@@ -54,9 +59,13 @@ void Climate::          deleteArrays()
 	if (_pSpatialPrecip) { 
 		for (int y=0;y<_yearsOfArchivedHistory;y++) { 
 			for (m=_precipMonths.begin(); m!=_precipMonths.end(); m++) {
-				for (int r=0;r<gNumRows;r++) 
-					delete[] _pSpatialPrecip[y][*m][r];
-				delete[] _pSpatialPrecip[y][*m];
+				if (&_pSpatialPrecip[y][*m] != 0)
+				{
+					if (&_pSpatialPrecip[y][*m][0] != 0)
+						for (int r=0;r<gNumRows;r++) 
+							delete[] _pSpatialPrecip[y][*m][r];
+					delete[] _pSpatialPrecip[y][*m];
+				}
 			}
 			delete[] _pSpatialPrecip[y]; 
 		} 
@@ -301,8 +310,8 @@ void Climate::			yearStart()
 	case VTSPATIAL :
 		//Read in spatially unique temp and precip values from a file.  Reuse each year and rep.
 		if (gYear == _pCurrentTransition->Year) {
-			ReadGISFile<float>(_pSpatialTemp[circularIndex][0], gNumRows, gNumCol, _pCurrentTransition->SpatialTempFile, std::ios::in, 0.);		
-			ReadGISFile<float>(_pSpatialPrecip[circularIndex][0], gNumRows, gNumCol, _pCurrentTransition->SpatialPrecipFile, std::ios::in, 0.);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, _pCurrentTransition->SpatialTempFile), _pSpatialTemp[circularIndex][0], false);		
+			gIO->readRasterFile(GetFullPath(gInputBasePath, _pCurrentTransition->SpatialPrecipFile), _pSpatialPrecip[circularIndex][0], false);		
 		}
 		else
 		{
@@ -327,7 +336,7 @@ void Climate::			yearStart()
 		{
 			filename = AppendYear(_spatialFlamabilityFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialFlammability, false);
 		}
 		if (_isMonthlyClimate)
 		{
@@ -335,13 +344,13 @@ void Climate::			yearStart()
 				//Read temp file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, gYear, *month);
 				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				ReadGISFile<float>(_pSpatialTemp[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][*month], false);
 			}
 			for (month=_precipMonths.begin(); month!=_precipMonths.end(); month++) {
 				//Read precip file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, gYear, *month);
 				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				ReadGISFile<float>(_pSpatialPrecip[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][*month], false);
 			}
 		}
 		else
@@ -349,11 +358,11 @@ void Climate::			yearStart()
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-			ReadGISFile<float>(_pSpatialTemp[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][0], false);
 			//Read precip file.
 			filename = AppendYear(_pCurrentTransition->SpatialPrecipFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-			ReadGISFile<float>(_pSpatialPrecip[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][0], false);
 		}
 		break;
 
@@ -364,7 +373,7 @@ void Climate::			yearStart()
 		{
 			filename = AppendYear(_spatialFlamabilityFile, year);
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-			ReadGISFile<float>(_pSpatialFlammability, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialFlammability, false);
 		}
 		if (_isMonthlyClimate)
 		{
@@ -372,13 +381,13 @@ void Climate::			yearStart()
 				//Read temp file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, year, *month);
 				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				ReadGISFile<float>(_pSpatialTemp[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][*month], false);
 			}
 			for (month=_precipMonths.begin(); month!=_precipMonths.end(); month++) {
 				//Read precip file.
 				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, year, *month);
 				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				ReadGISFile<float>(_pSpatialPrecip[circularIndex][*month], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][*month], false);
 			}
 		}
 		else
@@ -386,11 +395,11 @@ void Climate::			yearStart()
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, year);
 			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-			ReadGISFile<float>(_pSpatialTemp[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][0], false);
 			//Read precip file.
 			filename = AppendYear(_pCurrentTransition->SpatialPrecipFile, year);
 			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-			ReadGISFile<float>(_pSpatialPrecip[circularIndex][0], gNumRows, gNumCol, filename.c_str(), std::ios::in, 0.);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][0], false);
 		}
 		break;
 	}

@@ -4,6 +4,7 @@
 #include "Fresco/Foundation/PreCompiled.h"
 #include "Fresco/Foundation/Fresco.h"
 #include "Fresco/Foundation/Except.h"
+#include "Fresco/Foundation/RasterIO.h"
 #include "Poco/Path.h"
 //#include <ios>
 //#include <iostream>
@@ -137,41 +138,20 @@ std::string GetFullPath(const std::string base, const std::string path)
 #else
 	typedef std::_Ios_Openmode IosOpenMode;
 #endif
-template void FrescoFoundation_API ReadGISFile<int>(int** Array, const int Rows, const int Cols, const std::string Filename, const int Flags, const int Default);
-template void FrescoFoundation_API ReadGISFile<long>(long** Array, const int Rows, const int Cols, const std::string Filename, const int Flags, const long Default);
-template void FrescoFoundation_API ReadGISFile<float>(float** Array, const int Rows, const int Cols, const std::string Filename, const int Flags, const float Default);
-template void FrescoFoundation_API ReadGISFile<double>(double** Array, const int Rows, const int Cols, const std::string Filename, const int Flags, const double Default);
-template<class T> void	ReadGISFile(T** Array, const int Rows, const int Cols, const std::string FN, const int Flags, const T Default) 
+void					GetNoData(byte &returnVal)
 {
-    std::string		Filename;
-	bool		    bIsFile		= true;
-	int			    r,c			= 0;
-	std::fstream	fp;
-	std::string		Temp;
-	//Open file.
-	bIsFile = (FN.size()>0);
-	if (bIsFile) {
-		Filename = GetFullPath(gInputBasePath, FN);
-        fp.open(Filename.c_str(), (IosOpenMode)Flags);
-		if (!fp.is_open()) throw Exception(Exception::FILEBAD,"Failed to open file: " + Filename + ".\n");
-		//Read in data.
-		try {
-			for (int h=0; h<FRESCO->numGisHeaderRows(); h++) getline(fp,Temp,'\n');	//Dump header lines.
-			for (r=0;r<Rows;r++) {
-				for (c=0;c<Cols;c++) {
-					if (bIsFile) fp >> Array[r][c];
-					else Array[r][c] = Default;
-				}
-				//Discard remaining cols if user is running less than the file columns.
-				getline(fp,Temp,'\n');
-			}
-		}
-		catch (...) 
-		{						
-			throw Exception(Exception::FILEEOF, "Failed to read in file: " + Filename + ".  Check that file includes correct number of rows and columns.  Setting rest of cells to default value.\n");
-		}
-	}
+	returnVal = RasterIO::NODATA_BYTE_DEFAULT;
 }
+void					GetNoData(int &returnVal)
+{
+	returnVal = RasterIO::NODATA_INT32_DEFAULT;
+}
+void					GetNoData(float &returnVal)
+{
+	returnVal = RasterIO::NODATA_FLOAT32_DEFAULT;
+}
+
+
 
 
 double					ConstDist(const double* const params) 

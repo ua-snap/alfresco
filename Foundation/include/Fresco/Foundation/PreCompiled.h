@@ -56,6 +56,9 @@
 const int	FRS_NULL					= -1;
 
 
+typedef unsigned char byte;
+
+
 //Define the output codes.  The resulting flag will be a sum of the relevent flags. Note that these are different
 //than the codes specified in stat.h.  Those are the basal flags for each statistical variable specified at program
 //initiation, these are the specific output flags used in the main program to specify particular output.
@@ -108,15 +111,20 @@ extern int          FrescoFoundation_API    gNumRows;
 extern int          FrescoFoundation_API    gNumCol;
 extern long         FrescoFoundation_API    gNumSpecies;
 extern EDetailLevel FrescoFoundation_API    gDetailLevel;
-extern long         FrescoFoundation_API    gNoDataID;
-extern int          FrescoFoundation_API    gNoVegID;
-extern int          FrescoFoundation_API    gTundraID;
-extern int          FrescoFoundation_API    gDecidID;
-extern int          FrescoFoundation_API    gBSpruceID;
-extern int          FrescoFoundation_API    gWSpruceID;
-extern int          FrescoFoundation_API    gGrasslandID;
+extern byte          FrescoFoundation_API    gNoVegID;
+extern byte          FrescoFoundation_API    gTundraID;
+extern byte          FrescoFoundation_API    gDecidID;
+extern byte          FrescoFoundation_API    gBSpruceID;
+extern byte          FrescoFoundation_API    gWSpruceID;
+extern byte          FrescoFoundation_API    gGrasslandID;
 
 //Global IO functions.
+class RasterIO;
+extern RasterIO	    FrescoFoundation_API    *gIO;
+void	    FrescoFoundation_API            GetNoData(byte &returnVal);
+void	    FrescoFoundation_API            GetNoData(int &returnVal);
+void	    FrescoFoundation_API            GetNoData(float &returnVal);
+
 void	    FrescoFoundation_API            ShowOutput(const EDetailLevel detailLevel, const std::string output);
 void	    FrescoFoundation_API            DoNothing(const bool doBreak);
 void	    FrescoFoundation_API            ShowOutput(const std::string output);
@@ -133,7 +141,7 @@ template <class nonString>
 std::string FrescoFoundation_API            ToS(nonString nonString);
 std::string FrescoFoundation_API            ToS(bool nonString);
 void	    FrescoFoundation_API            FileCheck(std::fstream& rStream, std::string fileName, int& rFileRows, int& rFileCols);
-template<class T> void FrescoFoundation_API ReadGISFile(T** Array, const int rows, const int cols, const std::string filename, const int flags, const T Default);
+//template<class T> void FrescoFoundation_API ReadGISFile(T** Array, const int rows, const int cols, const std::string filename, const int flags, const T Default);
 
 //Global math functions.
 double	FrescoFoundation_API                ConstDist(const double* const params);

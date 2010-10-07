@@ -28,16 +28,16 @@ int  FrescoFoundation_API           gYear				= 0;					//Current year being simul
 int  FrescoFoundation_API           gRep				= 0;					//Current replication being simulated.
 int  FrescoFoundation_API           gTimeStep			= 0;					//Time step
 float  FrescoFoundation_API         gCellSize			= 0;					//Cell size
-long  FrescoFoundation_API          gNumSpecies			= 0;					//Number of rows in landscape.
-int  FrescoFoundation_API           gNoVegID			= -1;
-int  FrescoFoundation_API           gTundraID			= -1;
-int  FrescoFoundation_API           gDecidID			= -1;
-int  FrescoFoundation_API           gWSpruceID			= -1;
-int  FrescoFoundation_API           gBSpruceID			= -1;
-int  FrescoFoundation_API           gGrasslandID		= -1;
-long  FrescoFoundation_API          gNoDataID			= -1;
+long  FrescoFoundation_API          gNumSpecies			= 0;
+byte  FrescoFoundation_API          gNoVegID			= 255;
+byte  FrescoFoundation_API          gTundraID			= 255;
+byte  FrescoFoundation_API          gDecidID			= 255;
+byte  FrescoFoundation_API          gWSpruceID			= 255;
+byte  FrescoFoundation_API          gBSpruceID			= 255;
+byte  FrescoFoundation_API          gGrasslandID		= 255;
 EDetailLevel    FrescoFoundation_API gDetailLevel		= MINIMAL;
-Fresco  FrescoFoundation_API    *FRESCO				= 0;
+Fresco  FrescoFoundation_API        *FRESCO				= 0;
+RasterIO FrescoFoundation_API       *gIO				= 0;
 
 
 Fresco::			Fresco(Landscape* pLandscape, bool isDebugOn)
@@ -80,19 +80,18 @@ void Fresco::		clear()
     gYear				= 0;
     gRep				= 0;
     gNumSpecies			= 0;
-    gNoVegID			= -1;
-    gTundraID			= -1;
-    gDecidID			= -1;
-    gWSpruceID			= -1;
-    gBSpruceID			= -1;
-    gGrasslandID		= -1;
-    gNoDataID			= -1;
+    gNoVegID			= 255;
+    gTundraID			= 255;
+    gDecidID			= 255;
+    gWSpruceID			= 255;
+    gBSpruceID			= 255;
+    gGrasslandID		= 255;
     gWorkingDirectory	= "";
     gInputBasePath		= "";
     gOutputBasePath		= "";
     gOutputDirectory	= "";
     gDetailLevel		= MINIMAL;  	//Reset detail level last so that current detail level causes output during clearing.
-
+	
 	setState(CLEARED);
 }
 
@@ -120,14 +119,13 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
     } catch (Exception& e) {throw Exception(Exception::INITFAULT,"Initializing random number generator failed.\n", e.message);}
-    gNoDataID           = _fif.nGet("NoData"); 
     gNoVegID            = _fif.nGet("NoVeg"); 
         
     //Fire
     output("Loading Fire settings.\n");
     _isFireEnabled      = _fif.bGet("Fire.Enabled");
     Fire::setup();
-
+	
     customSetup();
 
     output("Loading Landscape settings.\n");

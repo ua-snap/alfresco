@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\include;&quot;p:\poco\XML\include&quot;;&quot;p:\poco\Net\include&quot;;&quot;p:\poco\Foundation\include&quot;"
+				AdditionalIncludeDirectories=".\include;p:\poco\XML\include;p:\poco\Net\include;p:\poco\Foundation\include;p:\gdal\build\include"
 				PreprocessorDefinitions="WIN32;_WIN32;_DEBUG;POCO_DLL;FRESCO_FOUNDATION_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib"
+				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib gdal_i.lib"
 				OutputFile="$(OutDir)\FrescoFoundationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="p:\fresco\lib;p:\poco\lib"
+				AdditionalLibraryDirectories="p:\fresco\lib;p:\poco\lib;p:\gdal\build\lib"
 				GenerateDebugInformation="true"
 				OptimizeForWindows98="1"
 				ImportLibrary="$(OutDir)\FrescoFoundationd.lib"
@@ -225,11 +225,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\RasterIO.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\ReadRasterException.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Species.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\Stat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\WriteRasterException.cpp"
 				>
 			</File>
 		</Filter>
@@ -279,6 +291,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\Fresco\Foundation\RasterIO.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Fresco\Foundation\ReadRasterException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\Fresco\Foundation\Resource.h"
 				>
 			</File>
@@ -288,6 +308,10 @@
 			</File>
 			<File
 				RelativePath=".\include\Fresco\Foundation\Stat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Fresco\Foundation\WriteRasterException.h"
 				>
 			</File>
 		</Filter>

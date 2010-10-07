@@ -15,8 +15,6 @@
 class FrescoCustom_API CustomLandscape : public Landscape 
 {
 //Data
-public:
-	enum LayerType		{FIRE,FIREAGE,FIRESUPPRESSION,AGE,VEGETATION,SUBCANOPY,SITE};
 private:
     struct SSuppressionTransition
     {
@@ -51,7 +49,7 @@ private:
     std::vector<SHabitatStat> _habitatStats;
 	//Veg Layer
 	std::string			_vegInputFile;
-	int**				_pVegSpatialInput;
+	unsigned char**		_pVegSpatialInput;
 	bool				_isForcedVegTransitions;
 	std::string			_vegTransitionFile;
 	bool				_isUsingUniqueVegAndAgePerRep;
@@ -61,7 +59,7 @@ private:
 	int**				_pAgeSpatialInput;
 	//Topography Layer
 	std::string			_topoInputFile;
-	int**				_pTopoSpatialInput;
+	byte**				_pTopoSpatialInput;
 	//Site Layer
 	std::string			_siteInputFile;
 	float**				_pSiteSpatialInput;
@@ -70,13 +68,13 @@ private:
 	int**				_pTreeDensitySpatialInput;
 	//Burn Severity Layer
 	std::string			_burnSeverityInputFile;
-	int**				_pBurnSeveritySpatialInput;
+	byte**				_pBurnSeveritySpatialInput;
 	bool				_isUsingUniqueBurnSeverityPerRep;
 	//Fire Layer
-	int**				_pHistoricalFireSpatialInput;
+	byte**				_pHistoricalFireSpatialInput;
 	float**				_pIgnitionFactorSpatialInput;
 	float**				_pSensitivitySpatialInput;
-	int**				_pSuppressions;											//Suppression Map values 0-5 where 0 is always represents no suppression.
+	byte**				_pSuppressions;											//Suppression Map values 0-5 where 0 is always represents no suppression.
     static const int    NUM_SUPPRESSION_CLASSES = 5;
 	bool			    _isFireSuppressionOn;
     std::string	        _suppressionFilename;
@@ -102,7 +100,6 @@ public:
 	void				doVegetationTransitions();
     void                doFireSuppressionTransitions();
     void                writeMaps();
-    void				fillArray(LayerType layerType, std::vector< std::vector<double> >& rArray);
 protected:
     virtual const float getCustomFireSpreadMultiplier(const unsigned int row, const unsigned int col, const unsigned int fireSizeTotal, const unsigned int fireNum);
 private:

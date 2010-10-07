@@ -5,10 +5,10 @@
 #include "Climate.h"
 #include "Fire.h"
 #include "Species.h"
-
+#include "RasterIO.h"
 
 class Species;
-
+enum ALFMapType;
 
 class FrescoFoundation_API Frame : public Fire 
 //The Frame class is really a intermediary between the parent classes specifying the functionality of
@@ -20,7 +20,7 @@ class FrescoFoundation_API Frame : public Fire
 //Data
 public:
     static void             setOutFlagsForAllFrames(const int newOutFlags) { _outFlags = newOutFlags; }
-	virtual const int		type() const = 0;										        //Force the class to declare what type it is when asked
+	virtual const unsigned char		type() const { return gNoVegID; };										        //Force the class to declare what type it is when asked
 	const int				age() const { return gYear - _yearEstablished; }				//Report the age - used for statistical purposes
 	const int				frameAge() const { return gYear - _yearFrameEstablished; }	    //Report the frame age or residence time
     Species                 speciesSubCanopy() const { return _speciesSubCanopy; }
@@ -49,7 +49,8 @@ public:
     static void				clear();
 	virtual Frame*			success (Landscape* pParent) = 0;								    //Each child class needs to have it's own successional routine
 	virtual double			queryReply(Landscape *Parent, const double Weight, const double *Parms = NULL) { return 0.; }	//Supply a general query function for intercell communitcation, parameter can pass data and/or a flag to indicate what type of query is being performed
-	virtual void			writeData (std::ostream &s) const;							    //Children can output their data when requested if they implement it
+	virtual unsigned char	getAsByte(RasterIO::ALFMapType mapType); // Children can output their data requested if they implement it
+	virtual float			getAsFloat(RasterIO::ALFMapType mapType); // Children can output their data requested if they implement it
 	friend					std::ostream& operator<< (std::ostream& s, const Frame& rFram);	//Output the class to a stream - uses the Landscape flags
 };
 

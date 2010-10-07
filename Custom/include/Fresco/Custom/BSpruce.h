@@ -42,7 +42,7 @@ public:
     static void             setStaticData();
 	static void				clear();
 	Frame*					success(Landscape *Parent);
-	const int				type() const;
+	const unsigned char		type() const;
 	const float				getHumanIgnitionProb() const;
 	const float				getIgnitionDepressor();
 private:
@@ -66,7 +66,7 @@ inline const float			BSpruce::getIgnitionDepressor()
 }
 
 
-inline const int            BSpruce::type() const
+inline const unsigned char	BSpruce::type() const
 {
     return gBSpruceID; 
 }

@@ -3,7 +3,8 @@
 
 #include "Fresco/Foundation/PreCompiled.h"
 #include "Fresco/Foundation/Frame.h"
-
+#include "Fresco/Foundation/RasterIO.h"
+#include "Poco/Exception.h"
 
 Frame::Frame(const int& rAge, 
 			 const bool& rIsTopoComplex,
@@ -15,6 +16,25 @@ Frame::Frame(const int& rAge,
              const Species& rSpeciesSubCanopy)
     : Fire(rYearOfLastBurn, rLastBurnSeverity, rFireIgnitionFactor, rFireSensitivity), _yearEstablished(rAge), _yearFrameEstablished(rAge), _site(rSite), _isTopoComplex(rIsTopoComplex), _speciesSubCanopy(rSpeciesSubCanopy)
 {
+	if (type() != gNoVegID)
+	{
+		float fnd = 0; GetNoData(fnd);
+		int ind = 0; GetNoData(ind);
+		byte bnd = 0; GetNoData(bnd);
+		std::string tailMsg =  " Nodata values should only be used where vegetation is set to the NoVeg ID ("+ToS(gNoVegID)+").";
+		if (ind == rAge)
+			throw Poco::Exception("invalid use of nodata value in age." + tailMsg);
+		if (fnd == rSite)
+			throw Poco::Exception("invalid use of nodata value in site." + tailMsg);
+		if (!(rLastBurnSeverity > 0 && rLastBurnSeverity < 6))
+			throw Poco::Exception("invalid burn severity class ID used ("+ToS(rLastBurnSeverity)+"). Valid burn severity class IDs are 1 through 5.");
+		if (fnd == rFireIgnitionFactor)
+			throw Poco::Exception("invalid use of nodata value in fire ignition." + tailMsg);
+		if (fnd == rFireSensitivity)
+			throw Poco::Exception("invalid use of nodata value in fire sensitivity." + tailMsg);
+		//if (bnd == (int)rSpeciesSubCanopy)
+		//	throw Poco::Exception("invalid use of nodata value in species sub canopy." + tailMsg);
+	}
 }
 
 
@@ -30,31 +50,11 @@ void Frame::clear()
 }
 
 
-std::ostream& operator<< (std::ostream& s, const Frame& f) 
+unsigned char	Frame::getAsByte(RasterIO::ALFMapType mapType)
 {
-	int bFormat = f._outFlags & outFormat;
-	if (f._outFlags & outVeg)			{if (!bFormat) s<<"Veg="<<  f.type()                        <<"\t";         else s<<    f.type()                        <<" "; }
-	if (f._outFlags & outAge)			{if (!bFormat) s<<"Age="<<  f.age()                         <<"\t";			else s<<    f.age()                         <<" "; }
-	if (f._outFlags & outSite)		    {if (!bFormat) s<<"Site="<< f._site                         <<"\t";         else s<<    f._site                         <<" "; }
-	if (f._outFlags & outSub)			{if (!bFormat) s<<"Sub="<<  f._speciesSubCanopy             <<"\t";         else s<<    f._speciesSubCanopy             <<" "; }
-	if (f._outFlags & outFireAge)		{if (!bFormat) s<<"FAge="<< f.yearOfLastBurn                <<"\t";         else s<<    f.yearOfLastBurn                <<" "; }
-	if (f._outFlags & outFireScar)	    {if (!bFormat) s<<"FScar=";	s << (f.lastBurnWasOrigin?"-":"") << f.yearOfLastBurn << "." << f.fireScarID;	if (!bFormat) s << "\t"; else s << " ";	}
-	if (f._outFlags & outfireSeverity)  {if (!bFormat) s<<"FSev="<<	(f.yearOfLastBurn==gYear ? (int)f.burnSeverity : 0)	<<"\t";	else s<< (f.yearOfLastBurn==gYear ? (int)f.burnSeverity : 0) <<" "; }
-	if (f._outFlags & outfireSeverityHist) {if (!bFormat) s<<"FSevHist="<<	(int)f.burnSeverity		<<"\t";			else s<<	(int)f.burnSeverity				<<" "; }
-	f.writeData (s);
-	return s;
+	throw Poco::Exception("This frame type ("+ToS(type())+") does not support the map type ("+ ToS(mapType) + ")");
 }
-
-
-void Frame::writeData (std::ostream& s) const 
-//A default function for outputing specific frame data.  This function always outputs 0 after
-//a NoData label to indicate that there was no output routine specified
+float			Frame::getAsFloat(RasterIO::ALFMapType mapType)
 {
-	if ((_outFlags & out1) || (_outFlags & out2) || (_outFlags & out3) || (_outFlags & out4)) {
-	    int formatting = _outFlags & outFormat;
-		if (!formatting)
-			s << "NoData=" << 0. << "\t";
-        else
-            s << 0. << " ";
-	}
+	throw Poco::Exception("This frame type ("+ToS(type())+") does not support the map type ("+ ToS(mapType) + ")");
 }

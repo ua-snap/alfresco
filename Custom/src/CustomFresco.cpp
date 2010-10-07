@@ -13,7 +13,7 @@
 #include <set>
 
 
-std::set<int>	CustomFresco::validVegTypes;
+std::set<unsigned char>	CustomFresco::validVegTypes;
 
 CustomFresco::		CustomFresco(bool isDebugOn) 
 	: Fresco(new CustomLandscape(), isDebugOn)
@@ -27,10 +27,10 @@ CustomFresco::		~CustomFresco()
 void CustomFresco::	customSetup()
 {
     output("Loading Species settings.\n");
-    gBSpruceID = fif().nGet("BSpruce");
-    gWSpruceID = fif().nGet("WSpruce");
-    gDecidID   = fif().nGet("Decid"); 
-    gTundraID  = fif().nGet("Tundra");
+    gBSpruceID = (byte)fif().nGet("BSpruce");
+    gWSpruceID = (byte)fif().nGet("WSpruce");
+    gDecidID   = (byte)fif().nGet("Decid"); 
+    gTundraID  = (byte)fif().nGet("Tundra");
 
 	validVegTypes.insert(gBSpruceID);
 	validVegTypes.insert(gWSpruceID);
@@ -46,10 +46,10 @@ void CustomFresco::	customSetup()
 	// Handle Grassland here for backwards compatibility.
 	if (fif().CheckKey("Grassland"))
 	{
-		gGrasslandID = fif().nGet("Grassland");
+		gGrasslandID = (byte)fif().nGet("Grassland");
 		validVegTypes.insert(gGrasslandID);
 		Grassland::setStaticData();
 	}
 
-	gNumSpecies = validVegTypes.size();
+	gNumSpecies = (int)validVegTypes.size();
 }

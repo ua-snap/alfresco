@@ -12,7 +12,7 @@ class FrescoCustom_API CustomFresco : public Fresco
 {
 //Data
 public:
-	static std::set<int>	validVegTypes;
+	static std::set<unsigned char>	validVegTypes;
 
 //Functionality
 public:

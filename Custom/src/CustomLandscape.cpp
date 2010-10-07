@@ -11,6 +11,7 @@
 #include "Fresco/Foundation/Stat.h"
 #include "Fresco/Foundation/Except.h"
 #include "Fresco/Foundation/Fire.h"
+#include "Fresco/Foundation/RasterIO.h"
 #include "Poco/Path.h"
 #include "Poco/Stopwatch.h"
 
@@ -121,27 +122,27 @@ void CustomLandscape::		setup()
     Landscape::setup();
     
 	//Make space for landscape data.
-	_pVegSpatialInput				= new int*[gNumRows];
+	_pVegSpatialInput				= new byte*[gNumRows];
 	_pSiteSpatialInput				= new float*[gNumRows];
 	_pTreeDensitySpatialInput		= new int*[gNumRows];
 	_pAgeSpatialInput				= new int*[gNumRows];
-	_pTopoSpatialInput				= new int*[gNumRows];
+	_pTopoSpatialInput				= new byte*[gNumRows];
 	_pIgnitionFactorSpatialInput	= new float*[gNumRows];
 	_pSensitivitySpatialInput	    = new float*[gNumRows];
-	_pBurnSeveritySpatialInput		= new int*[gNumRows];
-	_pSuppressions                  = new int*[gNumRows];
-	_pHistoricalFireSpatialInput	= new int*[gNumRows];
+	_pBurnSeveritySpatialInput		= new byte*[gNumRows];
+	_pSuppressions                  = new byte*[gNumRows];
+	_pHistoricalFireSpatialInput	= new byte*[gNumRows];
 	for (r=0;r<gNumRows;r++) {
-		_pVegSpatialInput[r]		    = new int[gNumCol];
+		_pVegSpatialInput[r]		    = new byte[gNumCol];
 		_pSiteSpatialInput[r]			= new float[gNumCol];
 		_pTreeDensitySpatialInput[r]	= new int[gNumCol];
 		_pAgeSpatialInput[r]			= new int[gNumCol];
-		_pTopoSpatialInput[r]			= new int[gNumCol];
+		_pTopoSpatialInput[r]			= new byte[gNumCol];
 		_pIgnitionFactorSpatialInput[r]	= new float[gNumCol];
 		_pSensitivitySpatialInput[r]	= new float[gNumCol];
-		_pBurnSeveritySpatialInput[r]	= new int[gNumCol];
-		_pSuppressions[r]				= new int[gNumCol];
-		_pHistoricalFireSpatialInput[r] = new int[gNumCol];
+		_pBurnSeveritySpatialInput[r]	= new byte[gNumCol];
+		_pSuppressions[r]				= new byte[gNumCol];
+		_pHistoricalFireSpatialInput[r] = new byte[gNumCol];
         for (c=0;c<gNumCol;c++) {
 			_pVegSpatialInput[r][c]		        = 0;
 			_pSiteSpatialInput[r][c]		    = 0;
@@ -199,11 +200,11 @@ void CustomLandscape::		setup()
 
 	//Read in layers.
 	ShowOutput(MODERATE, "\tReading topography layer.\n");
-	ReadGISFile<int>(_pTopoSpatialInput, gNumRows, gNumCol, _topoInputFile,std::ios::in, 0);
+	gIO->readRasterFile(GetFullPath(gInputBasePath, _topoInputFile), _pTopoSpatialInput, false);
 	ShowOutput(MODERATE, "\tReading site layer.\n");
-	ReadGISFile<float>(_pSiteSpatialInput, gNumRows, gNumCol, _siteInputFile,std::ios::in, 0.);
+	gIO->readRasterFile(GetFullPath(gInputBasePath, _siteInputFile), _pSiteSpatialInput, false);
 	ShowOutput(MODERATE, "\tReading tree density layer.\n");
-	ReadGISFile<int>(_pTreeDensitySpatialInput, gNumRows, gNumCol, _treeDensityInputFile,std::ios::in, 0);
+	gIO->readRasterFile(GetFullPath(gInputBasePath, _treeDensityInputFile), _pTreeDensitySpatialInput, false);
 }
 
 void CustomLandscape::		repStart() 
@@ -218,19 +219,19 @@ void CustomLandscape::		repStart()
 		//Veg
 		std::string inputFileWithRepYear = AppendRepYear(_vegInputFile, gRep,_yearOfUniqueInputPerRep);
 		ShowOutput(MODERATE, "\t\tReading veg layer from "+ GetFullPath(gInputBasePath, inputFileWithRepYear) +"\n");
-		ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, inputFileWithRepYear, std::ios::in,gNoVegID);
+		gIO->readRasterFile(GetFullPath(gInputBasePath, inputFileWithRepYear), _pVegSpatialInput, false);		
 		//Age
 		inputFileWithRepYear = AppendRepYear(_ageInputFile, gRep, _yearOfUniqueInputPerRep);
 		ShowOutput(MODERATE, "\t\tReading age layer from "+ GetFullPath(gInputBasePath, inputFileWithRepYear)+"\n");
-		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, inputFileWithRepYear,std::ios::in, 1);
+		gIO->readRasterFile(GetFullPath(gInputBasePath, inputFileWithRepYear), _pAgeSpatialInput, false);		
 	}
 	else if (FRESCO->isRunningFirstRep()) {  //Use one input map for all reps.
 		//Veg
 		ShowOutput(MODERATE, "\t\tReading veg layer from "+GetFullPath(gInputBasePath, _vegInputFile)+"\n");
-		ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, _vegInputFile, std::ios::in, gNoVegID);
+		gIO->readRasterFile(GetFullPath(gInputBasePath, _vegInputFile), _pVegSpatialInput, false);		
 		//Age
 		ShowOutput(MODERATE, "\t\tReading age layer from "+GetFullPath(gInputBasePath, _ageInputFile)+"\n");
-		ReadGISFile<int>(_pAgeSpatialInput, gNumRows, gNumCol, _ageInputFile, std::ios::in, 1);
+		gIO->readRasterFile(GetFullPath(gInputBasePath, _ageInputFile), _pAgeSpatialInput, false);		
 	}
 
 
@@ -239,7 +240,7 @@ void CustomLandscape::		repStart()
 		//Use unique map per rep.
 		std::string inputFileWithRepYear = AppendRepYear(_burnSeverityInputFile, gRep,_yearOfUniqueInputPerRep);
 		ShowOutput(MODERATE, "\t\tReading burn severity layer from "+GetFullPath(gInputBasePath, inputFileWithRepYear)+"\n");
-		ReadGISFile<int>(_pBurnSeveritySpatialInput, gNumRows, gNumCol, inputFileWithRepYear, std::ios::in, 3);
+		gIO->readRasterFile(GetFullPath(gInputBasePath, inputFileWithRepYear), _pBurnSeveritySpatialInput, false);		
 	}
 	else if (FRESCO->isRunningFirstRep()) {  
 		//Use one input map for all reps.
@@ -247,25 +248,25 @@ void CustomLandscape::		repStart()
 			"\t\tSetting burn severity to default, HighLSS (level 3), for all cells.\n" :
 			"\t\tReading burn severity layer from "+_burnSeverityInputFile+"\n";
 		ShowOutput(MODERATE, message);
-		ReadGISFile<int>(_pBurnSeveritySpatialInput, gNumRows, gNumCol, _burnSeverityInputFile, std::ios::in, 3);
+		gIO->readRasterFile(GetFullPath(gInputBasePath, _burnSeverityInputFile), _pBurnSeveritySpatialInput, false);		
 	}	
  
 	//Create landscape cell-by-cell, assigning values from all the input 
 	Frame* pFrame = 0;
+	byte noDataID = 0; GetNoData(noDataID);
 	for (int r=0; r<gNumRows; r++) {
 		for (int c=0; c<gNumCol; c++) {
 			pFrame = _pFrames[r][c];
 			if (pFrame) delete pFrame;
-			int frameTypeID = _pVegSpatialInput[r][c];
-			if (frameTypeID==-1)                { throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS(frameTypeID)); }
-			else if (frameTypeID==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			byte frameTypeID = _pVegSpatialInput[r][c];
+			if (frameTypeID==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gGrasslandID)	{ _pFrames[r][c] = new Grassland(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gDecidID)	    { _pFrames[r][c] = new Decid(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gTundraID)	{ _pFrames[r][c] = new Tundra(-_pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
 			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (frameTypeID==gNoDataID)    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else								{ throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS(frameTypeID)); }
+			else if (frameTypeID==noDataID)    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else								{ throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS((int)frameTypeID)); }
 		}
 	}
 
@@ -328,8 +329,8 @@ void CustomLandscape::		doFireTransitions()
 				ShowOutput("\t\t\tSensitivity file = " + GetFullPath(gInputBasePath, transition->SpatialSensitivityFile) + "\n");
 			}
 			//Read spatial data files.
-			ReadGISFile<float>	(_pIgnitionFactorSpatialInput, gNumRows, gNumCol, transition->SpatialIgnitionFile, std::ios::in, transition->Ignition);
-			ReadGISFile<float>	(_pSensitivitySpatialInput, gNumRows, gNumCol, transition->SpatialSensitivityFile, std::ios::in, transition->Sensitivity);
+			gIO->readRasterFile(GetFullPath(gInputBasePath, transition->SpatialIgnitionFile), _pIgnitionFactorSpatialInput, false);		
+			gIO->readRasterFile(GetFullPath(gInputBasePath, transition->SpatialSensitivityFile), _pSensitivitySpatialInput, false);		
 			for (int r=0; r<gNumRows; r++) {
 				for (int c=0; c<gNumCol; c++) {
 					pFire = (Fire*)_pFrames[r][c];
@@ -360,7 +361,7 @@ void CustomLandscape::		doIgnitions()
 		//
 		std::string	filename = AppendYear(Fire::historicalFiresFileName, gYear);
 		ShowOutput(MAXIMUM, "\t\t\tReading in historical fire map: " + GetFullPath(gInputBasePath, filename) + "\n");
-		ReadGISFile<int>(_pHistoricalFireSpatialInput, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
+		gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pHistoricalFireSpatialInput, false);		
 		//
 		// Force cells to burn as specified in the file...
 		//
@@ -416,7 +417,11 @@ const float CustomLandscape::getCellFireSuppression(const unsigned int row, cons
 	if (_isFireSuppressionOn) {
 		//Apply suppression factor if fire is below suppression threshold.
 		if (fireNum <= _thresholdIgnitions && fireSizeTotal <= _thresholdFireSize) {
-			return _pSuppressionClasses[_pSuppressions[_row][_col]];
+			byte s = _pSuppressions[_row][_col];
+			if (s > 0  &&  s < 6)
+				return _pSuppressionClasses[s];
+			else
+				throw Poco::Exception("invalid suppression class ID ("+ToS(s)+"). Valid suppression class IDs are 1 through 5.");
         }
 	}
 	return 1;
@@ -529,7 +534,7 @@ void CustomLandscape::      setCurrentSuppressionTransition(std::vector<SSuppres
 	    if (InputFileExists(filename)) {
 		    ShowOutput(MAXIMUM, "\t\t\tProcessing suppression file: " + GetFullPath(gInputBasePath, filename) + ".\n");
             //if (_pSuppressions != 0)  { for (int r=0;r<gNumRows;r++) delete[] _pSuppressions[r];  delete[] _pSuppressions;  _pSuppressions = 0; }
-		    ReadGISFile<int>(_pSuppressions, gNumRows, gNumCol, filename.c_str(), std::ios::in, 0);
+		    gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSuppressions, false);		
         } 
         else throw Poco::Exception("Expected suppression map for year " + ToS(gYear) + " at " + GetFullPath(gInputBasePath, filename));
     }
@@ -558,9 +563,9 @@ void CustomLandscape::		doVegetationTransitions()
 {
 	int		r,c			= 0;
 	Frame*	pCurFrame	= 0;
-	int		curType		= 0;
+	byte	curType		= 0;
 	Frame*	pNewFrame	= 0;
-	int		newType		= 0;
+	byte		newType		= 0;
 	std::string	filename;
 
 	if (_isForcedVegTransitions) {
@@ -568,168 +573,37 @@ void CustomLandscape::		doVegetationTransitions()
 		filename = _vegTransitionFile;
 		filename = filename.substr(0,filename.size()-4) + "_" + ToS(gYear) + ".txt";
 		//Assume file does not exist on exception.
-		try {ReadGISFile<int>(_pVegSpatialInput, gNumRows, gNumCol, filename.c_str(), std::ios::in, -21);}
+		try {gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pVegSpatialInput, false);}		
 		catch (...) {return;}
 		ShowOutput(MODERATE, "\t\tProcessing Vegetation Transitions\n");
 		ShowOutput(MAXIMUM, "\t\t\tReading in veg transition file: " + GetFullPath(gInputBasePath, filename) + "\n");
 		//Force cells to succeed to new types.
+		byte noDataID = 0; GetNoData(noDataID);
 		for (r=0; r<gNumRows; r++) {
 			for (c=0; c<gNumCol; c++) {
-				if (_pVegSpatialInput[r][c]!=-21) {
-					pCurFrame	= _pFrames[r][c];
-					curType		= pCurFrame->type();
-					newType		= _pVegSpatialInput[r][c];
-					if (newType!=curType) {
-						//Get the new frame type.
-						if (newType==-1)				throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS(newType) + ".\n");
-						else if (newType==gBSpruceID)	pNewFrame = new BSpruce(*pCurFrame);
-						else if (newType==gWSpruceID)	pNewFrame = new WSpruce(*pCurFrame);
-						else if (newType==gGrasslandID)	pNewFrame = new Grassland(*pCurFrame);
-						else if (newType==gDecidID)		pNewFrame = new Decid(*pCurFrame);
-						else if (newType==gTundraID)	pNewFrame = new Tundra(*pCurFrame);
-						else if (newType==gNoVegID)		pNewFrame = new NoVeg(*pCurFrame);
-						else if (newType==gNoDataID)	pNewFrame = new NoVeg(*pCurFrame);
-						else							throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS(newType) + ".\n");
-						//Decrement cell count for old species and increment cell count for new species.
-						_vegDistributionStat[curType]--;
-						_vegDistributionStat[newType]++;
-						//Update veg residence times.
-						_vegResidenceStat[curType].Add(gYear, gRep, abs(pCurFrame->frameAge()));
-						//Delete old frame and assign the new.
-						delete pCurFrame;
-						_pFrames[r][c] = pNewFrame;
-					}
+				pCurFrame	= _pFrames[r][c];
+				curType		= pCurFrame->type();
+				newType		= _pVegSpatialInput[r][c];
+				if (newType!=curType) {
+					//Get the new frame type.
+					if (newType==gBSpruceID)		pNewFrame = new BSpruce(*pCurFrame);
+					else if (newType==gWSpruceID)	pNewFrame = new WSpruce(*pCurFrame);
+					else if (newType==gGrasslandID)	pNewFrame = new Grassland(*pCurFrame);
+					else if (newType==gDecidID)		pNewFrame = new Decid(*pCurFrame);
+					else if (newType==gTundraID)	pNewFrame = new Tundra(*pCurFrame);
+					else if (newType==gNoVegID)		pNewFrame = new NoVeg(*pCurFrame);
+					else if (newType==noDataID)		pNewFrame = new NoVeg(*pCurFrame);
+					else							throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS((int)newType) + ".\n");
+					//Decrement cell count for old species and increment cell count for new species.
+					_vegDistributionStat[curType]--;
+					_vegDistributionStat[newType]++;
+					//Update veg residence times.
+					_vegResidenceStat[curType].Add(gYear, gRep, abs(pCurFrame->frameAge()));
+					//Delete old frame and assign the new.
+					delete pCurFrame;
+					_pFrames[r][c] = pNewFrame;
 				}
 			}
-		}
-	}
-}
-
-
-void CustomLandscape::		fillArray(LayerType layerType, std::vector< std::vector<double> >& rVector)
-{
-	Frame* pFrame = 0;
-    if (FRESCO->getState()<Fresco::SETUP) return;
-	else if (FRESCO->getState()==Fresco::SETUP)
-	{
-		if (layerType==VEGETATION)
-			for (int r=0;r<gNumRows;r++)
-				for (int c=0;c<gNumCol;c++) rVector[r][c]=_pVegSpatialInput[r][c];
-	}
-	else if (FRESCO->getState()>Fresco::SETUP)
-	{
-		switch(layerType) 
-		{
-		case FIRE:
-			//0=NoFire  1=NaturalFireOrigin  2=NaturalFire 64=HumanFireOrigin  65=HumanFire 
-			for (int r=0;r<gNumRows;r++) 
-			{
-				for (int c=0;c<gNumCol;c++) 
-				{ 
-					pFrame = _pFrames[r][c];
-					//If burn occured...
-					if (gYear==pFrame->yearOfLastBurn) 
-					{
-						//If natural cause...
-						if (pFrame->lastBurnCause==Fire::NATURAL)	rVector[r][c] = (pFrame->lastBurnWasOrigin?1:2); 
-						//If human cause...
-						else if (pFrame->lastBurnCause==Fire::HUMAN) rVector[r][c] = (pFrame->lastBurnWasOrigin?64:65); 
-					}
-					else 
-					{
-						//No burn occured.
-						rVector[r][c] = 0;
-					}
-				}
-			}
-			break;
-		case FIRESUPPRESSION:
-			//Show fire layer for any burned cells, otherwise show suppression classes.
-			//0=NoFire  1=NaturalFireOrigin  2=NaturalFire 64=HumanFireOrigin  65=HumanFire 
-			for (int r=0;r<gNumRows;r++) 
-			{
-				for (int c=0;c<gNumCol;c++) 
-				{ 
-					pFrame = _pFrames[r][c];
-					//If burn occured...
-					if (gYear==pFrame->yearOfLastBurn) 
-					{
-						//If natural cause...
-						if (pFrame->lastBurnCause==Fire::NATURAL)	rVector[r][c] = (pFrame->lastBurnWasOrigin?1:2); 
-						//If human cause...
-						else if (pFrame->lastBurnCause==Fire::HUMAN) rVector[r][c] = (pFrame->lastBurnWasOrigin?64:65); 
-					}
-					else 
-					{
-						//No burn occured.  Show Suppression level.
-						if (_isFireSuppressionOn)
-						{
-							switch(_pSuppressions[r][c])	//switch on suppression classes.
-							{
-							case 0:	//Class o is no suppression so show color 0: white.
-								rVector[r][c] = 0;  
-								break;
-							case 1:
-								rVector[r][c] = 251;  
-								break;
-							case 2:
-								rVector[r][c] = 252;  
-								break;
-							case 3:
-								rVector[r][c] = 253;  
-								break;
-							case 4:
-								rVector[r][c] = 254;  
-								break;
-							case 5:
-								rVector[r][c] = 255;  
-								break;							
-							}
-						}
-					}
-				}
-			}
-			break;
-		case FIREAGE:
-			//0=NoFire  1=NaturalFireOrigin  2-63=NaturalFire 64=HumanFireOrigin  65-126=HumanFire (62 shade values for each fire type plus the origin value)
-			int burnAge;
-			for (int r=0;r<gNumRows;r++) 
-			{
-				for (int c=0;c<gNumCol;c++) 
-				{
-					pFrame = _pFrames[r][c];
-					burnAge = gYear-pFrame->yearOfLastBurn;
-					//If no burn history on record...
-					if (pFrame->yearOfLastBurn<0) rVector[r][c] = 0;
-					//If natural burn on record...
-					else if (pFrame->lastBurnCause==Fire::NATURAL) 
-						rVector[r][c] = pFrame->lastBurnWasOrigin? (burnAge<256?1:0)  : (burnAge<256?burnAge*0.239f+2:0);
-					//If human burn on record...
-					else if (pFrame->lastBurnCause==Fire::HUMAN) 
-						rVector[r][c] = pFrame->lastBurnWasOrigin? (burnAge<256?64:0) : (burnAge<256?burnAge*0.239f+65:0);
-				}
-			}
-			break;
-		case AGE:
-			for (int r=0;r<gNumRows;r++)
-				for (int c=0;c<gNumCol;c++) rVector[r][c]=_pFrames[r][c]->age();
-			break;
-		case VEGETATION:
-			for (int r=0;r<gNumRows;r++)
-				for (int c=0;c<gNumCol;c++) rVector[r][c]=_pFrames[r][c]->type();
-			break;
-		case SUBCANOPY:
-			for (int r=0;r<gNumRows;r++)
-				for (int c=0;c<gNumCol;c++) rVector[r][c]=_pFrames[r][c]->speciesSubCanopy();
-			break;
-		case SITE:
-			for (int r=0;r<gNumRows;r++)
-				for (int c=0;c<gNumCol;c++) rVector[r][c]=_pFrames[r][c]->site();
-			break;
-		default:
-			for (int r=0;r<gNumRows;r++)
-				for (int c=0;c<gNumCol;c++) rVector[r][c]=0;
-			break;
 		}
 	}
 }
@@ -835,7 +709,7 @@ void CustomLandscape::    	writeMaps()
 				isShown = true;
 				filename = GetFullPath(gOutputDirectory, iter->File);
 				filename = AppendRepYear(filename);
-				saveMaps(filename,iter->Flags);	//Output the data.
+				gIO->writeRasterFile(filename, _pFrames, gIO->getMapType(iter->Flags));
 			}
 		}
 	}

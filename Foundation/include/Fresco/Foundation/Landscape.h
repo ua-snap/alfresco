@@ -74,7 +74,6 @@ public:
 	const float			cellClimateFlammability() const;
 
 	virtual void		logFireStats(int interval, bool ignoreFirstInterval);	//Update the fire stats - this is just the by-species stats which need to be updated as that cell burns and is called from Fire
-	void				saveMaps(const std::string filename, const int mapFlags);
 protected:
 	//Ignition worker functions.
 	bool				testNaturalIgnition(Frame* pFrame);

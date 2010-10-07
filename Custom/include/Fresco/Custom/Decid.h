@@ -7,6 +7,9 @@
 #include "Fresco/Foundation/NoVeg.h"
 
 
+//enum ALFMapType;
+
+
 class FrescoCustom_API Decid : public Frame 
 // The Decid class is the definition of the deciduous frame.  It is a child of the general frame type and inherits most
 // of its functionality from there.  It provides instances of the pure virtual functions getFireProb, and success.  In 
@@ -53,10 +56,11 @@ public:
 	static void				clear();
 	virtual void			repStart();
 	Frame*					success(Landscape *Parent);
-	const int				type() const;
+	const unsigned char		type() const;
 	const float				getHumanIgnitionProb() const;
 	const float				getIgnitionDepressor();
-	void					writeData(std::ostream& s, const int outFlags, const int formatting=false) const;
+	//template<class T> T		get(RasterIO::ALFMapType mapType);
+	virtual unsigned char	getAsByte(RasterIO::ALFMapType mapType);
 private:
 	void					_Decid();
 	float			        getFireProb(const Landscape* pLandscape);
@@ -84,7 +88,7 @@ inline const float			Decid::getHumanIgnitionProb() const
     return _humanIgnitionsProb; 
 }
 
-inline const int            Decid::type () const
+inline const unsigned char            Decid::type () const
 { 
     return gDecidID; 
 }

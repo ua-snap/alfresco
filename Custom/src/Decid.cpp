@@ -5,6 +5,7 @@
 #include "Fresco/Custom/Decid.h"
 #include "Fresco/Custom/BSpruce.h"
 #include "Fresco/Foundation/Fresco.h"
+#include "Fresco/Foundation/RasterIO.h"
 #include "Fresco/Custom/CustomLandscape.h"
 #include "Fresco/Custom/WSpruce.h"
 
@@ -195,20 +196,29 @@ void Decid::repStart()
 }
 
 
-void Decid::writeData (std::ostream &s, const int outFlags, const int doFormatting) const 
-//Output the specific frame data.  Variable 1 reflects canopy and variable 2 reflects species trajectory.
+
+//template unsigned char	Decid::get<unsigned char>(RasterIO::ALFMapType mapType);
+//template<class T> T		Decid::get(RasterIO::ALFMapType mapType)
+//{
+//	switch(mapType)
+//	{
+//	case RasterIO::DECID_SPECIES_TRAJECTORY:
+//		return _speciesTrajectory;
+//		break;
+//	default:
+//		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ ToS(mapType) + ")");
+//	}
+//}
+unsigned char	Decid::getAsByte(RasterIO::ALFMapType mapType)
 {
-	if (outFlags & out1) {
-		if (!doFormatting)  s << "Traj=" << _speciesTrajectory << "\t";
-        else                s << _speciesTrajectory << " ";
+	switch(mapType)
+	{
+	case RasterIO::DECID_SPECIES_TRAJECTORY:
+		return _speciesTrajectory;
+		break;
+	default:
+		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ ToS(mapType) + ")");
 	}
-    else {
-    	bool showNoData = (outFlags & out1) || (outFlags & out2) || (outFlags & out3) || (outFlags & out4);
-	    if (showNoData) {   //There was no data to output so display that info
-            if (!doFormatting)  s << "NoData=" << 0. << "\t";
-            else                s << 0. << " ";
-        }
-    }
 }
 
 

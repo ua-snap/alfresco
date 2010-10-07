@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\include;..\Foundation\include;&quot; p:\poco\XML\include&quot;;&quot;p:\poco\Net\include&quot;;&quot;p:\poco\Foundation\include&quot;"
+				AdditionalIncludeDirectories=".\include;..\Foundation\include;p:\poco\XML\include;p:\poco\Net\include;p:\poco\Foundation\include;p:\gdal\build\include"
 				PreprocessorDefinitions="WIN32;_WIN32;_DEBUG;POCO_DLL;FRESCO_CUSTOM_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib FrescoFoundationd.lib"
+				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib FrescoFoundationd.lib gdal_i.lib"
 				OutputFile="$(OutDir)\FrescoCustomd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\lib;p:\poco\lib"
+				AdditionalLibraryDirectories="..\lib;p:\poco\lib;p:\gdal\build\lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				MapExports="false"

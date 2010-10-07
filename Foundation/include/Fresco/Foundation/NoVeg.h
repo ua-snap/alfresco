@@ -23,7 +23,7 @@ public:
 							~NoVeg() {}
 	static void				clear();
 	Frame*					success (Landscape* pParent) { return NULL; }
-	const int				type () const { return gNoVegID; }
+	const unsigned char		type () const { return gNoVegID; }
 	const float				getHumanIgnitionProb() const { return _humanIgnitionsProb; }
 private:
 	float					getFireProb (const Landscape* pLandscape) { return 0.; }

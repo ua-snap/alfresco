@@ -57,10 +57,11 @@ public:
     static void             setStaticData();
 	static void				clear();
 	Frame*					success(Landscape* pParent);
-	const int				type() const;
+	const unsigned char		type() const;
 	const float				getHumanIgnitionProb() const;
 	const float				getIgnitionDepressor();
-	void					writeData(std::ostream& s, const int outFlags, const int isFormatting=false) const;
+	//template<class T> T		get(RasterIO::ALFMapType mapType);
+	virtual float			getAsFloat(RasterIO::ALFMapType mapType);
 private:
 	void					_Tundra(const int treeDensity);
 	float			        getFireProb(const Landscape* pLandscape);
@@ -88,7 +89,7 @@ inline const float			Tundra::getHumanIgnitionProb() const
     return _humanIgnitionsProb; 
 }
 
-inline const int            Tundra::type () const 
+inline const unsigned char  Tundra::type () const 
 { 
     return gTundraID; 
 }
