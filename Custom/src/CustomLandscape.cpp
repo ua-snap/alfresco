@@ -709,7 +709,7 @@ void CustomLandscape::    	writeMaps()
 				isShown = true;
 				filename = GetFullPath(gOutputDirectory, iter->File);
 				filename = AppendRepYear(filename);
-				gIO->writeRasterFile(filename, _pFrames, gIO->getMapType(iter->Flags));
+				gIO->writeRasterFile(filename, _pFrames, gIO->getMapType(iter->Flags), gYear, gRep);
 			}
 		}
 	}

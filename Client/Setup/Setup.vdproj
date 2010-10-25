@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_115C78CAC6804417B870F981A400E16A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_482A93E3D8BF48D983C94C84EF7F0727"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -132,6 +138,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_115C78CAC6804417B870F981A400E16A"
+            {
+            "SourcePath" = "8:P:\\gdal\\build\\bin\\gdal17.dll"
+            "TargetName" = "8:gdal17.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_FE2D966A43A74FB4AD156B413E242F42"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_482A93E3D8BF48D983C94C84EF7F0727"
             {
             "SourcePath" = "8:..\\Release\\FrescoFoundation.dll"
@@ -348,23 +374,23 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:FRESCO Client 1.0.8"
-        "ProductCode" = "8:{C93DF583-1100-454B-BD1D-AB78462E2492}"
-        "PackageCode" = "8:{9BCC694F-5B9E-4F9C-B1B0-28E17052D6E4}"
+        "ProductName" = "8:FRESCO Client 1.0.9"
+        "ProductCode" = "8:{597BD362-8730-469F-88CD-00BB50BCF6B8}"
+        "PackageCode" = "8:{E05A792A-F9E5-4CA3-A7E7-4DCE13B0765A}"
         "UpgradeCode" = "8:{4BD0A2E6-E520-4A1A-80CD-F73E04AF1095}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.8"
+        "ProductVersion" = "8:1.0.9"
         "Manufacturer" = "8:UAF"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:FRESCO Client 1.0.8 Setup"
+        "Title" = "8:FRESCO Client 1.0.9 Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:UAF"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:Installs FRESCO Client for running FRESCO simulations."
+        "ARPCOMMENTS" = "8:Installs ALFRESCO Client for running ALFRESCO simulations."
         "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
@@ -471,7 +497,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_052F5394B025404D896DF8427D99250B"
             {
-            "Name" = "8:FRESCO Client 1.0.8"
+            "Name" = "8:FRESCO Client 1.0.9"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -485,7 +511,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D05EF91D734D4295B599F46A9163CE3E"
             {
-            "Name" = "8:FRESCO Client 1.0.8"
+            "Name" = "8:FRESCO Client 1.0.9"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"

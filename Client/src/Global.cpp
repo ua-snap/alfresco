@@ -1,6 +1,7 @@
 
 
 #include "Fresco/Client/Global.h"
+#include "Fresco/Foundation/Fresco.h"
 #include "Poco/File.h"
 #include "Poco/Mutex.h"
 #include <fstream>
@@ -14,9 +15,10 @@ Poco::Mutex     Global::_localLogMutex;
 Global*         Global::_instance = 0;
 
 
-Global::            Global(void) : isDebugOn(false), version("1.0.8")
+Global::            Global(void) : isDebugOn(false)
 //Global is a singleton.  Keep this a private contructor and use getInstance().
 { 
+	version = Fresco::version();
 }
 
 Global::            ~Global(void)

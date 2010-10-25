@@ -52,9 +52,9 @@ void Frame::clear()
 
 unsigned char	Frame::getAsByte(RasterIO::ALFMapType mapType)
 {
-	throw Poco::Exception("This frame type ("+ToS(type())+") does not support the map type ("+ ToS(mapType) + ")");
+	throw Poco::Exception("This frame type ("+ToS(type())+") does not support the map type ("+ RasterIO::getMapTypeAsString(mapType) + ")");
 }
 float			Frame::getAsFloat(RasterIO::ALFMapType mapType)
 {
-	throw Poco::Exception("This frame type ("+ToS(type())+") does not support the map type ("+ ToS(mapType) + ")");
+	throw Poco::Exception("This frame type ("+ToS(type())+") does not support the map type ("+ RasterIO::getMapTypeAsString(mapType) + ")");
 }

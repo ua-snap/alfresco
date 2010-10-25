@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib FrescoFoundationd.lib FrescoCustomd.lib gdal_i.lib"
-				Version="1.0.5"
+				Version="1.0.9"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\lib;p:\poco\lib;p:\gdal\build\lib"
 				GenerateDebugInformation="true"
@@ -121,7 +121,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=".\include;..\Custom\include;..\Foundation\include;p:\poco\XML\include;p:\poco\Net\include;p:\poco\Foundation\include"
+				AdditionalIncludeDirectories=".\include;..\Custom\include;..\Foundation\include;p:\poco\XML\include;p:\poco\Net\include;p:\poco\Foundation\include;p:\gdal\build\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;POCO_DLL"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
@@ -141,10 +141,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="PocoFoundation.lib PocoNet.lib PocoXML.lib FrescoFoundation.lib FrescoCustom.lib"
-				Version="1.0.6"
+				AdditionalDependencies="PocoFoundation.lib PocoNet.lib PocoXML.lib FrescoFoundation.lib FrescoCustom.lib gdal_i.lib"
+				Version="1.0.9"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\lib;p:\poco\lib"
+				AdditionalLibraryDirectories="..\lib;p:\poco\lib;p:\gdal\build\lib"
 				GenerateDebugInformation="false"
 				SubSystem="1"
 				OptimizeReferences="2"

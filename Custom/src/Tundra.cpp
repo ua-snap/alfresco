@@ -171,18 +171,6 @@ void Tundra::			clear()
 
 
 
-//template float			Tundra::get<float>(RasterIO::ALFMapType mapType);
-//template<class T> T		Tundra::get(RasterIO::ALFMapType mapType)
-//{
-//	switch(mapType)
-//	{
-//	case RasterIO::TUNDRA_BASAL_AREA:
-//		return (float)_basalArea;
-//		break;
-//	default:
-//		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ ToS(mapType) + ")");
-//	}
-//}
 float			Tundra::getAsFloat(RasterIO::ALFMapType mapType)
 {
 	switch(mapType)
@@ -191,7 +179,7 @@ float			Tundra::getAsFloat(RasterIO::ALFMapType mapType)
 		return (float)_basalArea;
 		break;
 	default:
-		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ ToS(mapType) + ")");
+		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ RasterIO::getMapTypeAsString(mapType) + ")");
 	}
 }
 

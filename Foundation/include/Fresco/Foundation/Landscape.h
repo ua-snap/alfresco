@@ -33,7 +33,7 @@ protected:
 	std::vector<CStat>	_vegResidenceStat;										//Vegetation residence times by species
 private:
     static std::string	_humanIgnitionsFilename;
-	int**				_pHumanIgnitions;
+	byte**				_pHumanIgnitions;
 	static bool			_cropNeighbors;											//Should we crop the neighbours algorithm to only look circular distance?
 	float				_maxFireSizeEventWeight;								//Fire spread probability weight applied when an individual fire grows beyond a specified size.
 	static double		_xllCorner;

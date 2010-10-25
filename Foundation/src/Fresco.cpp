@@ -11,7 +11,6 @@
 #include "Poco/DateTimeFormatter.h"
 #include "Poco/LocalDateTime.h"
 #include "Poco/File.h"
-#include "Poco/Path.h"
 #include <sys/timeb.h>
 
 
@@ -57,6 +56,12 @@ Fresco::			~Fresco()
         WriteDebug("Landscape...\t[DELETE]\n");
     }
 }
+//
+//static const std::string Fresco::fifName() 
+//{ 
+//	return Fresco::_fifName; 
+//}
+//
 
 
 void Fresco::		clear()
@@ -101,7 +106,7 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
 	setState(SETTING_UP);
 	
     output("Reading FIF File.\n");
-    _fif.Initialize(std::string(basePath + Poco::Path::separator() + fifName).c_str());
+    _fif.Initialize(basePath, fifName);
 
     output("Loading General settings.\n");
     std::string temp = "";

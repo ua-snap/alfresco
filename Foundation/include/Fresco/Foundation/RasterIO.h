@@ -90,10 +90,11 @@ public:
 
 	RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double xPixelSize, 
 				double yPixelSize, double xRotation, double yRotation, 
-				int UTM = 6, int isNorthernHemisphere = TRUE, std::string coordinateSystem = "NAD83");
+				const std::string &softwareDescription = "ALFRESCO from UAF",
+				bool requireAaeacForInput = true, bool applyAaeacToOutput = true);
 	~RasterIO();
 
-	void showLimits();
+	//void showLimits();
 
 	void getNodata(byte &result);
 	void getNodata(int &result);
@@ -107,9 +108,10 @@ public:
 	void readRasterFile(const std::string filepath, byte**  &matrix, const bool isMalloc);
 	void readRasterFile(const std::string filepath, int**   &matrix, const bool isMalloc);
 	void readRasterFile(const std::string filepath, float** &matrix, const bool isMalloc);
-	void writeRasterFile(const std::string filepath, Frame*** pFrames, ALFMapType mapType); 
+	void writeRasterFile(const std::string filepath, Frame*** pFrames, ALFMapType mapType, const int year, const int rep); 
 
 	ALFMapType getMapType(int legacyStyleMapFlags);
+	static const std::string getMapTypeAsString(ALFMapType type);
 
 	char* getProjection() 
 	{
@@ -133,20 +135,27 @@ private:
 	double _xRotation;
 	double _yRotation;
 	double _geoTransform[6];
-	/// Geo Transform index reference:
-	/// 0 -- top left x
-	/// 3 -- top left y
-	/// 1 -- west to east pixel resolution
-	/// 5 -- north to south pixel resolution
-	/// 2 -- rotation, 0 if image is "north up"
-	/// 4 -- rotation, 0 if image is "north up"
+	// Geo Transform index reference:
+	// 0 -- top left x
+	// 3 -- top left y
+	// 1 -- west to east pixel resolution
+	// 5 -- north to south pixel resolution
+	// 2 -- rotation, 0 if image is "north up"
+	// 4 -- rotation, 0 if image is "north up"
+	std::string _softwareDescription;
+	std::vector<std::string> _mapDescriptions;
 
-	char** _writeOptions;
+
+	bool _requireAaeacForInput;
+	bool _applyAaeacToOutput;
+
 	char* _pSpatialReference;
-
+	GDALColorTable* _pVegColorTable;
+	GDALColorTable* _pBurnSevColorTable;
 
 	template<class T> void _readRasterFile (const std::string filepath, T** &pMatrix, const bool isMalloc, const GDALDataType expectedType);
-	template<class T> void _writeRasterFile(const std::string filepath, Frame*** pFrames, ALFMapType mapType, GDALDataType dataType);
-	void _validateMetadata(GDALDataset* pD, GDALRasterBand* pB, const std::string filepath, const GDALDataType expectedType);
+	template<class T> void _writeRasterFile(const std::string filepath, Frame*** pFrames, ALFMapType mapType, GDALDataType dataType, const std::string &description = "", GDALColorTable* pColorTable = NULL);
+	void _validateMetadata(GDALDataset* pDataset, GDALRasterBand* pB, const std::string filepath, const GDALDataType expectedType);
+	void _validateProjectionMetadata(GDALDataset* pDataset, std::queue<std::string> &errors);
 };
 #endif

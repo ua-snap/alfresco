@@ -16,6 +16,7 @@
 
 #include "Fresco/Foundation/Except.h"
 #include "Fresco/Foundation/Interface.h"
+#include "Poco/Path.h"
 
 
 // Constants
@@ -23,10 +24,9 @@ const char ResSep[] = " ={},\";\t";						// Reserved characters
 const char FloatSep[] = ".eEdD";						// Characters delineating floating point numbers from ints
 
 // ============== CInterface =========================
-void CInterface::Initialize (const char *pszFilename) {
-
-	// Load the data from the .fif file using the parser.
-	ParseFile(pszFilename);
+void CInterface::Initialize (const std::string &basePath, const std::string &fileName) {
+	_fifName = fileName;
+	ParseFile(std::string(basePath + Poco::Path::separator() + fileName).c_str());
 }
 
 void CInterface::ParseFile (const char *pszFileName) {

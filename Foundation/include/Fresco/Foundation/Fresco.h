@@ -78,6 +78,9 @@ private:
 public:
 							Fresco(Landscape* pLandscape, bool isDebugOn);
 	virtual 				~Fresco();
+	
+	static const std::string version() { return "1.0.9"; };
+
 	//Simulation
 	virtual void			clear();
     void					setup(std::string basePath, std::string fifName, std::string outputDirectory, long randomSeed);

@@ -125,20 +125,18 @@ void Landscape::		setup()
     _fireSizeStatFlags		    = FRESCO->fif().nGet("Stat.FireSize.Flags");
     _fireNumStatFlags		    = FRESCO->fif().nGet("Stat.FireNum.Flags");
 
-	std::string coordinateSystem = "NAD83";
-	int isNorthernHemisphere = TRUE;
-	int UTM = 6;
-	if (FRESCO->fif().CheckKey("CoordinateSystem"))
-		coordinateSystem = FRESCO->fif().sGet("CoordinateSystem");
-	if (FRESCO->fif().CheckKey("IsNorthernHemisphere"))
-		isNorthernHemisphere = FRESCO->fif().bGet("IsNorthernHemisphere") ? TRUE : FALSE;
-	if (FRESCO->fif().CheckKey("UTM"))
-		UTM = FRESCO->fif().nGet("UTM");
+	bool requireAaeacForInput = true;
+	bool applyAaeacToOutput = true;
+	if (FRESCO->fif().CheckKey("RequireAAEACProjectedInputRasters"))
+		requireAaeacForInput = FRESCO->fif().bGet("RequireAAEACProjectedInputRasters");
+	if (FRESCO->fif().CheckKey("ApplyAAEACProjectionToOutputRasters"))
+		applyAaeacToOutput = FRESCO->fif().bGet("ApplyAAEACProjectionToOutputRasters");
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
-	gIO = new RasterIO(gNumCol, gNumRows, _xllCorner, _yllCorner, gCellSize, gCellSize, 0, 0,
-						UTM, isNorthernHemisphere, coordinateSystem);
+	gIO = new RasterIO(gNumCol, gNumRows, _xllCorner, _yllCorner, gCellSize, -gCellSize, 0, 0,
+						"ALFRESCO " + Fresco::version() + " from UAF. Config file: " + FRESCO->fif().fileName(),
+						requireAaeacForInput, applyAaeacToOutput);
 
     // Should this be in Fire?
     _humanIgnitionsFilename     = FormatDirectory(FRESCO->fif().sGet("Fire.HumanIgnition.Basename"));
@@ -158,9 +156,9 @@ void Landscape::		setup()
 			_pFrames[r][c] = NULL;
 	}
 	//Allocate layers.
-	_pHumanIgnitions = new int*[gNumRows];
+	_pHumanIgnitions = new byte*[gNumRows];
 	for(int r=0; r<gNumRows; r++) {
-		_pHumanIgnitions[r] = new int[gNumCol];
+		_pHumanIgnitions[r] = new byte[gNumCol];
 		for(int c=0; c<gNumCol; c++) {
 			_pHumanIgnitions[r][c]	= 0;
 		}

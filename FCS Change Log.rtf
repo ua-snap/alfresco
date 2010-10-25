@@ -3,41 +3,23 @@
 {\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
 \f2\fs24 1.0.9\par
-\b0\f3\fs20 Released: \f2 date \f4 pending\par
-- Spatial input files must now be in the GeoTIFF format and all spatial output is written in the GeoTIFF format. GeoTIFF is a binary file format that allows data to be stored more efficiently than the text based ASCII Grid format used until now. There are many tools available to convert from ASCII Grid files to GeoTIFF files including the free GDAL tools. \cf1\highlight2 If the NODATA value metadata tag is not specified, the default NODATA value for the given datatype is assumed (see Supported Datatypes below for defaults). Best performance is seen when input files use the default NODATA value for the given datatype and the NODATA metadata tag is set with the same value. \par
+\b0\f3\fs20 Released: \f2 10/25/2010\f4\par
+- Bug fixed: it was possible for a temperature value to contain a nodata value but still be summed with a temperature offset value, resulting in an innappropriate temperature value for any cells that had set temperature to nodata. \par
+- Major Change: Spatial input files must now be in the GeoTIFF format and all spatial output is written in the GeoTIFF format. GeoTIFF is a binary file format that allows data to be stored more efficiently than the text based ASCII Grid format that has been used in ALFRESCO until now. There are many tools available to convert from ASCII Grid files to GeoTIFF files including the free GDAL tools. \cf1\highlight2 If the NODATA value metadata tag is not specified, the default NODATA value for the given datatype is assumed (see Supported Datatypes below for defaults). Best performance is seen when input files use the default NODATA value for the given datatype and the NODATA metadata tag is set with the same value.\par
 \cf0\highlight0\par
-\pard\li180\sb60\cf1\highlight2\b Supported Datatypes:\b0\par
+\pard\li180\sb60\cf1\highlight2\b Supported Raster Datatypes:\b0\par
 \f5    TYPE   |    MIN VAL    |   MAX VAL    | DEFAULT NODATA\par
 ----------------------------------------------------------\par
   Byte    |            0  |         255  |          255\par
   INT32   |  -2147483648  |  2147483648  |  -2147483648\par
   FLOAT32 |     -3.4e+38  |     3.4e+38  |     -3.4e+38\par
-\pard\li180\sb60\tx540\tx900\tx1170\tx7200\cf0\highlight0\f4\par
-\par
-\b New Fields\par
-\b0 (optional) UTM = int                                 ; Universal Transverse Mercator -- defaults is 6\par
-(optional) CoordinateSystem = string        ; Well known geographic coordinate system -- default is "NAD83"\par
-(optional ) IsNorthernHemisphere = bool    ; Part of the map projection info -- default is TRUE\par
-\par
-\b Modified Fields\b0\par
-MapFlags -- the field hasn't changed, but the species specific output type flags for Decid and Tundra have been placed onto two separate flag values rather than sharing the 0x000100 flag. The FIF comments to describe the species specific options used to be this:\par
-; 0x000100\tab Decid: species trajectory; Tundra: basal area\par
-\par
-Now it should read like this: \par
-; 0x000100\tab Decid: species trajectory\par
-; 0x000200\tab Tundra: basal area\par
-\b\f0\fs24\par
-\f4\fs20 Depricated Fields \b0 (they can now be removed from your FIF files for use with 1.0.8 and beyond)\par
-NoData\par
-\b\f2\fs24\par
-\par
-Input Datatypes\par
-\b0\f4\fs20 Regarding the use of nodata in input files\par
-\b\tab Byte (value range of 0 through 255, default nodata = 255)\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\cf0\highlight0\b\f2\fs24\par
+\pard\li180\sb60\cf1\highlight2\f4\fs20 Input Raster Files\b0\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\cf0\highlight0\b\tab Byte (value range of 0 through 255, default nodata = 255)\par
 \b0\tab Vegetation Type (any valid veg ID)\par
 \tab Vegetation Type Transition (any valid veg ID)\par
 \tab Topography (0 and 1)\par
-\tab Burn Severity (0 and 1)\par
+\tab Burn Severity (0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity)\par
 \tab Fire History (0 and 1)\par
 \tab Human Ignitions (0 and 1)\par
 \tab Fire Suppression Levels (0, 1, 2, 3, 4 and 5)\par
@@ -53,15 +35,14 @@ Input Datatypes\par
 \tab External Flammability\par
 \tab Fire Ignition Factor\par
 \tab Fire Spread Sensitivity\par
-\b\f2\fs24\tab\tab\par
 \par
-Output Datatypes\par
-\f4\fs20\tab Byte (value range of 0 through 255, nodata = 255)\par
-\b0\tab Vegetation Type\par
-\tab Subcanopy\par
-\tab Burn Severity\par
-\tab Burn Severity History\par
-\tab Decid: Species Trajectory\par
+\pard\li180\sb60\cf1\highlight2\b Output Raster Files\b0\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\cf0\highlight0\b\tab Byte (value range of 0 through 255, nodata = 255)\par
+\b0\tab Vegetation Type  (any valid veg ID)\par
+\tab Subcanopy  (any valid veg ID)\par
+\tab Burn Severity (0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity)\par
+\tab Burn Severity History (0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity)\par
+\tab Decid: Species Trajectory  (Black Spruce and White Spruce IDs)\par
 \tab\par
 \b\tab Int (value range of -2147483648 through 2147483648, nodata = -2147483648)\par
 \b0\tab Stand Age\par
@@ -69,11 +50,22 @@ Output Datatypes\par
 \tab\par
 \b\tab Float (value range of -3.4e+38 through 3.4e+38, nodata = -3.4e+38)\par
 \b0\tab Site\par
-\tab Temperature\par
-\tab Precipitation\par
 \tab Fire Scars\par
 \tab Tundra: Basal Area\par
-\b\f2\fs24\par
+\par
+\b New FIF Fields\par
+\b0 RequireAAEACProjectedInputRasters = TRUE       ; (optional -- defaults to TRUE) if TRUE, each input raster file will be checked for the Alaska Albers projection.\par
+ApplyAAEACProjectionToOutputRasters = TRUE   ; (optional -- defaults to TRUE) if TRUE, each output raster file will include metadata for the Alaska Albers projection.\b\par
+\b0\par
+\b Modified FIF Fields\b0\par
+MapFlags -- the field hasn't changed, but the species specific output type flags for Decid and Tundra have been placed onto two separate flag values rather than sharing the 0x000100 flag. The FIF comments to describe the species specific options used to be this:\par
+\f5 ; 0x000100   Decid: species trajectory; Tundra: basal area\f4\par
+Now it should read like this: \par
+\f5 ; 0x000100   Decid: species trajectory\par
+; 0x000200   Tundra: basal area\f4\par
+\b\f0\fs24\par
+\f4\fs20 Depricated FIF Fields \b0 (they can now be removed from your FIF files for use with 1.0.9 and beyond)\par
+NoData (you can now specify nodata values per raster input file, those values will then be mapped to the default nodata values listed above for internal use and for output)\b\f2\fs24\par
 \par
 \par
 1.0.8\par

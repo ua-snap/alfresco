@@ -164,6 +164,7 @@ class FrescoFoundation_API CInterface {											// The general interface class
 private:
 // Variables
 	CAssoc IOAssoc;											// The data array...
+	std::string _fifName;
 
 // Functions
 	void ParseFile (const char *pszFileName);				// Parse the entire FIF file and add the data to the associated array
@@ -177,7 +178,8 @@ public:
 	~CInterface () {};
 
 // FIF information functions
-	void Initialize (const char *pszFilename);				// Load the data from the .fif file (parser)
+	const std::string fileName() { return _fifName; };
+	void Initialize (const std::string &basePath, const std::string &fileName);				// Load the data from the .fif file (parser)
 	const bool CheckKey (const char *Key)				{ if(IOAssoc.Get(Key)) return true; else return false; }	// Check to see if an entry exists
 	const int nGet (const char *Key)					
     { 

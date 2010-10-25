@@ -197,18 +197,6 @@ void Decid::repStart()
 
 
 
-//template unsigned char	Decid::get<unsigned char>(RasterIO::ALFMapType mapType);
-//template<class T> T		Decid::get(RasterIO::ALFMapType mapType)
-//{
-//	switch(mapType)
-//	{
-//	case RasterIO::DECID_SPECIES_TRAJECTORY:
-//		return _speciesTrajectory;
-//		break;
-//	default:
-//		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ ToS(mapType) + ")");
-//	}
-//}
 unsigned char	Decid::getAsByte(RasterIO::ALFMapType mapType)
 {
 	switch(mapType)
@@ -217,7 +205,7 @@ unsigned char	Decid::getAsByte(RasterIO::ALFMapType mapType)
 		return _speciesTrajectory;
 		break;
 	default:
-		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ ToS(mapType) + ")");
+		throw Poco::Exception("This frame type ("+ToS((int)type())+") does not support the map type ("+ RasterIO::getMapTypeAsString(mapType) + ")");
 	}
 }
 
