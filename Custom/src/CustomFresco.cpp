@@ -38,11 +38,6 @@ void CustomFresco::	customSetup()
 	validVegTypes.insert(gTundraID);
 	validVegTypes.insert(gNoVegID);
 
-	BSpruce::setStaticData();
-    WSpruce::setStaticData();
-    Decid::setStaticData();
-    Tundra::setStaticData();
-
 	// Handle Grassland here for backwards compatibility.
 	if (fif().CheckKey("Grassland"))
 	{
@@ -50,6 +45,11 @@ void CustomFresco::	customSetup()
 		validVegTypes.insert(gGrasslandID);
 		Grassland::setStaticData();
 	}
+
+	BSpruce::setStaticData();
+    WSpruce::setStaticData();
+    Decid::setStaticData();
+    Tundra::setStaticData();
 
 	gNumSpecies = (int)validVegTypes.size();
 }

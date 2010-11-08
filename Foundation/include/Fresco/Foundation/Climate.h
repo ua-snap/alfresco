@@ -98,6 +98,8 @@ public:
 	const float				getTemp(const int row, const int col, const int month, const int yearBP=0) const; 
 	const float				getPrecip(const int row, const int col, const int month, const int yearBP=0) const; 
 	float					getClimateFlammability(int row, int col);
+	void					assertTempMonth(const int month) const;
+	void					assertPrecipMonth(const int month) const;
 private:
     void                    deleteArrays();
 	int						getRandExplicitYear();
@@ -164,7 +166,7 @@ inline const float Climate::getPrecip(const int row, const int col, const int mo
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - yearBP;
 	
-	float p = _pSpatialPrecip[year % _yearsOfArchivedHistory][month][row][col];
+	float p	 = _pSpatialPrecip[year % _yearsOfArchivedHistory][month][row][col];
 	float nd = 0; GetNoData(nd);
 	if (p == nd)
 		throw Poco::Exception("invalid nodata value in precipitation at row "+ToS(row)+" and col "+ToS(col)+" for year "+ToS(year)+".");
@@ -173,5 +175,36 @@ inline const float Climate::getPrecip(const int row, const int col, const int mo
     return p + _pOffsets[year].Precip;
 }
 
+inline void Climate::assertTempMonth(const int month) const
+{
+	bool found = false;
+	std::list<int>::const_iterator m;
+	for (m=_tempMonths.begin();  m!=_tempMonths.end(); m++)
+	{
+		if (*m == month)
+		{
+			found = true;
+			break;
+		}
+	}
+	if (!found)
+		throw Exception(Exception::UNKNOWN, "Expected month "+ToS(month)+ " to be included in the FIF field TempMonths.");
+}
+
+inline void Climate::assertPrecipMonth(const int month) const
+{
+	bool found = false;
+	std::list<int>::const_iterator m;
+	for (m=_precipMonths.begin();  m!=_precipMonths.end(); m++)
+	{
+		if (*m == month)
+		{
+			found = true;
+			break;
+		}
+	}
+	if (!found)
+		throw Exception(Exception::UNKNOWN, "Expected month "+ToS(month)+ " to be included in the FIF field PrecipMonths.");
+}
 
 #endif

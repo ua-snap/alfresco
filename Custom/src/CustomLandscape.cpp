@@ -120,7 +120,22 @@ void CustomLandscape::		setup()
 		_burnSeverityInputFile = FormatDirectory(FRESCO->fif().sGet("BurnSeverityInputFile"));
 
     Landscape::setup();
-    
+
+	if (Decid::usingGrassland())
+	{
+		_pClimate->assertTempMonth(3);
+		_pClimate->assertTempMonth(4);
+		_pClimate->assertTempMonth(5);
+		_pClimate->assertTempMonth(6);
+		_pClimate->assertTempMonth(7);
+		_pClimate->assertPrecipMonth(3);
+		_pClimate->assertPrecipMonth(4);
+		_pClimate->assertPrecipMonth(5);
+		_pClimate->assertPrecipMonth(6);
+		_pClimate->assertPrecipMonth(7);
+	}
+
+
 	//Make space for landscape data.
 	_pVegSpatialInput				= new byte*[gNumRows];
 	_pSiteSpatialInput				= new float*[gNumRows];
@@ -571,7 +586,7 @@ void CustomLandscape::		doVegetationTransitions()
 	if (_isForcedVegTransitions) {
 		//Not running large memory model: read in historical fire now.
 		filename = _vegTransitionFile;
-		filename = filename.substr(0,filename.size()-4) + "_" + ToS(gYear) + ".txt";
+		filename = AppendYear(filename, gYear);
 		//Assume file does not exist on exception.
 		try {gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pVegSpatialInput, false);}		
 		catch (...) {return;}

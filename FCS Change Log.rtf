@@ -1,14 +1,41 @@
-{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset77 Arial MT;}{\f4\fnil\fcharset0 Arial MT;}{\f5\fmodern\fprq1\fcharset0 Courier New;}{\f6\fswiss\fcharset77 Arial-BoldItalicMT;}{\f7\fswiss\fcharset77 Arial-ItalicMT;}}
+{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset77 Arial MT;}{\f4\fnil\fcharset0 Arial MT;}{\f5\fswiss\fprq2\fcharset0 Arial;}{\f6\fmodern\fprq1\fcharset0 Courier New;}{\f7\fswiss\fcharset77 Arial-BoldItalicMT;}{\f8\fswiss\fcharset77 Arial-ItalicMT;}}
 {\colortbl ;\red0\green0\blue0;\red255\green255\blue255;}
 {\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
-\f2\fs24 1.0.9\par
+\f2\fs24 1.0.10\par
+\b0\f3\fs20 Released: \f2 11/8/2010\f4\par
+- Bug Fixed: Forced vegetation transition input rasters were still required to use the .txt file extention. Now .tif can be used.\par
+- Major Change: Added a frame type for "Grassland". If you do not want to use the Grassland frame, you do not need to add any new FIF fields. The Grassland frame uses the same FIF fields used by the spruce frames (parameter values specific to Grassland are being determined).\par
+\b\f2\fs24\par
+\f5\fs20 For the Grassland frame:\par
+\b0\f6 Grassland  (unique veg ID between 0 and 254)\par
+Grassland.StartAge\par
+Grassland.FireParms\par
+Grassland.HumanFireProb\par
+\par
+\b\f5 There are additional FIF fields needed to let the Decid frame succeed to Grassland:\b0\f6\par
+Decid->Grassland.History = X\par
+\f5 Integer. Number of years to collect results from the regression equation.\par
+\f6\par
+Decid->Grassland.ClimateWeight = \{Intercept, t3, t4, t5, t6, t7, p3, p4, p5, p6, p7, IfFlat\}\par
+\f5 Array of 12 floating point values. Parameters for the regression equation.\f6\par
+\par
+Decid->Grassland.ClimateThreshholds = \{Low, Moderate, High_LSS, High_HSS, Low_WasGrassland, Moderate_WasGrassland\}\par
+\f5 Array of 6 floating point values. The severity of the last burn determines the threshold that must be exceeded by the summed results of X years of the climate regression equation in order to succeed to Grassland. Must provide thresholds for Low, Moderate, High w/ LSS and High w/ HSS burn severities as well as an extra threshold for Low and Moderate for cases where the previous vegetation type was already Grassland.\f6\par
+\b\f2\fs24\par
+\f5\fs20 And don't forget to include the extra months:\par
+\b0\f6 Climate.TempMonths = \{3,4,5,6,7\}\par
+Climate.PrecipMonths = \{3,4,5,6,7\}\par
+\f5 This will not affect the climate fire probability equation which still only uses Mar through June for temperature and June and July for precipitation.\b\f2\fs24\par
+\par
+\par
+1.0.9\par
 \b0\f3\fs20 Released: \f2 10/25/2010\f4\par
-- Bug fixed: it was possible for a temperature value to contain a nodata value but still be summed with a temperature offset value, resulting in an innappropriate temperature value for any cells that had set temperature to nodata. \par
+- Bug Fixed: it was possible for a temperature value to contain a nodata value but still be summed with a temperature offset value, resulting in an innappropriate temperature value for any cells that had set temperature to nodata. \par
 - Major Change: Spatial input files must now be in the GeoTIFF format and all spatial output is written in the GeoTIFF format. GeoTIFF is a binary file format that allows data to be stored more efficiently than the text based ASCII Grid format that has been used in ALFRESCO until now. There are many tools available to convert from ASCII Grid files to GeoTIFF files including the free GDAL tools. \cf1\highlight2 If the NODATA value metadata tag is not specified, the default NODATA value for the given datatype is assumed (see Supported Datatypes below for defaults). Best performance is seen when input files use the default NODATA value for the given datatype and the NODATA metadata tag is set with the same value.\par
 \cf0\highlight0\par
 \pard\li180\sb60\cf1\highlight2\b Supported Raster Datatypes:\b0\par
-\f5    TYPE   |    MIN VAL    |   MAX VAL    | DEFAULT NODATA\par
+\f6    TYPE   |    MIN VAL    |   MAX VAL    | DEFAULT NODATA\par
 ----------------------------------------------------------\par
   Byte    |            0  |         255  |          255\par
   INT32   |  -2147483648  |  2147483648  |  -2147483648\par
@@ -59,9 +86,9 @@ ApplyAAEACProjectionToOutputRasters = TRUE   ; (optional -- defaults to TRUE) if
 \b0\par
 \b Modified FIF Fields\b0\par
 MapFlags -- the field hasn't changed, but the species specific output type flags for Decid and Tundra have been placed onto two separate flag values rather than sharing the 0x000100 flag. The FIF comments to describe the species specific options used to be this:\par
-\f5 ; 0x000100   Decid: species trajectory; Tundra: basal area\f4\par
+\f6 ; 0x000100   Decid: species trajectory; Tundra: basal area\f4\par
 Now it should read like this: \par
-\f5 ; 0x000100   Decid: species trajectory\par
+\f6 ; 0x000100   Decid: species trajectory\par
 ; 0x000200   Tundra: basal area\f4\par
 \b\f0\fs24\par
 \f4\fs20 Depricated FIF Fields \b0 (they can now be removed from your FIF files for use with 1.0.9 and beyond)\par
@@ -207,28 +234,28 @@ Released: 6/28/2007\ul\par
 \b\f0\fs24 Beta 0.2.0\par
 \b0\f1\fs20 Released: \tab 6/21/2007\ul\par
 \ulnone Summary:\tab Bug fixes and new features for existing tools.\ul\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\ulnone\b\i\f6\tab Added Suppression Transitions Functionality\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\ulnone\b\i\f7\tab Added Suppression Transitions Functionality\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 FIF fields changed.  See new demo FIF.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Suppression Stats\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Suppression Stats\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 When suppression is on, stat files are produced showing the area burned within by suppression class.  Each class has its own stat output.  New FIF field: Stat.BurnsBySupp.Flags.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Habitat Stats\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Habitat Stats\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 New FIF fields describe the habitat criteria so that stat files can be produced showing the count of frames that match the criteria.  Right now the only criteria are valid veg types and the age range of vegetation.  New habitats can be tracked by adding new entires into the FIF.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Client Running on Linux and Windows\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Client Running on Linux and Windows\par
 \tab Client Logs on Server Filtered by Selected Client\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Double click or press enter on a client in the Client Manager and the client\rquote s log is shown.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Client Can Run as Daemon\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Client Can Run as Daemon\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 A daemon is a process that runs continuously even when the user that started it is no longer logged on.  The \endash daemon command line argument starts the client as a daemon.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Simple Client Install\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Simple Client Install\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Installation of client on Linux no longer requires changing the LD_LIBRARY_PATH environment variable.  Follow ReadMe instructions included in Linux install.\par
 ServerAddress.ini files are no longer used to specify the server\rquote s address.  Instead, the \lquote startclient\rquote  script contains the server\rquote s IP address within command line argument, --ip.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Time Estimation\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Time Estimation\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Time to completion estimates are given in the Server\rquote s status bar.  The progress viewer provides start and stop timestamps.  The Client Manager shows percent completed for each client.  \par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Version Assertion\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Version Assertion\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Makes sure all clients are running the same version.\par
-\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f6\tab Separate Base Directories\par
+\pard\li180\sb120\tx540\tx900\tx1170\tx7200\b\i\f7\tab Separate Base Directories\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 At the moment, the server is not able to access the cluster\rquote s storage space.  As a temporary work around, the server uses a different base directory than the clients and therefore uses a separate copy of the FIF with the same filename.\par
-This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.\i\f7\fs32\par
-\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f6\fs20\tab\lquote Unknown\rquote  Connections and Delayed Connections Fixed\par
+This should only be a temporary work around until we are either able to provide the server with access to the same storage as the clients or until the server app takes care of all file transfers.\i\f8\fs32\par
+\pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f7\fs20\tab\lquote Unknown\rquote  Connections and Delayed Connections Fixed\par
 \pard\li900\sb60\tx540\tx900\tx1170\tx7200\b0\i0\f1 Clients were connecting, but sometimes with an unknown state.  As a result they would not participate in simulations.  Fixed.\par
 Clients were also experiencing a delayed connection by more than 15 seconds.  Now clients should all connect within 2-5 seconds.\par
 \pard\sb60\tx540\tx900\tx1170\tx7200\b\f0\par

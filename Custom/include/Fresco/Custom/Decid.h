@@ -19,8 +19,14 @@ class FrescoCustom_API Decid : public Frame
 {
 //Data
 private:
-	float					_degrees;						//Running sum of degree years used to determine succession.
+	enum EGrasslandClimateParamIndexes {INTERCEPT, T3, T4, T5, T6, T7, P3, P4, P5, P6, P7, FLAT};
+	enum EGrasslandThresholds {G_LOW, G_MODERATE, G_HIGH_LSS, G_HIGH_HSS, G_LOW_AND_WAS_GRASSLAND, G_MODERATE_AND_WAS_GRASSLAND};
 	Species				    _speciesTrajectory;				//The long term trajectory of the current cell (black or white spruce)
+	bool					_wasGrassland;
+	float					_degreesForGrassland;			//Running sum of a climate based regression used to determine succession to Grassland.
+	static int				_yearsOfGrasslandCheck;
+	static const double*	_pGrasslandThresholds;
+	static const double*	_pGrassClimateParams;
 	static bool				_isStaticSetupAlready;
 	static bool				_isFireProbAgeDependent;
 	static const double*	_pAgeDependentFireParams;		
@@ -31,7 +37,6 @@ private:
 	static const double*	_pDecidTundraParams;
 	static double**			_pDecidToBSpruceParams;			//Seperate parameters per burn severity.
 	static double**			_pDecidToWSpruceParams;
-	static double			_decidToGrasslandProb;
 	static EStartAgeType	_bspruceStartAgeType;
 	static EStartAgeType	_wspruceStartAgeType;
 	static double*			_pBSpruceWeibullIntegral;
@@ -61,6 +66,7 @@ public:
 	const float				getIgnitionDepressor();
 	//template<class T> T		get(RasterIO::ALFMapType mapType);
 	virtual unsigned char	getAsByte(RasterIO::ALFMapType mapType);
+	static const bool		usingGrassland();
 private:
 	void					_Decid();
 	float			        getFireProb(const Landscape* pLandscape);
@@ -102,5 +108,9 @@ inline double				Decid::queryReply (Landscape* parent, const double weight, cons
         return _tundraSpruceBasalArea*weight; 
 }
 
+inline const bool			Decid::usingGrassland()
+{
+	return (gGrasslandID != 255);
+}
 
 #endif

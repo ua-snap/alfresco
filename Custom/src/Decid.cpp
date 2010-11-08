@@ -21,13 +21,15 @@ double			Decid::_tundraSpruceBasalArea;
 const double*	Decid::_pDecidTundraParams;
 double**		Decid::_pDecidToBSpruceParams = 0;
 double**		Decid::_pDecidToWSpruceParams = 0;
-double			Decid::_decidToGrasslandProb = -1;
 EStartAgeType	Decid::_bspruceStartAgeType;
 EStartAgeType	Decid::_wspruceStartAgeType;
 double*			Decid::_pBSpruceWeibullIntegral;
 double*			Decid::_pWSpruceWeibullIntegral;
 const double*	Decid::_pBSpruceStartAge;
 const double*	Decid::_pWSpruceStartAge;
+int				Decid::_yearsOfGrasslandCheck = 0;
+const double*	Decid::_pGrasslandThresholds = 0;
+const double*	Decid::_pGrassClimateParams = 0;
 
 
 
@@ -52,6 +54,7 @@ Decid::Decid(const Frame& rFrame)
 	_yearEstablished		= gYear;
 	_yearFrameEstablished	= gYear;
 	_Decid(); 
+	_wasGrassland = (rFrame.type() == gGrasslandID);
 }
 
 
@@ -62,7 +65,8 @@ void Decid::_Decid()
         throw Exception(Exception::UNKNOWN, "Static data members must be set before initializing species.");
     }
 
-	_degrees = -1;
+	_degreesForGrassland = 0;
+	_wasGrassland = false;
 
 	//Pick a spruce trajectory at the frame initiation so we do not have a probability bias - use replacement stategy for now. OLD TODO add the aspect stuff back in
 	if (_speciesSubCanopy==gBSpruceID) {
@@ -110,15 +114,22 @@ void Decid::setStaticData()
             throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
         }
 		
-		///////////////////////////////
-		// TEMPORARY FOR PAUL AND MARK
-		if (FRESCO->fif().CheckKey("Decid->Grassland.Prob"))
-			_decidToGrasslandProb =  FRESCO->fif().dGet("Decid->Grassland.Prob");
 		//
-		//////////////////////////////
+		// Setup decid to grassland parameters
+		//
+		if (usingGrassland())
+		{
+			_yearsOfGrasslandCheck = FRESCO->fif().nGet("Decid->Grassland.History");
+
+			if (12 != FRESCO->fif().pdGet("Decid->Grassland.ClimateWeight", _pGrassClimateParams))
+				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 12 for key: Decid->Grassland.ClimateWeight = {Intercept,3t,4t,5t,6t,7t,3p,4p,5p,6p,7p,IfFlat}");
+
+			if (6 != FRESCO->fif().pdGet("Decid->Grassland.ClimateThreshholds", _pGrasslandThresholds))
+				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 12 for key: Decid->Grassland.ClimateThreshholds = {Low, Moderate, High_LSS, High_HSS, Low_And_WasGrassland, Moderate_And_WasGrassland}");
+		}
 
 		//
-		//Setup decid to bspruce and wspruce parameters per burn severity.
+		// Setup decid to bspruce and wspruce parameters per burn severity.
 		//
 		if (_pDecidToBSpruceParams == 0) { 
 			_pDecidToBSpruceParams = new double*[5]; //for each burn severity.
@@ -183,12 +194,7 @@ void Decid::clear()
 	_wspruceStartAgeType			= CONSTANT;
 	_pBSpruceWeibullIntegral		= 0;
 	_pWSpruceWeibullIntegral		= 0;
-	_decidToGrasslandProb			= -1;
-	//if (_pDecidToBSpruceParams!=0) {
-	//	for (int i=0; i<5; i++) delete[] _pDecidToBSpruceParams[i];
-	//	delete[] _pDecidToBSpruceParams;
-	//	_pDecidToBSpruceParams = 0;
-	//}
+	_yearsOfGrasslandCheck			= 0;
 }
 void Decid::repStart()
 //Set values to beginning of a rep.
@@ -210,15 +216,17 @@ unsigned char	Decid::getAsByte(RasterIO::ALFMapType mapType)
 }
 
 
-Frame* Decid::success(Landscape* Parent) 
+Frame* Decid::success(Landscape* l) 
 // Process succession: test for change to another frame type with a linear function 
 // of years since last burn.  Parameters vary by speciesTrajectory and burn severity.
 // Return NULL if no successional change.
 {
 	const int yearsSinceLastBurn = gYear-yearOfLastBurn;
 	if (yearsSinceLastBurn == gTimeStep) {
+		// this is the first succession after a burn.
 		_yearEstablished = gYear;
 		_speciesSubCanopy = gDecidID;
+		_degreesForGrassland = 0;
 	}
 
 	if (burnSeverity==0) return NULL;  // no transition values are given for no burn.  But with a correct BurnSeverityInputFile, no Decid should ever have burnSeverity==0;
@@ -226,15 +234,6 @@ Frame* Decid::success(Landscape* Parent)
 	const float test = GetNextRandom();
 	if (_speciesTrajectory == gWSpruceID)
 	{
-		//////////////////////////////////////////////
-		// TEMPORARY FOR PAUL AND MARK AS FIRST ROUND 
-		// First see if a switch to grassland happens
-		if (_decidToGrasslandProb != -1  &&  test < _decidToGrasslandProb)
-			return new Grassland(*this, _yearEstablished);
-		// TODO: incorporate more ecologically sensible logic.
-		//
-		//////////////////////////////////////////////
-
 		const float a = _pDecidToWSpruceParams[burnSeverity][0];
 		const float b = _pDecidToWSpruceParams[burnSeverity][1];
 		const float prob = a * (gYear-_yearEstablished) + b;
@@ -243,6 +242,40 @@ Frame* Decid::success(Landscape* Parent)
 	}
 	else if (_speciesTrajectory == gBSpruceID)
 	{
+		if (usingGrassland() && age() <= _yearsOfGrasslandCheck)
+		{
+			_degreesForGrassland += _pGrassClimateParams[INTERCEPT];
+			_degreesForGrassland += l->cellTempByMonth(3)   * _pGrassClimateParams[T3];
+			_degreesForGrassland += l->cellTempByMonth(4)   * _pGrassClimateParams[T4];
+			_degreesForGrassland += l->cellTempByMonth(5)   * _pGrassClimateParams[T5];
+			_degreesForGrassland += l->cellTempByMonth(6)   * _pGrassClimateParams[T6];
+			_degreesForGrassland += l->cellTempByMonth(7)   * _pGrassClimateParams[T7];
+			_degreesForGrassland += l->cellPrecipByMonth(3) * _pGrassClimateParams[P3];
+			_degreesForGrassland += l->cellPrecipByMonth(4) * _pGrassClimateParams[P4];
+			_degreesForGrassland += l->cellPrecipByMonth(5) * _pGrassClimateParams[P5];
+			_degreesForGrassland += l->cellPrecipByMonth(6) * _pGrassClimateParams[P6];
+			_degreesForGrassland += l->cellPrecipByMonth(7) * _pGrassClimateParams[P7];
+			if (hasComplexTopo()) 
+				_degreesForGrassland += _pGrassClimateParams[FLAT];
+
+			float threshold = 0;
+			if (_wasGrassland && burnSeverity == LOW)
+				threshold = _pGrasslandThresholds[G_LOW_AND_WAS_GRASSLAND];
+			else if (_wasGrassland && burnSeverity == MODERATE) 
+				threshold = _pGrasslandThresholds[G_MODERATE_AND_WAS_GRASSLAND];
+			else if (burnSeverity == LOW)
+				threshold = _pGrasslandThresholds[G_LOW];
+			else if (burnSeverity == MODERATE)
+				threshold = _pGrasslandThresholds[G_MODERATE];
+			else if (burnSeverity == HIGH_LSS)
+				threshold = _pGrasslandThresholds[G_HIGH_LSS];
+			else if (burnSeverity == HIGH_HSS)
+				threshold = _pGrasslandThresholds[G_HIGH_HSS];
+
+			if (_degreesForGrassland > threshold)
+				return new Grassland(*this, _yearEstablished);
+		}
+
 		const float a = _pDecidToBSpruceParams[burnSeverity][0];
 		const float b = _pDecidToBSpruceParams[burnSeverity][1];
 		const float prob = a * (gYear-_yearEstablished) + b;
