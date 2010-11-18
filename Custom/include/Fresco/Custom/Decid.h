@@ -19,7 +19,6 @@ class FrescoCustom_API Decid : public Frame
 {
 //Data
 private:
-	enum EGrasslandClimateParamIndexes {INTERCEPT, T3, T4, T5, T6, T7, P3, P4, P5, P6, P7, FLAT};
 	enum EGrasslandThresholds {G_LOW, G_MODERATE, G_HIGH_LSS, G_HIGH_HSS, G_LOW_AND_WAS_GRASSLAND, G_MODERATE_AND_WAS_GRASSLAND};
 	Species				    _speciesTrajectory;				//The long term trajectory of the current cell (black or white spruce)
 	bool					_wasGrassland;
@@ -27,6 +26,8 @@ private:
 	static int				_yearsOfGrasslandCheck;
 	static const double*	_pGrasslandThresholds;
 	static const double*	_pGrassClimateParams;
+	static std::list<int>	_grassTempMonths;
+	static std::list<int>	_grassPrecipMonths;
 	static bool				_isStaticSetupAlready;
 	static bool				_isFireProbAgeDependent;
 	static const double*	_pAgeDependentFireParams;		

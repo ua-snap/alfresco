@@ -138,20 +138,6 @@ std::string GetFullPath(const std::string base, const std::string path)
 #else
 	typedef std::_Ios_Openmode IosOpenMode;
 #endif
-void					GetNoData(byte &returnVal)
-{
-	returnVal = RasterIO::NODATA_BYTE_DEFAULT;
-}
-void					GetNoData(int &returnVal)
-{
-	returnVal = RasterIO::NODATA_INT32_DEFAULT;
-}
-void					GetNoData(float &returnVal)
-{
-	returnVal = RasterIO::NODATA_FLOAT32_DEFAULT;
-}
-
-
 
 
 double					ConstDist(const double* const params) 
@@ -336,7 +322,7 @@ long					SeedRandom(long seed)
 }
 
 
-float					GetNextRandom() 
+const float					GetNextRandom() 
 //Random number generator from Numerical Recipes in C++ (Sec 7.1, pg 280)
 //Minimal" random number generator of Park and Miller with Bays-Durham shuffle and added
 //safeguards. Returns a uniform random deviate between 0.0 and 1.0 (exclusive of the endpoint
@@ -374,7 +360,7 @@ float					GetNextRandom()
 }
 
 
-float					GetNextRandomNorm(const double mean, const double stdDev) 
+const float					GetNextRandomNorm(const double mean, const double stdDev) 
 //Random number with normal distribution from Numerical Recipies in C++ (Sec 7.2, pg 388)
 //Returns a normally distributed deviate with zero mean and unit variance, using GetNextRandom
 //as the source of uniform deviates.  The function has been modified to return a random

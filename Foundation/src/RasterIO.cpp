@@ -26,10 +26,10 @@ using std::string;
 using std::queue;
 
 
-const byte  RasterIO::NODATA_BYTE_DEFAULT      = 255;
-const int   RasterIO::NODATA_INT32_DEFAULT     = -2147483647;
-const float RasterIO::NODATA_FLOAT32_DEFAULT   = -3.4e38f;
-const float RasterIO::NODATA_FLOAT32_ALTERNATE = -3.40282e+38f;
+const byte  RasterIO::NODATA_BYTE      = 255;
+const int   RasterIO::NODATA_INT     = -2147483647;
+const float RasterIO::NODATA_FLOAT   = -3.4e38f;
+const float RasterIO::NODATA_FLOAT_ALTERNATE = -3.40282e+38f;
 
 
 RasterIO::RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double xPixelSize, 
@@ -68,11 +68,11 @@ RasterIO::RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double 
 	_mapDescriptions[FIRE_AGE] = "Fire Age for year %d of rep %d.";
 	_mapDescriptions[FIRE_SCAR] = "Fire Scar for year %d of rep %d.  Value Key: [if ignition cell use -, otherwise +][YearOfLastBurn].[FireID]";
 	_mapDescriptions[TUNDRA_BASAL_AREA] = "Tundra Basal Area for year %d of rep %d.";
-	_mapDescriptions[VEGEGATION] = "Vegetation Type for year %d of rep %d.  Value Index: "+ToS((int)gNoVegID)+"=NoVeg, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE_DEFAULT ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
-	_mapDescriptions[SUBCANOPY] = "Subcanopy Type for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE_DEFAULT)+"=NoData, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE_DEFAULT ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
-	_mapDescriptions[BURN_SEVERITY] = "Burn Severity for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE_DEFAULT)+"=NoData (no burn for the given year), 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity";
+	_mapDescriptions[VEGEGATION] = "Vegetation Type for year %d of rep %d.  Value Index: "+ToS((int)gNoVegID)+"=NoVeg, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
+	_mapDescriptions[SUBCANOPY] = "Subcanopy Type for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE)+"=NoData, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
+	_mapDescriptions[BURN_SEVERITY] = "Burn Severity for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE)+"=NoData (no burn for the given year), 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity";
 	_mapDescriptions[BURN_SEVERITY_HISTORY] = "Burn Severity History for year %d of rep %d.  Value Index: 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity";
-	_mapDescriptions[DECID_SPECIES_TRAJECTORY] = "Deciduous Species Trajectory for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE_DEFAULT)+"=NoData, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce";
+	_mapDescriptions[DECID_SPECIES_TRAJECTORY] = "Deciduous Species Trajectory for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE)+"=NoData, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce";
 
 
 	//
@@ -118,7 +118,7 @@ RasterIO::RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double 
 		_pVegColorTable->SetColorEntry(i, &c);
 	// nodata -- black
 	c.c1=0; c.c2=0; c.c3=0; c.c4=255;
-	_pVegColorTable->SetColorEntry(NODATA_BYTE_DEFAULT, &c);
+	_pVegColorTable->SetColorEntry(NODATA_BYTE, &c);
 	// noveg -- white
 	c.c1=255; c.c2=255; c.c3=255; c.c4=255;
 	_pVegColorTable->SetColorEntry(gNoVegID, &c);
@@ -135,7 +135,7 @@ RasterIO::RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double 
 	c.c1=33; c.c2=102; c.c3=35; c.c4=255;
 	_pVegColorTable->SetColorEntry(gBSpruceID, &c);
 	// grassland spruce -- muddy yellow
-	if (gGrasslandID != RasterIO::NODATA_BYTE_DEFAULT)
+	if (gGrasslandID != RasterIO::NODATA_BYTE)
 	{
 		c.c1=169; c.c2=157; c.c3=39; c.c4=255;
 		_pVegColorTable->SetColorEntry(gGrasslandID, &c);
@@ -158,7 +158,7 @@ RasterIO::RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double 
 		_pBurnSevColorTable->SetColorEntry(i, &c);
 	// nodata -- black
 	c.c1=0; c.c2=0; c.c3=0; c.c4=255;
-	_pBurnSevColorTable->SetColorEntry(NODATA_BYTE_DEFAULT, &c);
+	_pBurnSevColorTable->SetColorEntry(NODATA_BYTE, &c);
 	// no burn -- white
 	c.c1=255; c.c2=255; c.c3=255; c.c4=255;
 	_pBurnSevColorTable->SetColorEntry(0, &c);
@@ -190,15 +190,15 @@ RasterIO::~RasterIO()
 
 void RasterIO::getNodata(byte &result)
 {
-	result = RasterIO::NODATA_BYTE_DEFAULT;
+	result = RasterIO::NODATA_BYTE;
 }
 void RasterIO::getNodata(int &result)
 {
-	result = RasterIO::NODATA_INT32_DEFAULT;
+	result = RasterIO::NODATA_INT;
 }
 void RasterIO::getNodata(float &result)
 {
-	result = RasterIO::NODATA_FLOAT32_DEFAULT;
+	result = RasterIO::NODATA_FLOAT;
 }
 
 
@@ -212,7 +212,7 @@ void RasterIO::getAlternateNodata(int &result)
 }
 void RasterIO::getAlternateNodata(float &result)
 {
-	result = RasterIO::NODATA_FLOAT32_ALTERNATE;
+	result = RasterIO::NODATA_FLOAT_ALTERNATE;
 }
 
 
@@ -385,7 +385,7 @@ template<class T> void RasterIO::_readRasterFile(const string filepath, T**     
 	
 		int isNoDataValid;
 		const T nodata = (T)pBand->GetNoDataValue(&isNoDataValid);
-		if (defaultNodata == RasterIO::NODATA_BYTE_DEFAULT)
+		if (defaultNodata == RasterIO::NODATA_BYTE)
 		{
 			//cast to int, otherwise value will show as char
 			if (isNoDataValid)
@@ -428,7 +428,7 @@ template<class T> void RasterIO::_readRasterFile(const string filepath, T**     
 	
 			// read in a row of data
 			eErr = pBand->RasterIO(GF_Read, 0, r, _xSize, 1, pMatrix[r], _xSize, 1, expectedType, 0, 0);
-			
+
 			// replace any of the file's nodata values with the default, or if metadata 
 			// doesn't specify a nodata value, then replace some of the typical values used 
 			if (isNoDataValid)
@@ -436,7 +436,7 @@ template<class T> void RasterIO::_readRasterFile(const string filepath, T**     
 				if (nodata != defaultNodata)
 				{
 					for (int c=0; c < _xSize; c++)
-						if (nodata == pMatrix[r][c])
+						if (isNodata(pMatrix[r][c]))
 							pMatrix[r][c] = defaultNodata;
 				}
 			}

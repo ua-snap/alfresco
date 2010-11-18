@@ -18,19 +18,16 @@ Frame::Frame(const int& rAge,
 {
 	if (type() != gNoVegID)
 	{
-		float fnd = 0; GetNoData(fnd);
-		int ind = 0; GetNoData(ind);
-		byte bnd = 0; GetNoData(bnd);
 		std::string tailMsg =  " Nodata values should only be used where vegetation is set to the NoVeg ID ("+ToS(gNoVegID)+").";
-		if (ind == rAge)
+		if (IsNodata(rAge))
 			throw Poco::Exception("invalid use of nodata value in age." + tailMsg);
-		if (fnd == rSite)
+		if (IsNodata(rSite))
 			throw Poco::Exception("invalid use of nodata value in site." + tailMsg);
-		if (!(rLastBurnSeverity > 0 && rLastBurnSeverity < 6))
-			throw Poco::Exception("invalid burn severity class ID used ("+ToS(rLastBurnSeverity)+"). Valid burn severity class IDs are 1 through 5.");
-		if (fnd == rFireIgnitionFactor)
-			throw Poco::Exception("invalid use of nodata value in fire ignition." + tailMsg);
-		if (fnd == rFireSensitivity)
+		if (!(rLastBurnSeverity > -1 && rLastBurnSeverity < 6))
+			throw Poco::Exception("invalid burn severity class ID used ("+ToS(rLastBurnSeverity)+"). Valid burn severity class IDs are 0 through 5.");
+		if (IsNodata(rFireIgnitionFactor))
+			throw Poco::Exception("invalid use of nodata value in fire ignition factor." + tailMsg);
+		if (IsNodata(rFireSensitivity))
 			throw Poco::Exception("invalid use of nodata value in fire sensitivity." + tailMsg);
 		//if (bnd == (int)rSpeciesSubCanopy)
 		//	throw Poco::Exception("invalid use of nodata value in species sub canopy." + tailMsg);

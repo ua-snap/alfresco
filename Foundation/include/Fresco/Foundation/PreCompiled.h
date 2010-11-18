@@ -21,6 +21,8 @@
 #endif  //FRESCO_FOUNDATION_INCLUDED
 
 
+#include "Fresco/Foundation/RasterIO.h"
+
 //Standard Template Libraries
 #include <iostream>
 #include <sstream>
@@ -96,6 +98,9 @@ enum EDetailLevel		{MINIMAL, MODERATE, MAXIMUM};
 //Global FRESCO object.
 class Fresco;
 extern Fresco       FrescoFoundation_API    *FRESCO;
+class Climate;
+extern Climate FrescoFoundation_API    *gClimate;
+
 //Global simulation settings.
 extern std::string  FrescoFoundation_API    gWorkingDirectory;
 extern std::string  FrescoFoundation_API    gInputBasePath;
@@ -118,12 +123,7 @@ extern byte          FrescoFoundation_API    gBSpruceID;
 extern byte          FrescoFoundation_API    gWSpruceID;
 extern byte          FrescoFoundation_API    gGrasslandID;
 
-//Global IO functions.
-class RasterIO;
-extern RasterIO	    FrescoFoundation_API    *gIO;
-void	    FrescoFoundation_API            GetNoData(byte &returnVal);
-void	    FrescoFoundation_API            GetNoData(int &returnVal);
-void	    FrescoFoundation_API            GetNoData(float &returnVal);
+
 
 void	    FrescoFoundation_API            ShowOutput(const EDetailLevel detailLevel, const std::string output);
 void	    FrescoFoundation_API            DoNothing(const bool doBreak);
@@ -155,8 +155,72 @@ double	FrescoFoundation_API                Logistic(const double age, const doub
 double	FrescoFoundation_API                LinInterp(double x, double y, const double* const m, const int dimX, const int dimY, const bool trunc);
 void    FrescoFoundation_API                Integrate(double (*Func)(const double* const), const double* params, double* const result, const double start, const double end, const double Step);
 long	FrescoFoundation_API                SeedRandom(long seed);
-float   FrescoFoundation_API                GetNextRandom();
-float	FrescoFoundation_API                GetNextRandomNorm(const double mean, const double stdDev);
+const float FrescoFoundation_API            GetNextRandom();
+const float	FrescoFoundation_API            GetNextRandomNorm(const double mean, const double stdDev);
+const bool	FrescoFoundation_API            DoublesEqual(const double left, const double right, const double epsilon);
+const bool  FrescoFoundation_API            FloatsEqual(const float left, const float right, const float epsilon);
+
+//Global IO functions.
+class RasterIO;
+extern RasterIO	    FrescoFoundation_API    *gIO;
+//void	    FrescoFoundation_API            GetNoData(byte &returnVal);
+//void	    FrescoFoundation_API            GetNoData(int &returnVal);
+//void	    FrescoFoundation_API            GetNoData(float &returnVal);
+//const byte  FrescoFoundation_API            ByteNodata();
+//const int   FrescoFoundation_API            IntNodata();
+//const float FrescoFoundation_API            FloatNodata();
+const bool	FrescoFoundation_API            IsNodata(const byte val);
+const bool	FrescoFoundation_API            IsNodata(const int val);
+const bool	FrescoFoundation_API            IsNodata(const float val);
+
+inline const bool DoublesEqual(const double left, const double right, const double epsilon)
+{
+	return (std::abs(left - right) < epsilon);
+}
+inline const bool FloatsEqual(const float left, const float right, const float epsilon)
+{
+	return (std::abs(left - right) < epsilon);
+}
+
+inline const bool IsNodata(const byte val)
+{
+	return (val == RasterIO::NODATA_BYTE);
+}
+inline const bool IsNodata(const int val)
+{
+	return (val == RasterIO::NODATA_INT);
+}
+inline const bool IsNodata(const float val)
+{
+	return FloatsEqual(val, RasterIO::NODATA_FLOAT, 0.00001);
+}
+
+//inline const byte ByteNodata()
+//{
+//	return RasterIO::NODATA_BYTE;
+//}
+//inline const int IntNodata()
+//{
+//	return RasterIO::NODATA_INT;
+//}
+//inline const float FloatNodata()
+//{
+//	return RasterIO::NODATA_FLOAT;
+//}
+
+//inline void					GetNoData(byte &returnVal)
+//{
+//	returnVal = RasterIO::NODATA_BYTE;
+//}
+//inline void					GetNoData(int &returnVal)
+//{
+//	returnVal = RasterIO::NODATA_INT;
+//}
+//inline void					GetNoData(float &returnVal)
+//{
+//	returnVal = RasterIO::NODATA_FLOAT;
+//}
+
 
 inline std::string		ToS(bool value)
 {

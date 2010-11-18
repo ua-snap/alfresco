@@ -37,6 +37,7 @@ byte  FrescoFoundation_API          gGrasslandID		= 255;
 EDetailLevel    FrescoFoundation_API gDetailLevel		= MINIMAL;
 Fresco  FrescoFoundation_API        *FRESCO				= 0;
 RasterIO FrescoFoundation_API       *gIO				= 0;
+Climate FrescoFoundation_API        *gClimate			= 0;
 
 
 Fresco::			Fresco(Landscape* pLandscape, bool isDebugOn)

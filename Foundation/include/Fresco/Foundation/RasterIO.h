@@ -36,19 +36,15 @@
 //
 // Known Issues: 
 //  - reading ASCII --- origin is off
+//  - not able to write to ASCII using GDAL.
 //
 // Todo
-//	- set more default projection info?
-//
 //	- int32_t?
 //	- transfer memory allocation and deallocation to RasterIO class (with the isMalloc flag)
 //	  - use single call to malloc, assign row pointers, fill array, free
 //  - prepopulation neccessary?
 //	- namespace Alf
 //  - time comparisons
-//	- apply ColorInterp from config.map.out?
-//	- redirect stderr (for ERROR 4: 32float_lzw.aux' not recognised as a supported file format.)
-//	- verify min, max are within allowed range?
 
 
 #include "PreCompiled.h"
@@ -69,10 +65,10 @@ typedef unsigned char   byte;
 class FrescoFoundation_API RasterIO
 {
 public:
-	static const byte  NODATA_BYTE_DEFAULT;
-	static const int   NODATA_INT32_DEFAULT;
-	static const float NODATA_FLOAT32_DEFAULT;
-	static const float NODATA_FLOAT32_ALTERNATE;
+	static const byte  NODATA_BYTE;
+	static const int   NODATA_INT;
+	static const float NODATA_FLOAT;
+	static const float NODATA_FLOAT_ALTERNATE;
 
 	enum ALFMapType 
 	{
@@ -118,9 +114,38 @@ public:
 		return _pSpatialReference; 
 	};
 
-	bool doubleEquals(double left, double right, double epsilon) 
+	bool doubleEquals(double left, double right, double epsilon) const
 	{
-		return (fabs(left - right) < epsilon);
+		return (std::abs(left - right) < epsilon);
+	};
+	bool floatEquals(float left, float right, float epsilon) const
+	{
+		return (std::abs(left - right) < epsilon);
+	};
+
+	const bool isNodata(const byte val) const
+	{
+		return (val == RasterIO::NODATA_BYTE);
+	};
+	const bool isNodata(const int val) const
+	{
+		return (val == RasterIO::NODATA_INT);
+	};
+	const bool isNodata(const float val) const
+	{
+		return floatEquals(val, RasterIO::NODATA_FLOAT, 0.00001);
+	};
+	const bool isAltNodata(const byte val) const
+	{
+		return false;
+	};
+	const bool isAltNodata(const int val) const
+	{
+		return false;
+	};
+	const bool isAltNodata(const float val) const
+	{
+		return floatEquals(val, RasterIO::NODATA_FLOAT_ALTERNATE, 0.00001);
 	};
   
 protected:

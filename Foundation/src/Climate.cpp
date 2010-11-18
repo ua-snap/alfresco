@@ -26,6 +26,7 @@ Climate::				Climate ()
 	_pOffsets	        = 0;
 	_pRandomYears		= 0;
 	_pCurrentTransition = new SClimateTransition();
+	gClimate = this;
 }
 
 
@@ -43,7 +44,7 @@ void Climate::          deleteArrays()
 	std::list<int>::iterator m;
 	if (_pSpatialTemp != 0) {
 		for (int y=0;y<_yearsOfArchivedHistory;y++) { 
-			for (m=_tempMonths.begin(); m!=_tempMonths.end(); m++) {
+			for (m=tempMonths.begin(); m!=tempMonths.end(); m++) {
 				if (&_pSpatialTemp[y][*m] != 0)
 				{
 					if (&_pSpatialTemp[y][*m][0] != 0)
@@ -58,7 +59,7 @@ void Climate::          deleteArrays()
 	}	
 	if (_pSpatialPrecip) { 
 		for (int y=0;y<_yearsOfArchivedHistory;y++) { 
-			for (m=_precipMonths.begin(); m!=_precipMonths.end(); m++) {
+			for (m=precipMonths.begin(); m!=precipMonths.end(); m++) {
 				if (&_pSpatialPrecip[y][*m] != 0)
 				{
 					if (&_pSpatialPrecip[y][*m][0] != 0)
@@ -90,15 +91,19 @@ void Climate::			clear()
 	_precipStep.clear();
 	_tempRamp.clear();
 	_precipRamp.clear();
-	_precipMonths.clear();
-	_tempMonths.clear();
+	precipMonths.clear();
+	tempMonths.clear();
 }
 
 
 void Climate::			setup()
 //setup a run.
 {
-    _yearsOfArchivedHistory  = FRESCO->fif().nGet("Climate.NumHistory");
+    _yearsOfArchivedHistory  = 1; //FRESCO->fif().nGet("Climate.NumHistory");
+	// Hard coded to 1 for now, because no where in code is using climate history, 
+	// so there's no need in allowing users to unknowingly allocate unused memory. 
+	
+	if (_yearsOfArchivedHistory < 1) throw Poco::Exception("Climate.NumHistory must be 1 or greater.");
 	_isExternFlam = FRESCO->fif().CheckKey("Climate.Flammability.File");
 	setupTransitions();
     setupStepsAndRamps();
@@ -121,23 +126,51 @@ void Climate::			setup()
 		_isMonthlyClimate = FRESCO->fif().bGet("Climate.IsMonthly");
 	if (_isMonthlyClimate)
 	{
-		//Set precip months.
-		const int* pPrecipMonths;
-		const int* pTempMonths;
-		int numMonths = FRESCO->fif().pnGet("Climate.PrecipMonths", pPrecipMonths);
-		for (int i=0; i<numMonths; i++)
-			_precipMonths.push_back(pPrecipMonths[i]);
-
-		//Set temp months.
-		numMonths = FRESCO->fif().pnGet("Climate.TempMonths", pTempMonths);
-		for (int i=0; i<numMonths; i++)
-			_tempMonths.push_back(pTempMonths[i]);
+		if (!_isExternFlam)
+		{
+			// Add months needed by internal climate fire prob equation
+			tempMonths.push_back(3);
+			tempMonths.push_back(4);
+			tempMonths.push_back(5);
+			tempMonths.push_back(6);
+			precipMonths.push_back(6);
+			precipMonths.push_back(7);
+		}
+		//
+		// Moved this chunk of code to Decid's setup due to the this 
+		// function being called after the Decid setup... still sorting 
+		// and removing duplicates here.
+		//
+		//if (!IsNodata(gGrasslandID))
+		//{
+		//	// Add months needed for Decid=>Grassland succession.
+		//	const int* pPrecipMonths;
+		//	const int* pTempMonths;
+		//	int numMonths = FRESCO->fif().pnGet("Grassland.TempMonths", pTempMonths);
+		//	for (int i=0; i<numMonths; i++)
+		//		tempMonths.push_back(pTempMonths[i]);
+		//	
+		//	numMonths = FRESCO->fif().pnGet("Grassland.PrecipMonths", pPrecipMonths);
+		//	for (int i=0; i<numMonths; i++)
+		//		precipMonths.push_back(pPrecipMonths[i]);
+		//}
+		// Sort and remove duplicates.
+		tempMonths.sort();
+		tempMonths.unique();
+		precipMonths.sort();
+		precipMonths.unique();
 	}
 	else
-	{	//Growing season climate doesn't use months, but we need to fill in the default first index for use in setup below.
-		_precipMonths.push_back(0);
-		_tempMonths.push_back(0);
+	{	
+		tempMonths.push_back(0);
+		precipMonths.push_back(0);
 	}
+	//if (tempMonths.empty() && precipMonths.empty())
+	//{
+	//	// Either it's growing season climate (not monthly) or climate is set to monthly but no months were needed.
+	//	tempMonths.push_back(0);
+	//	precipMonths.push_back(0);
+	//}
 
 	_pOffsets = new SClimate[gMaxYear+1];
 	_pRandomYears = new int[gMaxYear+1];  //Store for repStart();
@@ -146,7 +179,7 @@ void Climate::			setup()
 	std::list<int>::iterator m;
 	for (int y=0; y<_yearsOfArchivedHistory; y++) {
 		_pSpatialTemp[y] = new float**[13];
-		for (m=_tempMonths.begin(); m!=_tempMonths.end(); m++) {
+		for (m=tempMonths.begin(); m!=tempMonths.end(); m++) {
 			_pSpatialTemp[y][*m] = new float*[gNumRows];
 			for (int r=0; r<gNumRows; r++) {
 				_pSpatialTemp[y][*m][r] = new float[gNumCol];
@@ -159,7 +192,7 @@ void Climate::			setup()
 	_pSpatialPrecip = new float***[_yearsOfArchivedHistory];
 	for (int y=0; y<_yearsOfArchivedHistory; y++) {
 		_pSpatialPrecip[y] = new float**[13];
-		for (m=_precipMonths.begin(); m!=_precipMonths.end(); m++) {
+		for (m=precipMonths.begin(); m!=precipMonths.end(); m++) {
 			_pSpatialPrecip[y][*m] = new float*[gNumRows];
 			for (int r=0; r<gNumRows; r++) {
 				_pSpatialPrecip[y][*m][r] = new float[gNumCol];
@@ -313,7 +346,7 @@ void Climate::			yearStart()
 			gIO->readRasterFile(GetFullPath(gInputBasePath, _pCurrentTransition->SpatialTempFile), _pSpatialTemp[circularIndex][0], false);		
 			gIO->readRasterFile(GetFullPath(gInputBasePath, _pCurrentTransition->SpatialPrecipFile), _pSpatialPrecip[circularIndex][0], false);		
 		}
-		else
+		else if (circularIndex != previousCirularIndex)
 		{
 			size_t numBytesToCopy = gNumCol*sizeof(float);
 			for (int r=0; r<gNumRows; r++)
@@ -322,39 +355,21 @@ void Climate::			yearStart()
 				memcpy(_pSpatialPrecip[circularIndex][0][r],  _pSpatialPrecip[previousCirularIndex][0][r], numBytesToCopy);
 			}
 		}
-		//for (int r=0; r<gNumRows; r++) {
-		//	for (int c=0; c<gNumCol; c++) {
-		//		_pSpatialTemp[circularIndex][0][r][c] = _pSpatialTemp[previousCirularIndex][0][r][c];
-		//		_pSpatialPrecip[circularIndex][0][r][c] = _pSpatialPrecip[previousCirularIndex][0][r][c];
-		//	}
-		//}
 		break;
 	
 	case VTEXPLICIT :
 		//Read in spatial temp and precip files each year.
 		if (_isExternFlam)
 		{
+			// Use external calculations for annual climate flammability.
 			filename = AppendYear(_spatialFlamabilityFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialFlammability, false);
 		}
-		if (_isMonthlyClimate)
+		else if (!_isExternFlam && !_isMonthlyClimate)
 		{
-			for (month=_tempMonths.begin(); month!=_tempMonths.end(); month++) {
-				//Read temp file.
-				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, gYear, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][*month], false);
-			}
-			for (month=_precipMonths.begin(); month!=_precipMonths.end(); month++) {
-				//Read precip file.
-				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, gYear, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][*month], false);
-			}
-		}
-		else
-		{
+			// Use internal calculations for annual climate flammability.
+			
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
@@ -364,6 +379,24 @@ void Climate::			yearStart()
 			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][0], false);
 		}
+
+		if (_isMonthlyClimate)
+		{
+			// Some monthly climate files might be loaded even if using external flammability,
+			// because Decid's succession to Grassland uses a variable set of monthly climate files.
+			for (month=tempMonths.begin(); month!=tempMonths.end(); month++) {
+				//Read temp file.
+				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, gYear, *month);
+				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][*month], false);
+			}
+			for (month=precipMonths.begin(); month!=precipMonths.end(); month++) {
+				//Read precip file.
+				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, gYear, *month);
+				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][*month], false);
+			}
+		}
 		break;
 
 	case VTRANDEXPLICIT :
@@ -371,27 +404,15 @@ void Climate::			yearStart()
 		int year = this->getRandExplicitYear();
 		if (_isExternFlam)
 		{
+			// Use external calculations for annual climate flammability.
 			filename = AppendYear(_spatialFlamabilityFile, year);
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialFlammability, false);
 		}
-		if (_isMonthlyClimate)
+		else if (!_isExternFlam && !_isMonthlyClimate)
 		{
-			for (month=_tempMonths.begin(); month!=_tempMonths.end(); month++) {
-				//Read temp file.
-				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, year, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][*month], false);
-			}
-			for (month=_precipMonths.begin(); month!=_precipMonths.end(); month++) {
-				//Read precip file.
-				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, year, *month);
-				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
-				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][*month], false);
-			}
-		}
-		else
-		{
+			// Use internal calculations for annual climate flammability.
+
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, year);
 			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
@@ -400,6 +421,24 @@ void Climate::			yearStart()
 			filename = AppendYear(_pCurrentTransition->SpatialPrecipFile, year);
 			ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][0], false);
+		}
+
+		if (_isMonthlyClimate)
+		{
+			// Some monthly climate files might be loaded even if using external flammability,
+			// because Decid's succession to Grassland uses a variable set of monthly climate files.
+			for (month=tempMonths.begin(); month!=tempMonths.end(); month++) {
+				//Read temp file.
+				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, year, *month);
+				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][*month], false);
+			}
+			for (month=precipMonths.begin(); month!=precipMonths.end(); month++) {
+				//Read precip file.
+				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, year, *month);
+				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
+				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][*month], false);
+			}
 		}
 		break;
 	}
@@ -587,7 +626,11 @@ std::string Climate::	climateValuesTypeToString(EValuesType type)
 float Climate::			getClimateFlammability(int row, int col)
 {
 	if (_pSpatialFlammability)
+	{
+		//if (IsNodata(_pSpatialFlammability[row][col]))
+		//	throw Poco::Exception("invalid use of nodata value ("+ToS(_pSpatialFlammability[row][col])+") in external climate flammability map. Nodata values should not exist except where a cell's vegetation type is NoVeg.");
 		return _pSpatialFlammability[row][col];
+	}
 	else
 		throw Poco::Exception("Climate Flammabiltiy file did not load correctly.");
 }

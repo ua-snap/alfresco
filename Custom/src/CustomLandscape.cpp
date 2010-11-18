@@ -121,19 +121,19 @@ void CustomLandscape::		setup()
 
     Landscape::setup();
 
-	if (Decid::usingGrassland())
-	{
-		_pClimate->assertTempMonth(3);
-		_pClimate->assertTempMonth(4);
-		_pClimate->assertTempMonth(5);
-		_pClimate->assertTempMonth(6);
-		_pClimate->assertTempMonth(7);
-		_pClimate->assertPrecipMonth(3);
-		_pClimate->assertPrecipMonth(4);
-		_pClimate->assertPrecipMonth(5);
-		_pClimate->assertPrecipMonth(6);
-		_pClimate->assertPrecipMonth(7);
-	}
+	//if (Decid::usingGrassland())
+	//{
+	//	_pClimate->assertTempMonth(3);
+	//	_pClimate->assertTempMonth(4);
+	//	_pClimate->assertTempMonth(5);
+	//	_pClimate->assertTempMonth(6);
+	//	_pClimate->assertTempMonth(7);
+	//	_pClimate->assertPrecipMonth(3);
+	//	_pClimate->assertPrecipMonth(4);
+	//	_pClimate->assertPrecipMonth(5);
+	//	_pClimate->assertPrecipMonth(6);
+	//	_pClimate->assertPrecipMonth(7);
+	//}
 
 
 	//Make space for landscape data.
@@ -268,7 +268,6 @@ void CustomLandscape::		repStart()
  
 	//Create landscape cell-by-cell, assigning values from all the input 
 	Frame* pFrame = 0;
-	byte noDataID = 0; GetNoData(noDataID);
 	for (int r=0; r<gNumRows; r++) {
 		for (int c=0; c<gNumCol; c++) {
 			pFrame = _pFrames[r][c];
@@ -280,7 +279,7 @@ void CustomLandscape::		repStart()
 			else if (frameTypeID==gDecidID)	    { _pFrames[r][c] = new Decid(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gTundraID)	{ _pFrames[r][c] = new Tundra(-_pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
 			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (frameTypeID==noDataID)    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (IsNodata(frameTypeID))    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else								{ throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS((int)frameTypeID)); }
 		}
 	}
@@ -593,7 +592,6 @@ void CustomLandscape::		doVegetationTransitions()
 		ShowOutput(MODERATE, "\t\tProcessing Vegetation Transitions\n");
 		ShowOutput(MAXIMUM, "\t\t\tReading in veg transition file: " + GetFullPath(gInputBasePath, filename) + "\n");
 		//Force cells to succeed to new types.
-		byte noDataID = 0; GetNoData(noDataID);
 		for (r=0; r<gNumRows; r++) {
 			for (c=0; c<gNumCol; c++) {
 				pCurFrame	= _pFrames[r][c];
@@ -607,7 +605,7 @@ void CustomLandscape::		doVegetationTransitions()
 					else if (newType==gDecidID)		pNewFrame = new Decid(*pCurFrame);
 					else if (newType==gTundraID)	pNewFrame = new Tundra(*pCurFrame);
 					else if (newType==gNoVegID)		pNewFrame = new NoVeg(*pCurFrame);
-					else if (newType==noDataID)		pNewFrame = new NoVeg(*pCurFrame);
+					else if (IsNodata(newType))	pNewFrame = new NoVeg(*pCurFrame);
 					else							throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS((int)newType) + ".\n");
 					//Decrement cell count for old species and increment cell count for new species.
 					_vegDistributionStat[curType]--;

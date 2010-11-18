@@ -245,6 +245,7 @@ void Landscape::		succession()
 //actual transition of pointers is a landscape level job and is executed.  Also, relevent
 //statistics are updated in the event of a transfer.
 {
+	ShowOutput(MODERATE, "\t\tSuccessions\n");
 	Frame* pSuccFrame;
 	for (int r=0; r<gNumRows; r++) {
 		for (int c=0; c<gNumCol; c++) {
@@ -436,9 +437,8 @@ bool Landscape::        testFireSpread(Frame* pFrame, const int rowOfNeighbor, c
 
 	if (isInSpreadRadius) {
 		//Spread fire from burning neighbor?
-		float nodata = 0; GetNoData(nodata);
-		if (nodata == pFrame->fireSensitivity)
-			throw Poco::Exception("invalid use of nodata value ("+ToS(nodata)+") in fire sensitivity map. There should not be any nodata value for cells that have vegetation.");
+		if (IsNodata(pFrame->fireSensitivity))
+			throw Poco::Exception("invalid use of nodata value ("+ToS(pFrame->fireSensitivity)+") in fire sensitivity map. Nodata values should not exist except where a cell's vegetation type is NoVeg.");
 		float test	= pFrame->getFireProb(this) * pFrame->fireSensitivity * NormDist(_pfireSpreadParams) * fireSuppressionFactor  * _maxFireSizeEventWeight;
 		return (test > GetNextRandom());
 	}

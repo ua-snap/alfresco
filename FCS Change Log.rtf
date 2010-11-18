@@ -2,32 +2,33 @@
 {\colortbl ;\red0\green0\blue0;\red255\green255\blue255;}
 {\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
+\par
 \f2\fs24 1.0.10\par
-\b0\f3\fs20 Released: \f2 11/8/2010\f4\par
+\b0\f3\fs20 Released: \f2 11/18/2010\f4\par
 - Bug Fixed: Forced vegetation transition input rasters were still required to use the .txt file extention. Now .tif can be used.\par
-- Major Change: Added a frame type for "Grassland". If you do not want to use the Grassland frame, you do not need to add any new FIF fields. The Grassland frame uses the same FIF fields used by the spruce frames (parameter values specific to Grassland are being determined).\par
+- Major Change: Added a frame type, Grassland. If you do not want to use the Grassland frame, you do not need to add any new FIF fields. See below for an example of the new FIF fields. Values specific to Grassland are being determined, so the provided values are for example only.\par
 \b\f2\fs24\par
-\f5\fs20 For the Grassland frame:\par
-\b0\f6 Grassland  (unique veg ID between 0 and 254)\par
-Grassland.StartAge\par
-Grassland.FireParms\par
-Grassland.HumanFireProb\par
+\f5\fs20 FIF Fields for the Grassland frame:\par
+\b0\f6 ; THE GRASSLAND FRAME\par
+; The Grassland frame is just like the spruce frames except for how Decid succeeds to Grassland. It \par
+; uses many of the same FIF fields as the spruces and it transitions to Decid immediately after a burn. \par
+Grassland = 5; Integer. A unique veg ID between 0 and 254. If this field is not commented out, all other grassland fields are required.\par
+Grassland.StartAge = \{11.3, 2.36\}; A constant distribution is used if only one parameter is specified. Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.\par
+Grassland.FireParms = \{0.22623, 8., 0.08\}; Parameters for the fire age function : k   Max Fire Factor  a   Age Coefficient (Age   a/b)  b   Slope Coefficient\par
+Grassland.HumanFireProb = 0.002184466; Probability of human caused burn for this frame type.\par
 \par
-\b\f5 There are additional FIF fields needed to let the Decid frame succeed to Grassland:\b0\f6\par
-Decid->Grassland.History = X\par
-\f5 Integer. Number of years to collect results from the regression equation.\par
-\f6\par
-Decid->Grassland.ClimateWeight = \{Intercept, t3, t4, t5, t6, t7, p3, p4, p5, p6, p7, IfFlat\}\par
-\f5 Array of 12 floating point values. Parameters for the regression equation.\f6\par
-\par
-Decid->Grassland.ClimateThreshholds = \{Low, Moderate, High_LSS, High_HSS, Low_WasGrassland, Moderate_WasGrassland\}\par
-\f5 Array of 6 floating point values. The severity of the last burn determines the threshold that must be exceeded by the summed results of X years of the climate regression equation in order to succeed to Grassland. Must provide thresholds for Low, Moderate, High w/ LSS and High w/ HSS burn severities as well as an extra threshold for Low and Moderate for cases where the previous vegetation type was already Grassland.\f6\par
+; Succession from Decid to Grassland:\par
+; For a specified number of years (Decid->Grassland.History) after a Decid frame burns, a running sum \par
+; of results from a climate regression equation (using parameters from Decid->Grassland.ClimateWeight) \par
+; is compared to a climate threshold value (from Decid->Grassland.ClimateThreshholds). If the sum is \par
+; greater than the threshold, Decid succeeds to Grassland. The threshold used depends on the burn \par
+; severity of the fire on that cell.\par
+Decid->Grassland.History = 3; Integer. Number of years to collect results from the regression equation and compare to the threshold.\par
+Decid->Grassland.TempMonths = \{3,4,5,6\}; Array of integers. Months, in numeric order, to read temperature raster files for use in the regression equation.\par
+Decid->Grassland.PrecipMonths = \{6,7\}; Array of integers. Months, in numeric form and in order, to read precipitation raster files for use in the regression equation.\par
+Decid->Grassland.ClimateWeight = \{.1, 1.0,  .03,.04,.05,.06,  .006,0.007\}; A variable length array of regression function parameters as follows: \{Intercept, IfFlat_InterceptAdjustment, [a temp multiplier per month in Grassland.TempMonths], [a precip multiplier per month in Grassland.PrecipMonths]\}\par
+Decid->Grassland.ClimateThreshholds = \{2, 2.5, 1, 1, 3, 3.2\}; Array of 6 thresholds, one per burn severity level: \{Low, Moderate, High_LSS, High_HSS, Low_WasGrassland, Moderate_WasGrassland\}\par
 \b\f2\fs24\par
-\f5\fs20 And don't forget to include the extra months:\par
-\b0\f6 Climate.TempMonths = \{3,4,5,6,7\}\par
-Climate.PrecipMonths = \{3,4,5,6,7\}\par
-\f5 This will not affect the climate fire probability equation which still only uses Mar through June for temperature and June and July for precipitation.\b\f2\fs24\par
-\par
 \par
 1.0.9\par
 \b0\f3\fs20 Released: \f2 10/25/2010\f4\par

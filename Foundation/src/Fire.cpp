@@ -115,12 +115,15 @@ const float Fire::getClimateFireProb (const Landscape* l)
 //of fire probability.  The model was then calibrated to produce observed mean # fires and 
 //area burned to get the overall rate constant.
 {
-	float nd = 0.; GetNoData(nd);
 	if (l->usingExternalClimateFlammabilityFile())
 	{
-		_climateFireProb = l->cellClimateFlammability();
-		if (nd == _climateFireProb)
-			throw Poco::Exception("invalid use of nodata value ("+ToS(nd)+") in external climate flammability map. There should not be any nodata value for cells that have vegetation.");
+		const float p = l->cellClimateFlammability();
+		if (IsNodata(p)) {
+			return 0;
+		}
+		else {
+			_climateFireProb = p;
+		}
 	}
 	else if (_isMonthly)  //use monthly equation
 	{
@@ -130,8 +133,10 @@ const float Fire::getClimateFireProb (const Landscape* l)
 		const float t6 = l->cellTempByMonth(6);
 		const float p6 = l->cellPrecipByMonth(6);
 		const float p7 = l->cellPrecipByMonth(7);
-		if (nd==t3 || nd==t4 || nd==t5 || nd==t6 || nd==p6 || nd==p7)
-			throw Poco::Exception("invalid use of nodata value ("+ToS(nd)+") in monthly climate map. There should not be any nodata value for cells that have vegetation.");
+
+		if (IsNodata(t3) || IsNodata(t4) || IsNodata(t5) || IsNodata(t6)
+			|| IsNodata(p6) || IsNodata(p7))
+			return 0;
 
 		_climateFireProb =    _pFireClimate[0]	//intercept
 							//Temps: mar apr may jun
@@ -148,9 +153,12 @@ const float Fire::getClimateFireProb (const Landscape* l)
 	else //use growing season equation
 	{
 		const SClimate climate = l->cellClimate();
-		if (nd==climate.Temp || nd==climate.Precip)
-			throw Poco::Exception("invalid use of nodata value ("+ToS(nd)+") in climate. There should not be any nodata value for cells that have vegetation.");
-		_climateFireProb = _pFireClimate[0] + _pFireClimate[1]*climate.Temp + _pFireClimate[2]*climate.Precip;
+		if (IsNodata(climate.Temp) || IsNodata(climate.Precip)) {
+			return 0;
+		}
+		else {
+			_climateFireProb = _pFireClimate[0] + _pFireClimate[1]*climate.Temp + _pFireClimate[2]*climate.Precip;
+		}
 	}
 	return _climateFireProb;
 }

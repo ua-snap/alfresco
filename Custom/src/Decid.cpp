@@ -30,7 +30,8 @@ const double*	Decid::_pWSpruceStartAge;
 int				Decid::_yearsOfGrasslandCheck = 0;
 const double*	Decid::_pGrasslandThresholds = 0;
 const double*	Decid::_pGrassClimateParams = 0;
-
+std::list<int>	Decid::_grassTempMonths;
+std::list<int>	Decid::_grassPrecipMonths;
 
 
 Decid::Decid (
@@ -121,11 +122,38 @@ void Decid::setStaticData()
 		{
 			_yearsOfGrasslandCheck = FRESCO->fif().nGet("Decid->Grassland.History");
 
-			if (12 != FRESCO->fif().pdGet("Decid->Grassland.ClimateWeight", _pGrassClimateParams))
-				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 12 for key: Decid->Grassland.ClimateWeight = {Intercept,3t,4t,5t,6t,7t,3p,4p,5p,6p,7p,IfFlat}");
+			if (!IsNodata(gGrasslandID))
+			{
+				// Add months needed for Decid=>Grassland succession.
+				_grassTempMonths.clear();
+				_grassPrecipMonths.clear();
+				const int* pPrecipMonths;
+				const int* pTempMonths;
+
+				int numMonths = FRESCO->fif().pnGet("Decid->Grassland.TempMonths", pTempMonths);
+				if (numMonths > 12)
+					throw Exception(Exception::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.TempMonths. There are only 12 months in a year.");
+
+				for (int i=0; i<numMonths; i++) {
+					gClimate->tempMonths.push_back(pTempMonths[i]);
+					_grassTempMonths.push_back(pTempMonths[i]);
+				}
+
+				numMonths = FRESCO->fif().pnGet("Decid->Grassland.PrecipMonths", pPrecipMonths);
+				if (numMonths > 12)
+					throw Exception(Exception::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.PrecipMonths. There are only 12 months in a year.");
+
+				for (int i=0; i<numMonths; i++) {
+					gClimate->precipMonths.push_back(pPrecipMonths[i]);
+					_grassPrecipMonths.push_back(pPrecipMonths[i]);
+				}
+			}
+			size_t expectedSize = 2 + _grassTempMonths.size() + _grassPrecipMonths.size();
+			if (expectedSize != FRESCO->fif().pdGet("Decid->Grassland.ClimateWeight", _pGrassClimateParams))
+				throw Exception(Exception::BADARRAYSIZE, "Expected array size of "+ToS(expectedSize)+" for key: Decid->Grassland.ClimateWeight = {Intercept,IfFlatInterceptAdjusment, [a temp multiplier per month in Grassland.TempMonths], [a precip multiplier per month in Grassland.PrecipMonths]}");
 
 			if (6 != FRESCO->fif().pdGet("Decid->Grassland.ClimateThreshholds", _pGrasslandThresholds))
-				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 12 for key: Decid->Grassland.ClimateThreshholds = {Low, Moderate, High_LSS, High_HSS, Low_And_WasGrassland, Moderate_And_WasGrassland}");
+				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 6 for key: Decid->Grassland.ClimateThreshholds = {Low, Moderate, High_LSS, High_HSS, Low_And_WasGrassland, Moderate_And_WasGrassland}");
 		}
 
 		//
@@ -244,19 +272,43 @@ Frame* Decid::success(Landscape* l)
 	{
 		if (usingGrassland() && age() <= _yearsOfGrasslandCheck)
 		{
-			_degreesForGrassland += _pGrassClimateParams[INTERCEPT];
-			_degreesForGrassland += l->cellTempByMonth(3)   * _pGrassClimateParams[T3];
-			_degreesForGrassland += l->cellTempByMonth(4)   * _pGrassClimateParams[T4];
-			_degreesForGrassland += l->cellTempByMonth(5)   * _pGrassClimateParams[T5];
-			_degreesForGrassland += l->cellTempByMonth(6)   * _pGrassClimateParams[T6];
-			_degreesForGrassland += l->cellTempByMonth(7)   * _pGrassClimateParams[T7];
-			_degreesForGrassland += l->cellPrecipByMonth(3) * _pGrassClimateParams[P3];
-			_degreesForGrassland += l->cellPrecipByMonth(4) * _pGrassClimateParams[P4];
-			_degreesForGrassland += l->cellPrecipByMonth(5) * _pGrassClimateParams[P5];
-			_degreesForGrassland += l->cellPrecipByMonth(6) * _pGrassClimateParams[P6];
-			_degreesForGrassland += l->cellPrecipByMonth(7) * _pGrassClimateParams[P7];
-			if (hasComplexTopo()) 
-				_degreesForGrassland += _pGrassClimateParams[FLAT];
+			// Build equation based on number of months for temp and precip.
+			int i=0;
+			bool foundNodata = false;
+			float v=0; //climate value
+			// ...y-intercept
+			float r = _pGrassClimateParams[0]; // 'r' for regression result
+			// ...if flat, apply y-intercept adjustment
+			if (!hasComplexTopo()) 
+				r += _pGrassClimateParams[1];
+			// ...temperature months
+			std::list<int>::iterator m;
+			for (m=_grassTempMonths.begin(); m!=_grassTempMonths.end(); m++, i++) {
+				v = l->cellTempByMonth(*m);
+				if (!foundNodata) 
+					foundNodata = IsNodata(v);
+				r += v * _pGrassClimateParams[2 + i];				
+			}
+			// ...precipitation months
+			for (m=_grassPrecipMonths.begin(); m!=_grassPrecipMonths.end(); m++, i++) {
+				v = l->cellPrecipByMonth(*m);
+				if (!foundNodata) 
+					foundNodata = IsNodata(v);
+				r += v * _pGrassClimateParams[2 + i]; // i continues incrementing from temp loop		
+			}
+			// ...if nodata wasn't found, apply the regression result
+			if (!foundNodata)
+				_degreesForGrassland += r;
+
+			//_degreesForGrassland += l->cellTempByMonth(4)   * _pGrassClimateParams[T4];
+			//_degreesForGrassland += l->cellTempByMonth(5)   * _pGrassClimateParams[T5];
+			//_degreesForGrassland += l->cellTempByMonth(6)   * _pGrassClimateParams[T6];
+			//_degreesForGrassland += l->cellTempByMonth(7)   * _pGrassClimateParams[T7];
+			//_degreesForGrassland += l->cellPrecipByMonth(3) * _pGrassClimateParams[P3];
+			//_degreesForGrassland += l->cellPrecipByMonth(4) * _pGrassClimateParams[P4];
+			//_degreesForGrassland += l->cellPrecipByMonth(5) * _pGrassClimateParams[P5];
+			//_degreesForGrassland += l->cellPrecipByMonth(6) * _pGrassClimateParams[P6];
+			//_degreesForGrassland += l->cellPrecipByMonth(7) * _pGrassClimateParams[P7];
 
 			float threshold = 0;
 			if (_wasGrassland && burnSeverity == LOW)
