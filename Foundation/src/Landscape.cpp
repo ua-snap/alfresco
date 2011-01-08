@@ -112,6 +112,10 @@ void Landscape::		setup()
 //setup a run.
 {
     //Get variables from FIF.
+	if (FRESCO->fif().CheckKey("YOffset"))
+		gYOffset				= FRESCO->fif().nGet("YOffset");
+	if (FRESCO->fif().CheckKey("XOffset"))
+	    gXOffset				= FRESCO->fif().nGet("XOffset");
     gNumRows				    = FRESCO->fif().nGet("MaxRow");
     gNumCol				        = FRESCO->fif().nGet("MaxCol");
     gCellSize				    = FRESCO->fif().dGet("CellSize");
@@ -134,7 +138,7 @@ void Landscape::		setup()
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
-	gIO = new RasterIO(gNumCol, gNumRows, _xllCorner, _yllCorner, gCellSize, -gCellSize, 0, 0,
+	gIO = new RasterIO(gXOffset, gYOffset, gNumCol, gNumRows, _xllCorner, _yllCorner, gCellSize, -gCellSize, 0, 0,
 						"ALFRESCO " + Fresco::version() + " from UAF. Config file: " + FRESCO->fif().fileName(),
 						requireAaeacForInput, applyAaeacToOutput);
 

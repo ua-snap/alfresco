@@ -19,6 +19,8 @@ std::string  FrescoFoundation_API   gWorkingDirectory;
 std::string  FrescoFoundation_API   gInputBasePath;
 std::string  FrescoFoundation_API   gOutputBasePath;
 std::string  FrescoFoundation_API   gOutputDirectory;
+int  FrescoFoundation_API           gYOffset			= 0;					//Number of rows from top of input files to start reading in landscape.
+int  FrescoFoundation_API           gXOffset			= 0;					//Number of cols from left of input files to start reading in landscape.
 int  FrescoFoundation_API           gNumRows			= 0;					//Number of rows in landscape.
 int  FrescoFoundation_API           gNumCol				= 0;					//Number of cols in landscape.
 int  FrescoFoundation_API           gMaxRep				= 0;					//Number of replications to run.
@@ -77,7 +79,9 @@ void Fresco::		clear()
     _randomSeed			= 0;
     _numGisHeaderRows	= 6;
     //Clear global settings.
-    gNumRows			= 0;
+	gYOffset			= 0;
+	gXOffset			= 0;
+	gNumRows			= 0;
     gNumCol				= 0;
     gCellSize			= 0;
     gMaxRep				= 0;

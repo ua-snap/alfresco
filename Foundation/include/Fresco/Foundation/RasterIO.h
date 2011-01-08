@@ -84,8 +84,8 @@ public:
 		TUNDRA_BASAL_AREA
 	};
 
-	RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double xPixelSize, 
-				double yPixelSize, double xRotation, double yRotation, 
+	RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int xSize, int ySize,  
+				double xPixelSize, double yPixelSize, double xRotation, double yRotation, 
 				const std::string &softwareDescription = "ALFRESCO from UAF",
 				bool requireAaeacForInput = true, bool applyAaeacToOutput = true);
 	~RasterIO();
@@ -151,10 +151,14 @@ public:
 protected:
   
 private:
+	int _xOffset;
+	int _yOffset;
 	int _xSize;
 	int _ySize;
-	double _xOrigin; 
-	double _yOrigin;
+	double _xInputOrigin; 
+	double _yInputOrigin;
+	double _xOutputOrigin;
+	double _yOutputOrigin;
 	double _xPixelSize; 
 	double _yPixelSize;
 	double _xRotation;

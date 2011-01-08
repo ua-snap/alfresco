@@ -227,6 +227,7 @@ void CustomLandscape::		repStart()
 {
 	ShowOutput(MODERATE, "\tLandscape Rep setup\n");
 	ShowOutput(MODERATE, "\t\tCreating landscape of " + ToS(gNumRows) + " rows by " + ToS(gNumCol) + " cols.\n");
+	ShowOutput(MODERATE, "\t\tReading from input dataset begins "+ToS(gYOffset)+" pixels from the top and "+ToS(gXOffset)+" pixels from the left.\n");
 
 
     //Read in layers that might be unique per rep.

@@ -112,6 +112,8 @@ extern int          FrescoFoundation_API    gMaxYear;
 extern int          FrescoFoundation_API    gYear;
 extern int          FrescoFoundation_API    gTimeStep;
 extern float        FrescoFoundation_API    gCellSize;
+extern int          FrescoFoundation_API    gYOffset;
+extern int          FrescoFoundation_API    gXOffset;
 extern int          FrescoFoundation_API    gNumRows;
 extern int          FrescoFoundation_API    gNumCol;
 extern long         FrescoFoundation_API    gNumSpecies;

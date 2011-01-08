@@ -1,15 +1,21 @@
-{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset77 Arial MT;}{\f4\fnil\fcharset0 Arial MT;}{\f5\fswiss\fprq2\fcharset0 Arial;}{\f6\fmodern\fprq1\fcharset0 Courier New;}{\f7\fswiss\fcharset77 Arial-BoldItalicMT;}{\f8\fswiss\fcharset77 Arial-ItalicMT;}}
+{\rtf1\ansi\ansicpg10000\deff0{\fonttbl{\f0\fswiss\fcharset77 Arial-BoldMT;}{\f1\fswiss\fcharset77 ArialMT;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset77 Arial MT;}{\f4\fnil\fcharset0 Arial MT;}{\f5\fmodern\fprq1\fcharset0 Courier New;}{\f6\fswiss\fprq2\fcharset0 Arial;}{\f7\fswiss\fcharset77 Arial-BoldItalicMT;}{\f8\fswiss\fcharset77 Arial-ItalicMT;}}
 {\colortbl ;\red0\green0\blue0;\red255\green255\blue255;}
 {\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\li180\sb60\qc\tx540\tx900\tx1170\tx7200\lang1033\b\f0\fs40 Fresco Client Server Change Log\b0\f1\par
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
 \par
-\f2\fs24 1.0.10\par
+\f2\fs24 1.0.11\par
+\b0\f3\fs20 Released: \f2 Pending\f4\par
+- New: read your landscape in as a sub-region from a larger set of rasters. To do so add these two new FIF fields: \par
+\f5 XOffset = [integer]  ; (optional)number of pixels from the left to start counting columns \par
+YOffset = [integer]  ; (optional) number of pixels from the top to start counting rows\par
+\b\f2\fs24\par
+1.0.10\par
 \b0\f3\fs20 Released: \f2 11/18/2010\f4\par
 - Bug Fixed: Forced vegetation transition input rasters were still required to use the .txt file extention. Now .tif can be used.\par
 - Major Change: Added a frame type, Grassland. If you do not want to use the Grassland frame, you do not need to add any new FIF fields. See below for an example of the new FIF fields. Values specific to Grassland are being determined, so the provided values are for example only.\par
 \b\f2\fs24\par
-\f5\fs20 FIF Fields for the Grassland frame:\par
-\b0\f6 ; THE GRASSLAND FRAME\par
+\f6\fs20 FIF Fields for the Grassland frame:\par
+\b0\f5 ; THE GRASSLAND FRAME\par
 ; The Grassland frame is just like the spruce frames except for how Decid succeeds to Grassland. It \par
 ; uses many of the same FIF fields as the spruces and it transitions to Decid immediately after a burn. \par
 Grassland = 5; Integer. A unique veg ID between 0 and 254. If this field is not commented out, all other grassland fields are required.\par
@@ -36,7 +42,7 @@ Decid->Grassland.ClimateThreshholds = \{2, 2.5, 1, 1, 3, 3.2\}; Array of 6 thres
 - Major Change: Spatial input files must now be in the GeoTIFF format and all spatial output is written in the GeoTIFF format. GeoTIFF is a binary file format that allows data to be stored more efficiently than the text based ASCII Grid format that has been used in ALFRESCO until now. There are many tools available to convert from ASCII Grid files to GeoTIFF files including the free GDAL tools. \cf1\highlight2 If the NODATA value metadata tag is not specified, the default NODATA value for the given datatype is assumed (see Supported Datatypes below for defaults). Best performance is seen when input files use the default NODATA value for the given datatype and the NODATA metadata tag is set with the same value.\par
 \cf0\highlight0\par
 \pard\li180\sb60\cf1\highlight2\b Supported Raster Datatypes:\b0\par
-\f6    TYPE   |    MIN VAL    |   MAX VAL    | DEFAULT NODATA\par
+\f5    TYPE   |    MIN VAL    |   MAX VAL    | DEFAULT NODATA\par
 ----------------------------------------------------------\par
   Byte    |            0  |         255  |          255\par
   INT32   |  -2147483648  |  2147483648  |  -2147483648\par
@@ -87,9 +93,9 @@ ApplyAAEACProjectionToOutputRasters = TRUE   ; (optional -- defaults to TRUE) if
 \b0\par
 \b Modified FIF Fields\b0\par
 MapFlags -- the field hasn't changed, but the species specific output type flags for Decid and Tundra have been placed onto two separate flag values rather than sharing the 0x000100 flag. The FIF comments to describe the species specific options used to be this:\par
-\f6 ; 0x000100   Decid: species trajectory; Tundra: basal area\f4\par
+\f5 ; 0x000100   Decid: species trajectory; Tundra: basal area\f4\par
 Now it should read like this: \par
-\f6 ; 0x000100   Decid: species trajectory\par
+\f5 ; 0x000100   Decid: species trajectory\par
 ; 0x000200   Tundra: basal area\f4\par
 \b\f0\fs24\par
 \f4\fs20 Depricated FIF Fields \b0 (they can now be removed from your FIF files for use with 1.0.9 and beyond)\par

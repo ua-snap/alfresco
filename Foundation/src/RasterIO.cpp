@@ -32,14 +32,16 @@ const float RasterIO::NODATA_FLOAT   = -3.4e38f;
 const float RasterIO::NODATA_FLOAT_ALTERNATE = -3.40282e+38f;
 
 
-RasterIO::RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double xPixelSize, 
-				double yPixelSize, double xRotation, double yRotation, 
+RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int xSize, int ySize, 
+				double xPixelSize, double yPixelSize, double xRotation, double yRotation, 
 				const std::string &softwareDescription,
 				bool requireAaeacForInput, bool applyAaeacToOutput)
-	: _xSize(xSize),
+	: _xOffset(xOffset),
+	_yOffset(yOffset),
+	_xSize(xSize),
 	_ySize(ySize),
-	_xOrigin(xOrigin),
-	_yOrigin(yOrigin),
+	_xInputOrigin(xOrigin),
+	_yInputOrigin(yOrigin),
 	_xPixelSize(xPixelSize),
 	_yPixelSize(yPixelSize),
 	_xRotation(xRotation),
@@ -54,15 +56,24 @@ RasterIO::RasterIO(int xSize, int ySize, double xOrigin, double yOrigin, double 
 	//GDALRegister_AAIGrid();
 
 	//
+	// Determine origin for output rasters.
+	//
+	_xOutputOrigin = _xInputOrigin + (_xOffset * gCellSize);
+	_yOutputOrigin = _yInputOrigin - (_yOffset * gCellSize);
+
+	//
 	// Create metadata items used for output.
 	//
-	_geoTransform[0] = _xOrigin;
-	_geoTransform[3] = _yOrigin;
+	_geoTransform[0] = _xOutputOrigin;
+	_geoTransform[3] = _yOutputOrigin;
 	_geoTransform[1] = _xPixelSize;
 	_geoTransform[5] = _yPixelSize;
 	_geoTransform[2] = _xRotation;
 	_geoTransform[4] = _yRotation;
 
+	//
+	// Descriptions for output metadata.
+	//
 	_mapDescriptions[AGE] = "Stand Age for year %d of rep %d.";
 	_mapDescriptions[SITE_VARIABLE] = "Site Variable for year %d of rep %d.";
 	_mapDescriptions[FIRE_AGE] = "Fire Age for year %d of rep %d.";
@@ -423,11 +434,11 @@ template<class T> void RasterIO::_readRasterFile(const string filepath, T**     
 				throw ReadRasterException("Unable to allocate memory needed to read raster file at " + filepath);
 			
 			// prepopulate with nodata
-			for (int c=0; c < _xSize; c++) 
+			for (int c=0; c < _xSize; c++)
 				pMatrix[r][c] =  defaultNodata;
 	
 			// read in a row of data
-			eErr = pBand->RasterIO(GF_Read, 0, r, _xSize, 1, pMatrix[r], _xSize, 1, expectedType, 0, 0);
+			eErr = pBand->RasterIO(GF_Read, _xOffset, r + _yOffset, _xSize, 1, pMatrix[r], _xSize, 1, expectedType, 0, 0);
 
 			// replace any of the file's nodata values with the default, or if metadata 
 			// doesn't specify a nodata value, then replace some of the typical values used 
@@ -542,6 +553,8 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 		buf = (T*) malloc(this->_xSize * sizeof(T));
 		if (buf == NULL) throw WriteRasterException("out of memory!");
 
+		// Set the write buffer values per pixel. Evaluate whether the nodata 
+		// value is appropriate.
 		CPLErr err = CE_None;
 		float fscar = 0.0;
 		float scale = 0.0;
@@ -813,8 +826,8 @@ void RasterIO::_validateMetadata(GDALDataset* pDataset, GDALRasterBand* pBand, c
 		errors.push(s.str()); s.str("");
 	}
 
-	if (!doubleEquals(xOrigin, _xOrigin, 0.00001)  || !doubleEquals(yOrigin, _yOrigin, 0.00001)) {
-		s << "expected an origin of (" << _xOrigin << ", " <<  _yOrigin << ")"
+	if (!doubleEquals(xOrigin, _xInputOrigin, 0.00001)  || !doubleEquals(yOrigin, _yInputOrigin, 0.00001)) {
+		s << "expected an origin of (" << _xInputOrigin << ", " <<  _yInputOrigin << ")"
 			<< " but found (" << xOrigin << ", " <<  yOrigin << ")";
 		errors.push(s.str()); s.str("");
 	}
@@ -831,15 +844,26 @@ void RasterIO::_validateMetadata(GDALDataset* pDataset, GDALRasterBand* pBand, c
 		errors.push(s.str()); s.str("");
 	}
 
-	if (xRasterSize != _xSize  || yRasterSize != _ySize) {
-		s << "expected raster size to be (" << _xSize << " x " <<  _ySize << ")"
-			<< " but found (" << xRasterSize << " x " <<  yRasterSize << ")";
+	if (xRasterSize < _xSize + _xOffset) {
+		s << "expected raster size to be at least " << _xSize + _xOffset << " columns wide"
+			<< " but found only " << xRasterSize << " columns";
+		errors.push(s.str()); s.str("");
+	}
+	if (yRasterSize < _ySize + _yOffset) {
+		s << "expected raster size to be at least " <<  _ySize + _yOffset << " rows tall"
+			<< " but found only " <<  yRasterSize << " rows";
 		errors.push(s.str()); s.str("");
 	}
 
-	if (xBandSize != _xSize  || yBandSize != _ySize) {
-		s << "expected raster band size to be (" << _xSize << " x " <<  _ySize << ")"
-			<< " but found (" << xBandSize << " x " <<  yBandSize << ")";
+
+	if (xBandSize < _xSize + _xOffset) {
+		s << "expected raster band size to be at least " << _xSize + _xOffset << " columns wide"
+			<< " but found only " << xBandSize << " columns";
+		errors.push(s.str()); s.str("");
+	}
+	if (yBandSize < _ySize + _yOffset) {
+		s << "expected raster band size to be at least " <<  _ySize + _yOffset << " rows tall"
+			<< " but found only " <<  yBandSize << " rows";
 		errors.push(s.str()); s.str("");
 	}
 
