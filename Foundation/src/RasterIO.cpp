@@ -698,7 +698,7 @@ void RasterIO::_validateProjectionMetadata(GDALDataset* pDataset, std::queue<str
 
 	// Check GEOCS and it's children nodes...
 	//const char *val = sr.GetAttrValue("GEOCS");
-	//std::string sval(strlwr(val));
+	//std::string sval(stolower(val));
 	//if (val==NULL || sval!="nad83" || !npos==sval.find("north_american") || !npos==sval.find("1983")) {
 	//	s << "expected the projection's GEOCS name to be \"GCS_North_American_1983\" but found " 
 	//		<< (val == NULL ? "[empty]" : val);
@@ -706,7 +706,7 @@ void RasterIO::_validateProjectionMetadata(GDALDataset* pDataset, std::queue<str
 	//}
 	// ...check prime meridian
 	const char* val1 = sr.GetAttrValue("DATUM");
-	std::string sval(strlwr((char*)val1));
+	std::string sval(stolower((char*)val1));
 	if (val1==NULL || (string::npos==sval.find("north_american") && string::npos==sval.find("1983") && sval!="nad83")) {
 		s << "expected the projection's DATUM to be \"NAD83\" but found " 
 			<< (val1 == NULL ? "[empty]" : val1);
@@ -751,7 +751,7 @@ void RasterIO::_validateProjectionMetadata(GDALDataset* pDataset, std::queue<str
 
 	// Check PROJECTION...
 	const char* val6 = sr.GetAttrValue( "PROJECTION" );
-	sval = strlwr((char*)val6);
+	sval = stolower((char*)val6);
 	if (val6 == NULL || string::npos == sval.find("albers")) {
 		s << "expected projection parameter PROJECTION to be \"Albers_Conic_Equal_Area\" but found " 
 		  << (val6 == NULL ? "[empty]" : val6);

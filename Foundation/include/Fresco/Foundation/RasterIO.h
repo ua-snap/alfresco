@@ -55,6 +55,7 @@
 #include <string>
 #include <cmath>
 #include <sstream>
+#include <algorithm>
 
 
 class Frame;
@@ -186,5 +187,11 @@ private:
 	template<class T> void _writeRasterFile(const std::string filepath, Frame*** pFrames, ALFMapType mapType, GDALDataType dataType, const std::string &description = "", GDALColorTable* pColorTable = NULL);
 	void _validateMetadata(GDALDataset* pDataset, GDALRasterBand* pB, const std::string filepath, const GDALDataType expectedType);
 	void _validateProjectionMetadata(GDALDataset* pDataset, std::queue<std::string> &errors);
+	std::string stolower(const std::string& s)
+	{
+		std::string result(s);
+		std::transform(s.begin(), s.end(), result.begin(), std::ptr_fun <int, int> (::tolower));
+		return result;
+	}
 };
 #endif
