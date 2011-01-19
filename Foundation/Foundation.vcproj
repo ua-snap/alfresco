@@ -229,19 +229,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\ReadRasterException.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\Species.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\Stat.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\WriteRasterException.cpp"
 				>
 			</File>
 		</Filter>
