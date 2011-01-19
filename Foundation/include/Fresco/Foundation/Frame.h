@@ -8,7 +8,8 @@
 #include "RasterIO.h"
 
 class Species;
-enum ALFMapType;
+enum RasterIO::ALFMapType;
+
 
 class FrescoFoundation_API Frame : public Fire 
 //The Frame class is really a intermediary between the parent classes specifying the functionality of
