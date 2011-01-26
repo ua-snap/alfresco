@@ -330,6 +330,7 @@ const float					GetNextRandom()
 //successive deviates in a sequence. RNMX should approximate the largest floating value that is
 //less than 1.
 {
+	gTallyOfRandCalls++;
 	int j;
 	long k;
 	float temp;

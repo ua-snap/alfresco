@@ -220,9 +220,6 @@ void Client::               sendStatSetup(const SStatSetupEventArgs& setupArgs)
 {
     std::vector<std::string> params;
     params.push_back(setupArgs.Title);
-    params.push_back(ToS(setupArgs.MaxYears));
-    params.push_back(ToS(setupArgs.MaxReps));
-    params.push_back(ToS(setupArgs.TimeStep));
     params.push_back(ToS(setupArgs.Flags));
     params.push_back(ToS(setupArgs.SavingEventCause));
     RemoteNotification* rn = new RemoteNotification(_clientID, RemoteNotification::STAT_SETUP, params);

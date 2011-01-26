@@ -486,7 +486,7 @@ namespace FRESCO_Server
         public void                     AfterYearEnd(object sender, EventArgs e)
         {
             yearsCompleted++;
-            int yearsTotal = Global.FIF.MaxReps * (Global.FIF.MaxYears + 1);
+            int yearsTotal = Global.FIF.MaxReps * (Global.FIF.LastYear - Global.FIF.FirstYear + 1);
             
             //Calculate an estimation of time remaining.
             TimeSpan timeSoFar      = new TimeSpan(System.DateTime.Now.Ticks - TimeStart.Ticks);
@@ -599,20 +599,6 @@ namespace FRESCO_Server
                 file.IsActive = false;
                 file.IsComplete = false;
                 file.Failed = false;
-            }
-        }
-        void RunTests_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ViewerProgress.AddHeading1("\nTesting\n");
-                ViewerProgress.AddText("\tStatistic.\n");
-                TestStatistic t = new TestStatistic();
-                t.runTests();
-            }
-            catch (Exception ex)
-            {
-                Global.RaiseSimulationFailed(this, new SimulationFailedEventArgs(ex));
             }
         }
         #endregion

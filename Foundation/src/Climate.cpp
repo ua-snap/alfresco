@@ -48,7 +48,7 @@ void Climate::          deleteArrays()
 				if (&_pSpatialTemp[y][*m] != 0)
 				{
 					if (&_pSpatialTemp[y][*m][0] != 0)
-						for (int r=0;r<gNumRows;r++)
+						for (int r=0;r<gYSize;r++)
 							delete[] _pSpatialTemp[y][*m][r];
 					delete[] _pSpatialTemp[y][*m];
 				}
@@ -63,7 +63,7 @@ void Climate::          deleteArrays()
 				if (&_pSpatialPrecip[y][*m] != 0)
 				{
 					if (&_pSpatialPrecip[y][*m][0] != 0)
-						for (int r=0;r<gNumRows;r++) 
+						for (int r=0;r<gYSize;r++) 
 							delete[] _pSpatialPrecip[y][*m][r];
 					delete[] _pSpatialPrecip[y][*m];
 				}
@@ -73,7 +73,7 @@ void Climate::          deleteArrays()
 		delete[] _pSpatialPrecip; _pSpatialPrecip=0; 
 	}
 	if (_pSpatialFlammability) { 
-		for (int r=0;r<gNumRows;r++) 
+		for (int r=0;r<gYSize;r++) 
 			delete[] _pSpatialFlammability[r];
 		delete[] _pSpatialFlammability;  _pSpatialFlammability=0;
 	}
@@ -109,10 +109,10 @@ void Climate::			setup()
     setupStepsAndRamps();
 
 	if (_isExternFlam) {
-		_pSpatialFlammability = new float*[gNumRows];
-		for (int r=0; r<gNumRows; r++) {
-			_pSpatialFlammability[r] = new float[gNumCol];
-			for (int c=0; c<gNumCol; c++) {
+		_pSpatialFlammability = new float*[gYSize];
+		for (int r=0; r<gYSize; r++) {
+			_pSpatialFlammability[r] = new float[gXSize];
+			for (int c=0; c<gXSize; c++) {
 				_pSpatialFlammability[r][c] = 0.;
 			}
 		}
@@ -172,18 +172,18 @@ void Climate::			setup()
 	//	precipMonths.push_back(0);
 	//}
 
-	_pOffsets = new SClimate[gMaxYear+1];
-	_pRandomYears = new int[gMaxYear+1];  //Store for repStart();
+	_pOffsets = new SClimate[gLastYear - gFirstYear + 1];
+	_pRandomYears = new int[gLastYear - gFirstYear + 1];  //Store for repStart();
 	//Create spatial climate arrays.
 	_pSpatialTemp = new float***[_yearsOfArchivedHistory];
 	std::list<int>::iterator m;
 	for (int y=0; y<_yearsOfArchivedHistory; y++) {
 		_pSpatialTemp[y] = new float**[13];
 		for (m=tempMonths.begin(); m!=tempMonths.end(); m++) {
-			_pSpatialTemp[y][*m] = new float*[gNumRows];
-			for (int r=0; r<gNumRows; r++) {
-				_pSpatialTemp[y][*m][r] = new float[gNumCol];
-				for (int c=0; c<gNumCol; c++)	{
+			_pSpatialTemp[y][*m] = new float*[gYSize];
+			for (int r=0; r<gYSize; r++) {
+				_pSpatialTemp[y][*m][r] = new float[gXSize];
+				for (int c=0; c<gXSize; c++)	{
 					_pSpatialTemp[y][*m][r][c] = 0.;
 				}
 			}
@@ -193,10 +193,10 @@ void Climate::			setup()
 	for (int y=0; y<_yearsOfArchivedHistory; y++) {
 		_pSpatialPrecip[y] = new float**[13];
 		for (m=precipMonths.begin(); m!=precipMonths.end(); m++) {
-			_pSpatialPrecip[y][*m] = new float*[gNumRows];
-			for (int r=0; r<gNumRows; r++) {
-				_pSpatialPrecip[y][*m][r] = new float[gNumCol];
-				for (int c=0; c<gNumCol; c++)	{
+			_pSpatialPrecip[y][*m] = new float*[gYSize];
+			for (int r=0; r<gYSize; r++) {
+				_pSpatialPrecip[y][*m][r] = new float[gXSize];
+				for (int c=0; c<gXSize; c++)	{
 					_pSpatialPrecip[y][*m][r][c] = 0.;
 				}
 			}
@@ -208,9 +208,12 @@ void Climate::			setup()
 		ShowOutput("\tClimate Transitions:\n");
 		ShowOutput("\t\tYear ValuesType     OffsetsType\n");
 	}
-	if (_transitions.empty())   throw Exception(Exception::INITFAULT,"A climate trasition is required at year zero.\n","");
+	std::string errMsg("A climate trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
+	if (_transitions.empty())
+		throw Exception(Exception::INITFAULT,errMsg,"");
     std::vector<SClimateTransition>::iterator iter = _transitions.begin();
-	if (iter->Year != 0)        throw Exception(Exception::INITFAULT,"A climate trasition is required at year zero.\n","");
+	if (iter->Year != gFirstYear)
+		throw Exception(Exception::INITFAULT,errMsg,"");
 	
     std::ostringstream	Stream;
 	for (iter=_transitions.begin(); iter!=_transitions.end(); iter++)	{
@@ -241,7 +244,7 @@ void Climate::			setup()
 			int max = iter->RandExplicitMaxYear;
 			if (min<0)						    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMin Rand Year must be greater than or equal to 0.\n");
 			if (max<0)						    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be greater than or equal to 0.\n");
-			if (max-min < 1)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be less than Min Rand Year.\n");
+			if (max-min < 1)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be greater than Min Rand Year.\n");
 			if (iter->SpatialTempFile=="")		throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit temperature file name.\n");
 			if (iter->SpatialPrecipFile=="")	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit precipitation file name.\n");
 			break;
@@ -290,7 +293,7 @@ void Climate::			repStart()
 	int firstYear, lastYear;
 	for (T=_transitions.begin(); T!=_transitions.end(); T++) {
 		firstYear = T->Year;
-		lastYear = (T+1)!=_transitions.end() ? (T+1)->Year-1 : gMaxYear;
+		lastYear = (T+1)!=_transitions.end() ? (T+1)->Year-1 : gLastYear;
 		if (!T->OffsetsType==OTNONE) {
             if (T->OffsetsType==OTCONSTANT && FRESCO->isRunningFirstRep())	
 				setOffsetsConstant(T->ConstantTempOffset,T->ConstantPrecipOffset,firstYear,lastYear);
@@ -325,15 +328,15 @@ void Climate::			yearStart()
 		+ ".\n");
 
 	std::string filename;
-	int circularIndex = gYear % _yearsOfArchivedHistory;
-	int previousCirularIndex = (gYear-1) % _yearsOfArchivedHistory;
+	int circularIndex = (gYear - gFirstYear) % _yearsOfArchivedHistory;
+	int previousCirularIndex = (gYear - gFirstYear -1) % _yearsOfArchivedHistory;
 	std::list<int>::iterator month;
 	switch (_pCurrentTransition->ValuesType)
 	{
 	case VTCONSTANT :
 		//Single temp and precip value used for every cell in all years and reps.
-		for (int r=0; r<gNumRows; r++) {
-			for (int c=0; c<gNumCol; c++)	{
+		for (int r=0; r<gYSize; r++) {
+			for (int c=0; c<gXSize; c++)	{
 				_pSpatialTemp[circularIndex][0][r][c] = _pCurrentTransition->ConstantTemp;
 				_pSpatialPrecip[circularIndex][0][r][c] = _pCurrentTransition->ConstantPrecip;
 			}
@@ -348,8 +351,8 @@ void Climate::			yearStart()
 		}
 		else if (circularIndex != previousCirularIndex)
 		{
-			size_t numBytesToCopy = gNumCol*sizeof(float);
-			for (int r=0; r<gNumRows; r++)
+			size_t numBytesToCopy = gXSize*sizeof(float);
+			for (int r=0; r<gYSize; r++)
 			{
 				memcpy(_pSpatialTemp[circularIndex][0][r],    _pSpatialTemp[previousCirularIndex][0][r],   numBytesToCopy);
 				memcpy(_pSpatialPrecip[circularIndex][0][r],  _pSpatialPrecip[previousCirularIndex][0][r], numBytesToCopy);
@@ -680,9 +683,9 @@ void Climate::          setupStepOrRamp(const EClimateType climateType, const EO
 void Climate::			setOffsetsConstant(float temp, float precip, int firstYear, int lastYear)
 //Sets temporal offsets to constant temp and precip for firstYear through lastYear.
 {
-	for (int y=firstYear; y<=lastYear; y++) {
-        _pOffsets[y].Temp	= temp;
-		_pOffsets[y].Precip	= precip;
+	for (int y=firstYear; y<=lastYear && y<=gLastYear; y++) {
+        _pOffsets[y - gFirstYear].Temp	= temp;
+		_pOffsets[y - gFirstYear].Precip	= precip;
 	}
 }
 
@@ -695,12 +698,12 @@ void Climate::			setOffsetsFromFile(std::string filePath, int firstYear, int las
 
 	fp.open(filePath.c_str(),std::ios::in);
 	if (!fp.is_open()) throw Exception(Exception::FILEBAD,"Open file failed: " + filePath + "\n");
-	for (int y=0; y<=lastYear; y++) {
+	for (int y=gFirstYear; y<=lastYear && y<=gLastYear; y++) {
 		//Read a year in from Climate.File.
 		fp >> temp >> precip;
 		if (firstYear<=y && y<=lastYear) {
-			_pOffsets[y].Temp = temp; 
-			_pOffsets[y].Precip = precip;
+			_pOffsets[y - gFirstYear].Temp = temp; 
+			_pOffsets[y - gFirstYear].Precip = precip;
 		}
 	}
 }
@@ -710,9 +713,9 @@ void Climate::			setOffsetsRandom(float tempMean, float tempStdDev, float precip
 //Sets temporal offsets to random temp and precip for firstYear through lastYear.
 //If isReplicated, this function will only be called for the first rep.
 {
-	for (int y=firstYear; y<=lastYear; y++) {
-		_pOffsets[y].Temp	    = GetNextRandomNorm(tempMean, tempStdDev);
-		_pOffsets[y].Precip	= GetNextRandomNorm(precipMean, precipStdDev);
+	for (int y=firstYear; y<=lastYear && y<=gLastYear; y++) {
+		_pOffsets[y - gFirstYear].Temp	    = GetNextRandomNorm(tempMean, tempStdDev);
+		_pOffsets[y - gFirstYear].Precip	= GetNextRandomNorm(precipMean, precipStdDev);
 	}
 }
 
@@ -724,12 +727,12 @@ void Climate::			showOffsetSummary()
 		ShowOutput("\t\t\tClimate Offsets (including steps and ramps):\n");
 		ShowOutput("\t\t\tYear     Temp   Precip\n");
 	    std::ostringstream	stream;
-		for (int y=0; y<=gMaxYear; y++) {
+		for (int y=gFirstYear; y<=gLastYear; y++) {
 			stream	<< "\t\t\t" << setiosflags( std::ios::left ) << std::setiosflags( std::ios::fixed ) << std::setprecision(3)
 						<< std::setw(4) << y 
 						<< std::resetiosflags( std::ios::left )  //Align right.
-						<< std::setw(9) << _pOffsets[y].Temp  
-						<< std::setw(9) << _pOffsets[y].Precip 
+						<< std::setw(9) << _pOffsets[y - gFirstYear].Temp  
+						<< std::setw(9) << _pOffsets[y - gFirstYear].Precip 
 						<< std::endl;	
 			ShowOutput(stream);
 		}
@@ -752,7 +755,7 @@ std::string Climate::	climateOffsetsTypeToString(EOffsetsType type)
 void Climate::			setStepsAndRamps()
 //Calculate temporal steps and ramps for all years and apply them to temporal offsets.
 {
-	setStepsAndRampsInTimeRange(0, gMaxYear);
+	setStepsAndRampsInTimeRange(gFirstYear, gLastYear);
 }
 
 
@@ -765,9 +768,9 @@ void Climate::          setStepsAndRampsInTimeRange(int firstYear, int lastYear)
 
 	ShowOutput(MAXIMUM, "\t\t\tUsing ramped offsets.\n");
 
-	//Must calculate from year 0 even if firstYear is greater, because the 
+	//Must calculate from gFirstYear even if firstYear is greater, because the 
 	//steps and ramps need to be built up appropriately.
-	for (int y=0; y<=lastYear; y++) {
+	for (int y=gFirstYear; y<=lastYear && y<=gLastYear; y++) {
 		try {
 			//Calculate temperature steps in year y.
 			for (offset=_tempStep.begin(); offset<_tempStep.end(); offset++) {
@@ -779,31 +782,29 @@ void Climate::          setStepsAndRampsInTimeRange(int firstYear, int lastYear)
 				if (y==(*offset).Year) {tempOffset.Precip += (*offset).Amount; break;}
 				if (y<(*offset).Year) break;	//Break if before date of offset.
 			}
-			//Calculate temperature ramps in year y.
+			//Calculate temperature ramps in year y (loop runs in reverse order).
 			if (!_tempRamp.empty()) {
 				for (offset=--_tempRamp.end(); offset>=_tempRamp.begin(); offset--) {
 					offsetYears = y - offset->Year;	//Calc time since the last ramp.
 					if (offsetYears>0) {								
-						offsetYears = (offsetYears>gTimeStep) ? gTimeStep : offsetYears;		//time cannot exceed the timestep.
 						tempOffset.Temp += offset->Amount * offsetYears;						//Add the ramp offset to any step offset applied above.
-						//If time is less than time step, apply the partial ramp.
-						if (offsetYears<gTimeStep && offset>_tempRamp.begin())				
-							tempOffset.Temp += (offset-1)->Amount * (gTimeStep - offsetYears);	
+						//If not the first ramp then apply the partial ramp.	
+						if (offset>_tempRamp.begin())	
+							tempOffset.Temp += (offset-1)->Amount * (1 - offsetYears);	
 						break;
 					}
 					if (offset==_tempRamp.begin()) break;
 				}
 			}
-			//Calculate precip ramps in year y.
+			//Calculate precip ramps in year y  (loop runs in reverse order).
 			if (!_precipRamp.empty()) {
 				for (offset=--_precipRamp.end(); offset>=_precipRamp.begin(); offset--) {
 					offsetYears = y - offset->Year;	//Calc time since the last ramp.
 					if (offsetYears>0) {								
-						offsetYears = (offsetYears>gTimeStep) ? gTimeStep : offsetYears;		//time cannot exceed the timestep.
 						tempOffset.Precip += offset->Amount * offsetYears;						//Add the ramp offset to any step offset applied above.
-						//If time is less than time step, apply the partial ramp.
-						if (offsetYears<gTimeStep && offset>_precipRamp.begin())				
-							tempOffset.Precip += (offset-1)->Amount * (gTimeStep - offsetYears);	
+						//If not the first ramp then apply the partial ramp.
+						if (offset>_precipRamp.begin())				
+							tempOffset.Precip += (offset-1)->Amount * (1 - offsetYears);	
 						break;
 					}
 					if (offset==_precipRamp.begin()) break;
@@ -815,8 +816,8 @@ void Climate::          setStepsAndRampsInTimeRange(int firstYear, int lastYear)
 		}
 		if (firstYear <= y && y <= lastYear) {
 			//Apply steps and ramps to temporal climate array.
-			_pOffsets[y].Temp	+= tempOffset.Temp;
-			_pOffsets[y].Precip	+= tempOffset.Precip;
+			_pOffsets[y - gFirstYear].Temp	+= tempOffset.Temp;
+			_pOffsets[y - gFirstYear].Precip	+= tempOffset.Precip;
 		}
 	}
 }

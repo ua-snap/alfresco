@@ -85,7 +85,7 @@ void Decid::_Decid()
 	}
 
 	//If we don't have an age assigned yet, calculate it here.
-    if (-1==_yearEstablished) {
+    if (gFirstYear-1==_yearEstablished) {
 		_yearEstablished = _yearFrameEstablished = startAge(_speciesTrajectory);
     }
 }
@@ -250,7 +250,7 @@ Frame* Decid::success(Landscape* l)
 // Return NULL if no successional change.
 {
 	const int yearsSinceLastBurn = gYear-yearOfLastBurn;
-	if (yearsSinceLastBurn == gTimeStep) {
+	if (yearsSinceLastBurn == 1) {
 		// this is the first succession after a burn.
 		_yearEstablished = gYear;
 		_speciesSubCanopy = gDecidID;
@@ -363,12 +363,12 @@ int Decid::startAge(Species speciesTrajectory)
 
 	//Evaluate and return value
 	if (startAgeType == CONSTANT) {
-		return (int) (-GetNextRandom() * pParams[0]);
+		return gFirstYear - (int)(GetNextRandom() * pParams[0]);
 	} 
 	else {
 		const double random = GetNextRandom();
 		int age = 0;
 		while (random > pIntegral[age++]);
-		return 1-age;   //Same as -(nAge - 1)
+		return gFirstYear + 1-age;   //Same as -(nAge - 1)
 	}
 }

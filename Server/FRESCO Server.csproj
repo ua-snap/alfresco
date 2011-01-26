@@ -224,7 +224,6 @@
       <DependentUpon>SettingsEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Statistic.cs" />
-    <Compile Include="Test\TestStatistic.cs" />
     <Compile Include="Viewer.cs">
       <SubType>Form</SubType>
     </Compile>

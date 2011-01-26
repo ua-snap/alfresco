@@ -51,7 +51,7 @@ Landscape::				~Landscape()
 {
 	//Delete leftovers.
 	delete _pClimate;
-	if (_pHumanIgnitions)	{for (int r=0;r<gNumRows;r++) delete[] _pHumanIgnitions[r];	delete[] _pHumanIgnitions;	_pHumanIgnitions = 0; }
+	if (_pHumanIgnitions)	{for (int r=0;r<gYSize;r++) delete[] _pHumanIgnitions[r];	delete[] _pHumanIgnitions;	_pHumanIgnitions = 0; }
     //TODO: delete _pFrames[][]?
 	if (gIO != 0) {
 		delete gIO; gIO = 0;
@@ -76,15 +76,15 @@ void Landscape::		clear()
 	_col					= 0;
 	//Clear cells.
  	if (_pFrames)					{
-        for (int r=0;r<gNumRows;r++) {
-            for (int c=0;c<gNumCol;c++) 
+        for (int r=0;r<gYSize;r++) {
+            for (int c=0;c<gXSize;c++) 
                 delete _pFrames[r][c]; 
             delete[] _pFrames[r];
         }	
         delete[] _pFrames; _pFrames = 0;
     }
 	//Clear layers.
-	if (_pHumanIgnitions)	{ for (int r=0;r<gNumRows;r++) delete[] _pHumanIgnitions[r];	delete[] _pHumanIgnitions;	_pHumanIgnitions = 0; }
+	if (_pHumanIgnitions)	{ for (int r=0;r<gYSize;r++) delete[] _pHumanIgnitions[r];	delete[] _pHumanIgnitions;	_pHumanIgnitions = 0; }
 	if (_pfireSpreadParams) { delete[] _pfireSpreadParams; _pfireSpreadParams = 0; }
 	//Clear stats.
 	_vegDistributionStatFlags	= 0;
@@ -116,8 +116,8 @@ void Landscape::		setup()
 		gYOffset				= FRESCO->fif().nGet("YOffset");
 	if (FRESCO->fif().CheckKey("XOffset"))
 	    gXOffset				= FRESCO->fif().nGet("XOffset");
-    gNumRows				    = FRESCO->fif().nGet("MaxRow");
-    gNumCol				        = FRESCO->fif().nGet("MaxCol");
+    gYSize				    = FRESCO->fif().nGet("YSize");
+    gXSize				        = FRESCO->fif().nGet("XSize");
     gCellSize				    = FRESCO->fif().dGet("CellSize");
     _cropNeighbors		        = FRESCO->fif().bGet("CropNeighbors");
     _xllCorner		            = FRESCO->fif().dGet("XLLCorner");
@@ -138,7 +138,7 @@ void Landscape::		setup()
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
-	gIO = new RasterIO(gXOffset, gYOffset, gNumCol, gNumRows, _xllCorner, _yllCorner, gCellSize, -gCellSize, 0, 0,
+	gIO = new RasterIO(_xllCorner, _yllCorner, gXOffset, gYOffset, gXSize, gYSize, gCellSize, -gCellSize, 0, 0,
 						"ALFRESCO " + Fresco::version() + " from UAF. Config file: " + FRESCO->fif().fileName(),
 						requireAaeacForInput, applyAaeacToOutput);
 
@@ -152,18 +152,18 @@ void Landscape::		setup()
     
 	//Allocate cells.
 	_row = _col = 0;
-	_pFrames = new Frame**[gNumRows];
-	for (int r=0; r<gNumRows; r++) 
+	_pFrames = new Frame**[gYSize];
+	for (int r=0; r<gYSize; r++) 
 	{
-		_pFrames[r] = new Frame*[gNumCol];
-		for (int c=0; c<gNumCol; c++)
+		_pFrames[r] = new Frame*[gXSize];
+		for (int c=0; c<gXSize; c++)
 			_pFrames[r][c] = NULL;
 	}
 	//Allocate layers.
-	_pHumanIgnitions = new byte*[gNumRows];
-	for(int r=0; r<gNumRows; r++) {
-		_pHumanIgnitions[r] = new byte[gNumCol];
-		for(int c=0; c<gNumCol; c++) {
+	_pHumanIgnitions = new byte*[gYSize];
+	for(int r=0; r<gYSize; r++) {
+		_pHumanIgnitions[r] = new byte[gXSize];
+		for(int c=0; c<gXSize; c++) {
 			_pHumanIgnitions[r][c]	= 0;
 		}
 	}
@@ -176,13 +176,13 @@ void Landscape::		setup()
 	_fireIntervalStat.resize(gNumSpecies);
 	for (int s=0; s<gNumSpecies; s++) 
 	{
-		_vegDistributionStat[s].setup("VegDist["+ToS(s)+"]",	gMaxYear,gMaxRep,gTimeStep, _vegDistributionStatFlags, false);
-		_vegResidenceStat[s].setup("VegRes["+ToS(s)+"]",		gMaxYear,gMaxRep,gTimeStep, _vegResidenceStatFlags, false);
-		_fireSpeciesStat[s].setup("FireSpecies["+ToS(s)+"]",	gMaxYear,gMaxRep,gTimeStep, _fireSpeciesStatFlags, false);
-		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]",	gMaxYear,gMaxRep,gTimeStep, _fireIntervalStatFlags, false);
+		_vegDistributionStat[s].setup("VegDist["+ToS(s)+"]",	_vegDistributionStatFlags, false);
+		_vegResidenceStat[s].setup("VegRes["+ToS(s)+"]",		_vegResidenceStatFlags, false);
+		_fireSpeciesStat[s].setup("FireSpecies["+ToS(s)+"]",	_fireSpeciesStatFlags, false);
+		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]",	_fireIntervalStatFlags, false);
 	}
-	_fireSizeStat.setup("FireSize", gMaxYear, gMaxRep, gTimeStep, _fireSizeStatFlags, true);
-	_fireNumStat.setup("FireNum", gMaxYear, gMaxRep, gTimeStep, _fireNumStatFlags, false);
+	_fireSizeStat.setup("FireSize", _fireSizeStatFlags, true);
+	_fireNumStat.setup("FireNum", _fireNumStatFlags, false);
 }
 
 
@@ -202,8 +202,8 @@ void Landscape::		repStart()
 		_vegDistributionStat[s].m_lTally = 0;
 	}
 	//Set initial veg distribution (will change in each year's successions).
-	for (int r=0; r<gNumRows; r++) {
-		for (int c=0; c<gNumCol; c++) {
+	for (int r=0; r<gYSize; r++) {
+		for (int c=0; c<gXSize; c++) {
 			_vegDistributionStat[_pFrames[r][c]->type()]++;
 		}
 	}
@@ -251,8 +251,8 @@ void Landscape::		succession()
 {
 	ShowOutput(MODERATE, "\t\tSuccessions\n");
 	Frame* pSuccFrame;
-	for (int r=0; r<gNumRows; r++) {
-		for (int c=0; c<gNumCol; c++) {
+	for (int r=0; r<gYSize; r++) {
+		for (int c=0; c<gXSize; c++) {
 			//Test for succession.
 			if (NULL != (pSuccFrame=_pFrames[_row=r][_col=c]->success(this))) {
 				//Decrement cell count for old species and increment cell count for new species.
@@ -311,7 +311,7 @@ void Landscape::		doIgnitions()
 	int numCells = (int)ceil(Fire::fireSpreadRadius()/gCellSize);   // The width of the neighborhood's radius.
 
 	_row = _col = 0;
-	while (_row<gNumRows && _col<gNumCol) {
+	while (_row<gYSize && _col<gXSize) {
 		pFrame = _pFrames[_row][_col];	
 		if (pFrame->yearOfLastBurn!=gYear && pFrame->type()!=gNoVegID) {
 			//Current cell is burnable and hasn't burned yet this year.
@@ -353,9 +353,9 @@ void Landscape::		doIgnitions()
 					_maxFireSizeEventWeight = Fire::maxEmpiricalFireSizeEventWeight();
 				//Find the row and column bounds to avoid range checking in the inner loop.
 				rowMin = _row - numCells;		rowMin = (rowMin < 0) ? 0 : rowMin;
-				rowMax = _row + numCells;		rowMax = (rowMax >= gNumRows) ? gNumRows-1 : rowMax;
+				rowMax = _row + numCells;		rowMax = (rowMax >= gYSize) ? gYSize-1 : rowMax;
 				colMin = _col - numCells;		colMin = (colMin < 0) ? 0 : colMin;
-				colMax = _col + numCells;		colMax = (colMax >= gNumCol) ? gNumCol-1 : colMax;
+				colMax = _col + numCells;		colMax = (colMax >= gXSize) ? gXSize-1 : colMax;
 				//Add unburned neighbors to burn list.  Add to stack in reverse order so they are pulled off in correct order.
 				for (int row=rowMax; row>=rowMin; row--) {
 					for (int col=colMax; col>=colMin; col--) {
@@ -388,7 +388,7 @@ void Landscape::		doIgnitions()
 			
             //Continue testing for new fires at next landscape cell.
 			_col = currCol =  ++colStored;
-			if (_col<gNumCol) {
+			if (_col<gXSize) {
 				_row = currRow = rowStored;
 			}
 			else {
@@ -516,9 +516,9 @@ double Landscape::		neighborsSuccess (double (Frame::*QueryFunction)(Landscape *
 		Parms = &distance;
 	//Find the row and column bounds to avoid range checking in the inner loop
 	int rowMin = currRow - numCells;	rowMin = (rowMin < 0) ? 0 : rowMin;
-	int rowMax = currRow + numCells;	rowMax = (rowMax >= gNumRows) ? gNumRows-1 : rowMax;
+	int rowMax = currRow + numCells;	rowMax = (rowMax >= gYSize) ? gYSize-1 : rowMax;
 	int colMin = currCol - numCells;	colMin = (colMin < 0) ? 0 : colMin;
-	int colMax = currCol + numCells;	colMax = (colMax >= gNumCol) ? gNumCol-1 : colMax;
+	int colMax = currCol + numCells;	colMax = (colMax >= gXSize) ? gXSize-1 : colMax;
 	//Start the inner loop
 	for (int row=rowMin; row<=rowMax; row++) {
 		for (int col = colMin; col <= colMax; col++) {

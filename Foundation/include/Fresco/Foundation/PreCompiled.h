@@ -108,14 +108,14 @@ extern std::string  FrescoFoundation_API    gOutputBasePath;
 extern std::string  FrescoFoundation_API    gOutputDirectory;
 extern int          FrescoFoundation_API    gMaxRep;
 extern int          FrescoFoundation_API    gRep;
-extern int          FrescoFoundation_API    gMaxYear;
+extern int          FrescoFoundation_API    gFirstYear;
+extern int          FrescoFoundation_API    gLastYear;
 extern int          FrescoFoundation_API    gYear;
-extern int          FrescoFoundation_API    gTimeStep;
 extern float        FrescoFoundation_API    gCellSize;
 extern int          FrescoFoundation_API    gYOffset;
 extern int          FrescoFoundation_API    gXOffset;
-extern int          FrescoFoundation_API    gNumRows;
-extern int          FrescoFoundation_API    gNumCol;
+extern int          FrescoFoundation_API    gYSize;
+extern int          FrescoFoundation_API    gXSize;
 extern long         FrescoFoundation_API    gNumSpecies;
 extern EDetailLevel FrescoFoundation_API    gDetailLevel;
 extern byte          FrescoFoundation_API    gNoVegID;
@@ -124,6 +124,7 @@ extern byte          FrescoFoundation_API    gDecidID;
 extern byte          FrescoFoundation_API    gBSpruceID;
 extern byte          FrescoFoundation_API    gWSpruceID;
 extern byte          FrescoFoundation_API    gGrasslandID;
+extern long          FrescoFoundation_API    gTallyOfRandCalls;
 
 
 

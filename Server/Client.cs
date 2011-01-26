@@ -41,10 +41,10 @@ namespace FRESCO_Server
                     float value = 0.0f;
                     int repsTotal = RepStop - RepStart;
                     int repsDone = rep - RepStart;
-                    int yearsPerRep = Global.Instance.FIF.MaxYears + 1;
+                    int yearsPerRep = Global.Instance.FIF.LastYear - Global.Instance.FIF.FirstYear + 1;
                     if (repsTotal > 0) {
                         int yearsTotal = yearsPerRep * repsTotal;
-                        int yearsDone = year + 1 + yearsPerRep * repsDone;
+                        int yearsDone = year - Global.Instance.FIF.FirstYear + 1 + (yearsPerRep * repsDone);
                         value = (float)yearsDone / yearsTotal * 100;
                     }
                     percentCompleted = (int)value;

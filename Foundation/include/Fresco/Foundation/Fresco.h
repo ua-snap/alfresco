@@ -38,10 +38,9 @@ public:
     CInterface&             fif();
     const bool              getIsStopped() const;
     void                    setIsStopped(const bool newVal);
-    const int               getMaxYear() const;
+    const int               getLastYear() const;
     const FrescoState		getState() const { return _state; }
     void					setState(const FrescoState newVal) { _state = newVal; }
-    const int               getTimeStep() const;
     const bool              isDebugOn() const;
     const bool              isRunningFirstRep() const;    
 	const int               numGisHeaderRows() const;
@@ -71,7 +70,6 @@ private:
     long					_randomSeed;
     bool                    _isRunningFirstRep;
     bool                    _stopped;
-	int						_numGisHeaderRows;
     bool					_isFireEnabled;
 
 //Functions
@@ -111,14 +109,9 @@ inline void                 Fresco::setIsStopped(const bool newVal)
     _stopped = newVal;
 }
 
-inline const int            Fresco::getMaxYear() const
+inline const int            Fresco::getLastYear() const
 {
-    return gMaxYear;
-}
-
-inline const int            Fresco::getTimeStep() const
-{
-    return gTimeStep;
+    return gLastYear;
 }
 
 inline const bool           Fresco::isRunningFirstRep() const 
@@ -130,11 +123,5 @@ inline const bool           Fresco::isDebugOn() const
 {
     return _isDebugOn;
 }
-
-inline const int            Fresco::numGisHeaderRows() const
-{
-    return _numGisHeaderRows;
-}
-
 
 #endif

@@ -21,13 +21,13 @@ std::string  FrescoFoundation_API   gOutputBasePath;
 std::string  FrescoFoundation_API   gOutputDirectory;
 int  FrescoFoundation_API           gYOffset			= 0;					//Number of rows from top of input files to start reading in landscape.
 int  FrescoFoundation_API           gXOffset			= 0;					//Number of cols from left of input files to start reading in landscape.
-int  FrescoFoundation_API           gNumRows			= 0;					//Number of rows in landscape.
-int  FrescoFoundation_API           gNumCol				= 0;					//Number of cols in landscape.
+int  FrescoFoundation_API           gYSize			= 0;					//Number of rows in landscape.
+int  FrescoFoundation_API           gXSize				= 0;					//Number of cols in landscape.
 int  FrescoFoundation_API           gMaxRep				= 0;					//Number of replications to run.
-int  FrescoFoundation_API           gMaxYear			= 0;					//Number of years to simulate.
+int  FrescoFoundation_API           gFirstYear			= 0;					//First year to simulate.
+int  FrescoFoundation_API           gLastYear			= 0;					//Last year to simulate.
 int  FrescoFoundation_API           gYear				= 0;					//Current year being simulated
 int  FrescoFoundation_API           gRep				= 0;					//Current replication being simulated.
-int  FrescoFoundation_API           gTimeStep			= 0;					//Time step
 float  FrescoFoundation_API         gCellSize			= 0;					//Cell size
 long  FrescoFoundation_API          gNumSpecies			= 0;
 byte  FrescoFoundation_API          gNoVegID			= 255;
@@ -40,6 +40,7 @@ EDetailLevel    FrescoFoundation_API gDetailLevel		= MINIMAL;
 Fresco  FrescoFoundation_API        *FRESCO				= 0;
 RasterIO FrescoFoundation_API       *gIO				= 0;
 Climate FrescoFoundation_API        *gClimate			= 0;
+long FrescoFoundation_API        gTallyOfRandCalls		= 0;
 
 
 Fresco::			Fresco(Landscape* pLandscape, bool isDebugOn)
@@ -77,16 +78,15 @@ void Fresco::		clear()
     _isRunningFirstRep  = true;
     _isFireEnabled		= true;
     _randomSeed			= 0;
-    _numGisHeaderRows	= 6;
     //Clear global settings.
 	gYOffset			= 0;
 	gXOffset			= 0;
-	gNumRows			= 0;
-    gNumCol				= 0;
+	gYSize				= 0;
+    gXSize				= 0;
     gCellSize			= 0;
     gMaxRep				= 0;
-    gMaxYear			= 0;
-    gTimeStep			= 0;
+	gFirstYear			= 0;
+	gLastYear			= 0;
     gYear				= 0;
     gRep				= 0;
     gNumSpecies			= 0;
@@ -101,7 +101,8 @@ void Fresco::		clear()
     gOutputBasePath		= "";
     gOutputDirectory	= "";
     gDetailLevel		= MINIMAL;  	//Reset detail level last so that current detail level causes output during clearing.
-	
+	gTallyOfRandCalls   = 0;
+
 	setState(CLEARED);
 }
 
@@ -120,11 +121,10 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
     gOutputBasePath     = FormatDirectory(_fif.sGet("ClientOutputBasePath"));
     gOutputDirectory    = GetFullPath(gOutputBasePath, outputTimestamp);
     EnsureDirectoryExists(gOutputDirectory, false);
-    gMaxRep			    = _fif.nGet("MaxReps");
-    gMaxYear            = _fif.nGet("MaxYears");
-    gTimeStep			= _fif.nGet("TimeStep");
-	_numGisHeaderRows	= _fif.nGet("NumHeader");
-	gDetailLevel		= (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
+    gMaxRep             = _fif.nGet("MaxReps");
+    gFirstYear          = _fif.nGet("FirstYear");
+    gLastYear           = _fif.nGet("LastYear");
+	gDetailLevel        = (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
 	try { //Initialize the random number generator.
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
@@ -156,7 +156,7 @@ void Fresco::       runRep(const int rep, const int yearResume)
 {
 	setState(SIMULATING);
 	
-    if (0 == yearResume) {
+    if (yearResume == gFirstYear) {
         //Begin new rep.
         gRep = rep;
         raiseBeforeRepStart.notify(this, gRep);
@@ -164,12 +164,12 @@ void Fresco::       runRep(const int rep, const int yearResume)
     }
     //else, pick up in middle of rep after last completed year.
 
-    for (gYear=yearResume; gYear<=gMaxYear; gYear += gTimeStep) {
+    for (gYear=yearResume; gYear<=gLastYear; gYear++) {
         raiseBeforeYearStart.notify(this, gYear);
         _landscape->yearStart();
         raiseAfterYearStart.notify(this, gYear);
         
-        if (gYear>0) _landscape->succession();
+        if (gYear > gFirstYear) _landscape->succession();
         if (_isFireEnabled) _landscape->doIgnitions();
         
         raiseBeforeYearEnd.notify(this, gYear);
@@ -187,7 +187,9 @@ void Fresco::       runRep(const int rep, const int yearResume)
         raiseBeforeRepEnd.notify(this, gRep);
         _landscape->repEnd();
         _isRunningFirstRep = false;
+		output("1. There were "+ToS(gTallyOfRandCalls)+" calls to GetNextRand().\n");
         raiseAfterRepEnd.notify(this, gRep);  //Possible Stop point.
+		output("2. There were "+ToS(gTallyOfRandCalls)+" calls to GetNextRand().\n");
     }
 }
 

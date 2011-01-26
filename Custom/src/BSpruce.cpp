@@ -53,16 +53,16 @@ void BSpruce::_BSpruce()
         throw Exception(Exception::UNKNOWN, "Static data members must be set before initializing species.");
 
 	//Calc a starting age if not yet assigned.
-	if (-1==_yearEstablished) 
+	if (gFirstYear-1 ==_yearEstablished) 
     {
 		if (_startAgeType==CONSTANT) {
-			_yearEstablished = _yearFrameEstablished = (int)(-GetNextRandom() * _pStartAgeParms[0]);
+			_yearEstablished = _yearFrameEstablished = gFirstYear - (int)(GetNextRandom() * _pStartAgeParms[0]);
 		}
 		else {
             const double random = GetNextRandom();
 			int age = 0;
 			while (random > _pIntegral[age++]);
-			_yearEstablished = _yearFrameEstablished = 1 - age;
+			_yearEstablished = _yearFrameEstablished = gFirstYear + 1 - age;
 		}
 	}
 }
@@ -121,7 +121,7 @@ Frame* BSpruce::success(Landscape *Parent)
 //and that is the only transition that occurs.
 {
 	//Check immediately after burn
-	if (gYear-yearOfLastBurn == gTimeStep)
+	if (gYear-yearOfLastBurn == 1)
 		return new Decid(*this);
 	return NULL;
 }

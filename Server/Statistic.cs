@@ -27,9 +27,7 @@ namespace FRESCO_Server
         //Variables
         public long tally;                                  //For totaling incremental types.
         private string title;                               //Title of the stat contents.
-        private int maxYears;								//Maintain a local copy for optimization.
         private int maxReps;								//Maintain a local copy for optimization.
-        private int timeStep;								//Maintain a local copy for optimization
         private int outFlags;								//Indicates which data to output when the object is written.
         private List<List<double>> data;
         private List<BasicStatistic> basicStatYear;	        //Maintains the statistics across replicates
@@ -44,19 +42,16 @@ namespace FRESCO_Server
         /// <param name="title"></param>
         /// <param name="maxYears"></param>
         /// <param name="maxReps"></param>
-        /// <param name="timeStep"></param>
         /// <param name="outflags"></param>
-        public Statistic(string title, int maxYears, int maxReps, int timeStep, int outflags)
+        public Statistic(string title, int outflags)
         {
             //Setup the default values.
             this.tally = 0;
             this.title = title;
-            this.maxYears = maxYears;
-            this.maxReps = maxReps;
-            this.timeStep = timeStep;
+            this.maxReps = Global.Instance.FIF.MaxReps;
             this.outFlags = outflags;
 
-            int numYears = maxYears / timeStep + 1;
+            int numYears = Global.Instance.FIF.LastYear - Global.Instance.FIF.FirstYear + 1;
 
             //Allocate memory.
             basicStatYear = new List<BasicStatistic>(numYears);  //Init capacity to include the last year in the sequence
@@ -113,14 +108,14 @@ namespace FRESCO_Server
         public void Add(int year, int rep, double value)
         {
             //Error if year or rep is out of bounds.
-            if (year > maxYears || year < 0) throw new Exception("Invalid year specified when adding a statisitc.\n");
+            if (year > Global.Instance.FIF.LastYear || year < Global.Instance.FIF.FirstYear) throw new Exception("Invalid year specified when adding a statisitc.\n");
             if (rep >= maxReps || rep < 0) throw new Exception("Invalid replicate specified when adding a statisitc.\n");
             //Add data to the by year statistic.
-            basicStatYear[year / timeStep].Add(value);
+            basicStatYear[year - Global.Instance.FIF.FirstYear].Add(value);
             //Add data to the by rep statistic.
             basicStatRep[rep].Add(value);
             //Add data to the summation for year and rep.
-            data[year / timeStep][rep] += value;
+            data[year - Global.Instance.FIF.FirstYear][rep] += value;
             //Add data to the event list. 
             if ((outFlags & (int)OutFlags.outEvents) > 0)
                 AddEvent(year, rep, value);
@@ -156,7 +151,7 @@ namespace FRESCO_Server
         /// <returns></returns>
         public double SumOfYearRep(int year, int rep)
         {
-            return data[year / timeStep][rep];
+            return data[year - Global.Instance.FIF.FirstYear][rep];
         }
 
         /// <summary>
@@ -196,7 +191,7 @@ namespace FRESCO_Server
             //if (outFlags & OutFlags.outYear) {
             //    if (bFormat) {
             //        sStream << "Year:";
-            //        for (int Year = 0; Year <= maxYears/timeStep; Year++)
+            //        for (int Year = 0; Year <= maxYears; Year++)
             //            sStream << "\t" << Year * timeStep;
             //        sStream << endl;
             //    }
@@ -279,12 +274,12 @@ namespace FRESCO_Server
                 file.Write("Year");
                 for (int r = 0; r < maxReps; r++) file.Write("\tRep " + r);
                 file.WriteLine("");
-                for (int y = 0; y <= maxYears / timeStep; y++)
+                for (int y = Global.Instance.FIF.FirstYear; y <= Global.Instance.FIF.LastYear; y++)
                 {
                     file.Write(y + "\t");
                     for (int r = 0; r < maxReps; r++)
                     {
-                        file.Write(data[y][r] + "\t");
+                        file.Write(data[y - Global.Instance.FIF.FirstYear][r] + "\t");
                     }
                     file.WriteLine("");
                     file.Flush();
@@ -304,10 +299,10 @@ namespace FRESCO_Server
                 for (int r = 0; r < maxReps; r++)
                 {
                     rep = r + "\t";
-                    for (int y = 0; y <= maxYears / timeStep; y++)
+                    for (int y = Global.Instance.FIF.FirstYear; y <= Global.Instance.FIF.LastYear; y++)
                     {
                         yearAndRep = y + "\t" + rep;
-                        foreach (List<double> eventList in eventLists[y, r])
+                        foreach (List<double> eventList in eventLists[y - Global.Instance.FIF.FirstYear, r])
                         {
                             foreach (double value in eventList)
                             {
@@ -324,7 +319,7 @@ namespace FRESCO_Server
 
         private void ClearEvents()
         {
-            for (int y = 0; y < maxYears / timeStep + 1; y++)
+            for (int y = Global.Instance.FIF.FirstYear; y <= Global.Instance.FIF.LastYear - Global.Instance.FIF.FirstYear; y++)
             {
                 for (int r = 0; r < maxReps; r++)
                 {
@@ -333,8 +328,8 @@ namespace FRESCO_Server
                         eventList.Clear();
                         eventList.Capacity = 0;
                     }
-                    eventLists[y, r].Clear();
-                    eventLists[y, r].AddLast(new List<double>());  //To return to state after Statistic constructor.
+                    eventLists[y - Global.Instance.FIF.FirstYear, r].Clear();
+                    eventLists[y - Global.Instance.FIF.FirstYear, r].AddLast(new List<double>());  //To return to state after Statistic constructor.
                 }
             }
         }
@@ -343,19 +338,19 @@ namespace FRESCO_Server
         {
             try
             {
-                List<double> curentBucket = eventLists[year, rep].Last.Value;
+                List<double> curentBucket = eventLists[year - Global.Instance.FIF.FirstYear, rep].Last.Value;
                 try { curentBucket.Add(value); }
                 catch (System.OutOfMemoryException)
                 {
                     //Ideally all new buckets are created when checking capacity below.
-                    curentBucket = eventLists[year, rep].AddLast(new List<double>(BUCKET_CAPACITY)).Value;
+                    curentBucket = eventLists[year - Global.Instance.FIF.FirstYear, rep].AddLast(new List<double>(BUCKET_CAPACITY)).Value;
                     curentBucket.Add(value);
                 }
                 // Check capacity and start new bucket if needed (First bucket might not be == 'capacity').
                 // ?lock?
                 if (curentBucket.Count == curentBucket.Capacity && curentBucket.Count >= BUCKET_CAPACITY)
                 {
-                    curentBucket = eventLists[year, rep].AddLast(new List<double>(BUCKET_CAPACITY)).Value;
+                    curentBucket = eventLists[year - Global.Instance.FIF.FirstYear, rep].AddLast(new List<double>(BUCKET_CAPACITY)).Value;
                 }
             }
             catch (System.OutOfMemoryException e)
@@ -363,9 +358,9 @@ namespace FRESCO_Server
                 string m = "";
                 m += "Failed adding statistical event to " + title + " stat due to System.OutOfMemoryException.\n";
                 m += "Event year=" + year + " and rep=" + rep + ".  \n";
-                m += "Number of buckets for this year and rep: " + eventLists[year, rep].Count + "\n";
-                m += "Current bucket's count=" + eventLists[year, rep].Last.Value.Count;
-                m += " and capacity=" + eventLists[year, rep].Last.Value.Capacity + "\n";
+                m += "Number of buckets for this year and rep: " + eventLists[year - Global.Instance.FIF.FirstYear, rep].Count + "\n";
+                m += "Current bucket's count=" + eventLists[year - Global.Instance.FIF.FirstYear, rep].Last.Value.Count;
+                m += " and capacity=" + eventLists[year - Global.Instance.FIF.FirstYear, rep].Last.Value.Capacity + "\n";
                 throw new Exception(m, e);
             }
         }

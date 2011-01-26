@@ -128,7 +128,7 @@ inline SClimate Climate::getClimate(const int row, const int col, const int year
 {
 	//Calculate year to get climate.
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
-	int year = gYear - yearBP;  
+	int year = gYear - gFirstYear - yearBP;  
 
 	//Get climate from the spatial circular array and temporal array.
 	SClimate climate;
@@ -145,31 +145,13 @@ inline SClimate Climate::getClimate(const int row, const int col, const int year
 	climate.Temp	+=_pOffsets[year].Temp;
 	climate.Precip	+=_pOffsets[year].Precip;
 	return climate;
-	////Calculate year to get climate.
-	//if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
-	//int year = gYear - yearBP;  
-
-	////Get climate from the spatial circular array and temporal array.
-	//SClimate climate;
-	//climate.Temp	= _pSpatialTemp[year % _yearsOfArchivedHistory][0][row][col];
-	//climate.Precip	= _pSpatialPrecip[year % _yearsOfArchivedHistory][0][row][col];
-
-	//float nd = 0; GetNoData(nd);
-	//if (climate.Temp == nd)
-	//	throw Poco::Exception("invalid use of nodata value ("+ToS(nd)+") in temperature at row "+ToS(row)+" and col "+ToS(col)+" for year "+ToS(year)+". Nodata values should not exist except where a cell's vegetation type is NoVeg.");
-	//if (climate.Precip == nd)
-	//	throw Poco::Exception("invalid use of nodata value ("+ToS(nd)+") in precipitation at row "+ToS(row)+" and col "+ToS(col)+" for year "+ToS(year)+". Nodata values should not exist except where a cell's vegetation type is NoVeg.");
-
-	//climate.Temp	+=_pOffsets[year].Temp;
-	//climate.Precip	+=_pOffsets[year].Precip;
-	//return climate;
 }
 
 inline const float Climate::getTemp(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
-	int year = gYear - yearBP;
+	int year = gYear - gFirstYear - yearBP;
 
 	float t = _pSpatialTemp[year % _yearsOfArchivedHistory][month][row][col];
 	if (IsNodata(t))
@@ -177,25 +159,13 @@ inline const float Climate::getTemp(const int row, const int col, const int mont
 
     //Get climate from the spatial circular array and offset array.
     return t + _pOffsets[year].Temp;
-
-	////Calculate year to get climate.
-	//if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
-	//int year = gYear - yearBP;
-
-	//float t = _pSpatialTemp[year % _yearsOfArchivedHistory][month][row][col];
-	//float nd = 0; GetNoData(nd);
-	//if (t == nd)
-	//	throw Poco::Exception("invalid use of nodata value ("+ToS(nd)+") in temperature at row "+ToS(row)+" and col "+ToS(col)+" for month "+ToS(month)+" of year "+ToS(year)+". Nodata values should not exist except where a cell's vegetation type is NoVeg.");
-
-	////Get climate from the spatial circular array and offset array.
-	//return t + _pOffsets[year].Temp;
 }
 
 inline const float Climate::getPrecip(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
-	int year = gYear - yearBP;
+	int year = gYear - gFirstYear - yearBP;
 
 	float p	 = _pSpatialPrecip[year % _yearsOfArchivedHistory][month][row][col];
 	if (IsNodata(p))
@@ -203,17 +173,6 @@ inline const float Climate::getPrecip(const int row, const int col, const int mo
 
 	//Get climate from the spatial circular array and offset array.
 	return p + _pOffsets[year].Precip;
-	////Calculate year to get climate.
-	//if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
-	//int year = gYear - yearBP;
-
-	//float p	 = _pSpatialPrecip[year % _yearsOfArchivedHistory][month][row][col];
-	//float nd = 0; GetNoData(nd);
-	//if (p == nd)
-	//	throw Poco::Exception("invalid use of nodata value ("+ToS(nd)+") in precipitation at row "+ToS(row)+" and col "+ToS(col)+" for month "+ToS(month)+" of year "+ToS(year)+". Nodata values should not exist except where a cell's vegetation type is NoVeg.");
-
-	////Get climate from the spatial circular array and offset array.
-	//return p + _pOffsets[year].Precip;
 }
 
 inline void Climate::assertTempMonth(const int month) const

@@ -75,16 +75,16 @@ void CustomLandscape::		clear()
 
 void CustomLandscape::    	clearLayers()
 {
-	if (_pVegSpatialInput)				{for (int r=0;r<gNumRows;r++) delete[] _pVegSpatialInput[r];				delete[] _pVegSpatialInput;				_pVegSpatialInput				= 0; }
-	if (_pSiteSpatialInput)			    {for (int r=0;r<gNumRows;r++) delete[] _pSiteSpatialInput[r];				delete[] _pSiteSpatialInput;			_pSiteSpatialInput				= 0; }
-	if (_pTreeDensitySpatialInput)		{for (int r=0;r<gNumRows;r++) delete[] _pTreeDensitySpatialInput[r];		delete[] _pTreeDensitySpatialInput;		_pTreeDensitySpatialInput		= 0; }
-	if (_pAgeSpatialInput)				{for (int r=0;r<gNumRows;r++) delete[] _pAgeSpatialInput[r];				delete[] _pAgeSpatialInput;				_pAgeSpatialInput				= 0; }
-	if (_pTopoSpatialInput)				{for (int r=0;r<gNumRows;r++) delete[] _pTopoSpatialInput[r];				delete[] _pTopoSpatialInput;			_pTopoSpatialInput				= 0; }
-	if (_pIgnitionFactorSpatialInput)	{for (int r=0;r<gNumRows;r++) delete[] _pIgnitionFactorSpatialInput[r];	    delete[] _pIgnitionFactorSpatialInput;	_pIgnitionFactorSpatialInput	= 0; }
-	if (_pSensitivitySpatialInput)      {for (int r=0;r<gNumRows;r++) delete[] _pSensitivitySpatialInput[r];	    delete[] _pSensitivitySpatialInput;	    _pSensitivitySpatialInput	    = 0; }
-	if (_pBurnSeveritySpatialInput)     {for (int r=0;r<gNumRows;r++) delete[] _pBurnSeveritySpatialInput[r];	    delete[] _pBurnSeveritySpatialInput;    _pBurnSeveritySpatialInput	    = 0; }
-	if (_pSuppressions)		            {for (int r=0;r<gNumRows;r++) delete[] _pSuppressions[r];	                delete[] _pSuppressions;		        _pSuppressions                  = 0; }
-    if (_pHistoricalFireSpatialInput)	{for (int r=0;r<gNumRows;r++) delete[] _pHistoricalFireSpatialInput[r];		delete[] _pHistoricalFireSpatialInput; _pHistoricalFireSpatialInput		= 0; }
+	if (_pVegSpatialInput)				{for (int r=0;r<gYSize;r++) delete[] _pVegSpatialInput[r];				delete[] _pVegSpatialInput;				_pVegSpatialInput				= 0; }
+	if (_pSiteSpatialInput)			    {for (int r=0;r<gYSize;r++) delete[] _pSiteSpatialInput[r];				delete[] _pSiteSpatialInput;			_pSiteSpatialInput				= 0; }
+	if (_pTreeDensitySpatialInput)		{for (int r=0;r<gYSize;r++) delete[] _pTreeDensitySpatialInput[r];		delete[] _pTreeDensitySpatialInput;		_pTreeDensitySpatialInput		= 0; }
+	if (_pAgeSpatialInput)				{for (int r=0;r<gYSize;r++) delete[] _pAgeSpatialInput[r];				delete[] _pAgeSpatialInput;				_pAgeSpatialInput				= 0; }
+	if (_pTopoSpatialInput)				{for (int r=0;r<gYSize;r++) delete[] _pTopoSpatialInput[r];				delete[] _pTopoSpatialInput;			_pTopoSpatialInput				= 0; }
+	if (_pIgnitionFactorSpatialInput)	{for (int r=0;r<gYSize;r++) delete[] _pIgnitionFactorSpatialInput[r];	    delete[] _pIgnitionFactorSpatialInput;	_pIgnitionFactorSpatialInput	= 0; }
+	if (_pSensitivitySpatialInput)      {for (int r=0;r<gYSize;r++) delete[] _pSensitivitySpatialInput[r];	    delete[] _pSensitivitySpatialInput;	    _pSensitivitySpatialInput	    = 0; }
+	if (_pBurnSeveritySpatialInput)     {for (int r=0;r<gYSize;r++) delete[] _pBurnSeveritySpatialInput[r];	    delete[] _pBurnSeveritySpatialInput;    _pBurnSeveritySpatialInput	    = 0; }
+	if (_pSuppressions)		            {for (int r=0;r<gYSize;r++) delete[] _pSuppressions[r];	                delete[] _pSuppressions;		        _pSuppressions                  = 0; }
+    if (_pHistoricalFireSpatialInput)	{for (int r=0;r<gYSize;r++) delete[] _pHistoricalFireSpatialInput[r];		delete[] _pHistoricalFireSpatialInput; _pHistoricalFireSpatialInput		= 0; }
 }
 
 void CustomLandscape::		setup() 
@@ -96,7 +96,6 @@ void CustomLandscape::		setup()
 	std::string	baseName;
 	std::string	fileName;
 	int			tranStart	= 0;
-	int			tranStop	= 0;
 	std::ostringstream	stream;
 	Fire::SFireTransition transition;
     std::vector<Fire::SFireTransition>::iterator iter;
@@ -121,44 +120,30 @@ void CustomLandscape::		setup()
 
     Landscape::setup();
 
-	//if (Decid::usingGrassland())
-	//{
-	//	_pClimate->assertTempMonth(3);
-	//	_pClimate->assertTempMonth(4);
-	//	_pClimate->assertTempMonth(5);
-	//	_pClimate->assertTempMonth(6);
-	//	_pClimate->assertTempMonth(7);
-	//	_pClimate->assertPrecipMonth(3);
-	//	_pClimate->assertPrecipMonth(4);
-	//	_pClimate->assertPrecipMonth(5);
-	//	_pClimate->assertPrecipMonth(6);
-	//	_pClimate->assertPrecipMonth(7);
-	//}
-
 
 	//Make space for landscape data.
-	_pVegSpatialInput				= new byte*[gNumRows];
-	_pSiteSpatialInput				= new float*[gNumRows];
-	_pTreeDensitySpatialInput		= new int*[gNumRows];
-	_pAgeSpatialInput				= new int*[gNumRows];
-	_pTopoSpatialInput				= new byte*[gNumRows];
-	_pIgnitionFactorSpatialInput	= new float*[gNumRows];
-	_pSensitivitySpatialInput	    = new float*[gNumRows];
-	_pBurnSeveritySpatialInput		= new byte*[gNumRows];
-	_pSuppressions                  = new byte*[gNumRows];
-	_pHistoricalFireSpatialInput	= new byte*[gNumRows];
-	for (r=0;r<gNumRows;r++) {
-		_pVegSpatialInput[r]		    = new byte[gNumCol];
-		_pSiteSpatialInput[r]			= new float[gNumCol];
-		_pTreeDensitySpatialInput[r]	= new int[gNumCol];
-		_pAgeSpatialInput[r]			= new int[gNumCol];
-		_pTopoSpatialInput[r]			= new byte[gNumCol];
-		_pIgnitionFactorSpatialInput[r]	= new float[gNumCol];
-		_pSensitivitySpatialInput[r]	= new float[gNumCol];
-		_pBurnSeveritySpatialInput[r]	= new byte[gNumCol];
-		_pSuppressions[r]				= new byte[gNumCol];
-		_pHistoricalFireSpatialInput[r] = new byte[gNumCol];
-        for (c=0;c<gNumCol;c++) {
+	_pVegSpatialInput				= new byte*[gYSize];
+	_pSiteSpatialInput				= new float*[gYSize];
+	_pTreeDensitySpatialInput		= new int*[gYSize];
+	_pAgeSpatialInput				= new int*[gYSize];
+	_pTopoSpatialInput				= new byte*[gYSize];
+	_pIgnitionFactorSpatialInput	= new float*[gYSize];
+	_pSensitivitySpatialInput	    = new float*[gYSize];
+	_pBurnSeveritySpatialInput		= new byte*[gYSize];
+	_pSuppressions                  = new byte*[gYSize];
+	_pHistoricalFireSpatialInput	= new byte*[gYSize];
+	for (r=0;r<gYSize;r++) {
+		_pVegSpatialInput[r]		    = new byte[gXSize];
+		_pSiteSpatialInput[r]			= new float[gXSize];
+		_pTreeDensitySpatialInput[r]	= new int[gXSize];
+		_pAgeSpatialInput[r]			= new int[gXSize];
+		_pTopoSpatialInput[r]			= new byte[gXSize];
+		_pIgnitionFactorSpatialInput[r]	= new float[gXSize];
+		_pSensitivitySpatialInput[r]	= new float[gXSize];
+		_pBurnSeveritySpatialInput[r]	= new byte[gXSize];
+		_pSuppressions[r]				= new byte[gXSize];
+		_pHistoricalFireSpatialInput[r] = new byte[gXSize];
+        for (c=0;c<gXSize;c++) {
 			_pVegSpatialInput[r][c]		        = 0;
 			_pSiteSpatialInput[r][c]		    = 0;
 			_pTreeDensitySpatialInput[r][c]	    = 0;
@@ -172,23 +157,35 @@ void CustomLandscape::		setup()
 		}
 	}
 
-	//Load fire transition data.
+	//Load fire transition data...
 	if (0==Fire::fireTransitions.size())			throw Exception(Exception::INITFAULT,"Fire transitions missing.  There must be at least one fire transition.\n");
 	if (gDetailLevel>=MAXIMUM) {
 		ShowOutput("\tFire Transitions:\n");
 		ShowOutput("\t\tYear Type\n");
 	}
-	if (Fire::fireTransitions.empty()) throw Exception(Exception::INITFAULT,"A fire trasition is required at year zero.\n","");
+	//...check for transition at FirstYear
+	std::string firstYearMsg("A fire trasition is required at the first year of simulation ("+ToS(gFirstYear)+".\n");
+	if (Fire::fireTransitions.empty()) 
+		throw Exception(Exception::INITFAULT,firstYearMsg,"");
 	iter=Fire::fireTransitions.begin();
-	if (iter->Year != 0) throw Exception(Exception::INITFAULT,"A fire trasition is required at year zero.\n","");
+	if (iter->Year != gFirstYear) 
+		throw Exception(Exception::INITFAULT,firstYearMsg,"");
+	
 	for (iter=Fire::fireTransitions.begin(); iter!=Fire::fireTransitions.end(); iter++)	{
 		transition = Fire::fireTransitions[t];
         stream	<< "\t\t" << setiosflags( std::ios::left ) << setiosflags( std::ios::fixed ) << std::setprecision(3)	<< std::setw(4) << iter->Year;
-		//Get beginning and end of this fire type.
+		
+		//...validate start year
 		tranStart = iter->Year;
-		if ((iter+1)!=Fire::fireTransitions.end()) tranStop = (iter+1)->Year-1;
-		if (tranStop<=0 || gMaxYear<tranStop) tranStop = gMaxYear; 
-		//Set up each fire type.
+		if (tranStart < gFirstYear  || gLastYear < tranStart)
+		{
+			throw Exception(Exception::INITFAULT, "fire transition start year "
+							"("+ToS(tranStart)+") must be within the range of "
+							"this simulation's first and last years "
+							"("+ToS(gFirstYear)+", "+ToS(gLastYear)+").\n", "");
+		}
+		
+		//...set up fire type
 		if (iter->Type==Fire::FIXED){
 			stream	<< " FIXED";
 			if (iter->Ignition==FRS_NULL)				throw Exception(Exception::INITFAULT,"Fire transition missing ignition.\n");
@@ -196,7 +193,7 @@ void CustomLandscape::		setup()
 		}
 		else if (iter->Type==Fire::SPATIAL) {
 			stream	<< " SPATIAL";
-			if (iter->SpatialIgnitionFile=="\"")			throw Exception(Exception::INITFAULT,"Fire transition missing spatial ignition file.\n");
+			if (iter->SpatialIgnitionFile=="\"")		throw Exception(Exception::INITFAULT,"Fire transition missing spatial ignition file.\n");
 			if (iter->SpatialSensitivityFile=="\"")		throw Exception(Exception::INITFAULT,"Fire transition missing spatial sensitivity file.\n");
 		}
 		else if (iter->Type==Fire::HISTORICAL) {
@@ -226,7 +223,7 @@ void CustomLandscape::		repStart()
 //Processing at the start of a replicate.
 {
 	ShowOutput(MODERATE, "\tLandscape Rep setup\n");
-	ShowOutput(MODERATE, "\t\tCreating landscape of " + ToS(gNumRows) + " rows by " + ToS(gNumCol) + " cols.\n");
+	ShowOutput(MODERATE, "\t\tCreating landscape of " + ToS(gYSize) + " rows by " + ToS(gXSize) + " cols.\n");
 	ShowOutput(MODERATE, "\t\tReading from input dataset begins "+ToS(gYOffset)+" pixels from the top and "+ToS(gXOffset)+" pixels from the left.\n");
 
 
@@ -269,18 +266,18 @@ void CustomLandscape::		repStart()
  
 	//Create landscape cell-by-cell, assigning values from all the input 
 	Frame* pFrame = 0;
-	for (int r=0; r<gNumRows; r++) {
-		for (int c=0; c<gNumCol; c++) {
+	for (int r=0; r<gYSize; r++) {
+		for (int c=0; c<gXSize; c++) {
 			pFrame = _pFrames[r][c];
 			if (pFrame) delete pFrame;
 			byte frameTypeID = _pVegSpatialInput[r][c];
-			if (frameTypeID==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (frameTypeID==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (frameTypeID==gGrasslandID)	{ _pFrames[r][c] = new Grassland(-_pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (frameTypeID==gDecidID)	    { _pFrames[r][c] = new Decid(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (frameTypeID==gTundraID)	{ _pFrames[r][c] = new Tundra(-_pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
-			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else if (IsNodata(frameTypeID))    { _pFrames[r][c] = new NoVeg(-_pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			if (frameTypeID==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(gFirstYear - _pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(gFirstYear - _pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gGrasslandID)	{ _pFrames[r][c] = new Grassland(gFirstYear - _pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gDecidID)	    { _pFrames[r][c] = new Decid(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (frameTypeID==gTundraID)	{ _pFrames[r][c] = new Tundra(gFirstYear - _pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
+			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			else if (IsNodata(frameTypeID))    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else								{ throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS((int)frameTypeID)); }
 		}
 	}
@@ -313,7 +310,7 @@ void CustomLandscape::		doFireTransitions()
     static std::vector<Fire::SFireTransition>::iterator transition;
 
 	//Initialize transition iterator at start of run.
-	if (gYear==0) transition = Fire::fireTransitions.begin();
+	if (gYear==gFirstYear) transition = Fire::fireTransitions.begin();
 	//Skip if no transitions scheduled or we are at the end of transitions.
 	if (transition==Fire::fireTransitions.end() || Fire::fireTransitions.empty()) return;
 	oldFireType = Fire::fireType;
@@ -328,8 +325,8 @@ void CustomLandscape::		doFireTransitions()
 				ShowOutput("\t\t\tIgnition = " + ToS(transition->Ignition) + "\n");
 				ShowOutput("\t\t\tSensitivity = " + ToS(transition->Sensitivity) + "\n");
 			}
-			for (int r=0; r<gNumRows; r++) {
-				for (int c=0; c<gNumCol; c++) {
+			for (int r=0; r<gYSize; r++) {
+				for (int c=0; c<gXSize; c++) {
 					pFire = (Fire*)_pFrames[r][c];	
 					pFire->fireIgnitionFactor = transition->Ignition;
 					pFire->fireSensitivity = transition->Sensitivity;
@@ -346,8 +343,8 @@ void CustomLandscape::		doFireTransitions()
 			//Read spatial data files.
 			gIO->readRasterFile(GetFullPath(gInputBasePath, transition->SpatialIgnitionFile), _pIgnitionFactorSpatialInput, false);		
 			gIO->readRasterFile(GetFullPath(gInputBasePath, transition->SpatialSensitivityFile), _pSensitivitySpatialInput, false);		
-			for (int r=0; r<gNumRows; r++) {
-				for (int c=0; c<gNumCol; c++) {
+			for (int r=0; r<gYSize; r++) {
+				for (int c=0; c<gXSize; c++) {
 					pFire = (Fire*)_pFrames[r][c];
 					pFire->fireIgnitionFactor = _pIgnitionFactorSpatialInput[r][c];
 					pFire->fireSensitivity = _pSensitivitySpatialInput[r][c];
@@ -384,8 +381,8 @@ void CustomLandscape::		doIgnitions()
 		int		fireSize	= 0;
 		int		numLow		= 0;
 		int		numHiLSS	= 0;
-		for (int r=0; r<gNumRows; r++) {
-			for (int c=0; c<gNumCol; c++) {
+		for (int r=0; r<gYSize; r++) {
+			for (int c=0; c<gXSize; c++) {
 				if (_pHistoricalFireSpatialInput[r][c]>0) {
 					if (_pFrames[r][c]->type() != gNoVegID) {
 						pFrame = _pFrames[_row=r][_col=c]; // <--be careful, spaghetti code: _row and _col are set here so Landscape::logFireStats() can access the species of this frame.  Should be cleaned.
@@ -522,7 +519,7 @@ void CustomLandscape::      setupSuppressionTransitions()
         if (gDetailLevel>=MAXIMUM) ShowOutput(stream);
     }
     it = _suppressionTransitions.begin();
-    if (it->Year != 0) throw Exception(Exception::INITFAULT,"A suppression trasition is required at year zero.\n");
+    if (it->Year != gFirstYear) throw Exception(Exception::INITFAULT,"A suppression trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
 }
 
 
@@ -544,11 +541,11 @@ void CustomLandscape::      setCurrentSuppressionTransition(std::vector<SSuppres
     m << "\t\t\tFire Size Threshold = " << _thresholdIgnitions << "\n";
     ShowOutput(MODERATE, m.str());
     //Process map
-    if (transition->HasNewMap || transition->Year==0) { 
+    if (transition->HasNewMap || transition->Year==gFirstYear) { 
         std::string filename(AppendYear(_suppressionFilename));
 	    if (InputFileExists(filename)) {
 		    ShowOutput(MAXIMUM, "\t\t\tProcessing suppression file: " + GetFullPath(gInputBasePath, filename) + ".\n");
-            //if (_pSuppressions != 0)  { for (int r=0;r<gNumRows;r++) delete[] _pSuppressions[r];  delete[] _pSuppressions;  _pSuppressions = 0; }
+            //if (_pSuppressions != 0)  { for (int r=0;r<gYSize;r++) delete[] _pSuppressions[r];  delete[] _pSuppressions;  _pSuppressions = 0; }
 		    gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSuppressions, false);		
         } 
         else throw Poco::Exception("Expected suppression map for year " + ToS(gYear) + " at " + GetFullPath(gInputBasePath, filename));
@@ -593,8 +590,8 @@ void CustomLandscape::		doVegetationTransitions()
 		ShowOutput(MODERATE, "\t\tProcessing Vegetation Transitions\n");
 		ShowOutput(MAXIMUM, "\t\t\tReading in veg transition file: " + GetFullPath(gInputBasePath, filename) + "\n");
 		//Force cells to succeed to new types.
-		for (r=0; r<gNumRows; r++) {
-			for (c=0; c<gNumCol; c++) {
+		for (r=0; r<gYSize; r++) {
+			for (c=0; c<gXSize; c++) {
 				pCurFrame	= _pFrames[r][c];
 				curType		= pCurFrame->type();
 				newType		= _pVegSpatialInput[r][c];
@@ -628,7 +625,7 @@ void CustomLandscape::      setupSuppressionStats()
     _burnPartitionBySuppClassStatFlags = FRESCO->fif().nGet("Stat.BurnsBySupp.Flags");
     _burnPartitionBySuppClassStats.resize(NUM_SUPPRESSION_CLASSES+1);
 	for (int s=1; s<=NUM_SUPPRESSION_CLASSES; s++) {
-		_burnPartitionBySuppClassStats[s].setup("BurnsBySupp["+ToS(s)+"]",	gMaxYear,gMaxRep,gTimeStep, _burnPartitionBySuppClassStatFlags, false);
+		_burnPartitionBySuppClassStats[s].setup("BurnsBySupp["+ToS(s)+"]", _burnPartitionBySuppClassStatFlags, false);
     }
 }
 
@@ -649,7 +646,7 @@ void CustomLandscape::      setupHabitatStats()
             if (ageCount!=2) throw Poco::Exception("Expected array size of 2 for key, " + keyAgeRange + ".  Received " + ToS(ageCount) + ".");
             //Organize values into SHabitatStat collection.
             SHabitatStat habitat;
-            habitat.Stat.setup("Habitat"+ToS(pTypes[i]), gMaxYear, gMaxRep, gTimeStep, flags, false);
+            habitat.Stat.setup("Habitat"+ToS(pTypes[i]), flags, false);
             habitat.MinAge = pAgeRange[0];
             habitat.MaxAge = pAgeRange[1];
 			if (!(habitat.MinAge < habitat.MaxAge)) 
@@ -744,8 +741,8 @@ void CustomLandscape::      collectStats()
 
     Frame* pCurFrame = 0;
     const int curYear = gYear;
-    for (int r=0; r<gNumRows; r++) {
-        for (int c=0; c<gNumCol; c++) {
+    for (int r=0; r<gYSize; r++) {
+        for (int c=0; c<gXSize; c++) {
             pCurFrame = _pFrames[r][c];
             //Do evaluations for this cell.
 

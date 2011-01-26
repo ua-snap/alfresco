@@ -5,10 +5,28 @@
 \par
 \f2\fs24 1.0.11\par
 \b0\f3\fs20 Released: \f2 Pending\f4\par
-- New: read your landscape in as a sub-region from a larger set of rasters. To do so add these two new FIF fields: \par
-\f5 XOffset = [integer]  ; (optional)number of pixels from the left to start counting columns \par
-YOffset = [integer]  ; (optional) number of pixels from the top to start counting rows\par
-\b\f2\fs24\par
+This release focuses on removing the need to clip a set of simulation landscape files from a larger master dataset.\par
+- New: read your simulation landscape in as a sub-domain from a larger set of raster files. To do so, add the new XOffset and YOffset FIF fields and set XSize and YSize (formerly MaxRow and MaxCol) to the size of your sub-domain simulation landscape.\par
+- New: you can now use real years rather than zero based years (eg 1900 through 1999 rather than 0 through 99). Before, you would have to create a new input dataset or rename all the files if you wanted to change the year on which to start the simulation.\f5\par
+\par
+XOffset = [integer]  ; (optional)number of pixels from the left to start counting columns \par
+YOffset = [integer]  ; (optional) number of pixels from the top to start counting rows\b\f4\par
+\b0\f5 XSize\par
+YSize\par
+\par
+FirstYear\par
+LastYear\b\f4\par
+\par
+Depricated FIF Fields \b0 (they can now be removed from your FIF files for use with 1.0.11 and beyond)\par
+TimeStep (due to having become obsolete)\par
+MaxYears (replaced by FirstYear and LastYear)\par
+MaxCol (replaced by XSize)\par
+MaxRow (replaced by YSize)\par
+NumHeader (was a remnent from old versions that used ASCII rasters rather than GeoTIFF rasters)\b\f2\fs24\par
+\par
+\par
+\par
+\par
 1.0.10\par
 \b0\f3\fs20 Released: \f2 11/18/2010\f4\par
 - Bug Fixed: Forced vegetation transition input rasters were still required to use the .txt file extention. Now .tif can be used.\par

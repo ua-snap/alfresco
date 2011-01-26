@@ -30,7 +30,6 @@ const int MAXSTRINGLENGTH = 255;							// The maximum string length -- used for 
 //extern CInterface _fif;									// Global IO interface storage object defined in main program
 extern int FrescoFoundation_API     gYear;											// Global variable storing the current year of execution
 extern int FrescoFoundation_API     gRep;											// Global variable storing the current rep
-extern int FrescoFoundation_API     gTimeStep;										// Global variable storing the timestep
 extern float FrescoFoundation_API   gCellSize;									// Global variable storing the cellsize
 
 // Define the output codes.  The resulting flag will be a sum of the relevent flags. Note that these are different

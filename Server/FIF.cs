@@ -18,8 +18,9 @@ namespace FRESCO_Server
         public string       ServerOutputBasePath    = "";
         public string		RandSeed 				= "";
 		public int			MaxReps 				= -1;
-		public int			MaxYears 				= -1;
-		#endregion
+        public int          FirstYear               = -1;
+        public int          LastYear                = -1;
+        #endregion
 
 		public enum EnumFIFSettingType
 		{
@@ -43,11 +44,11 @@ namespace FRESCO_Server
             this.FileName = filename;
 
             //Parse only values needed for server.
-            string temp;
             ClientFifPath           = GetValLite("ClientFifPath");
             ClientOutputBasePath    = GetValLite("ClientOutputBasePath");
             ServerOutputBasePath    = GetValLite("ServerOutputBasePath");
-            MaxYears                = Convert.ToInt32(GetValLite("MaxYears"));
+            FirstYear               = Convert.ToInt32(GetValLite("FirstYear"));
+            LastYear                = Convert.ToInt32(GetValLite("LastYear"));
             MaxReps                 = Convert.ToInt32(GetValLite("MaxReps"));
             RandSeed                = GetValLite("RandSeed");
         }

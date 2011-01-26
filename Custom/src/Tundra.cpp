@@ -67,16 +67,16 @@ void Tundra::			_Tundra(const int treeDensity)
         throw Exception(Exception::UNKNOWN, "Static data members must be set before initializing species.");
 
 	//Calc a starting age if not yet assigned.
-	if (-1==_yearEstablished)
+	if (gFirstYear-1==_yearEstablished)
     {
 		if (_startAgeType==CONSTANT) {
-			_yearEstablished = _yearFrameEstablished = (int)(-GetNextRandom() * _pStartAgeParms[0]);
+			_yearEstablished = _yearFrameEstablished = gFirstYear - (int)(GetNextRandom() * _pStartAgeParms[0]);
 		}
 		else {
 			const double random = GetNextRandom();
 			int age = 0;
 			while (random > _pIntegral[age++]);
-			_yearEstablished = _yearFrameEstablished = 1 - age;
+			_yearEstablished = _yearFrameEstablished = gFirstYear + 1 - age;
 		}
     }
 	//Do other initializations
@@ -193,7 +193,7 @@ Frame *Tundra::		    success(Landscape* pParent)
 {
 	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
-	if (yearsSinceLastBurn == gTimeStep) {
+	if (yearsSinceLastBurn == 1) {
         //This frame burned last year, so reset degree years to start tracking again.
         _yearEstablished	= gYear;
 		_speciesSubCanopy	= gTundraID;
@@ -210,7 +210,7 @@ Frame *Tundra::		    success(Landscape* pParent)
 	//    double	inc;
 	//	if (-1 == _degrees) {											                //This is the first go so compute all preceeding years - I think this is always just two, but there is no extra overhead to have it general
 	//		_degrees = 0.;
-	//		//for (int i=0; i<=yearsSinceEstablishment/gTimeStep; i++) {				//Integrate degree-timesteps
+	//		//for (int i=0; i<=yearsSinceEstablishment; i++) {				//Integrate degree-timesteps
 	//		//	inc = _pSeedEstParams[0] - pParent->cellClimate(i).Temp;
 	//		//	_degrees += (inc>0) ? inc : 0.;
 	//		//}
@@ -220,7 +220,7 @@ Frame *Tundra::		    success(Landscape* pParent)
 	//		//_degrees += (inc > 0) ? inc : 0.;
 	//	}
 
-	//	if (_degrees > _pSeedEstParams[1] * (_history/gTimeStep)) {                   //Check to see if we kill the trees
+	//	if (_degrees > _pSeedEstParams[1] * _history) {                   //Check to see if we kill the trees
 	//		_yearOfEstablishment = -_history;
 	//		_basalArea = 0.;
 	//		_degrees = -1.;

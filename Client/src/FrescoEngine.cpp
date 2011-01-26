@@ -142,7 +142,8 @@ void FrescoEngine::run()
 
 void FrescoEngine::_runReps()
 {
-    _runReps(_rep,_year);
+	_year = gFirstYear;
+    _runReps(_rep,gFirstYear);
     //At this point: Either completed, stopped, or error.
     //If stopped, set this simulation thread to sleep until the client state changes.
     while (Client::STOPPED == _ownerClient->state()) {
@@ -155,12 +156,12 @@ void FrescoEngine::_runReps()
 }
 void FrescoEngine::_runReps(const int startRep, int startYear)
 {
-    if (_rep == 0) _rep = _repStart;
-    //else, resuming where stopped.
+    if (_rep == 0) _rep = _repStart;    //else, resuming where stopped.
+    
     for (; _rep<_repStop; _rep++)
     {
         _simulation->runRep(_rep, startYear);
-        startYear=0;
+        startYear=gFirstYear;
         if (Client::STOPPED == _ownerClient->state()) {
             break;
         }
@@ -174,14 +175,14 @@ void FrescoEngine::_resume()
 {
     if (_thread->isRunning()) 
     {
-        if (_rep<_repStop-1 && _year<=_simulation->getMaxYear()) {
+        if (_rep<_repStop-1 && _year<=_simulation->getLastYear()) {
             //Was stopped in middle of rep, continue on next year.
-            _year += _simulation->getTimeStep(); 
+            _year++; 
         }
         else if (_rep<_repStop-1) {
             //Was stopped after completing a rep. Start next rep.
             _rep++; 
-            _year=0; 
+            _year=gFirstYear; 
         }
         else Exception(Exception::UNKNOWN, "Error while resuming simulation. Unexpected rep and/or year values.");
 
@@ -215,7 +216,7 @@ void FrescoEngine::onServerStateUpdated(const Server::ServerState newState)
         break;
     case Server::S_STOPPING:
         if (Client::SIMULATING == _ownerClient->state()) {
-            if (! (_rep == _repStop-1 &&_year==_simulation->getMaxYear())) 
+            if (! (_rep == _repStop-1 &&_year==_simulation->getLastYear())) 
                 beginStop();
         }
         break;

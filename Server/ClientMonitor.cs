@@ -345,7 +345,7 @@ namespace FRESCO_Server
                     //SetupNewClientHelper(setupID++);
                     break;
                 case "STAT_SETUP":
-                    SetupStat(parms[0], Convert.ToInt32(parms[1]), Convert.ToInt32(parms[2]), Convert.ToInt32(parms[3]), Convert.ToInt32(parms[4]), Convert.ToBoolean(parms[5]));
+                    SetupStat(parms[0], Convert.ToInt32(parms[1]), Convert.ToBoolean(parms[2]));
                     break;
                 case "STAT_ADD":
                     AddStat(parms[0], Convert.ToInt32(parms[1]), Convert.ToInt32(parms[2]), Convert.ToDouble(parms[3]));
@@ -365,16 +365,16 @@ namespace FRESCO_Server
         {
             clientLogDisplay.AddText(text);
         }
-        public void     SetupStat(string title, int maxYear, int maxRep, int timeStep, int outFlags, bool isFireSizeStat)
+        public void     SetupStat(string title, int outFlags, bool isFireSizeStat)
         {
             lock (statLock)
             {
                 if (!stats.Contains(title))
                 {
                     if (isFireSizeStat)
-                        stats.Add(title, new FireSizeStatistic(title, maxYear, maxRep, timeStep, outFlags));
+                        stats.Add(title, new FireSizeStatistic(title, outFlags));
                     else
-                        stats.Add(title, new Statistic(title, maxYear, maxRep, timeStep, outFlags));
+                        stats.Add(title, new Statistic(title, outFlags));
                 }
                 //else, it was already setup and is ready for any client to add to.
             }
