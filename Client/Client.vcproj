@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="PocoFoundationd.lib PocoNetd.lib PocoXMLd.lib FrescoFoundationd.lib FrescoCustomd.lib gdal_i.lib"
-				Version="1.0.9"
+				Version="1.0.11"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\lib;p:\poco\lib;p:\gdal\build\lib"
 				GenerateDebugInformation="true"

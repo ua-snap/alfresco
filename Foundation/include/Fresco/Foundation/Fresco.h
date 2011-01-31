@@ -77,7 +77,7 @@ public:
 							Fresco(Landscape* pLandscape, bool isDebugOn);
 	virtual 				~Fresco();
 	
-	static const std::string version() { return "1.0.10"; };
+	static const std::string version() { return "1.0.11"; };
 
 	//Simulation
 	virtual void			clear();

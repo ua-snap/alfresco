@@ -4,18 +4,19 @@
 \pard\li180\sb60\tx540\tx900\tx1170\tx7200\b\f0\fs20\par
 \par
 \f2\fs24 1.0.11\par
-\b0\f3\fs20 Released: \f2 Pending\f4\par
-This release focuses on removing the need to clip a set of simulation landscape files from a larger master dataset.\par
+\b0\f3\fs20 Released: \f2 1/31/2011\f4\par
+This release focuses on removing the need to clip a set of simulation landscape files from a larger master dataset, allowing a single input set to be used for many subset landscapes.\par
 - New: read your simulation landscape in as a sub-domain from a larger set of raster files. To do so, add the new XOffset and YOffset FIF fields and set XSize and YSize (formerly MaxRow and MaxCol) to the size of your sub-domain simulation landscape.\par
-- New: you can now use real years rather than zero based years (eg 1900 through 1999 rather than 0 through 99). Before, you would have to create a new input dataset or rename all the files if you wanted to change the year on which to start the simulation.\f5\par
+\b New FIF Fields\b0\f5\par
+XOffset = [integer]  ; (optional)number of pixels from the left to start reading (first read pixel is at XOffset + 1) \par
+YOffset = [integer]  ; (optional) number of pixels from the top to start reading (first read pixel is at YOffset + 1)\b\f4\par
+\b0\f5 XSize = [integer]    ; (required) width of simulated landscape in pixels.\par
+YSize = [integer]    ; (required) height of simulated landscape in pixels\par
 \par
-XOffset = [integer]  ; (optional)number of pixels from the left to start counting columns \par
-YOffset = [integer]  ; (optional) number of pixels from the top to start counting rows\b\f4\par
-\b0\f5 XSize\par
-YSize\par
-\par
-FirstYear\par
-LastYear\b\f4\par
+\f4 - New: you can now use real years rather than zero based years (eg 1900 through 1999 rather than 0 through 99). Before, you would have to create a new input dataset or rename all the files if you wanted to change the year on which to start the simulation.\f5\par
+\b\f4 New FIF Fields\par
+\b0\f5 FirstYear = [integer]    ; (required) first year of simulation\par
+LastYear  = [integer]    ; (required) last year of simulation\b\f4\par
 \par
 Depricated FIF Fields \b0 (they can now be removed from your FIF files for use with 1.0.11 and beyond)\par
 TimeStep (due to having become obsolete)\par
