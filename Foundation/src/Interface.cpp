@@ -26,7 +26,7 @@ const char FloatSep[] = ".eEdD";						// Characters delineating floating point n
 // ============== CInterface =========================
 void CInterface::Initialize (const std::string &basePath, const std::string &fileName) {
 	_fifName = fileName;
-	ParseFile(std::string(basePath + Poco::Path::separator() + fileName).c_str());
+	ParseFile(GetFullPath(basePath, fileName).c_str());
 }
 
 void CInterface::ParseFile (const char *pszFileName) {
