@@ -141,7 +141,7 @@ std::string FrescoFoundation_API            FormatDirectory(std::string path);
 void	    FrescoFoundation_API            EnsureDirectoryExists(std::string path, bool includesFilename);
 std::string FrescoFoundation_API            GetFullPath(const std::string base, const std::string path);
 template <class nonString> 
-std::string FrescoFoundation_API            ToS(nonString nonString);
+std::string FrescoFoundation_API            ToS(nonString NonString);
 std::string FrescoFoundation_API            ToS(bool nonString);
 void	    FrescoFoundation_API            FileCheck(std::fstream& rStream, std::string fileName, int& rFileRows, int& rFileCols);
 //template<class T> void FrescoFoundation_API ReadGISFile(T** Array, const int rows, const int cols, const std::string filename, const int flags, const T Default);

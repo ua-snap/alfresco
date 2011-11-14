@@ -3,7 +3,7 @@
 
 
 #include "Poco/Exception.h"
-
+#include <typeinfo>
 
 POCO_DECLARE_EXCEPTION(FrescoFoundation_API, ReadRasterException, Poco::Exception)
 
