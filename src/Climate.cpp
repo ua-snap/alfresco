@@ -1,7 +1,10 @@
-//Climate.cpp
-//This module contains the code pertaining to the climate routines.  In particular it contains
-//the code to increment the climate to the next year as well as a number of worker routines
-//used for returning the current climate.
+/** 
+ * @file
+ * 
+ * This module contains the code pertaining to the climate routines.  In particular it contains
+ * the code to increment the climate to the next year as well as a number of worker routines
+ * used for returning the current climate.
+ */
 
 
 #include "PreCompiled.h"
@@ -81,7 +84,7 @@ void Climate::          deleteArrays()
 
 
 void Climate::			clear()
-//Clear existing run if any and return to before a run is specified.
+/** Clear existing run if any and return to before a run is specified. */
 {
 	ShowOutput(MODERATE, "Climate Clear \n");
     deleteArrays();
@@ -97,7 +100,7 @@ void Climate::			clear()
 
 
 void Climate::			setup()
-//setup a run.
+/** setup a run. */
 {
     _yearsOfArchivedHistory  = 1; //FRESCO->fif().nGet("Climate.NumHistory");
 	// Hard coded to 1 for now, because no where in code is using climate history, 
@@ -285,7 +288,7 @@ void Climate::			runEnd()
 
 
 void Climate::			repStart()
-//Calculate temporal offsets.
+/** Calculate temporal offsets. */
 {
 	ShowOutput(MAXIMUM, "\t\tClimate Rep setup\n");
 	//Evaluate each transition period for temporal offset settings.
@@ -319,7 +322,7 @@ void Climate::			repEnd()
 
 
 void Climate::			yearStart()
-//Start of year processing.
+/** Start of year processing. */
 {
 	applyTransitionIfExists(gYear);
 	ShowOutput(MAXIMUM, "\t\tClimate set to "+climateValuesTypeToString(_pCurrentTransition->ValuesType)
@@ -681,7 +684,7 @@ void Climate::          setupStepOrRamp(const EClimateType climateType, const EO
 
 
 void Climate::			setOffsetsConstant(float temp, float precip, int firstYear, int lastYear)
-//Sets temporal offsets to constant temp and precip for firstYear through lastYear.
+/** Sets temporal offsets to constant temp and precip for firstYear through lastYear. */
 {
 	for (int y=firstYear; y<=lastYear && y<=gLastYear; y++) {
         _pOffsets[y - gFirstYear].Temp	= temp;
@@ -691,7 +694,7 @@ void Climate::			setOffsetsConstant(float temp, float precip, int firstYear, int
 
 
 void Climate::			setOffsetsFromFile(std::string filePath, int firstYear, int lastYear)
-//Sets temporal offsets, for years from firstYear through lastYear, to values from a file.
+/** Sets temporal offsets, for years from firstYear through lastYear, to values from a file. */
 {
 	std::fstream	fp;
 	float temp, precip;
@@ -710,8 +713,10 @@ void Climate::			setOffsetsFromFile(std::string filePath, int firstYear, int las
 
 
 void Climate::			setOffsetsRandom(float tempMean, float tempStdDev, float precipMean, float precipStdDev, bool isReplicated, int firstYear, int lastYear)
-//Sets temporal offsets to random temp and precip for firstYear through lastYear.
-//If isReplicated, this function will only be called for the first rep.
+/**
+ * Sets temporal offsets to random temp and precip for firstYear through lastYear.
+ * If isReplicated, this function will only be called for the first rep.
+ */
 {
 	for (int y=firstYear; y<=lastYear && y<=gLastYear; y++) {
 		_pOffsets[y - gFirstYear].Temp	    = GetNextRandomNorm(tempMean, tempStdDev);
@@ -721,7 +726,7 @@ void Climate::			setOffsetsRandom(float tempMean, float tempStdDev, float precip
 
 
 void Climate::			showOffsetSummary() 
-//Output offsets to console.
+/** Output offsets to console. */
 {
 	if (gDetailLevel>=MAXIMUM) {
 		ShowOutput("\t\t\tClimate Offsets (including steps and ramps):\n");
@@ -753,14 +758,14 @@ std::string Climate::	climateOffsetsTypeToString(EOffsetsType type)
 
 //Steps and Ramps
 void Climate::			setStepsAndRamps()
-//Calculate temporal steps and ramps for all years and apply them to temporal offsets.
+/** Calculate temporal steps and ramps for all years and apply them to temporal offsets. */
 {
 	setStepsAndRampsInTimeRange(gFirstYear, gLastYear);
 }
 
 
 void Climate::          setStepsAndRampsInTimeRange(int firstYear, int lastYear)
-//Calculate temporal steps and ramps for the given time range and apply them to temporal offsets.
+/** Calculate temporal steps and ramps for the given time range and apply them to temporal offsets. */
 {
 	SClimate		tempOffset;			//Climate offsets (temp and precip) due to ramping or stepwise changes.
 	int				offsetYears;

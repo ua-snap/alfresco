@@ -17,8 +17,10 @@
 
 
 void					ShowOutput(const EDetailLevel DetailLevel, const std::string output)
-//Send the output to FRESCO.  FRESCO then sends the output to cout as well as 
-//passing it to any clients using an event.
+/** 
+ * Send the output to FRESCO.  FRESCO then sends the output to cout as well as 
+ * passing it to any clients using an event.
+ */
 {
 	if (gDetailLevel>=DetailLevel)
 		FRESCO->output(output);
@@ -30,7 +32,7 @@ void                    DoNothing(const bool doBreak)
     FRESCO->output("DEBUG: DoNothing()");
 }
 void					ShowOutput(const std::string output)
-//No detail level specified, so force output by using MINIMAL.
+/** No detail level specified, so force output by using MINIMAL. */
 {
 	ShowOutput(MINIMAL, output);
 }
@@ -40,7 +42,7 @@ void					ShowOutput(const EDetailLevel DetailLevel, std::ostringstream& rOutput)
 	rOutput.str("");
 }
 void					ShowOutput(std::ostringstream& rOutput)
-//No detail level specified, so force output by using MINIMAL.
+/** No detail level specified, so force output by using MINIMAL. */
 {
 	ShowOutput(MINIMAL, rOutput);
 }
@@ -50,7 +52,7 @@ void                    WriteDebug(const std::string message)
         std::cout << "DEBUG: " << message << std::flush;
 }
 std::string				AppendRepYear(const std::string file, const int rep, const int year) 
-//Inserts the rep and year (_rep_year) into the filename in front of the last decimal point so as not to corrupt the file extension.
+/** Inserts the rep and year (_rep_year) into the filename in front of the last decimal point so as not to corrupt the file extension. */
 {
 	std::string result;
 	result = file.substr(0,file.find_last_of(".")) + "_" + ToS(rep) + "_" + ToS(year) + file.substr(file.find_last_of("."),file.length()) + '\0';
@@ -58,7 +60,7 @@ std::string				AppendRepYear(const std::string file, const int rep, const int ye
 }
 
 std::string				AppendYearMonth(const std::string file, const int year, const int month) 
-//Inserts the year and month (_year_month) into the filename in front of the last decimal point so as not to corrupt the file extension.
+/** Inserts the year and month (_year_month) into the filename in front of the last decimal point so as not to corrupt the file extension. */
 {
 	std::string result;
 	result = file.substr(0,file.find_last_of(".")) + "_" + ToS(year) + "_" + ToS(month) + file.substr(file.find_last_of("."),file.length()) + '\0';
@@ -66,7 +68,7 @@ std::string				AppendYearMonth(const std::string file, const int year, const int
 }
 
 std::string				AppendYear(const std::string file, const int year) 
-//Inserts the year into the filename in front of the last decimal point so as not to corrupt the file extension.
+/** Inserts the year into the filename in front of the last decimal point so as not to corrupt the file extension. */
 {
 	std::string result;
 	result = file.substr(0,file.find_last_of(".")) + "_" + ToS(year) + file.substr(file.find_last_of("."),file.length()) + '\0';
@@ -83,14 +85,14 @@ bool                    InputFileExists(std::string absoluteOrRelativeFilePath)
 }
 
 std::string             FormatDirectory(std::string path)
-//Ensure proper format for native OS.
+/** Ensure proper format for native OS. */
 {
     Poco::Path d(path, Poco::Path::PATH_GUESS);
     return d.toString(Poco::Path::PATH_NATIVE);
 }
 
 void                    EnsureDirectoryExists(std::string path, bool includesFilename)
-//Ensure each part of the path exists.
+/** Ensure each part of the path exists. */
 {
     Poco::Path p(path, Poco::Path::PATH_GUESS);
 	Poco::Path d(true);
@@ -141,21 +143,26 @@ std::string GetFullPath(const std::string base, const std::string path)
 
 
 double					ConstDist(const double* const params) 
-//A dummy distribution function usually used for debugging and testing. It returns whatever value it is
-//told to by the second parameter of the argument Parms.
+/** 
+ * A dummy distribution function usually used for debugging and testing. It returns whatever value it is 
+ * told to by the second parameter of the argument Parms.
+ */
 {
 	return params[1];
 }
 
 
 double					NormDist(const double* const params) 
-//This function inplements the normal distribution for use by various functions - primarily the neighbors 
-//algorithm and related functions. The constant at the end of the function ensures that the integral over
-//the range is unity to ensure there is no probability bias added from the distribution. The arguments
-//expected are:
-//		First : x value (distance)
-//		Second : mean
-//		Third : stddev
+/** 
+ * This function inplements the normal distribution for use by various functions - primarily the neighbors 
+ * algorithm and related functions. The constant at the end of the function ensures that the integral over
+ * the range is unity to ensure there is no probability bias added from the distribution. The arguments 
+ * expected are:
+ *
+ * First : x value (distance) \n
+ * Second : mean \n
+ * Third : stddev
+ */
 {
 	return exp(-0.5 * (params[0]-params[1])*(params[0]-params[1]) / (params[2]*params[2])) / (params[2]*sqrt(2*PI));
 }

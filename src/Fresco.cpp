@@ -1,4 +1,7 @@
-//Fresco.cpp
+/**
+ * @file
+ *
+ */
 
 
 #include "PreCompiled.h"
@@ -69,7 +72,7 @@ Fresco::			~Fresco()
 
 
 void Fresco::		clear()
-//Clear existing run if any and return to before a run is specified.
+/** Clear existing run if any and return to before a run is specified. */
 {
 	setState(CLEARING);
 	
@@ -204,14 +207,14 @@ void Fresco::       runEnd()
 
 
 void Fresco::		output(const std::string Output)
-//Pass output to any subscribers of this event.
+/** Pass output to any subscribers of this event. */
 {
     raiseOutput.notify(this, Output);
 }
 
 
 void Fresco::		outputError(const std::string message)
-//Pass output to cout and any subscribers of this event.
+/** Pass output to cout and any subscribers of this event. */
 {
     std::cout << std::endl << message << std::endl;
     raiseErrorOutput.notify(this, message);

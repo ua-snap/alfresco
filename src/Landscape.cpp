@@ -1,11 +1,14 @@
-//Landscape.cpp
-//This module contains the code relevent to the Landscape class.  This is a fairly widely varied range
-//of functions, but includes the basic ones which would be expected to operate on any generic landscape
-//class.  This includes constructor and destructor (of course), internal worker functions to aid in
-//creating and writing stats variables, and public functions for probing neighbors, getting climate
-//information, setting the output flags, and logging the fire statistics.  The general large scale
-//functionality should be provided in the child class Landscape (including replicate initialization,
-//succession, fire regime, and steps to iterate the internal state).
+/** 
+ * @file
+ * 
+ * This module contains the code relevent to the Landscape class.  This is a fairly widely varied range
+ * of functions, but includes the basic ones which would be expected to operate on any generic landscape
+ * class.  This includes constructor and destructor (of course), internal worker functions to aid in
+ * creating and writing stats variables, and public functions for probing neighbors, getting climate
+ * information, setting the output flags, and logging the fire statistics.  The general large scale
+ * functionality should be provided in the child class Landscape (including replicate initialization,
+ * succession, fire regime, and steps to iterate the internal state).
+ */
 
 
 #include "PreCompiled.h"
@@ -60,7 +63,7 @@ Landscape::				~Landscape()
 
 
 void Landscape::		clear()
-//Clear existing run if any and return to before a run is specified.
+/** Clear existing run if any and return to before a run is specified. */
 {
 	//Clear the static members of species types.
 	Fire::clear();
@@ -109,7 +112,7 @@ void Landscape::		clear()
 
 
 void Landscape::		setup()
-//setup a run.
+/** setup a run. */
 {
     //Get variables from FIF.
 	if (FRESCO->fif().CheckKey("YOffset"))
@@ -187,14 +190,14 @@ void Landscape::		setup()
 
 
 void Landscape::		runEnd()
-//Finish up this run but do not clear.
+/** Finish up this run but do not clear. */
 {
 	_pClimate->runEnd();
 }
 
 
 void Landscape::		repStart() 
-//Processing at the start of a replicate.
+/** Processing at the start of a replicate. */
 {
 	_pClimate->repStart();
 	//Set veg distribution stats to zero.
@@ -213,14 +216,14 @@ void Landscape::		repStart()
 
 
 void Landscape::		repEnd() 
-//Processing at the end of a replicate.
+/** Processing at the end of a replicate. */
 {
 	_pClimate->repEnd();
 }
 
 
 void Landscape::		yearStart() 
-//Start of a year processing.
+/** Start of a year processing. */
 {
 	//Tell climate to do any start of year processing.
 	_pClimate->yearStart();
@@ -232,7 +235,7 @@ void Landscape::		yearStart()
 
 
 void Landscape::		yearEnd() 
-//Processing at the end of a year.
+/** Processing at the end of a year. */
 {
 	for (int s=0;s<gNumSpecies;s++) {
 		_vegDistributionStat[s].Add(gYear, gRep);	//Store the species distribtuion tally.
@@ -243,11 +246,13 @@ void Landscape::		yearEnd()
 
 
 void Landscape::		succession() 
-//This function controls succession at the landscape level.  Since succession is purely a cell
-//level function, this algorithm steps through each cell on the landscape and calls 
-//Frame::success to see if the cell goes through a successional transition.  It if does, the
-//actual transition of pointers is a landscape level job and is executed.  Also, relevent
-//statistics are updated in the event of a transfer.
+/** 
+ * This function controls succession at the landscape level.  Since succession is purely a cell
+ * level function, this algorithm steps through each cell on the landscape and calls 
+ * Frame::success to see if the cell goes through a successional transition.  It if does, the
+ * actual transition of pointers is a landscape level job and is executed.  Also, relevent
+ * statistics are updated in the event of a transfer.
+ */
 {
 	ShowOutput(MODERATE, "\t\tSuccessions\n");
 	Frame* pSuccFrame;
@@ -413,7 +418,7 @@ void Landscape::		doIgnitions()
 
 
 bool Landscape::		testNaturalIgnition(Frame* pFrame)
-//Worker function for doIgnitions().  Returns true if the frame ignites.
+/** Worker function for Frame::doIgnitions().  Returns true if the frame ignites. */
 {
 	float test =  pFrame->fireIgnitionFactor * pFrame->getFireProb(this) * pFrame->getIgnitionDepressor();
 	return (test > GetNextRandom());
@@ -421,7 +426,7 @@ bool Landscape::		testNaturalIgnition(Frame* pFrame)
 
 
 bool Landscape::		testHumanIgnition(const Frame* pFrame)
-//Worker function for doIgnitions().  Returns true if the frame ignites.
+/** Worker function for doIgnitions().  Returns true if the frame ignites. */
 {
 	//Was a human ignitions map provided for this year?
 	if (_pHumanIgnitions) { 
@@ -434,7 +439,7 @@ bool Landscape::		testHumanIgnition(const Frame* pFrame)
 
 
 bool Landscape::        testFireSpread(Frame* pFrame, const int rowOfNeighbor, const int colOfNeighbor, const float fireSuppressionFactor)
-//Worker function for doIgnitions().  Returns true if the frame burns due to spread.
+/** Worker function for doIgnitions().  Returns true if the frame burns due to spread. */
 {
 	_pfireSpreadParams[0] = getCellDistanceToNeighbor(rowOfNeighbor, colOfNeighbor);
 	bool isInSpreadRadius = !(_cropNeighbors && _pfireSpreadParams[0]>Fire::fireSpreadRadius());
@@ -493,7 +498,7 @@ Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, co
 
 
 float Landscape::       getCellDistanceToNeighbor(const int rowOfNeighbor, const int colOfNeighbor)
-//Worker function for doIgnitions.  Returns the distance to the specified cell.
+/** Worker function for doIgnitions.  Returns the distance to the specified cell. */
 {
 	int dY = rowOfNeighbor - _row;
 	int dX = colOfNeighbor - _col;
@@ -503,8 +508,10 @@ float Landscape::       getCellDistanceToNeighbor(const int rowOfNeighbor, const
 
 
 double Landscape::		neighborsSuccess (double (Frame::*QueryFunction)(Landscape *, const double, const double*), double (*WeightFunc)(const double* const), const double MaxDist, double *Parms, const double *FuncParms) 
-//This function is the same as neighbors, except that it allows the user to pass an array of numbers
-//to the query function - this is the second to last parameter.  All other parameters are the same.
+/**
+ * This function is the same as neighbors, except that it allows the user to pass an array of numbers 
+ * to the query function - this is the second to last parameter.  All other parameters are the same.
+ */
 {
 	int		currRow	    = _row;														//These are necessary because they stay constant for a given frame neighborhood 
 	int		currCol	    = _col;
@@ -535,9 +542,11 @@ double Landscape::		neighborsSuccess (double (Frame::*QueryFunction)(Landscape *
 
 
 void Landscape::		logFireStats (int interval, bool ignoreFirstInterval) 
-//This adds the frame type of the current cell to the fire by species statistical datastructure.  It
-//is called when a cell burns and updates species specific statistical variables including the number
-//of each species type that burned, and the fire interval for each species type.
+/** 
+ * This adds the frame type of the current cell to the fire by species statistical datastructure.  It
+ * is called when a cell burns and updates species specific statistical variables including the number
+ * of each species type that burned, and the fire interval for each species type.
+ */
 {
 	Species specSp(_pFrames[_row][_col]->type());
 	_fireSpeciesStat[(int)specSp]++;
