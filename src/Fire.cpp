@@ -1,7 +1,10 @@
-//Fire.cpp
-//This module contains all the functions pertaining to the Fire class, constructor(s), destructor(s), a function
-//to determing the climate portion of the fire probability and a function which, in conjunction with Landscape::Neighbors
-//burns fires recursively.  This algorithm is a bit involved and is described in more detail in the Burn function.
+/** 
+ * @file
+ *
+ * This module contains all the functions pertaining to the Fire class, constructor(s), destructor(s), a function
+ * to determing the climate portion of the fire probability and a function which, in conjunction with Landscape::Neighbors
+ * burns fires recursively.  This algorithm is a bit involved and is described in more detail in the Burn function.
+ */
 
 
 #include "PreCompiled.h"
@@ -29,8 +32,9 @@ float			Fire::_humanIgnitionsProb		        = 0;
 Fire::SBurnSeveritySettings Fire::burnSeveritySettings;
 
 Fire::Fire(const int& rYearOfLastBurn, const int& rLastBurnSeverity, const float& rFireIgnitionFactor, const float& rFireSensitivity) 
-//Constructor for the fire class.  Initializes the global scope optimization variables and the fire age member
-//variables.
+/**
+ * Constructor for the fire class.  Initializes the global scope optimization variables and the fire age member variables.
+ */
 {
 	fireScarID			= 0;												            //Initial value for all cells when landscape is created.  Changed on new fires.  Successions pass on previous ID.
 	yearOfLastBurn		= (rYearOfLastBurn==-1) ? -1 - _yearsOfHistory : rYearOfLastBurn;	    //Set the default value to beyond what we could want to check
@@ -65,7 +69,9 @@ void Fire::repStart()
 
 
 void Fire::clear()
-//Clear existing run if any and return to before a run is specified.
+/**
+ * Clear existing run if any and return to before a run is specified.
+ */
 {
 	fireType							= Fire::FIXED;
 	_humanIgnitionsProb			        = 0;
@@ -108,12 +114,14 @@ void Fire::setup()
 
 
 const float Fire::getClimateFireProb (const Landscape* l) 
-//This function is a simple worker function which is called by the burn function to provide 
-//a base fire probability based on the climate data. The non monthly values were calibrated up using
-//a regression developed from mean climate and fire data using the ecoregions to subdivide 
-//the landscape into similar climatic regions.  This is considered a good relative indication
-//of fire probability.  The model was then calibrated to produce observed mean # fires and 
-//area burned to get the overall rate constant.
+/**
+ * This function is a simple worker function which is called by the burn function to provide 
+ * a base fire probability based on the climate data. The non monthly values were calibrated up using 
+ * a regression developed from mean climate and fire data using the ecoregions to subdivide 
+ * the landscape into similar climatic regions.  This is considered a good relative indication 
+ * of fire probability.  The model was then calibrated to produce observed mean # fires and 
+ * area burned to get the overall rate constant.
+ */
 {
 	if (l->usingExternalClimateFlammabilityFile())
 	{
@@ -173,7 +181,9 @@ void Fire::historicalFire (Landscape* pParent)
 
 
 void Fire::setupFireTransitions() 
-//Fill vector of SFireTransition structs from FIF.
+/**
+ * Fill vector of SFireTransition structs from FIF.
+ */
 {
     int           count = 0;
     const int*    pYears;
