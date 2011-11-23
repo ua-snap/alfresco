@@ -1,7 +1,10 @@
-//WSpruce.cpp
-//This module contains the code relevant to the white spruce frame, constructor(s), destructor(s), the fire
-//probability function and the success function which are pure virtual functions and therefore require
-//definition, and any other worker functions which may be required for the function of the module.  
+/** 
+ * @file
+ * 
+ * This module contains the code relevant to the white spruce frame, constructor(s), destructor(s), the fire 
+ * probability function and the success function which are pure virtual functions and therefore require 
+ * definition, and any other worker functions which may be required for the function of the module.  
+ */
 
 
 #include "PreCompiled.h"
@@ -46,7 +49,7 @@ WSpruce::WSpruce(const Frame& rFrame, int& rAge)
 
 
 void WSpruce::_WSpruce() 
-//Local constructor - Initialize the local member variables and give the frame an initial age.
+/** Local constructor - Initialize the local member variables and give the frame an initial age. */
 {
     if (!_isStaticSetupAlready)
         throw Exception(Exception::UNKNOWN, "Static data members must be set before initializing species.");
@@ -100,7 +103,7 @@ void WSpruce::setStaticData()
 
 
 void WSpruce::clear()
-//Clear existing run if any and return to before a run is specified.
+/** Clear existing run if any and return to before a run is specified. */
 {
 	_isStaticSetupAlready   = false;
 	_startAgeType			= CONSTANT;
@@ -113,11 +116,13 @@ void WSpruce::clear()
 
 
 Frame* WSpruce::success(Landscape *Parent) 
-//This function provides the successional information.  It is expected to return NULL if the frame type
-//does not change, and a pointer to a new frame if a transition occurs.  The general model used is to 
-//check immediate post burn stuff first, then time dependant state changes, and then general (long term)
-//state changes.  In the case of spruce, it will always transition to deciduous immediately after fire,
-//and that is the only transition that occurs.
+/** 
+ * This function provides the successional information.  It is expected to return NULL if the frame type
+ * does not change, and a pointer to a new frame if a transition occurs.  The general model used is to 
+ * check immediate post burn stuff first, then time dependant state changes, and then general (long term)
+ * state changes.  In the case of spruce, it will always transition to deciduous immediately after fire,
+ * and that is the only transition that occurs.
+ */
 {
 	//Check immediately after burn
 	if (gYear-yearOfLastBurn == 1)
