@@ -5,7 +5,12 @@
 #include "PreCompiled.h"
 #include "Frame.h"
 #include "Stat.h"
+#include "StatArray.h"
+#include "StatFile.h"
 
+#ifdef WITHMPI
+extern StatArray* MyStats;
+#endif
 
 class Climate;
 

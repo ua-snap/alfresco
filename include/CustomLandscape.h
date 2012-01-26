@@ -10,7 +10,12 @@
 #include "WSpruce.h"
 #include "Grassland.h"
 #include "Decid.h"
+#include "StatArray.h"
+#include "StatFile.h"
 
+#ifdef WITHMPI
+extern StatArray* MyStats;
+#endif
 
 class FrescoCustom_API CustomLandscape : public Landscape 
 {

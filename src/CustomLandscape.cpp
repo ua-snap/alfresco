@@ -626,6 +626,14 @@ void CustomLandscape::      setupSuppressionStats()
     _burnPartitionBySuppClassStats.resize(NUM_SUPPRESSION_CLASSES+1);
 	for (int s=1; s<=NUM_SUPPRESSION_CLASSES; s++) {
 		_burnPartitionBySuppClassStats[s].setup("BurnsBySupp["+ToS(s)+"]", _burnPartitionBySuppClassStatFlags, false);
+
+		int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
+		int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
+		stringstream ss;
+		ss << "BurnsBySupp[" << ToS(s) << "]";
+		#ifdef WITHMPI
+		MyStats->addStatFile(ss.str(), numYears, numReps);
+		#endif
     }
 }
 
@@ -647,6 +655,12 @@ void CustomLandscape::      setupHabitatStats()
             //Organize values into SHabitatStat collection.
             SHabitatStat habitat;
             habitat.Stat.setup("Habitat"+ToS(pTypes[i]), flags, false);
+
+	    int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
+	    int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
+	    #ifdef WITHMPI
+	    MyStats->addStatFile("Habitat"+ToS(pTypes[i]), numYears, numReps);
+	    #endif
             habitat.MinAge = pAgeRange[0];
             habitat.MaxAge = pAgeRange[1];
 			if (!(habitat.MinAge < habitat.MaxAge)) 
@@ -779,9 +793,17 @@ void CustomLandscape::      collectStats()
     //Summarize stats.
 	for (int s=1; s<=NUM_SUPPRESSION_CLASSES; s++) {
         _burnPartitionBySuppClassStats[s].Add(gYear,gRep);
+	stringstream ss;
+	ss << "BurnsBySupp[" << s << "]";
+	#ifdef WITHMPI
+	MyStats->addStat(ss.str(), gYear, gRep, _burnPartitionBySuppClassStats[s].m_lTally);
+	#endif
         _burnPartitionBySuppClassStats[s].m_lTally = 0;
     }
     for (habitat = _habitatStats.begin(); habitat<_habitatStats.end(); habitat++) {
+	#ifdef WITHMPI
+	MyStats->addStat(habitat->Stat.m_sTitle, gYear, gRep, habitat->Stat.m_lTally);
+	#endif
         habitat->Stat.Add(gYear,gRep);
         habitat->Stat.m_lTally = 0;
     }
