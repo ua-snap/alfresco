@@ -25,6 +25,9 @@ string StatFile::getTitle(){
 	return title;
 }
 void StatFile::write(){
+/**
+ * Write the stat file.  Only Task 0 does this
+ */
 	std::ofstream sfile;
 	string sfile_ext = ".txt";
 	sfile.open((title + sfile_ext).c_str());
