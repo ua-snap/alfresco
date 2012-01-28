@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 
 
 	#ifdef WITHMPI
-	MyStats->transferStats();
+	MyStats->gatherStats();
 	MPI::COMM_WORLD.Barrier();
 	#endif
 	MyStats->writeStats();

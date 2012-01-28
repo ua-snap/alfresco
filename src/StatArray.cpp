@@ -40,7 +40,7 @@ void StatArray::writeStats(){
 		#endif
 	}
 }
-void StatArray::transferStats(){
+void StatArray::gatherStats(){
 	#ifdef WITHMPI
 	if (MPI::COMM_WORLD.Get_rank() == 0){
 		int callCount = 0;

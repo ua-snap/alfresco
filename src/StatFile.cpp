@@ -26,7 +26,8 @@ string StatFile::getTitle(){
 }
 void StatFile::write(){
 /**
- * Write the stat file.  Only Task 0 does this
+ * Write the stat file.  
+ * Only Task 0 does this
  */
 	std::ofstream sfile;
 	string sfile_ext = ".txt";
@@ -55,6 +56,10 @@ int StatFile::getStat(int sx, int sy){
 	return stats[sx][sy];
 }
 int StatFile::sendFile(){
+/**
+ * Send the array for each file to Task 0
+ * These files are collected in the StatArray::gatherStats() function
+ */
 	#ifdef WITHMPI
 	if (MPI::COMM_WORLD.Get_rank() != 0){
 		int sendArray[3];
@@ -75,22 +80,9 @@ int StatFile::sendFile(){
 }
 
 int StatFile::receiveFile(){
-	#ifdef WITHMPI
-	/*
-	if (MPI::COMM_WORLD.Get_rank() == 0){
-		MPI::Status status;
-		int recvArray[3];
-		int recvCount = MPI::COMM_WORLD.Get_size();
-		do {
-			MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
-			if (status.Get_tag() == 2){
-				addStat(recvArray[0], recvArray[1], recvArray[2]);
-			} else if (status.Get_tag() == 1){
-				recvCount--;
-			}
-		} while (recvCount > 1);
-	}
-	*/
-	#endif
+/** 
+ * Initially intended to counter sendFile.
+ * Not needed since this is handled by StatArray
+ */
 	return 0;
 }

@@ -8,7 +8,7 @@
 #include "RasterIO.h"
 
 class Species;
-enum RasterIO::ALFMapType;
+//enum RasterIO::ALFMapType;
 
 
 class FrescoFoundation_API Frame : public Fire 

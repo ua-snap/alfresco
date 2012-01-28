@@ -11,7 +11,7 @@ class StatArray {
 		void addStatFile(string t, int r, int c);
 		void addStat(string t, int r, int c, int y);
 		void writeStats();
-		void transferStats();
+		void gatherStats();
 	private:
 		StatList statArray;
 };
