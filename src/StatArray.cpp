@@ -41,6 +41,10 @@ void StatArray::writeStats(){
 	}
 }
 void StatArray::gatherStats(){
+/**
+ * Gather stats sent by the StatFile::sendFile() function
+ * Aggregates all files to Task 0 for writing
+ */
 	#ifdef WITHMPI
 	if (MPI::COMM_WORLD.Get_rank() == 0){
 		int callCount = 0;
@@ -49,7 +53,6 @@ void StatArray::gatherStats(){
 		int recvCount = MPI::COMM_WORLD.Get_size();
 		for (int i = 0; i < statArray.size(); i++){
 			recvCount = MPI::COMM_WORLD.Get_size();
-			//std::cout << statArray[i]->getTitle() << std::endl;
 			do {
 				MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
 				if (status.Get_tag() == 2){
@@ -64,7 +67,6 @@ void StatArray::gatherStats(){
 			} while (recvCount > 1);
 			MPI::COMM_WORLD.Barrier();
 		}
-		//std::cout << "Called addStat() " << callCount << " times" << std::endl;
 	} else {
 		for (int i = 0; i < statArray.size(); i++){
 			statArray[i]->sendFile();
