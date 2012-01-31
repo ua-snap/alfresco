@@ -11,7 +11,7 @@ StatArray::StatArray(){
 StatArray::StatArray(const StatArray& s){
 
 }
-void StatArray::addStatFile(string t, int r, int c){
+void StatArray::addStatFile(string t, int r, int c, StatType s){
 	bool statExists = false;
 	for (int i = 0; i < statArray.size(); i++){
 		if (statArray[i]->getTitle().compare(t) == 0){

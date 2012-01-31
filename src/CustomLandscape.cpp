@@ -632,7 +632,7 @@ void CustomLandscape::      setupSuppressionStats()
 		stringstream ss;
 		ss << "BurnsBySupp[" << ToS(s) << "]";
 		#ifdef WITHMPI
-		MyStats->addStatFile(ss.str(), numYears, numReps);
+		MyStats->addStatFile(ss.str(), numYears, numReps, MATRIX);
 		#endif
     }
 }
@@ -659,7 +659,7 @@ void CustomLandscape::      setupHabitatStats()
 	    int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
 	    int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
 	    #ifdef WITHMPI
-	    MyStats->addStatFile("Habitat"+ToS(pTypes[i]), numYears, numReps);
+	    MyStats->addStatFile("Habitat"+ToS(pTypes[i]), numYears, numReps, MATRIX);
 	    #endif
             habitat.MinAge = pAgeRange[0];
             habitat.MaxAge = pAgeRange[1];

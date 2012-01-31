@@ -8,7 +8,7 @@ class StatArray {
 	public:
 		StatArray();
 		StatArray(const StatArray& s);
-		void addStatFile(string t, int r, int c);
+		void addStatFile(string t, int r, int c, StatType s);
 		void addStat(string t, int r, int c, int y);
 		void writeStats();
 		void gatherStats();

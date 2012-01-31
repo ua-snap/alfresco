@@ -189,18 +189,18 @@ void Landscape::		setup()
 		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]",	_fireIntervalStatFlags, false);
 
 		#ifdef WITHMPI
-		MyStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps);
-		MyStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps);
-		MyStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps);
-		MyStats->addStatFile("FireInterval["+ToS(s)+"]", numYears, numReps);
+		MyStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps, MATRIX);
+		MyStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps, MATRIX);
+		MyStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps, MATRIX);
+		MyStats->addStatFile("FireInterval["+ToS(s)+"]", numYears, numReps, MATRIX);
 		#endif
 	}
 	_fireSizeStat.setup("FireSize", _fireSizeStatFlags, true);
 	_fireNumStat.setup("FireNum", _fireNumStatFlags, false);
 
 	#ifdef WITHMPI
-	MyStats->addStatFile("FireSize", numYears, numReps);
-	MyStats->addStatFile("FireNum", numYears, numReps);
+	MyStats->addStatFile("FireSize", numYears, numReps, MATRIX);
+	MyStats->addStatFile("FireNum", numYears, numReps, MATRIX);
 	#endif
 
 }
