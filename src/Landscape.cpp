@@ -192,7 +192,7 @@ void Landscape::		setup()
 		MyStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps, MATRIX);
-		MyStats->addStatFile("FireInterval["+ToS(s)+"]", numYears, numReps, MATRIX);
+		MyStats->addStatFile("FireInterval["+ToS(s)+"]", numYears, numReps, LIST);
 		#endif
 	}
 	_fireSizeStat.setup("FireSize", _fireSizeStatFlags, true);

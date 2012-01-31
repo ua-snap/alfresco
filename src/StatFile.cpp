@@ -10,6 +10,7 @@ StatFile::StatFile(string t, int sx, int sy, StatType st){
 	title = t;
 	rows = sx;
 	columns = sy;
+	statType = st;
 	stats = new int*[rows];
 	for (int i = 0; i < rows; i++){
 		stats[i] = new int[columns];

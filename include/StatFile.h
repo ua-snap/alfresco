@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum StatType { MATRIX, LIST };
+enum StatType { MATRIX, LIST, FIRESIZE };
 
 class StatFile {
 	public:
@@ -17,7 +17,7 @@ class StatFile {
 		int getStat(int sx, int sy);
 		int sendFile();
 		int receiveFile();
-
+		StatType statType;
 	private:
 		string title;
 		int **stats;
