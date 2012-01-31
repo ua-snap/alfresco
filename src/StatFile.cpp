@@ -3,7 +3,7 @@
 #include "mpi.h"
 #endif
 
-StatFile::StatFile(string t, int sx, int sy){
+StatFile::StatFile(string t, int sx, int sy, StatType st){
 /** 
  * Initialize StatFile, setting title, and the size of the stat array (sx, sy)
  */

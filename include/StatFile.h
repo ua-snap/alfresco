@@ -5,15 +5,19 @@
 #include <fstream>
 
 using namespace std;
+
+enum StatType { MATRIX, LIST };
+
 class StatFile {
 	public:
-		StatFile(string t, int sx, int sy);
+		StatFile(string t, int sx, int sy, StatType st);
 		void write();
 		string getTitle();
 		void addStat(int sx, int sy, int s);
 		int getStat(int sx, int sy);
 		int sendFile();
 		int receiveFile();
+
 	private:
 		string title;
 		int **stats;

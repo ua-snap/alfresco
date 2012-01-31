@@ -19,7 +19,7 @@ void StatArray::addStatFile(string t, int r, int c){
 		}
 	}
 	if (statExists == false){
-		statArray.push_back(new StatFile(t, r, c));
+		statArray.push_back(new StatFile(t, r, c, MATRIX));
 	}
 }
 void StatArray::addStat(string t, int r, int c, int y){
