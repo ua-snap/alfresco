@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -21,6 +23,7 @@ class StatFile {
 	private:
 		string title;
 		int **stats;
+		vector<vector<int> > statVector;
 		int rows;
 		int columns;
 };
