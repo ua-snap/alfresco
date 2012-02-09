@@ -5,6 +5,7 @@
 #include "Interface.h"
 #include "CustomFresco.h"
 #include "StatArray.h"
+#include "Args.h"
 #ifdef WITHMPI
 #include "mpi.h"
 #endif
