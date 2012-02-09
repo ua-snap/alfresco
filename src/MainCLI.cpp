@@ -21,6 +21,8 @@ using std::string;
 
 StatArray* MyStats;
 int main(int argc, char** argv) {
+	string runDirectory = "/home/apbennett/alfresco";
+	
 	int id = 0;
 	int max = 1;
 	#ifdef WITHMPI
@@ -36,7 +38,7 @@ int main(int argc, char** argv) {
 	int rc;
 
 	CustomFresco* _dummysim = new CustomFresco(false);
-	_dummysim->setup("/home/apbennett/gitplay/ALFRESCO/", argv[1], "/home/apbennett/gitplay/ALFRESCO/Output", 1234763211);
+	_dummysim->setup(runDirectory, argv[1], runDirectory + "/Output", 1234763211);
 	//int firstYear = _dummysim->fif().nGet("FirstYear");
 	int maxReps = _dummysim->fif().nGet("MaxReps");
 	#ifdef WITHMPI
@@ -47,7 +49,7 @@ int main(int argc, char** argv) {
 		_dummysim->clear();
 	for (rc = startRep + id; rc < maxReps; rc+=max){
 		CustomFresco* _simulation = new CustomFresco(false);
-		_simulation->setup("/home/apbennett/gitplay/ALFRESCO/", argv[1], "/home/apbennett/gitplay/ALFRESCO/Output", 1234763211);
+		_simulation->setup(runDirectory, argv[1], runDirectory + "Output", 1234763211);
 		_simulation->runRep(rc,1860); 
 		_simulation->runEnd();
 		_simulation->clear();
