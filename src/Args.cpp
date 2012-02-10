@@ -29,5 +29,27 @@ void Args::parse(int argc, char** argv){
             help = true;
         }
     }
+
+}
+void Args::showHelp(){
+	std::cout << "Options:" << std::endl;
+	std::cout << "   --help" << std::endl;
+	std::cout << "          Prints this usage message and exits" << std::endl;
+	std::cout << "   --version" << std::endl;
+	std::cout << "          Prints version number and exits" << std::endl;
+	std::cout << "   --ip <host>" << std::endl;
+	std::cout << "          Specifies host to connect to (default is localhost)" << std::endl;
+	std::cout << "   --port <port>" << std::endl;
+	std::cout << "          Specifies port to connect to (default is 9000)" << std::endl;
+	std::cout << "   --daemon" << std::endl;
+	std::cout << "          Forces the client to run as a daemon" << std::endl;
+	std::cout << "   --debug" << std::endl;
+	std::cout << "          Provides debug output to standard out (if not in daemon mode)" << std::endl;
+	std::cout << std::endl;
+	std::cout << "Interactive Commands: (if not using --daemon option)" << std::endl;
+	std::cout << "    exit         Terminate program" << std::endl;
+	std::cout << "    quit         Terminate program" << std::endl;
+	std::cout << "    state        View current state" << std::endl;
+	std::cout << "    disconnect   Manually disconnect from server" << std::endl;
 }
 

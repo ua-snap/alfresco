@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#ifdef WITHMPI
+#include "mpi.h"
+#endif
 
 using namespace std;
 
@@ -14,7 +17,7 @@ class Args{
 public:
     Args();
     void parse(int argc, char** argv);
-    void showUsage();
+    void showHelp();
     void showSummary();
 
     inline const string& getIP() const { return ip;}

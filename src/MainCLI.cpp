@@ -22,48 +22,55 @@ using std::string;
 
 StatArray* MyStats;
 int main(int argc, char** argv) {
-	string runDirectory = "/home/apbennett/alfresco";
-	string outDirectory = runDirectory + "/Output";
-	std::cout << outDirectory << std::endl;
+	Args* argList = new Args();
+	argList->parse(argc, argv);
+
 	int id = 0;
 	int max = 1;
+
 	#ifdef WITHMPI
 	MPI::Init();
 	id = MPI::COMM_WORLD.Get_rank();
 	max = MPI::COMM_WORLD.Get_size();
 	if (id == 0){
-		std::cout << "MPI Enabled" << std::endl;
+		if (argList->getHelp() == true){ argList->showHelp(); }
 	}
 	#endif
 
-	MyStats = new StatArray();
-	int rc;
+	string runDirectory = "/home/apbennett/alfresco";
+	string outDirectory = runDirectory + "/Output";
 
-	CustomFresco* _dummysim = new CustomFresco(false);
-	_dummysim->setup(runDirectory, argv[1], outDirectory, 1234763211);
-	//int firstYear = _dummysim->fif().nGet("FirstYear");
-	int maxReps = _dummysim->fif().nGet("MaxReps");
-	#ifdef WITHMPI
-	std::cout << "MPI Rank: " << id << " of: " << max << std::endl;
-	#endif
-	std::cout << "Fresco Client " << std::endl;
-	int startRep = 0;
-		_dummysim->clear();
-	for (rc = startRep + id; rc < maxReps; rc+=max){
-		CustomFresco* _simulation = new CustomFresco(false);
-		_simulation->setup(runDirectory, argv[1], outDirectory, 1234763211);
-		_simulation->runRep(rc,1860); 
-		_simulation->runEnd();
-		_simulation->clear();
-        	delete _simulation; _simulation = 0;
+	if (argList->getHelp() != true){
+		MyStats = new StatArray();
+		int rc;
+
+		CustomFresco* _dummysim = new CustomFresco(false);
+		_dummysim->setup(runDirectory, argv[1], outDirectory, 1234763211);
+		//int firstYear = _dummysim->fif().nGet("FirstYear");
+		int maxReps = _dummysim->fif().nGet("MaxReps");
+		#ifdef WITHMPI
+		std::cout << "MPI Rank: " << id << " of: " << max << std::endl;
+		#endif
+		std::cout << "Fresco Client " << std::endl;
+		int startRep = 0;
+			_dummysim->clear();
+		for (rc = startRep + id; rc < maxReps; rc+=max){
+			CustomFresco* _simulation = new CustomFresco(false);
+			_simulation->setup(runDirectory, argv[1], outDirectory, 1234763211);
+			_simulation->runRep(rc,1860); 
+			_simulation->runEnd();
+			_simulation->clear();
+			delete _simulation; _simulation = 0;
+		}
+
+
+		#ifdef WITHMPI
+		MyStats->gatherStats();
+		MPI::COMM_WORLD.Barrier();
+		#endif
+		MyStats->writeStats();
+
 	}
-
-
-	#ifdef WITHMPI
-	MyStats->gatherStats();
-	MPI::COMM_WORLD.Barrier();
-	#endif
-	MyStats->writeStats();
 	#ifdef WITHMPI
 	MPI::Finalize();
 	#endif
