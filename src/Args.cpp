@@ -14,14 +14,8 @@ void Args::parse(int argc, char** argv){
         if("--help" == name){
             help = true;
             break;
-                }else if("--version" == name){
-                        version = true;
-                }else if("--ip" == name){
-            ip = argv[++i];
-        }else if("--port" == name){
-            port = argv[++i];
-        }else if("--daemon" == name){
-            daemon = true;
+        }else if("--version" == name){
+            version = true;
         }else if("--debug" == name){
             debug = true;
         }else{
@@ -37,12 +31,6 @@ void Args::showHelp(){
 	std::cout << "          Prints this usage message and exits" << std::endl;
 	std::cout << "   --version" << std::endl;
 	std::cout << "          Prints version number and exits" << std::endl;
-	std::cout << "   --ip <host>" << std::endl;
-	std::cout << "          Specifies host to connect to (default is localhost)" << std::endl;
-	std::cout << "   --port <port>" << std::endl;
-	std::cout << "          Specifies port to connect to (default is 9000)" << std::endl;
-	std::cout << "   --daemon" << std::endl;
-	std::cout << "          Forces the client to run as a daemon" << std::endl;
 	std::cout << "   --debug" << std::endl;
 	std::cout << "          Provides debug output to standard out (if not in daemon mode)" << std::endl;
 	std::cout << std::endl;
