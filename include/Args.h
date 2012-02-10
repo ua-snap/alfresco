@@ -12,11 +12,12 @@ class Args{
     bool help;
     bool version;
 public:
-    Args();
-    void parse(int argc, char** argv);
-    void showHelp();
-    void showSummary();
-    inline const bool getDebug(){ return debug; }
-    inline const bool getHelp() const { return help; }
-    inline const bool getVersion() const { return version; }
+	Args();
+	void parse(int argc, char** argv);
+	void showHelp();
+	string getFifName();
+
+	inline const bool getDebug(){ return debug; }
+	inline const bool getHelp() const { return help; }
+	inline const bool getVersion() const { return version; }
 };

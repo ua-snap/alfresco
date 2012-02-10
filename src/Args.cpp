@@ -1,6 +1,7 @@
 #include "Args.h"
 
 Args::Args(){
+	fifFile = "default.fif";
 	debug = false;
 	help = false;
 	version = false;
@@ -13,6 +14,8 @@ void Args::parse(int argc, char** argv){
             break;
         }else if("--version" == name){
             version = true;
+	}else if("--fif" == name){
+            fifFile = argv[++i];
         }else if("--debug" == name){
             debug = true;
         }else{
@@ -22,12 +25,17 @@ void Args::parse(int argc, char** argv){
     }
 
 }
+string Args::getFifName(){
+	return fifFile;
+}
 void Args::showHelp(){
 	std::cout << "Options:" << std::endl;
 	std::cout << "   --help" << std::endl;
 	std::cout << "          Prints this usage message and exits" << std::endl;
 	std::cout << "   --version" << std::endl;
 	std::cout << "          Prints version number and exits" << std::endl;
+	std::cout << "   --fif [FileName]" << std::endl;
+	std::cout << "          Uses [FileName] as the fif file" << std::endl;
 	std::cout << "   --debug" << std::endl;
 	std::cout << "          Provides debug output to standard out (if not in daemon mode)" << std::endl;
 	std::cout << std::endl;
