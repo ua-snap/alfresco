@@ -1,9 +1,6 @@
 #include "Args.h"
 
 Args::Args(){
-	ip = "localhost";
-	port = "9000";
-	daemon = false;
 	debug = false;
 	help = false;
 	version = false;
