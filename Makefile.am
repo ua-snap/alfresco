@@ -15,14 +15,11 @@ frescocli_SOURCES = src/MainCLI.cpp src/Fresco.cpp src/CustomFresco.cpp src/Land
 		src/Global.cpp src/demon_me.cpp src/Client.cpp src/RemoteNotification.cpp src/Messenger.cpp src/FrescoEngine.cpp \
 		src/StatFile.cpp src/StatArray.cpp src/Args.cpp
 fresco_LDFLAGS = -Llib -lboost_system -lboost_filesystem -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal
-frescocli_LDFLAGS = -Llib -lboost_system -lboost_filesystem -lboost_program_options -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal
+frescocli_LDFLAGS = -Llib -lboost_system -lboost_filesystem -lboost_program_options -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal -L/usr/lib64/openmpi
 frescocli_CXXFLAGS = -DWITHMPI
 if ENABLE_MPI
 	frescocli_LDFLAGS += -L/usr/lib64/openmpi
 endif
-#CXXFLAGS = -g -pg
 CXXFLAGS = -O3 -funroll-loops
 INCLUDES = -Iinclude -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS)
-#LDFLAGS = -Llib -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal -L/usr/lib64/openmpi -lboost_system -lboost_filesystem
-LDFLAGS = -Llib -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal -L/usr/lib64/openmpi
 
