@@ -3,8 +3,10 @@
 
 Args::Args(){
 	fifFile = "default.fif";
-	fifPath = boost::filesystem::initial_path().string();
-	outPath = fifPath + "/Output";
+	boost::filesystem::path p = boost::filesystem::initial_path();
+	fifPath = p.string();
+	p /= "Output";
+	outPath = p.string();
 	debug = false;
 	help = false;
 	version = false;
