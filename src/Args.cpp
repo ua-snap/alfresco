@@ -1,15 +1,19 @@
 #include "Args.h"
+#include <boost/program_options.hpp>
 
-using namespace boost::filesystem;
 Args::Args(){
 	fifFile = "default.fif";
-	boost::filesystem::path tmpPath = initial_path();
-	fifPath = tmpPath.string();
+	fifPath = boost::filesystem::initial_path().string();
 	outPath = fifPath + "/Output";
 	debug = false;
 	help = false;
 	version = false;
-
+	boost::program_options::options_description desc;
+	boost::program_options::variables_map varmap;
+	desc.add_options()
+		("help", "produces helps message")
+		("fif", "set the fif file")
+	;
 }
 void Args::parse(int argc, char** argv){
     for(int i = 1; i < argc; i++){
