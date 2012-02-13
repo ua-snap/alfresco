@@ -1,10 +1,15 @@
 #include "Args.h"
 
+using namespace boost::filesystem;
 Args::Args(){
 	fifFile = "default.fif";
+	boost::filesystem::path tmpPath = initial_path();
+	fifPath = tmpPath.string();
+	outPath = fifPath + "/Output";
 	debug = false;
 	help = false;
 	version = false;
+
 }
 void Args::parse(int argc, char** argv){
     for(int i = 1; i < argc; i++){
@@ -16,6 +21,10 @@ void Args::parse(int argc, char** argv){
             version = true;
 	}else if("--fif" == name){
             fifFile = argv[++i];
+	}else if("--fif-path" == name){
+            fifPath = argv[++i];
+	}else if("--out-path" == name){
+            outPath = argv[++i];
         }else if("--debug" == name){
             debug = true;
         }else{
@@ -27,6 +36,12 @@ void Args::parse(int argc, char** argv){
 }
 string Args::getFifName(){
 	return fifFile;
+}
+string Args::getFifPath(){
+	return fifPath;
+}
+string Args::getOutPath(){
+	return outPath;
 }
 void Args::showHelp(){
 	std::cout << "Options:" << std::endl;
