@@ -35,20 +35,20 @@ int main(int argc, char** argv) {
 	if (id == 0){
 	#endif
 	if (args.getHelp() == true){ args.showHelp(); }
-	std::cout << args.getFifName() << std::endl;
 	#ifdef WITHMPI
 	}
 	#endif
 
-	string runDirectory = "/home/apbennett/alfresco";
-	string outDirectory = runDirectory + "/Output";
+
 
 	if (args.getHelp() != true){
 		MyStats = new StatArray();
 		int rc;
 
+		//string runDirectory = "/home/apbennett/alfresco";
+		//string outDirectory = runDirectory + "/Output";
 		CustomFresco* _dummysim = new CustomFresco(false);
-		_dummysim->setup(runDirectory, args.getFifName(), outDirectory, 1234763211);
+		_dummysim->setup(args.getFifPath(), args.getFifName(), args.getOutPath(), 1234763211);
 		//int firstYear = _dummysim->fif().nGet("FirstYear");
 		int maxReps = _dummysim->fif().nGet("MaxReps");
 		#ifdef WITHMPI
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 			_dummysim->clear();
 		for (rc = startRep + id; rc < maxReps; rc+=max){
 			CustomFresco* _simulation = new CustomFresco(false);
-			_simulation->setup(runDirectory, args.getFifName(), outDirectory, 1234763211);
+			_simulation->setup(args.getFifPath(), args.getFifName(), args.getOutPath(), 1234763211);
 			_simulation->runRep(rc,1860); 
 			_simulation->runEnd();
 			_simulation->clear();
