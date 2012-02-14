@@ -22,11 +22,10 @@ using std::string;
 
 StatArray* MyStats;
 int main(int argc, char** argv) {
-	Args args;
-	args.parse(argc, argv);
-
 	int id = 0;
 	int max = 1;
+	Args args;
+	args.parse(argc, argv);
 
 	#ifdef WITHMPI
 	MPI::Init();
@@ -34,12 +33,13 @@ int main(int argc, char** argv) {
 	max = MPI::COMM_WORLD.Get_size();
 	if (id == 0){
 	#endif
+
+	//args.parse(argc, argv);
 	if (args.getHelp() == true){ args.showHelp(); }
+
 	#ifdef WITHMPI
 	}
 	#endif
-
-
 
 	if (args.getHelp() != true){
 		MyStats = new StatArray();
