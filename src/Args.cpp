@@ -7,6 +7,8 @@ Args::Args(){
 	fifPath = p.string();
 	p /= "Output";
 	outPath = p.string();
+	inPath = "";
+	std::cout << inPath << std::endl;
 	debug = false;
 	help = false;
 	version = false;
@@ -29,6 +31,8 @@ void Args::parse(int argc, char** argv){
             fifFile = argv[++i];
 	}else if("--fif-path" == name){
             fifPath = argv[++i];
+	}else if("--in-path" == name){
+            inPath = argv[++i];
 	}else if("--out-path" == name){
             outPath = argv[++i];
         }else if("--debug" == name){

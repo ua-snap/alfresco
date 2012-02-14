@@ -12,6 +12,7 @@ using namespace std;
 class Args{
     string fifFile;
     string fifPath;
+    string inPath;
     string outPath;
     bool debug;
     bool help;
@@ -22,6 +23,7 @@ public:
 	void showHelp();
 	string getFifName();
 	string getFifPath();
+	string getInPath();
 	string getOutPath();
 
 	inline const bool getDebug(){ return debug; }
