@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
 		_dummysim->clear();
 		for (rc = startRep + id; rc < maxReps; rc+=max){
 			CustomFresco* _simulation = new CustomFresco(false);
+			_simulation->setIsStopped(false);
 			_simulation->setup(args.getFifPath(), args.getFifName(), args.getOutPath(), 1234763211);
 			_simulation->runRep(rc,1860); 
 			_simulation->runEnd();
