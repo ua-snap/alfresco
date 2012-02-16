@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 		#endif
 		std::cout << "Fresco Client " << std::endl;
 		int startRep = 0;
-			_dummysim->clear();
+		_dummysim->clear();
 		for (rc = startRep + id; rc < maxReps; rc+=max){
 			CustomFresco* _simulation = new CustomFresco(false);
 			_simulation->setup(args.getFifPath(), args.getFifName(), args.getOutPath(), 1234763211);

@@ -18,8 +18,5 @@ fresco_LDFLAGS = -Llib -lboost_system -lboost_filesystem -L/usr/lib64/Poco -lPoc
 frescocli_LDFLAGS = -Llib -lboost_system -lboost_filesystem -lboost_program_options -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal -L/usr/lib64/openmpi
 fresco_CXXFLAGS = -O3 -funroll-loops
 frescocli_CXXFLAGS = -DWITHMPI -O3 -funroll-loops
-if ENABLE_MPI
-	frescocli_LDFLAGS += -L/usr/lib64/openmpi
-endif
 INCLUDES = -Iinclude -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS)
 
