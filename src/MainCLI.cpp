@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
 			CustomFresco* _simulation = new CustomFresco(false);
 			_simulation->setIsStopped(false);
 			_simulation->setup(args.getFifPath(), args.getFifName(), args.getOutPath(), 1234763211);
-			_simulation->runRep(rc,1860); 
+			_simulation->runRep(rc,_simulation->fif().nGet("FirstYear")); 
 			_simulation->runEnd();
 			_simulation->clear();
 			delete _simulation; _simulation = 0;
