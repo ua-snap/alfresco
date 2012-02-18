@@ -25,11 +25,13 @@ string StatFile::getTitle(){
  */
 	return title;
 }
-void StatFile::write(){
+void StatFile::write(int y){
 /**
  * Write the stat file.  
  * Only Task 0 does this
  */
+	int firstYear = y;
+
 	std::ofstream sfile;
 	string sfile_ext = ".txt";
 	sfile.open((title + sfile_ext).c_str());
@@ -39,7 +41,7 @@ void StatFile::write(){
 	}
 	sfile << std::endl;
 	for (int i = 0; i < rows; i++){
-		sfile << 1860 + i << "\t";
+		sfile << firstYear + i << "\t";
 		for (int j = 0; j < columns; j++){
 			if (j > 0){
 				sfile << "\t";

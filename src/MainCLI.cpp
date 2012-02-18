@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
 
 	if (args->getHelp() != true){
 		MyStats = new StatArray();
+
 		int rc = 0;
 
 		//string runDirectory = "/home/apbennett/alfresco";
@@ -51,6 +52,7 @@ int main(int argc, char** argv) {
 		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
 		//int firstYear = _dummysim->fif().nGet("FirstYear");
 		int maxReps = _dummysim->fif().nGet("MaxReps");
+		MyStats->setFirstYear(_dummysim->fif().nGet("FirstYear"));
 		#ifdef WITHMPI
 		std::cout << "MPI Rank: " << id << " of: " << max << std::endl;
 		#endif
@@ -81,7 +83,6 @@ int main(int argc, char** argv) {
 	#ifdef WITHMPI
 	MPI::Finalize();
 	#endif
-	delete args; 
 	exit(0);
 }
 
