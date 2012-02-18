@@ -11,6 +11,11 @@ StatArray::StatArray(){
 StatArray::StatArray(const StatArray& s){
 
 }
+void StatArray::setFirstYear(int n){
+	if (n > 0){
+		firstYear = n;
+	}
+}
 void StatArray::addStatFile(string t, int r, int c, StatType s){
 	bool statExists = false;
 	for (int i = 0; i < statArray.size(); i++){
@@ -25,7 +30,7 @@ void StatArray::addStatFile(string t, int r, int c, StatType s){
 void StatArray::addStat(string t, int r, int c, int y){
 	for (int i = 0; i < statArray.size(); i++){
 		if (statArray[i]->getTitle().compare(t) == 0){
-			statArray[i]->addStat(r - 1860, c, y);
+			statArray[i]->addStat(r - firstYear, c, y);
 		}
 	}
 }
@@ -34,7 +39,7 @@ void StatArray::writeStats(){
 		#ifdef WITHMPI
 		if (MPI::COMM_WORLD.Get_rank() == 0){
 		#endif
-		statArray[i]->write();
+		statArray[i]->write(firstYear);
 		#ifdef WITHMPI
 		}
 		#endif

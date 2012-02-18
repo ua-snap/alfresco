@@ -12,7 +12,9 @@ class StatArray {
 		void addStat(string t, int r, int c, int y);
 		void writeStats();
 		void gatherStats();
+		void setFirstYear(int n);
 	private:
 		StatList statArray;
+		int firstYear;
 };
 #endif

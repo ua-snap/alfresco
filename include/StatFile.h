@@ -13,7 +13,7 @@ enum StatType { MATRIX, LIST, FIRESIZE };
 class StatFile {
 	public:
 		StatFile(string t, int sx, int sy, StatType st);
-		void write();
+		void write(int y);
 		string getTitle();
 		void addStat(int sx, int sy, int s);
 		int getStat(int sx, int sy);
