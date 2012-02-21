@@ -186,20 +186,20 @@ void Landscape::		setup()
 		_vegDistributionStat[s].setup("VegDist["+ToS(s)+"]",	_vegDistributionStatFlags, false);
 		_vegResidenceStat[s].setup("VegRes["+ToS(s)+"]",		_vegResidenceStatFlags, false);
 		_fireSpeciesStat[s].setup("FireSpecies["+ToS(s)+"]",	_fireSpeciesStatFlags, false);
-		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]",	_fireIntervalStatFlags, false);
+		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]Events",	_fireIntervalStatFlags, false);
 
 		#ifdef WITHMPI
 		MyStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps, MATRIX);
-		MyStats->addStatFile("FireInterval["+ToS(s)+"]", numYears, numReps, LIST);
+		MyStats->addStatFile("FireInterval["+ToS(s)+"]Events", numYears, numReps, LIST);
 		#endif
 	}
 	_fireSizeStat.setup("FireSize", _fireSizeStatFlags, true);
 	_fireNumStat.setup("FireNum", _fireNumStatFlags, false);
 
 	#ifdef WITHMPI
-	MyStats->addStatFile("FireSize", numYears, numReps, MATRIX);
+	MyStats->addStatFile("FireSize", numYears, numReps, FIRESIZE);
 	MyStats->addStatFile("FireNum", numYears, numReps, MATRIX);
 	#endif
 
@@ -415,7 +415,7 @@ void Landscape::		doIgnitions()
 				_fireSizeStat.Add(gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 
 				#ifdef WITHMPI	
-				MyStats->addStat("FireSize", gYear, gRep, fireSize);
+				MyStats->addStat("FireSize", gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 				#endif
 				
 				fireSizeTotal += fireSize;
@@ -592,7 +592,7 @@ void Landscape::		logFireStats (int interval, bool ignoreFirstInterval)
 		_fireIntervalStat[(int)specSp].Add(gYear, gRep, (interval > 0) ? interval : -interval);
 
 		stringstream ss;
-		ss << "FireInterval[" << (int)specSp << "]";
+		ss << "FireInterval[" << (int)specSp << "]Events";
 		long inter = (interval > 0) ? interval : -interval;
 		//std::cout << inter << std::endl;
 		#ifdef WITHMPI

@@ -16,6 +16,7 @@ class StatFile {
 		void write(int y);
 		string getTitle();
 		void addStat(int sx, int sy, int s);
+		void addStat(int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS);
 		int getStat(int sx, int sy);
 		int sendFile();
 		int receiveFile();

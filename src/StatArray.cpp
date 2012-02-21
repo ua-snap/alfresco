@@ -34,6 +34,13 @@ void StatArray::addStat(string t, int r, int c, int y){
 		}
 	}
 }
+void StatArray::addStat(string t, int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS){
+	for (int i = 0; i < statArray.size(); i++){
+		if (statArray[i]->getTitle().compare(t) == 0){
+			statArray[i]->addStat(nYear, nRep, dData, nCause, low, mod, highLSS, highHSS);
+		}
+	}
+}
 void StatArray::writeStats(){
 	for (int i = 0; i < statArray.size(); i++){
 		#ifdef WITHMPI
