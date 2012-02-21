@@ -33,9 +33,8 @@ void StatFile::write(int y){
 	int firstYear = y;
 
 	std::ofstream sfile;
-	string sfile_ext;
+	string sfile_ext = ".txt";
 	if (statType == MATRIX){
-		sfile_ext = ".txt";
 		sfile.open((title + sfile_ext).c_str());
 		sfile << "Year";
 		for (int i = 0; i < columns; i++){
@@ -55,7 +54,6 @@ void StatFile::write(int y){
 		sfile.close();
 	}
 	if (statType == LIST){
-		sfile_ext = "V.txt";
 		sfile.open((title + sfile_ext).c_str());
 		sfile << "Year" << "\tRep" << "\tVal" << std::endl;
 		for (int i = 0; i < statVector.size(); i++){
@@ -70,7 +68,6 @@ void StatFile::write(int y){
 		sfile.close();
 	}
 	if (statType == FIRESIZE){
-		sfile_ext = ".txt";
 		sfile.open(("FireSizeEvents" + sfile_ext).c_str());
 		sfile << "Year" << "\tRep" << "\tVal" << "\tCause" << "\tLow" << "\tMod" << "\tHighLSS" << "\tHighHSS" << std::endl;
 		for (int i = 0; i < statVector.size(); i++){
