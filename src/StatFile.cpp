@@ -80,6 +80,24 @@ void StatFile::write(int y){
 			sfile << std::endl;
 		}
 		sfile.close();
+
+		sfile.open((title + sfile_ext).c_str());
+		sfile << "Year";
+		for (int i = 0; i < columns; i++){
+			sfile << "\tRep" << i;
+		}
+		sfile << std::endl;
+		for (int i = 0; i < rows; i++){
+			sfile << firstYear + i << "\t";
+			for (int j = 0; j < columns; j++){
+				if (j > 0){
+					sfile << "\t";
+				}
+				sfile << stats[i][j];
+			}
+			sfile << std::endl;
+		}
+		sfile.close();
 	}
 }
 void StatFile::addStat(int nYear, int nRep, int nVal){
@@ -92,7 +110,9 @@ void StatFile::addStat(int nYear, int nRep, int nVal){
 		statVector.push_back(nextRow);	
 	}
 }
-void StatFile::addStat(int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS){
+void StatFile::addStat(int fYear, int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS){
+	stats[nYear - fYear][nRep] += dData;
+
 	vector<int> nextRow;
 	nextRow.push_back(nYear);
 	nextRow.push_back(nRep);
