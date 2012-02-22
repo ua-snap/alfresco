@@ -34,26 +34,95 @@ void StatFile::write(int y){
 
 	std::ofstream sfile;
 	string sfile_ext = ".txt";
-	sfile.open((title + sfile_ext).c_str());
-	sfile << "Year";
-	for (int i = 0; i < columns; i++){
-		sfile << "\tRep" << i;
-	}
-	sfile << std::endl;
-	for (int i = 0; i < rows; i++){
-		sfile << firstYear + i << "\t";
-		for (int j = 0; j < columns; j++){
-			if (j > 0){
-				sfile << "\t";
-			}
-			sfile << stats[i][j];
+	if (statType == MATRIX){
+		sfile.open((title + sfile_ext).c_str());
+		sfile << "Year";
+		for (int i = 0; i < columns; i++){
+			sfile << "\tRep" << i;
 		}
 		sfile << std::endl;
+		for (int i = 0; i < rows; i++){
+			sfile << firstYear + i << "\t";
+			for (int j = 0; j < columns; j++){
+				if (j > 0){
+					sfile << "\t";
+				}
+				sfile << stats[i][j];
+			}
+			sfile << std::endl;
+		}
+		sfile.close();
 	}
-	sfile.close();
+	if (statType == LIST){
+		sfile.open((title + sfile_ext).c_str());
+		sfile << "Year" << "\tRep" << "\tVal" << std::endl;
+		for (int i = 0; i < statVector.size(); i++){
+			for (int j = 0; j < statVector[i].size(); j++){
+				if (j > 0){
+					sfile << "\t";
+				}
+				sfile << statVector[i][j];
+			}
+			sfile << std::endl;
+		}
+		sfile.close();
+	}
+	if (statType == FIRESIZE){
+		sfile.open(("FireSizeEvents" + sfile_ext).c_str());
+		sfile << "Year" << "\tRep" << "\tVal" << "\tCause" << "\tLow" << "\tMod" << "\tHighLSS" << "\tHighHSS" << std::endl;
+		for (int i = 0; i < statVector.size(); i++){
+			for (int j = 0; j < statVector[i].size(); j++){
+				if (j > 0){
+					sfile << "\t";
+				}
+				sfile << statVector[i][j];
+			}
+			sfile << std::endl;
+		}
+		sfile.close();
+
+		sfile.open((title + sfile_ext).c_str());
+		sfile << "Year";
+		for (int i = 0; i < columns; i++){
+			sfile << "\tRep" << i;
+		}
+		sfile << std::endl;
+		for (int i = 0; i < rows; i++){
+			sfile << firstYear + i << "\t";
+			for (int j = 0; j < columns; j++){
+				if (j > 0){
+					sfile << "\t";
+				}
+				sfile << stats[i][j];
+			}
+			sfile << std::endl;
+		}
+		sfile.close();
+	}
 }
-void StatFile::addStat(int sx, int sy, int s){
-	stats[sx][sy] = s;
+void StatFile::addStat(int nYear, int nRep, int nVal){
+	stats[nYear][nRep] = nVal;
+	if (statType == LIST){
+		vector<int> nextRow;
+		nextRow.push_back(nVal);
+		nextRow.push_back(nRep);
+		nextRow.push_back(nYear);
+		statVector.push_back(nextRow);	
+	}
+}
+void StatFile::addStat(int fYear, int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS){
+	stats[nYear - fYear][nRep] += dData;
+
+	vector<int> nextRow;
+	nextRow.push_back(nYear);
+	nextRow.push_back(nRep);
+	nextRow.push_back(dData);
+	nextRow.push_back(nCause);
+	nextRow.push_back(low);
+	nextRow.push_back(mod);
+	nextRow.push_back(highLSS);
+	nextRow.push_back(highHSS);
+	statVector.push_back(nextRow);	
 }
 int StatFile::getStat(int sx, int sy){
 	return stats[sx][sy];
