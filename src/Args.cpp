@@ -57,6 +57,9 @@ string Args::getOutPath(){
 	return outPath;
 }
 void Args::showHelp(){
+/**
+ * Print out command help
+ */
 	std::cout << desc << std::endl;
 }
 
