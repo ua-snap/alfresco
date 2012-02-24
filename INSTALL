@@ -1,0 +1,11 @@
+INSTALL
+*******
+
+In order to configure the MPI portion of the script, the following will need
+to be set:
+
+CXX - must be set to the MPI C++ compiler
+PATH - May need to add the directory of the MPI C++ compiler wrapper
+LD_LIBRARY_PATH - Set to the directory of the MPI libraries
+
+Once this is complete, the next step is to run ./configure
