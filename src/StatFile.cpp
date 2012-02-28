@@ -56,8 +56,8 @@ void StatFile::write(int y){
 	if (statType == LIST){
 		sfile.open((title + sfile_ext).c_str());
 		sfile << "Year" << "\tRep" << "\tVal" << std::endl;
-		for (int i = 0; i < statVector.size(); i++){
-			for (int j = 0; j < statVector[i].size(); j++){
+		for (unsigned int i = 0; i < statVector.size(); i++){
+			for (unsigned int j = 0; j < statVector[i].size(); j++){
 				if (j > 0){
 					sfile << "\t";
 				}
@@ -70,8 +70,8 @@ void StatFile::write(int y){
 	if (statType == FIRESIZE){
 		sfile.open(("FireSizeEvents" + sfile_ext).c_str());
 		sfile << "Year" << "\tRep" << "\tVal" << "\tCause" << "\tLow" << "\tMod" << "\tHighLSS" << "\tHighHSS" << std::endl;
-		for (int i = 0; i < statVector.size(); i++){
-			for (int j = 0; j < statVector[i].size(); j++){
+		for (unsigned int i = 0; i < statVector.size(); i++){
+			for (unsigned int j = 0; j < statVector[i].size(); j++){
 				if (j > 0){
 					sfile << "\t";
 				}
