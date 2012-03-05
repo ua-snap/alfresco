@@ -496,6 +496,9 @@ bool Landscape::        testFireSpread(Frame* pFrame, const int rowOfNeighbor, c
 Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, const Frame* pSpreaderFrame, const int fireSize)
 {
 	if (pFrame->type() == gTundraID) return Fire::LOW;
+	else if (pFrame->type() == gShrubTundraID) return Fire::LOW;
+	else if (pFrame->type() == gGrammanoidTundraID) return Fire::LOW;
+	else if (pFrame->type() == gWetlandTundraID) return Fire::LOW;
 	else if (pFrame->type() == gDecidID) return pSpreaderFrame->burnSeverity;
 	// else BSpruce or WSpruce continue...
 

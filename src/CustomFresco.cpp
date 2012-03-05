@@ -6,6 +6,9 @@
 #include "BSpruce.h"
 #include "Decid.h"
 #include "Tundra.h"
+#include "ShrubTundra.h"
+#include "GrammanoidTundra.h"
+#include "WetlandTundra.h"
 #include "WSpruce.h"
 #include "Grassland.h"
 #include "Fresco.h"
@@ -31,11 +34,18 @@ void CustomFresco::	customSetup()
     gWSpruceID = (byte)fif().nGet("WSpruce");
     gDecidID   = (byte)fif().nGet("Decid"); 
     gTundraID  = (byte)fif().nGet("Tundra");
+    gShrubTundraID  = (byte)fif().nGet("ShrubTundra");
+    gGrammanoidTundraID  = (byte)fif().nGet("GrammanoidTundra");
+    gWetlandTundraID  = (byte)fif().nGet("WetlandTundra");
+
 
 	validVegTypes.insert(gBSpruceID);
 	validVegTypes.insert(gWSpruceID);
 	validVegTypes.insert(gDecidID);
 	validVegTypes.insert(gTundraID);
+	validVegTypes.insert(gShrubTundraID);
+	validVegTypes.insert(gGrammanoidTundraID);
+	validVegTypes.insert(gWetlandTundraID);
 	validVegTypes.insert(gNoVegID);
 
 	// Handle Grassland here for backwards compatibility.
@@ -50,6 +60,9 @@ void CustomFresco::	customSetup()
     WSpruce::setStaticData();
     Decid::setStaticData();
     Tundra::setStaticData();
+    ShrubTundra::setStaticData();
+    GrammanoidTundra::setStaticData();
+    WetlandTundra::setStaticData();
 
 	gNumSpecies = (int)validVegTypes.size();
 }

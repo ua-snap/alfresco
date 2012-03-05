@@ -158,3 +158,9 @@ int StatFile::receiveFile(){
  */
 	return 0;
 }
+int StatFile::getTally(){
+	return tally;
+}
+void StatFile::incTally(){
+	tally++;
+}
