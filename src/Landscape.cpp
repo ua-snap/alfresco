@@ -258,11 +258,14 @@ void Landscape::		yearEnd()
 		_vegDistributionStat[s].Add(gYear, gRep);	//Store the species distribtuion tally.
 		_fireSpeciesStat[s].Add(gYear,gRep);	    //Store the species that burned tally.
 
-		stringstream ss;
-		ss << "FireSpecies[" << s << "]";
 		#ifdef WITHMPI
-		MyStats->addStat(ss.str(), gYear, gRep, _vegDistributionStat[s].m_lTally);
-		MyStats->addStat(ss.str(), gYear, gRep, _fireSpeciesStat[s].m_lTally);
+		stringstream fs;
+		fs << "FireSpecies[" << s << "]";
+		std::cout << fs.str() << "  " <<  _fireSpeciesStat[s].m_lTally << std::endl;
+		stringstream vd;
+		vd << "VegDist[" << s << "]";
+		MyStats->addStat(fs.str(), gYear, gRep, _fireSpeciesStat[s].m_lTally);
+		MyStats->addStat(vd.str(), gYear, gRep, _vegDistributionStat[s].m_lTally);
 		#endif
 
 	}
@@ -291,9 +294,10 @@ void Landscape::		succession()
 				//Update veg residence times.
 				_vegResidenceStat[_pFrames[r][c]->type()].Add(gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 
-				int frameType = (int)_pFrames[r][c]->type();
 				#ifdef WITHMPI
-				MyStats->addStat("VegDist[" + ToS(frameType) + "]", gYear, gRep, abs(_pFrames[r][c]->frameAge()));
+				stringstream vd;
+				vd << "VegDist[" << (int)_pFrames[r][c]->type() << "]";
+				MyStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 				#endif
 				//Process the succession.
 				delete _pFrames[r][c];
