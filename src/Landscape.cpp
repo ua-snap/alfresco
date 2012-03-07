@@ -259,6 +259,7 @@ void Landscape::		yearEnd()
 		_fireSpeciesStat[s].Add(gYear,gRep);	    //Store the species that burned tally.
 
 		stringstream ss;
+		ss << "FireSpecies[" << s << "]";
 		#ifdef WITHMPI
 		MyStats->addStat(ss.str(), gYear, gRep, _vegDistributionStat[s].m_lTally);
 		MyStats->addStat(ss.str(), gYear, gRep, _fireSpeciesStat[s].m_lTally);
@@ -290,9 +291,9 @@ void Landscape::		succession()
 				//Update veg residence times.
 				_vegResidenceStat[_pFrames[r][c]->type()].Add(gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 
-				stringstream ss;
+				int frameType = (int)_pFrames[r][c]->type();
 				#ifdef WITHMPI
-				MyStats->addStat(ss.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
+				MyStats->addStat("VegDist[" + ToS(frameType) + "]", gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 				#endif
 				//Process the succession.
 				delete _pFrames[r][c];

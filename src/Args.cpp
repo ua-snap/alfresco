@@ -5,7 +5,7 @@ Args::Args(){
 	fifFile = "default.fif";
 	boost::filesystem::path p = boost::filesystem::initial_path();
 	fifPath = p.string();
-	p /= "Output";
+	p /= "";
 	outPath = p.string();
 	inPath = "";
 	debug = false;
