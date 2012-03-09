@@ -18,7 +18,7 @@ void StatArray::setFirstYear(int n){
 }
 void StatArray::addStatFile(string t, int r, int c, StatType s){
 	bool statExists = false;
-	for (int i = 0; i < statArray.size(); i++){
+	for (unsigned int i = 0; i < statArray.size(); i++){
 		if (statArray[i]->getTitle().compare(t) == 0){
 			statExists = true;
 		}
@@ -28,21 +28,21 @@ void StatArray::addStatFile(string t, int r, int c, StatType s){
 	}
 }
 void StatArray::addStat(string t, int r, int c, int y){
-	for (int i = 0; i < statArray.size(); i++){
+	for (unsigned int i = 0; i < statArray.size(); i++){
 		if (statArray[i]->getTitle().compare(t) == 0){
 			statArray[i]->addStat(r - firstYear, c, y);
 		}
 	}
 }
 void StatArray::addStat(string t, int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS){
-	for (int i = 0; i < statArray.size(); i++){
+	for (unsigned int i = 0; i < statArray.size(); i++){
 		if (statArray[i]->getTitle().compare(t) == 0){
 			statArray[i]->addStat(firstYear, nYear, nRep, dData, nCause, low, mod, highLSS, highHSS);
 		}
 	}
 }
 void StatArray::writeStats(){
-	for (int i = 0; i < statArray.size(); i++){
+	for (unsigned int i = 0; i < statArray.size(); i++){
 		#ifdef WITHMPI
 		if (MPI::COMM_WORLD.Get_rank() == 0){
 		#endif
@@ -63,26 +63,37 @@ void StatArray::gatherStats(){
 		MPI::Status status;
 		int recvArray[3];
 		int recvCount = MPI::COMM_WORLD.Get_size();
-		for (int i = 0; i < statArray.size(); i++){
-			recvCount = MPI::COMM_WORLD.Get_size();
-			do {
-				MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
-				if (status.Get_tag() == 2){
-					statArray[i]->addStat(recvArray[0], recvArray[1], recvArray[2]);
-					callCount++;
-				} else if (status.Get_tag() == 1){
-					recvCount--;
-				} else {
-					std::cout << "Error" << std::endl;
+		for (unsigned int i = 0; i < statArray.size(); i++){
+			if (statArray[i]->statType == MATRIX){
+				if (statArray[i]->statType == MATRIX){
+					std::cout << statArray[i]->getTitle() << " is a MATRIX" << std::endl;
+				} else if (statArray[i]->statType == LIST){
+					std::cout << statArray[i]->getTitle() << " is a LIST" << std::endl;
+				} else if (statArray[i]->statType == FIRESIZE){
+					std::cout << statArray[i]->getTitle() << " is a FIRESIZE" << std::endl;
 				}
-				
-			} while (recvCount > 1);
-			MPI::COMM_WORLD.Barrier();
+				recvCount = MPI::COMM_WORLD.Get_size();
+				do {
+					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
+					if (status.Get_tag() == 2){
+						statArray[i]->addStat(recvArray[0], recvArray[1], recvArray[2]);
+						callCount++;
+					} else if (status.Get_tag() == 1){
+						recvCount--;
+					} else {
+						std::cout << "Error" << std::endl;
+					}
+					
+				} while (recvCount > 1);
+				MPI::COMM_WORLD.Barrier();
+			}
 		}
 	} else {
-		for (int i = 0; i < statArray.size(); i++){
-			statArray[i]->sendFile();
-			MPI::COMM_WORLD.Barrier();
+		for (unsigned int i = 0; i < statArray.size(); i++){
+			if (statArray[i]->statType == MATRIX){
+				statArray[i]->sendFile();
+				MPI::COMM_WORLD.Barrier();
+			}
 		}
 	}
 	MPI::COMM_WORLD.Barrier();

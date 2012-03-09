@@ -199,7 +199,8 @@ void Landscape::		setup()
 	_fireNumStat.setup("FireNum", _fireNumStatFlags, false);
 
 	#ifdef WITHMPI
-	MyStats->addStatFile("FireSize", numYears, numReps, FIRESIZE);
+	MyStats->addStatFile("FireSize", numYears, numReps, MATRIX);
+	MyStats->addStatFile("FireSizeEvents", numYears, numReps, FIRESIZE);
 	MyStats->addStatFile("FireNum", numYears, numReps, MATRIX);
 	#endif
 
@@ -258,10 +259,13 @@ void Landscape::		yearEnd()
 		_vegDistributionStat[s].Add(gYear, gRep);	//Store the species distribtuion tally.
 		_fireSpeciesStat[s].Add(gYear,gRep);	    //Store the species that burned tally.
 
-		stringstream ss;
 		#ifdef WITHMPI
-		MyStats->addStat(ss.str(), gYear, gRep, _vegDistributionStat[s].m_lTally);
-		MyStats->addStat(ss.str(), gYear, gRep, _fireSpeciesStat[s].m_lTally);
+		stringstream fs;
+		fs << "FireSpecies[" << s << "]";
+		stringstream vd;
+		vd << "VegDist[" << s << "]";
+		MyStats->addStat(fs.str(), gYear, gRep, _fireSpeciesStat[s].m_lTally);
+		MyStats->addStat(vd.str(), gYear, gRep, _vegDistributionStat[s].m_lTally);
 		#endif
 
 	}
@@ -290,9 +294,10 @@ void Landscape::		succession()
 				//Update veg residence times.
 				_vegResidenceStat[_pFrames[r][c]->type()].Add(gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 
-				stringstream ss;
 				#ifdef WITHMPI
-				MyStats->addStat(ss.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
+				stringstream vd;
+				vd << "VegDist[" << (int)_pFrames[r][c]->type() << "]";
+				MyStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 				#endif
 				//Process the succession.
 				delete _pFrames[r][c];
@@ -415,7 +420,8 @@ void Landscape::		doIgnitions()
 				_fireSizeStat.Add(gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 
 				#ifdef WITHMPI	
-				MyStats->addStat("FireSize", gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
+				MyStats->addStat("FireSize", gYear, gRep, fireSize);
+				MyStats->addStat("FireSizeEvents", gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 				#endif
 				
 				fireSizeTotal += fireSize;
@@ -496,6 +502,9 @@ bool Landscape::        testFireSpread(Frame* pFrame, const int rowOfNeighbor, c
 Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, const Frame* pSpreaderFrame, const int fireSize)
 {
 	if (pFrame->type() == gTundraID) return Fire::LOW;
+	else if (pFrame->type() == gShrubTundraID) return Fire::LOW;
+	else if (pFrame->type() == gGrammanoidTundraID) return Fire::LOW;
+	else if (pFrame->type() == gWetlandTundraID) return Fire::LOW;
 	else if (pFrame->type() == gDecidID) return pSpreaderFrame->burnSeverity;
 	// else BSpruce or WSpruce continue...
 
@@ -589,11 +598,15 @@ void Landscape::		logFireStats (int interval, bool ignoreFirstInterval)
 	_fireSpeciesStat[(int)specSp]++;
 	//Only update stats if it is the second time cell has burned to avoid startup bias
 	if (interval>0 || !ignoreFirstInterval)
+		std::cout << interval;
 		_fireIntervalStat[(int)specSp].Add(gYear, gRep, (interval > 0) ? interval : -interval);
+		std::cout << interval << std::endl;
 
 		stringstream ss;
 		ss << "FireInterval[" << (int)specSp << "]Events";
+
 		long inter = (interval > 0) ? interval : -interval;
+		std::cout << ss.str() << " : " << inter<< std::endl;
 		//std::cout << inter << std::endl;
 		#ifdef WITHMPI
 		MyStats->addStat(ss.str(), gYear, gRep, ((interval > 0) ? interval : -interval));

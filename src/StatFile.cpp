@@ -56,8 +56,8 @@ void StatFile::write(int y){
 	if (statType == LIST){
 		sfile.open((title + sfile_ext).c_str());
 		sfile << "Year" << "\tRep" << "\tVal" << std::endl;
-		for (int i = 0; i < statVector.size(); i++){
-			for (int j = 0; j < statVector[i].size(); j++){
+		for (unsigned int i = 0; i < statVector.size(); i++){
+			for (unsigned int j = 0; j < statVector[i].size(); j++){
 				if (j > 0){
 					sfile << "\t";
 				}
@@ -70,8 +70,8 @@ void StatFile::write(int y){
 	if (statType == FIRESIZE){
 		sfile.open(("FireSizeEvents" + sfile_ext).c_str());
 		sfile << "Year" << "\tRep" << "\tVal" << "\tCause" << "\tLow" << "\tMod" << "\tHighLSS" << "\tHighHSS" << std::endl;
-		for (int i = 0; i < statVector.size(); i++){
-			for (int j = 0; j < statVector[i].size(); j++){
+		for (unsigned int i = 0; i < statVector.size(); i++){
+			for (unsigned int j = 0; j < statVector[i].size(); j++){
 				if (j > 0){
 					sfile << "\t";
 				}
@@ -80,7 +80,7 @@ void StatFile::write(int y){
 			sfile << std::endl;
 		}
 		sfile.close();
-
+/*
 		sfile.open((title + sfile_ext).c_str());
 		sfile << "Year";
 		for (int i = 0; i < columns; i++){
@@ -98,6 +98,7 @@ void StatFile::write(int y){
 			sfile << std::endl;
 		}
 		sfile.close();
+*/
 	}
 }
 void StatFile::addStat(int nYear, int nRep, int nVal){
@@ -111,8 +112,7 @@ void StatFile::addStat(int nYear, int nRep, int nVal){
 	}
 }
 void StatFile::addStat(int fYear, int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS){
-	stats[nYear - fYear][nRep] += dData;
-
+//	stats[nYear - fYear][nRep] += dData;
 	vector<int> nextRow;
 	nextRow.push_back(nYear);
 	nextRow.push_back(nRep);
@@ -157,4 +157,10 @@ int StatFile::receiveFile(){
  * Not needed since this is handled by StatArray
  */
 	return 0;
+}
+int StatFile::getTally(){
+	return tally;
+}
+void StatFile::incTally(){
+	tally++;
 }

@@ -20,6 +20,8 @@ class StatFile {
 		int getStat(int sx, int sy);
 		int sendFile();
 		int receiveFile();
+		int getTally();
+		void incTally();
 		StatType statType;
 	private:
 		string title;
@@ -27,5 +29,6 @@ class StatFile {
 		vector<vector<int> > statVector;
 		int rows;
 		int columns;
+		int tally;
 };
 #endif

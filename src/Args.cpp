@@ -5,7 +5,7 @@ Args::Args(){
 	fifFile = "default.fif";
 	boost::filesystem::path p = boost::filesystem::initial_path();
 	fifPath = p.string();
-	p /= "Output";
+	p /= "";
 	outPath = p.string();
 	inPath = "";
 	debug = false;
@@ -57,6 +57,9 @@ string Args::getOutPath(){
 	return outPath;
 }
 void Args::showHelp(){
+/**
+ * Print out command help
+ */
 	std::cout << desc << std::endl;
 }
 
