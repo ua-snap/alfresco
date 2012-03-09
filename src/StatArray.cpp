@@ -65,13 +65,6 @@ void StatArray::gatherStats(){
 		int recvCount = MPI::COMM_WORLD.Get_size();
 		for (unsigned int i = 0; i < statArray.size(); i++){
 			if (statArray[i]->statType == MATRIX){
-				if (statArray[i]->statType == MATRIX){
-					std::cout << statArray[i]->getTitle() << " is a MATRIX" << std::endl;
-				} else if (statArray[i]->statType == LIST){
-					std::cout << statArray[i]->getTitle() << " is a LIST" << std::endl;
-				} else if (statArray[i]->statType == FIRESIZE){
-					std::cout << statArray[i]->getTitle() << " is a FIRESIZE" << std::endl;
-				}
 				recvCount = MPI::COMM_WORLD.Get_size();
 				do {
 					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
