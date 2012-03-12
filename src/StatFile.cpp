@@ -102,7 +102,7 @@ void StatFile::write(int y){
 	}
 }
 void StatFile::addStat(int nYear, int nRep, int nVal){
-	stats[nYear][nRep] = nVal;
+	stats[nYear][nRep] += nVal;
 	if (statType == LIST){
 		vector<int> nextRow;
 		nextRow.push_back(nVal);

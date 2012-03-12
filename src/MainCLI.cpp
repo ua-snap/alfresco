@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 
 		//string runDirectory = "/home/apbennett/alfresco";
 		//string outDirectory = runDirectory + "/Output";
-		CustomFresco* _dummysim = new CustomFresco(false);
+		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
 		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
 		//int firstYear = _dummysim->fif().nGet("FirstYear");
 		int maxReps = _dummysim->fif().nGet("MaxReps");
@@ -61,13 +61,14 @@ int main(int argc, char** argv) {
 		_dummysim->clear();
 		delete _dummysim;
 		for (rc = startRep + id; rc < maxReps; rc+=max){
-			CustomFresco* _simulation = new CustomFresco(false);
+			CustomFresco* _simulation = new CustomFresco(args->getDebug());
 			_simulation->setIsStopped(false);
 			_simulation->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
 			_simulation->runRep(rc,_simulation->fif().nGet("FirstYear")); 
 			_simulation->runEnd();
 			_simulation->clear();
 			delete _simulation; _simulation = 0;
+			std::cout << "Rep " << rc + 1 << " of " << maxReps << " complete" << std::endl;
 		}
 
 
