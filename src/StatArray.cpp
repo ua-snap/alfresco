@@ -132,20 +132,52 @@ void StatArray::gatherStats(){
 				MPI::COMM_WORLD.Barrier();
 			}
 			if (statArray[i]->statType == FIRESIZE){
-                                int recvArray[7];
-                                recvCount = MPI::COMM_WORLD.Get_size();
-                                do {
-                                        MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
-                                        vector<int> tmpRow;
-                                        tmpRow.push_back(recvArray[0]);
-                                        tmpRow.push_back(recvArray[1]);
-                                        tmpRow.push_back(recvArray[2]);
-                                        tmpRow.push_back(recvArray[3]);
-                                        tmpRow.push_back(recvArray[4]);
-                                        tmpRow.push_back(recvArray[5]);
-                                        tmpRow.push_back(recvArray[6]);
-                                        if (status.Get_tag() == 2){
-						statArray[i]->statVector.push_back(tmpRow);
+				int recvArray[8];
+				recvCount = MPI::COMM_WORLD.Get_size();
+				do {
+					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
+					vector<int> tmpRow;
+					tmpRow.push_back(recvArray[0]);
+					tmpRow.push_back(recvArray[1]);
+					tmpRow.push_back(recvArray[2]);
+					tmpRow.push_back(recvArray[3]);
+					tmpRow.push_back(recvArray[4]);
+					tmpRow.push_back(recvArray[5]);
+					tmpRow.push_back(recvArray[6]);
+					if (status.Get_tag() == 2){
+						if (statArray[i]->statVector.size() < 1){
+							statArray[i]->statVector.push_back(tmpRow);
+						} else {
+							for (unsigned int j = 0; j < statArray[i]->statVector.size(); j++){
+								if (recvArray[1] < statArray[i]->statVector[j][1]){
+									if (j > 0){
+										if (recvArray[1] > statArray[i]->statVector[j-1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+										break;
+									}
+								} else if (recvArray[1] == statArray[i]->statVector[j][1]){
+									statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+									break;
+								} else if (recvArray[1] > statArray[i]->statVector[j][1]){
+									if (j < statArray[i]->statVector.size() - 1){
+										if (recvArray[1] < statArray[i]->statVector[j+1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j + 1, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.push_back(tmpRow);
+										break;
+									}
+								} else {
+									statArray[i]->statVector.push_back(tmpRow);
+									break;
+								}
+							}
+						}
 					} else if (status.Get_tag() == 1){
 						recvCount--;
 					} else {
