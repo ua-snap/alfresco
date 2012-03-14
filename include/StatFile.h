@@ -23,10 +23,10 @@ class StatFile {
 		int getTally();
 		void incTally();
 		StatType statType;
+		vector<vector<int> > statVector;
 	private:
 		string title;
 		int **stats;
-		vector<vector<int> > statVector;
 		int rows;
 		int columns;
 		int tally;

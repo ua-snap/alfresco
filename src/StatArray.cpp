@@ -76,16 +76,72 @@ void StatArray::gatherStats(){
 					} else {
 						std::cout << "Error" << std::endl;
 					}
-					
+				} while (recvCount > 1);
+				MPI::COMM_WORLD.Barrier();
+			}
+			if (statArray[i]->statType == LIST){
+				recvCount = MPI::COMM_WORLD.Get_size();
+				vector<int>::iterator statPos;
+				do {
+					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
+					vector<int> tmpRow;
+					tmpRow.push_back(recvArray[0]);
+					tmpRow.push_back(recvArray[1]);
+					tmpRow.push_back(recvArray[2]);
+					if (status.Get_tag() == 2){
+						if (statArray[i]->statVector.size() < 1){
+							statArray[i]->statVector.push_back(tmpRow);
+						} else {
+							for (int j = 0; j < statArray[i]->statVector.size(); j++){
+								if (recvArray[1] < statArray[i]->statVector[j][1]){
+									if (j > 0){
+										if (recvArray[1] > statArray[i]->statVector[j-1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+										break;
+									}
+								} else if (recvArray[1] == statArray[i]->statVector[j][1]){
+									statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+									break;
+								} else if (recvArray[1] > statArray[i]->statVector[j][1]){
+									if (j < statArray[i]->statVector.size() - 1){
+										if (recvArray[1] < statArray[i]->statVector[j+1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j + 1, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.push_back(tmpRow);
+										break;
+									}
+
+								} else {
+									statArray[i]->statVector.push_back(tmpRow);
+									break;
+								}
+							}
+						}
+
+
+
+						callCount++;
+					} else if (status.Get_tag() == 1){
+						recvCount--;
+					} else {
+						std::cout << "MPI Tag Mismatch Error" << std::endl;
+					}
 				} while (recvCount > 1);
 				MPI::COMM_WORLD.Barrier();
 			}
 		}
 	} else {
 		for (unsigned int i = 0; i < statArray.size(); i++){
-			if (statArray[i]->statType == MATRIX){
+			if (statArray[i]->statType == MATRIX || statArray[i]->statType == LIST){
 				statArray[i]->sendFile();
 				MPI::COMM_WORLD.Barrier();
+
 			}
 		}
 	}
