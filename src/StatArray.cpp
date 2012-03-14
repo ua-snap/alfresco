@@ -116,17 +116,36 @@ void StatArray::gatherStats(){
 										statArray[i]->statVector.push_back(tmpRow);
 										break;
 									}
-
 								} else {
 									statArray[i]->statVector.push_back(tmpRow);
 									break;
 								}
 							}
 						}
-
-
-
 						callCount++;
+					} else if (status.Get_tag() == 1){
+						recvCount--;
+					} else {
+						std::cout << "MPI Tag Mismatch Error" << std::endl;
+					}
+				} while (recvCount > 1);
+				MPI::COMM_WORLD.Barrier();
+			}
+			if (statArray[i]->statType == FIRESIZE){
+                                int recvArray[7];
+                                recvCount = MPI::COMM_WORLD.Get_size();
+                                do {
+                                        MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
+                                        vector<int> tmpRow;
+                                        tmpRow.push_back(recvArray[0]);
+                                        tmpRow.push_back(recvArray[1]);
+                                        tmpRow.push_back(recvArray[2]);
+                                        tmpRow.push_back(recvArray[3]);
+                                        tmpRow.push_back(recvArray[4]);
+                                        tmpRow.push_back(recvArray[5]);
+                                        tmpRow.push_back(recvArray[6]);
+                                        if (status.Get_tag() == 2){
+						statArray[i]->statVector.push_back(tmpRow);
 					} else if (status.Get_tag() == 1){
 						recvCount--;
 					} else {
@@ -138,10 +157,9 @@ void StatArray::gatherStats(){
 		}
 	} else {
 		for (unsigned int i = 0; i < statArray.size(); i++){
-			if (statArray[i]->statType == MATRIX || statArray[i]->statType == LIST){
+			if (statArray[i]->statType == MATRIX || statArray[i]->statType == LIST || statArray[i]->statType == FIRESIZE){
 				statArray[i]->sendFile();
 				MPI::COMM_WORLD.Barrier();
-
 			}
 		}
 	}
