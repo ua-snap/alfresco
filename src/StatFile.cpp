@@ -151,6 +151,21 @@ int StatFile::sendFile(){
 			}
 			MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 1);  //Tag 1 Indicates completion of stat file
 		}
+		if (statType == FIRESIZE){
+			int sendArray[8];
+			for (int i = statVector.size() - 1; i >= 0; i--){
+				sendArray[0] = statVector[i][0];
+				sendArray[1] = statVector[i][1];
+				sendArray[2] = statVector[i][2];
+				sendArray[3] = statVector[i][3];
+				sendArray[4] = statVector[i][4];
+				sendArray[5] = statVector[i][5];
+				sendArray[6] = statVector[i][6];
+				sendArray[7] = statVector[i][7];
+				MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 2); //Tag 2 Indicates stat value
+			}
+			MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 1);  //Tag 1 Indicates completion of stat file
+		}
 	}
 	#endif
 	return 0;
