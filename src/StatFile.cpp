@@ -127,8 +127,8 @@ int StatFile::sendFile(){
  */
 	#ifdef WITHMPI
 	if (MPI::COMM_WORLD.Get_rank() != 0){
-		int sendArray[3];
 		if (statType == MATRIX){
+			int sendArray[3];
 			for (int i = 0; i < rows; i++){
 				sendArray[0] = i;
 				for (int j = 0; j < columns; j++){
@@ -142,6 +142,7 @@ int StatFile::sendFile(){
 			MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 1);  //Tag 1 Indicates completion of stat file
 		}
 		if (statType == LIST){
+			int sendArray[3];
 			for (int i = statVector.size() - 1; i >= 0; i--){
 				sendArray[0] = statVector[i][0];
 				sendArray[1] = statVector[i][1];

@@ -61,10 +61,10 @@ void StatArray::gatherStats(){
 	if (MPI::COMM_WORLD.Get_rank() == 0){
 		int callCount = 0;
 		MPI::Status status;
-		int recvArray[3];
 		int recvCount = MPI::COMM_WORLD.Get_size();
 		for (unsigned int i = 0; i < statArray.size(); i++){
 			if (statArray[i]->statType == MATRIX){
+				int recvArray[3];
 				recvCount = MPI::COMM_WORLD.Get_size();
 				do {
 					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
@@ -80,8 +80,8 @@ void StatArray::gatherStats(){
 				MPI::COMM_WORLD.Barrier();
 			}
 			if (statArray[i]->statType == LIST){
+				int recvArray[3];
 				recvCount = MPI::COMM_WORLD.Get_size();
-				vector<int>::iterator statPos;
 				do {
 					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
 					vector<int> tmpRow;
@@ -92,7 +92,7 @@ void StatArray::gatherStats(){
 						if (statArray[i]->statVector.size() < 1){
 							statArray[i]->statVector.push_back(tmpRow);
 						} else {
-							for (int j = 0; j < statArray[i]->statVector.size(); j++){
+							for (unsigned int j = 0; j < statArray[i]->statVector.size(); j++){
 								if (recvArray[1] < statArray[i]->statVector[j][1]){
 									if (j > 0){
 										if (recvArray[1] > statArray[i]->statVector[j-1][1]){
