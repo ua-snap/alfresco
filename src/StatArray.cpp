@@ -132,7 +132,7 @@ void StatArray::gatherStats(){
 				MPI::COMM_WORLD.Barrier();
 			}
 			if (statArray[i]->statType == FIRESIZE){
-				int recvArray[8];
+				int recvArray[9];
 				recvCount = MPI::COMM_WORLD.Get_size();
 				do {
 					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
@@ -144,6 +144,7 @@ void StatArray::gatherStats(){
 					tmpRow.push_back(recvArray[4]);
 					tmpRow.push_back(recvArray[5]);
 					tmpRow.push_back(recvArray[6]);
+					tmpRow.push_back(recvArray[7]);
 					if (status.Get_tag() == 2){
 						if (statArray[i]->statVector.size() < 1){
 							statArray[i]->statVector.push_back(tmpRow);
