@@ -1,11 +1,6 @@
 README
 ******
 
-In order to configure the MPI portion of the script, the following will need 
-to be set:
+Boreal ALFRESCO (Alaska Frame-Based Ecosystem Code)
 
-CXX - must be set to the MPI C++ compiler
-PATH - May need to add the directory of the MPI C++ compiler wrapper
-LD_LIBRARY_PATH - Set to the directory of the MPI libraries
-
-Once this is complete, the next step is to run ./configure
+An understanding of the processes that control wildland fuel accumulation, including the roles played by climate change and fire management activities, is crucial for designing wildland management policies. Boreal ALFRESCO simulates the responses of subarctic and boreal vegetation to transient climatic changes. The model assumptions reflect the hypothesis that fire regime and climate are the primary drivers of landscape-level changes in the distribution of vegetation in the circumpolar arctic/boreal zone. Furthermore, it assumes that vegetation composition and continuity serve as a major determinant of large, landscape-level fires. Boreal ALFRESCO operates on an annual time step, in a landscape composed of 1 × 1 km pixels, a scale appropriate for interfacing with mesoscale climate and carbon models. The model simulates five major subarctic/boreal ecosystem types: upland tundra, black spruce forest, white spruce forest, deciduous forest, and grassland-steppe. These ecosystem types represent a generalized classification of the complex vegetation mosaic characteristic of the circumpolar arctic and boreal zones of Alaska. SNAP climate data can be used as ALFRESCO inputs, thus creating projections of the impacts of changing climate on fire regime. 

@@ -22,11 +22,10 @@ using std::string;
 
 StatArray* MyStats;
 int main(int argc, char** argv) {
-	Args args;
-	args.parse(argc, argv);
-
 	int id = 0;
 	int max = 1;
+	Args *args = new Args();
+	args->parse(argc, argv);
 
 	#ifdef WITHMPI
 	MPI::Init();
@@ -34,42 +33,50 @@ int main(int argc, char** argv) {
 	max = MPI::COMM_WORLD.Get_size();
 	if (id == 0){
 	#endif
-	if (args.getHelp() == true){ args.showHelp(); }
-	std::cout << args.getFifName() << std::endl;
+
+	//args->parse(argc, argv);
+	if (args->getHelp() == true){ args->showHelp(); }
+
 	#ifdef WITHMPI
 	}
 	#endif
 
-	string runDirectory = "/home/apbennett/alfresco";
-	string outDirectory = runDirectory + "/Output";
-
-	if (args.getHelp() != true){
+	if (args->getHelp() != true){
 		MyStats = new StatArray();
-		int rc;
 
-		CustomFresco* _dummysim = new CustomFresco(false);
-		_dummysim->setup(runDirectory, args.getFifName(), outDirectory, 1234763211);
+		int rc = 0;
+
+		//string runDirectory = "/home/apbennett/alfresco";
+		//string outDirectory = runDirectory + "/Output";
+		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
+		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
 		//int firstYear = _dummysim->fif().nGet("FirstYear");
 		int maxReps = _dummysim->fif().nGet("MaxReps");
+		MyStats->setFirstYear(_dummysim->fif().nGet("FirstYear"));
 		#ifdef WITHMPI
 		std::cout << "MPI Rank: " << id << " of: " << max << std::endl;
 		#endif
 		std::cout << "Fresco Client " << std::endl;
 		int startRep = 0;
-			_dummysim->clear();
+		_dummysim->clear();
+		delete _dummysim;
 		for (rc = startRep + id; rc < maxReps; rc+=max){
-			CustomFresco* _simulation = new CustomFresco(false);
-			_simulation->setup(runDirectory, args.getFifName(), outDirectory, 1234763211);
-			_simulation->runRep(rc,1860); 
+			CustomFresco* _simulation = new CustomFresco(args->getDebug());
+			_simulation->setIsStopped(false);
+			_simulation->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
+			_simulation->runRep(rc,_simulation->fif().nGet("FirstYear")); 
 			_simulation->runEnd();
 			_simulation->clear();
 			delete _simulation; _simulation = 0;
+			std::cout << "Rep " << rc + 1 << " of " << maxReps << " complete" << std::endl;
 		}
 
 
 		#ifdef WITHMPI
+		if (max > 1){
 		MyStats->gatherStats();
 		MPI::COMM_WORLD.Barrier();
+		}
 		#endif
 		MyStats->writeStats();
 
