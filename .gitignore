@@ -1,0 +1,29 @@
+# Compiled Source #
+*.o
+# Stats Files #
+*.txt
+# Executables #
+fresco
+frescocli
+# Output Maps #
+Output/
+# Build Files #
+config.status
+configure
+Makefile
+depcomp
+missing
+Makefile.in
+src/.deps
+src/.dirstamp
+install-sh
+aclocal.m4
+autom4te.cache/
+config.h
+config.h.in
+config.h.in~
+config.log
+stamp-h1
+# Input Settings Files #
+*.fif
+*.FIF
