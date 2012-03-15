@@ -57,13 +57,7 @@ void StatFile::write(int y){
 		sfile.open((title + sfile_ext).c_str());
 		sfile << "Year" << "\tRep" << "\tVal" << std::endl;
 		for (unsigned int i = 0; i < statVector.size(); i++){
-			for (unsigned int j = 0; j < statVector[i].size(); j++){
-				if (j > 0){
-					sfile << "\t";
-				}
-				sfile << statVector[i][j];
-			}
-			sfile << std::endl;
+			sfile << statVector[i][2] + firstYear << "\t" << statVector[i][1] << "\t" << statVector[i][0] << std::endl;
 		}
 		sfile.close();
 	}
@@ -102,7 +96,7 @@ void StatFile::write(int y){
 	}
 }
 void StatFile::addStat(int nYear, int nRep, int nVal){
-	stats[nYear][nRep] = nVal;
+	stats[nYear][nRep] += nVal;
 	if (statType == LIST){
 		vector<int> nextRow;
 		nextRow.push_back(nVal);
@@ -112,7 +106,6 @@ void StatFile::addStat(int nYear, int nRep, int nVal){
 	}
 }
 void StatFile::addStat(int fYear, int nYear, int nRep, double dData, int nCause, int low, int mod, int highLSS, int highHSS){
-//	stats[nYear - fYear][nRep] += dData;
 	vector<int> nextRow;
 	nextRow.push_back(nYear);
 	nextRow.push_back(nRep);
@@ -134,18 +127,45 @@ int StatFile::sendFile(){
  */
 	#ifdef WITHMPI
 	if (MPI::COMM_WORLD.Get_rank() != 0){
-		int sendArray[3];
-		for (int i = 0; i < rows; i++){
-			sendArray[0] = i;
-			for (int j = 0; j < columns; j++){
-				sendArray[1] = j;
-				sendArray[2] = stats[i][j];
-				if (stats[i][j] != 0){
-					MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 2); //Tag 2 Indicates stat value
+		if (statType == MATRIX){
+			int sendArray[3];
+			for (int i = 0; i < rows; i++){
+				sendArray[0] = i;
+				for (int j = 0; j < columns; j++){
+					sendArray[1] = j;
+					sendArray[2] = stats[i][j];
+					if (stats[i][j] != 0){
+						MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 2); //Tag 2 Indicates stat value
+					}
 				}
 			}
+			MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 1);  //Tag 1 Indicates completion of stat file
 		}
-		MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 1);  //Tag 1 Indicates completion of stat file
+		if (statType == LIST){
+			int sendArray[3];
+			for (int i = statVector.size() - 1; i >= 0; i--){
+				sendArray[0] = statVector[i][0];
+				sendArray[1] = statVector[i][1];
+				sendArray[2] = statVector[i][2];
+				MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 2); //Tag 2 Indicates stat value
+			}
+			MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 1);  //Tag 1 Indicates completion of stat file
+		}
+		if (statType == FIRESIZE){
+			int sendArray[8];
+			for (int i = statVector.size() - 1; i >= 0; i--){
+				sendArray[0] = statVector[i][0];
+				sendArray[1] = statVector[i][1];
+				sendArray[2] = statVector[i][2];
+				sendArray[3] = statVector[i][3];
+				sendArray[4] = statVector[i][4];
+				sendArray[5] = statVector[i][5];
+				sendArray[6] = statVector[i][6];
+				sendArray[7] = statVector[i][7];
+				MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 2); //Tag 2 Indicates stat value
+			}
+			MPI::COMM_WORLD.Send(&sendArray, sizeof(sendArray), MPI_INT, 0, 1);  //Tag 1 Indicates completion of stat file
+		}
 	}
 	#endif
 	return 0;

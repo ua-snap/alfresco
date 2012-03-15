@@ -597,20 +597,14 @@ void Landscape::		logFireStats (int interval, bool ignoreFirstInterval)
 	Species specSp(_pFrames[_row][_col]->type());
 	_fireSpeciesStat[(int)specSp]++;
 	//Only update stats if it is the second time cell has burned to avoid startup bias
-	if (interval>0 || !ignoreFirstInterval)
-		std::cout << interval;
-		_fireIntervalStat[(int)specSp].Add(gYear, gRep, (interval > 0) ? interval : -interval);
-		std::cout << interval << std::endl;
-
+	if (interval>0 || !ignoreFirstInterval){
+		_fireIntervalStat[(int)specSp].Add(gYear, gRep, ((interval > 0) ? interval : -interval));
 		stringstream ss;
 		ss << "FireInterval[" << (int)specSp << "]Events";
-
-		long inter = (interval > 0) ? interval : -interval;
-		std::cout << ss.str() << " : " << inter<< std::endl;
-		//std::cout << inter << std::endl;
 		#ifdef WITHMPI
 		MyStats->addStat(ss.str(), gYear, gRep, ((interval > 0) ? interval : -interval));
 		#endif
+	}
 }
 
 

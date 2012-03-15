@@ -61,17 +61,10 @@ void StatArray::gatherStats(){
 	if (MPI::COMM_WORLD.Get_rank() == 0){
 		int callCount = 0;
 		MPI::Status status;
-		int recvArray[3];
 		int recvCount = MPI::COMM_WORLD.Get_size();
 		for (unsigned int i = 0; i < statArray.size(); i++){
 			if (statArray[i]->statType == MATRIX){
-				if (statArray[i]->statType == MATRIX){
-					std::cout << statArray[i]->getTitle() << " is a MATRIX" << std::endl;
-				} else if (statArray[i]->statType == LIST){
-					std::cout << statArray[i]->getTitle() << " is a LIST" << std::endl;
-				} else if (statArray[i]->statType == FIRESIZE){
-					std::cout << statArray[i]->getTitle() << " is a FIRESIZE" << std::endl;
-				}
+				int recvArray[3];
 				recvCount = MPI::COMM_WORLD.Get_size();
 				do {
 					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
@@ -83,14 +76,121 @@ void StatArray::gatherStats(){
 					} else {
 						std::cout << "Error" << std::endl;
 					}
-					
+				} while (recvCount > 1);
+				MPI::COMM_WORLD.Barrier();
+			}
+			if (statArray[i]->statType == LIST){
+				int recvArray[3];
+				recvCount = MPI::COMM_WORLD.Get_size();
+				do {
+					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
+					vector<int> tmpRow;
+					tmpRow.push_back(recvArray[0]);
+					tmpRow.push_back(recvArray[1]);
+					tmpRow.push_back(recvArray[2]);
+					if (status.Get_tag() == 2){
+						if (statArray[i]->statVector.size() < 1){
+							statArray[i]->statVector.push_back(tmpRow);
+						} else {
+							for (unsigned int j = 0; j < statArray[i]->statVector.size(); j++){
+								if (recvArray[1] < statArray[i]->statVector[j][1]){
+									if (j > 0){
+										if (recvArray[1] > statArray[i]->statVector[j-1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+										break;
+									}
+								} else if (recvArray[1] == statArray[i]->statVector[j][1]){
+									statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+									break;
+								} else if (recvArray[1] > statArray[i]->statVector[j][1]){
+									if (j < statArray[i]->statVector.size() - 1){
+										if (recvArray[1] < statArray[i]->statVector[j+1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j + 1, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.push_back(tmpRow);
+										break;
+									}
+								} else {
+									statArray[i]->statVector.push_back(tmpRow);
+									break;
+								}
+							}
+						}
+						callCount++;
+					} else if (status.Get_tag() == 1){
+						recvCount--;
+					} else {
+						std::cout << "MPI Tag Mismatch Error" << std::endl;
+					}
+				} while (recvCount > 1);
+				MPI::COMM_WORLD.Barrier();
+			}
+			if (statArray[i]->statType == FIRESIZE){
+				int recvArray[9];
+				recvCount = MPI::COMM_WORLD.Get_size();
+				do {
+					MPI::COMM_WORLD.Recv(&recvArray, sizeof(recvArray), MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, status);
+					vector<int> tmpRow;
+					tmpRow.push_back(recvArray[0]);
+					tmpRow.push_back(recvArray[1]);
+					tmpRow.push_back(recvArray[2]);
+					tmpRow.push_back(recvArray[3]);
+					tmpRow.push_back(recvArray[4]);
+					tmpRow.push_back(recvArray[5]);
+					tmpRow.push_back(recvArray[6]);
+					tmpRow.push_back(recvArray[7]);
+					if (status.Get_tag() == 2){
+						if (statArray[i]->statVector.size() < 1){
+							statArray[i]->statVector.push_back(tmpRow);
+						} else {
+							for (unsigned int j = 0; j < statArray[i]->statVector.size(); j++){
+								if (recvArray[1] < statArray[i]->statVector[j][1]){
+									if (j > 0){
+										if (recvArray[1] > statArray[i]->statVector[j-1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+										break;
+									}
+								} else if (recvArray[1] == statArray[i]->statVector[j][1]){
+									statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j, tmpRow);
+									break;
+								} else if (recvArray[1] > statArray[i]->statVector[j][1]){
+									if (j < statArray[i]->statVector.size() - 1){
+										if (recvArray[1] < statArray[i]->statVector[j+1][1]){
+											statArray[i]->statVector.insert(statArray[i]->statVector.begin() + j + 1, tmpRow);
+											break;
+										}
+									} else {
+										statArray[i]->statVector.push_back(tmpRow);
+										break;
+									}
+								} else {
+									statArray[i]->statVector.push_back(tmpRow);
+									break;
+								}
+							}
+						}
+					} else if (status.Get_tag() == 1){
+						recvCount--;
+					} else {
+						std::cout << "MPI Tag Mismatch Error" << std::endl;
+					}
 				} while (recvCount > 1);
 				MPI::COMM_WORLD.Barrier();
 			}
 		}
 	} else {
 		for (unsigned int i = 0; i < statArray.size(); i++){
-			if (statArray[i]->statType == MATRIX){
+			if (statArray[i]->statType == MATRIX || statArray[i]->statType == LIST || statArray[i]->statType == FIRESIZE){
 				statArray[i]->sendFile();
 				MPI::COMM_WORLD.Barrier();
 			}
