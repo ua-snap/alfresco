@@ -14,7 +14,6 @@ class StatArray {
 		void writeStats();
 		void gatherStats();
 		void setFirstYear(int n);
-	private:
 		StatList statArray;
 		int firstYear;
 };

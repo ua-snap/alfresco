@@ -63,6 +63,7 @@ void StatArray::gatherStats(){
 		MPI::Status status;
 		int recvCount = MPI::COMM_WORLD.Get_size();
 		for (unsigned int i = 0; i < statArray.size(); i++){
+			std::cout << "Gathering Stats for " << statArray[i]->getTitle() << std::endl;
 			if (statArray[i]->statType == MATRIX){
 				int recvArray[3];
 				recvCount = MPI::COMM_WORLD.Get_size();

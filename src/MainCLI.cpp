@@ -80,6 +80,47 @@ int main(int argc, char** argv) {
 		#endif
 		MyStats->writeStats();
 
+		std::ofstream sfile;
+		string sfile_ext = ".txt";
+		if (MPI::COMM_WORLD.Get_rank() == 0){
+			sfile.open("FireSizeEvents.txt");
+			sfile << "Year" << "\tRep" << "\tVal" << "\tCause" << "\tLow" << "\tMod" << "\tHighLSS" << "\tHighHSS" << std::endl;
+			sfile.close();
+		}
+		for (int i = 0; i < maxReps; i++){
+			for (int j = 0; j < MyStats->statArray.size(); j++){
+				if (MyStats->statArray[j]->statType == FIRESIZE){
+					sfile.open("FireSizeEvents.txt",ios_base::app);
+					for (int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
+						if (MyStats->statArray[j]->statVector[k][1] == i){
+							sfile << MyStats->statArray[j]->statVector[k][0] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][1] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][2] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][3] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][4] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][5] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][6] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][7] << std::endl;
+						}
+					}
+					sfile.close();
+				}	
+				if (MyStats->statArray[j]->statType == LIST){
+					sfile.open((MyStats->statArray[j]->getTitle() + sfile_ext).c_str(), ios_base::app);
+					for (int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
+						if (MyStats->statArray[j]->statVector[k][1] == i){
+							sfile << MyStats->firstYear + MyStats->statArray[j]->statVector[k][0] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][1] << "\t";
+							sfile << MyStats->statArray[j]->statVector[k][2] << std::endl;
+						}
+					}
+					sfile.close();
+				}
+			}
+
+			MPI::COMM_WORLD.Barrier();
+
+		}
 	}
 	#ifdef WITHMPI
 	MPI::Finalize();
