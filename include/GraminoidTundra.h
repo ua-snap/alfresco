@@ -1,5 +1,5 @@
-#ifndef Fresco_GrammanoidTundra_h
-#define Fresco_GrammanoidTundra_h
+#ifndef Fresco_GraminoidTundra_h
+#define Fresco_GraminoidTundra_h
 
 
 #include "Custom.h"
@@ -8,8 +8,8 @@
 #include "WSpruce.h"
 
 
-class FrescoCustom_API GrammanoidTundra : public Frame 
-//The GrammanoidTundra class is the definition of the tundra frame.  It is a child of the general frame type and inherits most
+class FrescoCustom_API GraminoidTundra : public Frame 
+//The GraminoidTundra class is the definition of the tundra frame.  It is a child of the general frame type and inherits most
 //of its functionality from there.  It provides instances of the pure virtual functions getFireProb, and success.  In 
 //addition to the base class functionality, it maintains the tree density in stand.  This density is effected by climate
 //and can grow, or it can be decreased by insect infestation (a worker function in this class).
@@ -23,7 +23,7 @@ private:
 	static bool				_isFireProbAgeDependent;
 	static const double*	_pAgeDependentFireParams;		
 	static float			_fireProb;
-	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type GrammanoidTundra.
+	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type GraminoidTundra.
 	static double			_seedRange;
 	static const double*	_pSeedSource;
 	static double			_seedBasalArea;
@@ -42,7 +42,7 @@ private:
 
 //Functions
 public:
-							GrammanoidTundra(
+							GraminoidTundra(
                                 const int& rAge=0, 
 								const bool& rIsTopoComplex=false, 
                                 const float& rSite=0., 
@@ -52,8 +52,8 @@ public:
                                 const double& rFireSensitivity=0,  
                                 const Species& rSpecSubCanopy=0, 
                                 const int treeDensity=-1);
-							GrammanoidTundra(const Frame& rFrame, const int treeDensity=-1);
-	virtual 				~GrammanoidTundra();
+							GraminoidTundra(const Frame& rFrame, const int treeDensity=-1);
+	virtual 				~GraminoidTundra();
     static void             setStaticData();
 	static void				clear();
 	Frame*					success(Landscape* pParent);
@@ -63,14 +63,14 @@ public:
 	//template<class T> T		get(RasterIO::ALFMapType mapType);
 	virtual float			getAsFloat(RasterIO::ALFMapType mapType);
 private:
-	void					_GrammanoidTundra(const int treeDensity);
+	void					_GraminoidTundra(const int treeDensity);
 	float			        getFireProb(const Landscape* pLandscape);
 	double					queryReply(Landscape* pParent, const double weight, const double* pParams=NULL);
 	double					getInitialBasalArea();
 };
 
 
-inline float                GrammanoidTundra::getFireProb(const Landscape* pLandscape) 
+inline float                GraminoidTundra::getFireProb(const Landscape* pLandscape) 
 // Overrides Fire::getFireProb() for the deciduous frame.  Returns this frame's fire probability calculated 
 // by multiplying this frame's climate and species fire probabilities.
 {
@@ -79,22 +79,22 @@ inline float                GrammanoidTundra::getFireProb(const Landscape* pLand
 	return getClimateFireProb(pLandscape) * ((WSpruce::getFireParam(0)-_fireProb) * _basalArea/_tundraSpruceBasalArea + _fireProb);
 }
 
-inline const float			GrammanoidTundra::getIgnitionDepressor()
+inline const float			GraminoidTundra::getIgnitionDepressor()
 {
 	return _ignitionDepressor;
 }
 
-inline const float			GrammanoidTundra::getHumanIgnitionProb() const 
+inline const float			GraminoidTundra::getHumanIgnitionProb() const 
 {
     return _humanIgnitionsProb; 
 }
 
-inline const unsigned char  GrammanoidTundra::type () const 
+inline const unsigned char  GraminoidTundra::type () const 
 { 
-    return gGrammanoidTundraID; 
+    return gGraminoidTundraID; 
 }
 
-inline double				GrammanoidTundra::queryReply (Landscape* pParent, const double weight, const double* pParams) 
+inline double				GraminoidTundra::queryReply (Landscape* pParent, const double weight, const double* pParams) 
 //Return the weighted seed source from this cell
 { 
 	return _basalArea*weight; 

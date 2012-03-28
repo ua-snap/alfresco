@@ -4,7 +4,7 @@
 CXX=mpicxx
 bin_PROGRAMS = frescocli
 frescocli_SOURCES = ../src/MainCLI.cpp ../src/Fresco.cpp ../src/CustomFresco.cpp ../src/Landscape.cpp ../src/BSpruce.cpp \
-		../src/WSpruce.cpp ../src/Tundra.cpp ../src/ShrubTundra.cpp ../src/GrammanoidTundra.cpp ../src/WetlandTundra.cpp ../src/RasterIO.cpp \
+		../src/WSpruce.cpp ../src/Tundra.cpp ../src/ShrubTundra.cpp ../src/GraminoidTundra.cpp ../src/WetlandTundra.cpp ../src/RasterIO.cpp \
 		../src/NoVeg.cpp ../src/PreCompiled.cpp ../src/CustomLandscape.cpp  \
 		../src/Frame.cpp ../src/Stat.cpp ../src/Fire.cpp ../src/Interface.cpp ../src/Climate.cpp ../src/Decid.cpp ../src/Grassland.cpp \
 		../src/Species.cpp ../src/Except.cpp \

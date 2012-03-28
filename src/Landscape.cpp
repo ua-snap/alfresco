@@ -503,7 +503,7 @@ Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, co
 {
 	if (pFrame->type() == gTundraID) return Fire::LOW;
 	else if (pFrame->type() == gShrubTundraID) return Fire::LOW;
-	else if (pFrame->type() == gGrammanoidTundraID) return Fire::LOW;
+	else if (pFrame->type() == gGraminoidTundraID) return Fire::LOW;
 	else if (pFrame->type() == gWetlandTundraID) return Fire::LOW;
 	else if (pFrame->type() == gDecidID) return pSpreaderFrame->burnSeverity;
 	// else BSpruce or WSpruce continue...

@@ -7,7 +7,7 @@
 //Include frame types
 #include "Tundra.h"
 #include "ShrubTundra.h"
-#include "GrammanoidTundra.h"
+#include "GraminoidTundra.h"
 #include "WetlandTundra.h"
 #include "BSpruce.h"
 #include "WSpruce.h"
