@@ -7,7 +7,7 @@
 #include "Decid.h"
 #include "Tundra.h"
 #include "ShrubTundra.h"
-#include "GrammanoidTundra.h"
+#include "GraminoidTundra.h"
 #include "WetlandTundra.h"
 #include "WSpruce.h"
 #include "Grassland.h"
@@ -35,7 +35,7 @@ void CustomFresco::	customSetup()
     gDecidID   = (byte)fif().nGet("Decid"); 
     gTundraID  = (byte)fif().nGet("Tundra");
     gShrubTundraID  = (byte)fif().nGet("ShrubTundra");
-    gGrammanoidTundraID  = (byte)fif().nGet("GrammanoidTundra");
+    gGraminoidTundraID  = (byte)fif().nGet("GraminoidTundra");
     gWetlandTundraID  = (byte)fif().nGet("WetlandTundra");
 
 
@@ -44,7 +44,7 @@ void CustomFresco::	customSetup()
 	validVegTypes.insert(gDecidID);
 	validVegTypes.insert(gTundraID);
 	validVegTypes.insert(gShrubTundraID);
-	validVegTypes.insert(gGrammanoidTundraID);
+	validVegTypes.insert(gGraminoidTundraID);
 	validVegTypes.insert(gWetlandTundraID);
 	validVegTypes.insert(gNoVegID);
 
@@ -61,7 +61,7 @@ void CustomFresco::	customSetup()
     Decid::setStaticData();
     Tundra::setStaticData();
     ShrubTundra::setStaticData();
-    GrammanoidTundra::setStaticData();
+    GraminoidTundra::setStaticData();
     WetlandTundra::setStaticData();
 
 	gNumSpecies = (int)validVegTypes.size();

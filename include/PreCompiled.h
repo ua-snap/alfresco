@@ -121,7 +121,7 @@ extern EDetailLevel FrescoFoundation_API    gDetailLevel;
 extern byte          FrescoFoundation_API    gNoVegID;
 extern byte          FrescoFoundation_API    gTundraID;
 extern byte          FrescoFoundation_API    gShrubTundraID;
-extern byte          FrescoFoundation_API    gGrammanoidTundraID;
+extern byte          FrescoFoundation_API    gGraminoidTundraID;
 extern byte          FrescoFoundation_API    gWetlandTundraID;
 extern byte          FrescoFoundation_API    gDecidID;
 extern byte          FrescoFoundation_API    gBSpruceID;

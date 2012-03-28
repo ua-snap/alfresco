@@ -15,7 +15,7 @@ Requires:	gdal
 Requires:	poco-foundation, poco-xml, poco-net
 Requires:	boost
 
-%define inst_dir /usr/bin
+%define inst_dir /usr
 
 %description
 This package provides the ALFRESCO modeling tool, in command line form.
@@ -26,17 +26,21 @@ This package provides the ALFRESCO modeling tool, in command line form.
 
 %build
 %configure
-./configure CXX=mpicxx
+./configure --prefix=${RPM_BUILD_ROOT}/%{inst_dir}/lib
 make %{?_smp_mflags}
+make install
 
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
 
-mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/
+mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/bin
+mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/lib64
+mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/include
 
-cp fresco ${RPM_BUILD_ROOT}/%{inst_dir}
-cp frescocli ${RPM_BUILD_ROOT}/%{inst_dir}
+cp src/fresco ${RPM_BUILD_ROOT}/%{inst_dir}/bin
+cp mpi/frescocli ${RPM_BUILD_ROOT}/%{inst_dir}/bin
+cp lib/ ${RPM_BUILD_ROOT}/%{inst_dir}/lib64
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}

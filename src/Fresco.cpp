@@ -36,7 +36,7 @@ long  FrescoFoundation_API          gNumSpecies			= 0;
 byte  FrescoFoundation_API          gNoVegID			= 255;
 byte  FrescoFoundation_API          gTundraID			= 255;
 byte  FrescoFoundation_API          gShrubTundraID			= 255;
-byte  FrescoFoundation_API          gGrammanoidTundraID			= 255;
+byte  FrescoFoundation_API          gGraminoidTundraID			= 255;
 byte  FrescoFoundation_API          gWetlandTundraID			= 255;
 byte  FrescoFoundation_API          gDecidID			= 255;
 byte  FrescoFoundation_API          gWSpruceID			= 255;
@@ -99,7 +99,7 @@ void Fresco::		clear()
     gNoVegID			= 255;
     gTundraID			= 255;
     gShrubTundraID			= 255;
-    gGrammanoidTundraID			= 255;
+    gGraminoidTundraID			= 255;
     gWetlandTundraID			= 255;
     gDecidID			= 255;
     gWSpruceID			= 255;

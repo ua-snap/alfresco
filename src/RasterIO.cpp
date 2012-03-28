@@ -141,7 +141,7 @@ RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int
 	_pVegColorTable->SetColorEntry(gShrubTundraID, &c);
 	// grammanoid tundra -- yellow/orange
 	c.c1=205; c.c2=92; c.c3=92; c.c4=255;   // alternate, straight yellow: r=240 g=240 b=20
-	_pVegColorTable->SetColorEntry(gGrammanoidTundraID, &c);
+	_pVegColorTable->SetColorEntry(gGraminoidTundraID, &c);
 	// wetland tundra -- yellow/orange
 	c.c1=127; c.c2=255; c.c3=212; c.c4=255;   // alternate, straight yellow: r=240 g=240 b=20
 	_pVegColorTable->SetColorEntry(gWetlandTundraID, &c);

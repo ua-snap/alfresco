@@ -8,12 +8,20 @@ frescocli
 # Output Maps #
 Output/
 # Build Files #
+.Tpo
+.deps
+.libs
+config.guess
+config.sub
 config.status
 configure
-Makefile
 depcomp
-missing
+libtool
+ltmain.sh
+m4/
+Makefile
 Makefile.in
+missing
 src/.deps
 src/.dirstamp
 install-sh
