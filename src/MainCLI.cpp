@@ -49,6 +49,9 @@ int main(int argc, char** argv) {
 		//string runDirectory = "/home/apbennett/alfresco";
 		//string outDirectory = runDirectory + "/Output";
 		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
+		//std::cout << "XYZ" << std::endl;
+		string x = "ABC";
+		//long int xx = (long) _dummysim->fif().dGet("RandSeed");
 		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
 		//int firstYear = _dummysim->fif().nGet("FirstYear");
 		int maxReps = _dummysim->fif().nGet("MaxReps");
@@ -82,11 +85,15 @@ int main(int argc, char** argv) {
 
 		std::ofstream sfile;
 		string sfile_ext = ".txt";
+		#ifdef WITHMPI
 		if (MPI::COMM_WORLD.Get_rank() == 0){
+		#endif
 			sfile.open("FireSizeEvents.txt");
 			sfile << "Year" << "\tRep" << "\tVal" << "\tCause" << "\tLow" << "\tMod" << "\tHighLSS" << "\tHighHSS" << std::endl;
 			sfile.close();
+		#ifdef WITHMPI
 		}
+		#endif
 		for (int i = 0; i < maxReps; i++){
 			for (int j = 0; j < MyStats->statArray.size(); j++){
 				if (MyStats->statArray[j]->statType == FIRESIZE){
@@ -118,8 +125,9 @@ int main(int argc, char** argv) {
 				}
 			}
 
+			#ifdef WITHMPI
 			MPI::COMM_WORLD.Barrier();
-
+			#endif
 		}
 	}
 	#ifdef WITHMPI

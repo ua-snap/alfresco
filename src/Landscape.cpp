@@ -188,7 +188,7 @@ void Landscape::		setup()
 		_fireSpeciesStat[s].setup("FireSpecies["+ToS(s)+"]",	_fireSpeciesStatFlags, false);
 		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]Events",	_fireIntervalStatFlags, false);
 
-		#ifdef WITHMPI
+		#ifdef WITHSTATS
 		MyStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps, MATRIX);
@@ -198,7 +198,7 @@ void Landscape::		setup()
 	_fireSizeStat.setup("FireSize", _fireSizeStatFlags, true);
 	_fireNumStat.setup("FireNum", _fireNumStatFlags, false);
 
-	#ifdef WITHMPI
+	#ifdef WITHSTATS
 	MyStats->addStatFile("FireSize", numYears, numReps, MATRIX);
 	MyStats->addStatFile("FireSizeEvents", numYears, numReps, FIRESIZE);
 	MyStats->addStatFile("FireNum", numYears, numReps, MATRIX);
@@ -259,7 +259,7 @@ void Landscape::		yearEnd()
 		_vegDistributionStat[s].Add(gYear, gRep);	//Store the species distribtuion tally.
 		_fireSpeciesStat[s].Add(gYear,gRep);	    //Store the species that burned tally.
 
-		#ifdef WITHMPI
+		#ifdef WITHSTATS
 		stringstream fs;
 		fs << "FireSpecies[" << s << "]";
 		stringstream vd;
@@ -294,7 +294,7 @@ void Landscape::		succession()
 				//Update veg residence times.
 				_vegResidenceStat[_pFrames[r][c]->type()].Add(gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 
-				#ifdef WITHMPI
+				#ifdef WITHSTATS
 				stringstream vd;
 				vd << "VegDist[" << (int)_pFrames[r][c]->type() << "]";
 				MyStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
@@ -419,7 +419,7 @@ void Landscape::		doIgnitions()
 				
 				_fireSizeStat.Add(gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 
-				#ifdef WITHMPI	
+				#ifdef WITHSTATS
 				MyStats->addStat("FireSize", gYear, gRep, fireSize);
 				MyStats->addStat("FireSizeEvents", gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 				#endif
@@ -452,7 +452,7 @@ void Landscape::		doIgnitions()
 
 	}
 	_fireNumStat.Add(gYear, gRep, fireNum);
-	#ifdef WITHMPI
+	#ifdef WITHSTATS
 	MyStats->addStat("FireNum", gYear, gRep, fireNum);
 	#endif
 
@@ -601,7 +601,7 @@ void Landscape::		logFireStats (int interval, bool ignoreFirstInterval)
 		_fireIntervalStat[(int)specSp].Add(gYear, gRep, ((interval > 0) ? interval : -interval));
 		stringstream ss;
 		ss << "FireInterval[" << (int)specSp << "]Events";
-		#ifdef WITHMPI
+		#ifdef WITHSTATS
 		MyStats->addStat(ss.str(), gYear, gRep, ((interval > 0) ? interval : -interval));
 		#endif
 	}

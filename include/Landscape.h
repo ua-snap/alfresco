@@ -8,7 +8,7 @@
 #include "StatArray.h"
 #include "StatFile.h"
 
-#ifdef WITHMPI
+#ifdef WITHSTATS
 extern StatArray* MyStats;
 #endif
 
