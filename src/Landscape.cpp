@@ -29,8 +29,8 @@
 int				Frame::_outFlags					= 0;				//A flag indicating which data to output when the object is written
 bool			Landscape::_cropNeighbors			= false;
 std::string		Landscape::_humanIgnitionsFilename	= "";
-double			Landscape::_xllCorner                 =.0;
-double			Landscape::_yllCorner                 =.0;
+double			Landscape::_xtlCorner                 =.0;
+double			Landscape::_ytlCorner                 =.0;
 
 
 struct SNeighbor
@@ -73,8 +73,8 @@ void Landscape::		clear()
 	//Clear Landscape settings.
 	_humanIgnitionsFilename	= "";
 	_cropNeighbors			= false;
-	_xllCorner				= 0;
-	_yllCorner				= 0;
+	_xtlCorner				= 0;
+	_ytlCorner				= 0;
 	_row					= 0;
 	_col					= 0;
 	//Clear cells.
@@ -123,8 +123,8 @@ void Landscape::		setup()
     gXSize				        = FRESCO->fif().nGet("XSize");
     gCellSize				    = FRESCO->fif().dGet("CellSize");
     _cropNeighbors		        = FRESCO->fif().bGet("CropNeighbors");
-    _xllCorner		            = FRESCO->fif().dGet("XLLCorner");
-    _yllCorner			        = FRESCO->fif().dGet("YLLCorner");
+    _xtlCorner		            = FRESCO->fif().dGet("XTLCorner");
+    _ytlCorner			        = FRESCO->fif().dGet("YTLCorner");
     _vegDistributionStatFlags	= FRESCO->fif().nGet("Stat.VegDist.Flags");
     _vegResidenceStatFlags	    = FRESCO->fif().nGet("Stat.VegResidence.Flags");
     _fireSpeciesStatFlags	    = FRESCO->fif().nGet("Stat.FireSpecies.Flags");
@@ -141,7 +141,7 @@ void Landscape::		setup()
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
-	gIO = new RasterIO(_xllCorner, _yllCorner, gXOffset, gYOffset, gXSize, gYSize, gCellSize, -gCellSize, 0, 0,
+	gIO = new RasterIO(_xtlCorner, _ytlCorner, gXOffset, gYOffset, gXSize, gYSize, gCellSize, -gCellSize, 0, 0,
 						"ALFRESCO " + Fresco::version() + " from UAF. Config file: " + FRESCO->fif().fileName(),
 						requireAaeacForInput, applyAaeacToOutput);
 

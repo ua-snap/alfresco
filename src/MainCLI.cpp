@@ -49,9 +49,6 @@ int main(int argc, char** argv) {
 		//string runDirectory = "/home/apbennett/alfresco";
 		//string outDirectory = runDirectory + "/Output";
 		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
-		//std::cout << "XYZ" << std::endl;
-		string x = "ABC";
-		//long int xx = (long) _dummysim->fif().dGet("RandSeed");
 		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
 		//int firstYear = _dummysim->fif().nGet("FirstYear");
 		int maxReps = _dummysim->fif().nGet("MaxReps");
