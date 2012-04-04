@@ -59,6 +59,14 @@ std::string				AppendRepYear(const std::string file, const int rep, const int ye
 	return result;
 }
 
+std::string				AppendMonthYear(const std::string file, const int month, const int year) 
+/** Inserts the month and year (_month_year) into the filename in front of the last decimal point so as not to corrupt the file extension. */
+{
+	std::string result;
+	result = file.substr(0,file.find_last_of(".")) + "_" + ToS(month) + "_" + ToS(year) + file.substr(file.find_last_of("."),file.length()) + '\0';
+	return result;
+}
+
 std::string				AppendYearMonth(const std::string file, const int year, const int month) 
 /** Inserts the year and month (_year_month) into the filename in front of the last decimal point so as not to corrupt the file extension. */
 {

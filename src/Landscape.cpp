@@ -29,8 +29,8 @@
 int				Frame::_outFlags					= 0;				//A flag indicating which data to output when the object is written
 bool			Landscape::_cropNeighbors			= false;
 std::string		Landscape::_humanIgnitionsFilename	= "";
-double			Landscape::_xllCorner                 =.0;
-double			Landscape::_yllCorner                 =.0;
+double			Landscape::_xulCorner                 =.0;
+double			Landscape::_yulCorner                 =.0;
 
 
 struct SNeighbor
@@ -73,8 +73,8 @@ void Landscape::		clear()
 	//Clear Landscape settings.
 	_humanIgnitionsFilename	= "";
 	_cropNeighbors			= false;
-	_xllCorner				= 0;
-	_yllCorner				= 0;
+	_xulCorner				= 0;
+	_yulCorner				= 0;
 	_row					= 0;
 	_col					= 0;
 	//Clear cells.
@@ -123,8 +123,8 @@ void Landscape::		setup()
     gXSize				        = FRESCO->fif().nGet("XSize");
     gCellSize				    = FRESCO->fif().dGet("CellSize");
     _cropNeighbors		        = FRESCO->fif().bGet("CropNeighbors");
-    _xllCorner		            = FRESCO->fif().dGet("XLLCorner");
-    _yllCorner			        = FRESCO->fif().dGet("YLLCorner");
+    _xulCorner		            = FRESCO->fif().dGet("XULCorner");
+    _yulCorner			        = FRESCO->fif().dGet("YULCorner");
     _vegDistributionStatFlags	= FRESCO->fif().nGet("Stat.VegDist.Flags");
     _vegResidenceStatFlags	    = FRESCO->fif().nGet("Stat.VegResidence.Flags");
     _fireSpeciesStatFlags	    = FRESCO->fif().nGet("Stat.FireSpecies.Flags");
@@ -141,7 +141,7 @@ void Landscape::		setup()
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
-	gIO = new RasterIO(_xllCorner, _yllCorner, gXOffset, gYOffset, gXSize, gYSize, gCellSize, -gCellSize, 0, 0,
+	gIO = new RasterIO(_xulCorner, _yulCorner, gXOffset, gYOffset, gXSize, gYSize, gCellSize, -gCellSize, 0, 0,
 						"ALFRESCO " + Fresco::version() + " from UAF. Config file: " + FRESCO->fif().fileName(),
 						requireAaeacForInput, applyAaeacToOutput);
 
@@ -188,7 +188,7 @@ void Landscape::		setup()
 		_fireSpeciesStat[s].setup("FireSpecies["+ToS(s)+"]",	_fireSpeciesStatFlags, false);
 		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]Events",	_fireIntervalStatFlags, false);
 
-		#ifdef WITHMPI
+		#ifdef WITHSTATS
 		MyStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps, MATRIX);
 		MyStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps, MATRIX);
@@ -198,7 +198,7 @@ void Landscape::		setup()
 	_fireSizeStat.setup("FireSize", _fireSizeStatFlags, true);
 	_fireNumStat.setup("FireNum", _fireNumStatFlags, false);
 
-	#ifdef WITHMPI
+	#ifdef WITHSTATS
 	MyStats->addStatFile("FireSize", numYears, numReps, MATRIX);
 	MyStats->addStatFile("FireSizeEvents", numYears, numReps, FIRESIZE);
 	MyStats->addStatFile("FireNum", numYears, numReps, MATRIX);
@@ -259,7 +259,7 @@ void Landscape::		yearEnd()
 		_vegDistributionStat[s].Add(gYear, gRep);	//Store the species distribtuion tally.
 		_fireSpeciesStat[s].Add(gYear,gRep);	    //Store the species that burned tally.
 
-		#ifdef WITHMPI
+		#ifdef WITHSTATS
 		stringstream fs;
 		fs << "FireSpecies[" << s << "]";
 		stringstream vd;
@@ -294,7 +294,7 @@ void Landscape::		succession()
 				//Update veg residence times.
 				_vegResidenceStat[_pFrames[r][c]->type()].Add(gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 
-				#ifdef WITHMPI
+				#ifdef WITHSTATS
 				stringstream vd;
 				vd << "VegDist[" << (int)_pFrames[r][c]->type() << "]";
 				MyStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
@@ -419,7 +419,7 @@ void Landscape::		doIgnitions()
 				
 				_fireSizeStat.Add(gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 
-				#ifdef WITHMPI	
+				#ifdef WITHSTATS
 				MyStats->addStat("FireSize", gYear, gRep, fireSize);
 				MyStats->addStat("FireSizeEvents", gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 				#endif
@@ -452,7 +452,7 @@ void Landscape::		doIgnitions()
 
 	}
 	_fireNumStat.Add(gYear, gRep, fireNum);
-	#ifdef WITHMPI
+	#ifdef WITHSTATS
 	MyStats->addStat("FireNum", gYear, gRep, fireNum);
 	#endif
 
@@ -601,7 +601,7 @@ void Landscape::		logFireStats (int interval, bool ignoreFirstInterval)
 		_fireIntervalStat[(int)specSp].Add(gYear, gRep, ((interval > 0) ? interval : -interval));
 		stringstream ss;
 		ss << "FireInterval[" << (int)specSp << "]Events";
-		#ifdef WITHMPI
+		#ifdef WITHSTATS
 		MyStats->addStat(ss.str(), gYear, gRep, ((interval > 0) ? interval : -interval));
 		#endif
 	}

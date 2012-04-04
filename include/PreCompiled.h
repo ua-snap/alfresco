@@ -137,6 +137,7 @@ void	    FrescoFoundation_API            ShowOutput(const std::string output);
 void	    FrescoFoundation_API            ShowOutput(std::ostringstream& rOutput);
 void	    FrescoFoundation_API            WriteDebug(const std::string message);
 std::string FrescoFoundation_API            AppendRepYear(const std::string file, const int rep=gRep, const int year=gYear);
+std::string	FrescoFoundation_API			AppendMonthYear(const std::string file, const int month, const int year);
 std::string	FrescoFoundation_API			AppendYearMonth(const std::string file, const int year, const int month);
 std::string FrescoFoundation_API            AppendYear(const std::string file, const int year=gYear);
 bool	    FrescoFoundation_API            InputFileExists(std::string path);

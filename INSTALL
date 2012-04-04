@@ -9,3 +9,9 @@ PATH - May need to add the directory of the MPI C++ compiler wrapper
 LD_LIBRARY_PATH - Set to the directory of the MPI libraries
 
 Once this is complete, the next step is to run ./configure
+
+The following libraries are required by ALFRESCO:
+	libpoco
+	libboost
+	openmpi (or an MPI implementation)
+	gdal
