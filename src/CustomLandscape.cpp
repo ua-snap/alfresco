@@ -19,6 +19,7 @@
 CustomLandscape::		    CustomLandscape(const int rows, const int cols) : Landscape (rows, cols)
 {
 	_pVegSpatialInput				= 0;
+	_pVegMaskSpatialInput				= 0;
 	_pSiteSpatialInput				= 0;
 	_pTreeDensitySpatialInput		= 0;
 	_pAgeSpatialInput				= 0;
@@ -46,7 +47,9 @@ void CustomLandscape::		clear()
 	_ageInputFile			= "";
 	_topoInputFile			= "";
 	_vegInputFile			= "";
+	_vegMaskInputFile			= "";
 	_isForcedVegTransitions	= false;
+	_isUsingVegMask	= false;
 	_vegTransitionFile		= "";
     _mapStats.clear();
     //Suppression settings
@@ -79,6 +82,7 @@ void CustomLandscape::		clear()
 void CustomLandscape::    	clearLayers()
 {
 	if (_pVegSpatialInput)				{for (int r=0;r<gYSize;r++) delete[] _pVegSpatialInput[r];				delete[] _pVegSpatialInput;				_pVegSpatialInput				= 0; }
+	if (_pVegMaskSpatialInput)				{for (int r=0;r<gYSize;r++) delete[] _pVegMaskSpatialInput[r];				delete[] _pVegMaskSpatialInput;				_pVegMaskSpatialInput				= 0; }
 	if (_pSiteSpatialInput)			    {for (int r=0;r<gYSize;r++) delete[] _pSiteSpatialInput[r];				delete[] _pSiteSpatialInput;			_pSiteSpatialInput				= 0; }
 	if (_pTreeDensitySpatialInput)		{for (int r=0;r<gYSize;r++) delete[] _pTreeDensitySpatialInput[r];		delete[] _pTreeDensitySpatialInput;		_pTreeDensitySpatialInput		= 0; }
 	if (_pAgeSpatialInput)				{for (int r=0;r<gYSize;r++) delete[] _pAgeSpatialInput[r];				delete[] _pAgeSpatialInput;				_pAgeSpatialInput				= 0; }
@@ -108,9 +112,19 @@ void CustomLandscape::		setup()
     setupMapStats();
     
     _isUsingUniqueVegAndAgePerRep   = FRESCO->fif().bGet("UseUniqueVegAndAgePerRep");
+    if (FRESCO->fif().CheckKey("UseVegMask")){
+    	_isUsingVegMask = FRESCO->fif().bGet("UseVegMask");
+    } else {
+	_isUsingVegMask = false;
+    }
     _isUsingUniqueBurnSeverityPerRep= FRESCO->fif().bGet("UseUniqueBurnSeverityPerRep");
     _yearOfUniqueInputPerRep        = FRESCO->fif().nGet("YearOfUniqueInputPerRep");
     _vegInputFile			        = FormatDirectory(FRESCO->fif().sGet("VegInputFile"));
+    if (FRESCO->fif().CheckKey("UseVegMask")){
+    	_vegMaskInputFile			        = FormatDirectory(FRESCO->fif().sGet("VegMaskFile"));
+    } else {
+	_isUsingVegMask = false;
+    }
     _vegTransitionFile		        = FormatDirectory(FRESCO->fif().sGet("VegTransitionFile"));
     _isForcedVegTransitions	        = FRESCO->fif().bGet("IsForcedVegTransitions");
     _ageInputFile			        = FormatDirectory(FRESCO->fif().sGet("AgeInputFile"));
@@ -126,6 +140,7 @@ void CustomLandscape::		setup()
 
 	//Make space for landscape data.
 	_pVegSpatialInput				= new byte*[gYSize];
+	_pVegMaskSpatialInput				= new byte*[gYSize];
 	_pSiteSpatialInput				= new float*[gYSize];
 	_pTreeDensitySpatialInput		= new int*[gYSize];
 	_pAgeSpatialInput				= new int*[gYSize];
@@ -137,6 +152,7 @@ void CustomLandscape::		setup()
 	_pHistoricalFireSpatialInput	= new byte*[gYSize];
 	for (r=0;r<gYSize;r++) {
 		_pVegSpatialInput[r]		    = new byte[gXSize];
+		_pVegMaskSpatialInput[r]		    = new byte[gXSize];
 		_pSiteSpatialInput[r]			= new float[gXSize];
 		_pTreeDensitySpatialInput[r]	= new int[gXSize];
 		_pAgeSpatialInput[r]			= new int[gXSize];
@@ -146,8 +162,10 @@ void CustomLandscape::		setup()
 		_pBurnSeveritySpatialInput[r]	= new byte[gXSize];
 		_pSuppressions[r]				= new byte[gXSize];
 		_pHistoricalFireSpatialInput[r] = new byte[gXSize];
-        for (c=0;c<gXSize;c++) {
+
+        	for (c=0;c<gXSize;c++) {
 			_pVegSpatialInput[r][c]		        = 0;
+			_pVegMaskSpatialInput[r][c]		        = 0;
 			_pSiteSpatialInput[r][c]		    = 0;
 			_pTreeDensitySpatialInput[r][c]	    = 0;
 			_pAgeSpatialInput[r][c]			    = 0;
@@ -250,6 +268,11 @@ void CustomLandscape::		repStart()
 		gIO->readRasterFile(GetFullPath(gInputBasePath, _ageInputFile), _pAgeSpatialInput, false);		
 	}
 
+	//Read in Vegetation Mask if being used
+	if (_isUsingVegMask){
+		gIO->readRasterFile(GetFullPath(gInputBasePath, _vegMaskInputFile), _pVegMaskSpatialInput, false);
+	}
+
 
 	//Burn Severity	
 	if (_isUsingUniqueBurnSeverityPerRep && _burnSeverityInputFile != "") {
@@ -285,6 +308,10 @@ void CustomLandscape::		repStart()
 			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (IsNodata(frameTypeID))    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else								{ throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS((int)frameTypeID)); }
+
+			if (_isUsingVegMask && _pVegMaskSpatialInput[r][c] == 0){
+				_pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);
+			}
 		}
 	}
 
