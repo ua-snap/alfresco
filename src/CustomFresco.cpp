@@ -63,6 +63,5 @@ void CustomFresco::	customSetup()
 	ShrubTundra::setStaticData();
 	GraminoidTundra::setStaticData();
 	WetlandTundra::setStaticData();
-
 	gNumSpecies = (int)validVegTypes.size();
 }
