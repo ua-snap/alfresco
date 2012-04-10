@@ -29,14 +29,14 @@ CustomFresco::		~CustomFresco()
 
 void CustomFresco::	customSetup()
 {
-    output("Loading Species settings.\n");
-    gBSpruceID = (byte)fif().nGet("BSpruce");
-    gWSpruceID = (byte)fif().nGet("WSpruce");
-    gDecidID   = (byte)fif().nGet("Decid"); 
-    gTundraID  = (byte)fif().nGet("Tundra");
-    gShrubTundraID  = (byte)fif().nGet("ShrubTundra");
-    gGraminoidTundraID  = (byte)fif().nGet("GraminoidTundra");
-    gWetlandTundraID  = (byte)fif().nGet("WetlandTundra");
+	output("Loading Species settings.\n");
+	gBSpruceID = (byte)fif().nGet("BSpruce");
+	gWSpruceID = (byte)fif().nGet("WSpruce");
+	gDecidID   = (byte)fif().nGet("Decid"); 
+	gTundraID  = (byte)fif().nGet("Tundra");
+	gShrubTundraID  = (byte)fif().nGet("ShrubTundra");
+	gGraminoidTundraID  = (byte)fif().nGet("GraminoidTundra");
+	gWetlandTundraID  = (byte)fif().nGet("WetlandTundra");
 
 
 	validVegTypes.insert(gBSpruceID);
@@ -57,12 +57,12 @@ void CustomFresco::	customSetup()
 	}
 
 	BSpruce::setStaticData();
-    WSpruce::setStaticData();
-    Decid::setStaticData();
-    Tundra::setStaticData();
-    ShrubTundra::setStaticData();
-    GraminoidTundra::setStaticData();
-    WetlandTundra::setStaticData();
+	WSpruce::setStaticData();
+	Decid::setStaticData();
+	Tundra::setStaticData();
+	ShrubTundra::setStaticData();
+	GraminoidTundra::setStaticData();
+	WetlandTundra::setStaticData();
 
 	gNumSpecies = (int)validVegTypes.size();
 }
