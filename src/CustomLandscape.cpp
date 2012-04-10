@@ -666,11 +666,13 @@ void CustomLandscape::      setupSuppressionStats()
 	for (int s=1; s<=NUM_SUPPRESSION_CLASSES; s++) {
 		_burnPartitionBySuppClassStats[s].setup("BurnsBySupp["+ToS(s)+"]", _burnPartitionBySuppClassStatFlags, false);
 
+
+		#ifdef WITHSTATS
 		int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
 		int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
+
 		stringstream ss;
 		ss << "BurnsBySupp[" << ToS(s) << "]";
-		#ifdef WITHSTATS
 		MyStats->addStatFile(ss.str(), numYears, numReps, MATRIX);
 		#endif
     }
@@ -695,9 +697,9 @@ void CustomLandscape::      setupHabitatStats()
             SHabitatStat habitat;
             habitat.Stat.setup("Habitat"+ToS(pTypes[i]), flags, false);
 
+	    #ifdef WITHSTATS
 	    int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
 	    int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
-	    #ifdef WITHSTATS
 	    MyStats->addStatFile("Habitat"+ToS(pTypes[i]), numYears, numReps, MATRIX);
 	    #endif
             habitat.MinAge = pAgeRange[0];
