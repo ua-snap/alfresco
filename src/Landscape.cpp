@@ -178,8 +178,10 @@ void Landscape::		setup()
 	_fireSpeciesStat.resize(gNumSpecies);
 	_fireIntervalStat.resize(gNumSpecies);
 
+	#ifdef WITHSTATS
 	int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
 	int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
+	#endif
 
 	for (int s=0; s<gNumSpecies; s++) 
 	{
