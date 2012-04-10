@@ -62,6 +62,10 @@ private:
 	std::string			_vegTransitionFile;
 	bool				_isUsingUniqueVegAndAgePerRep;
     int					_yearOfUniqueInputPerRep;
+	//Veg Mask Layer - To mask out processing areas
+	std::string			_vegMaskInputFile;
+	byte**				_pVegMaskSpatialInput;
+	bool				_isUsingVegMask;
 	//Age Layer
 	std::string			_ageInputFile;
 	int**				_pAgeSpatialInput;

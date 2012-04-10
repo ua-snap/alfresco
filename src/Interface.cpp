@@ -356,16 +356,20 @@ Tag CInterface::CheckType (const char *pcWord) {
 	if (tType != UNKNOWN) return tType;
 
 	// Check if it is a boolean value
-	if ( pcWord[0] == 't' || pcWord[0] == 'T')
-		if (strlen(pcWord) == 1)
+	if ( pcWord[0] == 't' || pcWord[0] == 'T'){
+		if (strlen(pcWord) == 1){
 			return bTag;
-		else
+		} else {
 			if (!strcmp("true",pcWord) || !strcmp("True",pcWord) || !strcmp("TRUE",pcWord)) return bTag;
-	if ( pcWord[0] == 'f' || pcWord[0] == 'F')
-		if (strlen(pcWord) == 1)
+		}
+	}
+	if ( pcWord[0] == 'f' || pcWord[0] == 'F'){
+		if (strlen(pcWord) == 1){
 			return bTag;
-		else
+		} else {
 			if (!strcmp("false",pcWord) || !strcmp("False",pcWord) || !strcmp("FALSE",pcWord)) return bTag;
+		}
+	}
 
 	// Check that the word does not contain any reserved seperators
 	if ( !strpbrk(pcWord,ResSep) ) return sTag;
@@ -390,7 +394,7 @@ Tag CInterface::CheckNumber(const char *pcWord) {
 	while (pcWord[nPos] == ' ' || pcWord[nPos] == '\t') nPos++;		// Eat white space
 	if (pcWord[nPos] == '+' || pcWord[nPos] == '-') nPos++;			// Check sign
 	if (!pcWord[nPos]) return UNKNOWN;								// There needs to be at least one digit
-	if (pcWord[nPos] == '0')										// Hex or octal
+	if (pcWord[nPos] == '0'){										// Hex or octal
 		if (pcWord[nPos+1] == 'x' || pcWord[nPos+1] == 'X') {		// Hex format for integer data
 			Hex = true;
 			nPos += 2;
@@ -400,7 +404,7 @@ Tag CInterface::CheckNumber(const char *pcWord) {
 			Oct = true;
 			nPos += 1;
 		} 
-
+	}
 	const char *pcPos = &(pcWord[nPos]);							// Eat mantessa digits (integer or float)
 	char *pcDigits = NULL;
 	if (Hex) {														// Hex case

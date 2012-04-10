@@ -92,10 +92,10 @@ int main(int argc, char** argv) {
 		}
 		#endif
 		for (int i = 0; i < maxReps; i++){
-			for (int j = 0; j < MyStats->statArray.size(); j++){
+			for (unsigned int j = 0; j < MyStats->statArray.size(); j++){
 				if (MyStats->statArray[j]->statType == FIRESIZE){
 					sfile.open("FireSizeEvents.txt",ios_base::app);
-					for (int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
+					for (unsigned int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
 						if (MyStats->statArray[j]->statVector[k][1] == i){
 							sfile << MyStats->statArray[j]->statVector[k][0] << "\t";
 							sfile << MyStats->statArray[j]->statVector[k][1] << "\t";
@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
 				}	
 				if (MyStats->statArray[j]->statType == LIST){
 					sfile.open((MyStats->statArray[j]->getTitle() + sfile_ext).c_str(), ios_base::app);
-					for (int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
+					for (unsigned int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
 						if (MyStats->statArray[j]->statVector[k][1] == i){
 							sfile << MyStats->firstYear + MyStats->statArray[j]->statVector[k][0] << "\t";
 							sfile << MyStats->statArray[j]->statVector[k][1] << "\t";
