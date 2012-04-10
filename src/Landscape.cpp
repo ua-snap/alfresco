@@ -512,8 +512,8 @@ Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, co
 
 	// Test for spatial corellation (a.k.a: should severity be adopted from spreading cell?)
 	const float test = GetNextRandom();
-	if (!pFrame->hasComplexTopo() && test<Fire::burnSeveritySettings.FlatTopoWeight  
-	  || pFrame->hasComplexTopo() && test<Fire::burnSeveritySettings.ComplexTopoWeight)
+	if ((!pFrame->hasComplexTopo() && test<Fire::burnSeveritySettings.FlatTopoWeight)  
+	  || (pFrame->hasComplexTopo() && test<Fire::burnSeveritySettings.ComplexTopoWeight))
 	{
 		return pSpreaderFrame->burnSeverity;
 	}

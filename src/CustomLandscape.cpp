@@ -226,7 +226,7 @@ void CustomLandscape::		setup()
 	}
 
     //Load suppression transition data.
-    if (_isFireSuppressionOn = FRESCO->fif().bGet("Fire.Suppression.On")) {
+    if ((_isFireSuppressionOn = FRESCO->fif().bGet("Fire.Suppression.On"))) {
         _suppressionFilename = FormatDirectory(FRESCO->fif().sGet("Fire.Suppression.Basename"));
         setupSuppressionTransitions();
     }
