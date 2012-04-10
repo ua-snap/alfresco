@@ -1,7 +1,6 @@
 #ifndef Fresco_PreCompiled_h
 #define Fresco_PreCompiled_h
 
-#pragma warning(disable: 4305 4244)			//Disable the warnings concerning conversion of doubles to floats
 
 #define Fresco_Is_Client
 

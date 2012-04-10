@@ -3,7 +3,6 @@
 // Provide a comprehensive include list so anything that includes CInterface also includes the relevent library includes
 // this means than any file that includes CInterface in it's include chain won't need to include any of these files.
 
-#pragma warning( disable : 4305 4244 )						// Disable the warnings concerning conversion of doubles to floats
 
 #include "PreCompiled.h"
 #include "Except.h"										    // Include the rudimentary error handling capabilities
