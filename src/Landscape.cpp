@@ -279,7 +279,7 @@ void Landscape::		succession()
 /** 
  * This function controls succession at the landscape level.  Since succession is purely a cell
  * level function, this algorithm steps through each cell on the landscape and calls 
- * Frame::success to see if the cell goes through a successional transition.  It if does, the
+ * Frame::success() to see if the cell goes through a successional transition.  If it does, the
  * actual transition of pointers is a landscape level job and is executed.  Also, relevent
  * statistics are updated in the event of a transfer.
  */
