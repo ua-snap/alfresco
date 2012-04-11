@@ -20,7 +20,7 @@ using std::string;
  *  * Contains the initial launching of the ALFRESCO model as well as the master/slave setup. 
  *  */
 
-StatArray* MyStats;
+StatArray* RunStats;
 int main(int argc, char** argv) {
 	int id = 0;
 	int max = 1;
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
 	#endif
 
 	if (args->getHelp() != true){
-		MyStats = new StatArray();
+		RunStats = new StatArray();
 
 		int rc = 0;
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
 		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
 		//int firstYear = _dummysim->fif().nGet("FirstYear");
 		int maxReps = _dummysim->fif().nGet("MaxReps");
-		MyStats->setFirstYear(_dummysim->fif().nGet("FirstYear"));
+		RunStats->setFirstYear(_dummysim->fif().nGet("FirstYear"));
 		#ifdef WITHMPI
 		std::cout << "MPI Rank: " << id << " of: " << max << std::endl;
 		#endif
@@ -74,11 +74,11 @@ int main(int argc, char** argv) {
 
 		#ifdef WITHMPI
 		if (max > 1){
-		MyStats->gatherStats();
+		RunStats->gatherStats();
 		MPI::COMM_WORLD.Barrier();
 		}
 		#endif
-		MyStats->writeStats();
+		RunStats->writeStats();
 
 		std::ofstream sfile;
 		string sfile_ext = ".txt";
@@ -92,30 +92,30 @@ int main(int argc, char** argv) {
 		}
 		#endif
 		for (int i = 0; i < maxReps; i++){
-			for (unsigned int j = 0; j < MyStats->statArray.size(); j++){
-				if (MyStats->statArray[j]->statType == FIRESIZE){
+			for (unsigned int j = 0; j < RunStats->statArray.size(); j++){
+				if (RunStats->statArray[j]->statType == FIRESIZE){
 					sfile.open("FireSizeEvents.txt",ios_base::app);
-					for (unsigned int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
-						if (MyStats->statArray[j]->statVector[k][1] == i){
-							sfile << MyStats->statArray[j]->statVector[k][0] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][1] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][2] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][3] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][4] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][5] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][6] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][7] << std::endl;
+					for (unsigned int k = 0; k < RunStats->statArray[j]->statVector.size(); k++){
+						if (RunStats->statArray[j]->statVector[k][1] == i){
+							sfile << RunStats->statArray[j]->statVector[k][0] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][1] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][2] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][3] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][4] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][5] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][6] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][7] << std::endl;
 						}
 					}
 					sfile.close();
 				}	
-				if (MyStats->statArray[j]->statType == LIST){
-					sfile.open((MyStats->statArray[j]->getTitle() + sfile_ext).c_str(), ios_base::app);
-					for (unsigned int k = 0; k < MyStats->statArray[j]->statVector.size(); k++){
-						if (MyStats->statArray[j]->statVector[k][1] == i){
-							sfile << MyStats->firstYear + MyStats->statArray[j]->statVector[k][0] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][1] << "\t";
-							sfile << MyStats->statArray[j]->statVector[k][2] << std::endl;
+				if (RunStats->statArray[j]->statType == LIST){
+					sfile.open((RunStats->statArray[j]->getTitle() + sfile_ext).c_str(), ios_base::app);
+					for (unsigned int k = 0; k < RunStats->statArray[j]->statVector.size(); k++){
+						if (RunStats->statArray[j]->statVector[k][1] == i){
+							sfile << RunStats->firstYear + RunStats->statArray[j]->statVector[k][0] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][1] << "\t";
+							sfile << RunStats->statArray[j]->statVector[k][2] << std::endl;
 						}
 					}
 					sfile.close();

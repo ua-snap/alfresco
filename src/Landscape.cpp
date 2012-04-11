@@ -191,19 +191,19 @@ void Landscape::		setup()
 		_fireIntervalStat[s].setup("FireInterval["+ToS(s)+"]Events",	_fireIntervalStatFlags, false);
 
 		#ifdef WITHSTATS
-		MyStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps, MATRIX);
-		MyStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps, MATRIX);
-		MyStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps, MATRIX);
-		MyStats->addStatFile("FireInterval["+ToS(s)+"]Events", numYears, numReps, LIST);
+		RunStats->addStatFile("VegDist["+ToS(s)+"]", numYears, numReps, MATRIX);
+		RunStats->addStatFile("VegRes["+ToS(s)+"]", numYears, numReps, MATRIX);
+		RunStats->addStatFile("FireSpecies["+ToS(s)+"]", numYears, numReps, MATRIX);
+		RunStats->addStatFile("FireInterval["+ToS(s)+"]Events", numYears, numReps, LIST);
 		#endif
 	}
 	_fireSizeStat.setup("FireSize", _fireSizeStatFlags, true);
 	_fireNumStat.setup("FireNum", _fireNumStatFlags, false);
 
 	#ifdef WITHSTATS
-	MyStats->addStatFile("FireSize", numYears, numReps, MATRIX);
-	MyStats->addStatFile("FireSizeEvents", numYears, numReps, FIRESIZE);
-	MyStats->addStatFile("FireNum", numYears, numReps, MATRIX);
+	RunStats->addStatFile("FireSize", numYears, numReps, MATRIX);
+	RunStats->addStatFile("FireSizeEvents", numYears, numReps, FIRESIZE);
+	RunStats->addStatFile("FireNum", numYears, numReps, MATRIX);
 	#endif
 
 }
@@ -266,8 +266,8 @@ void Landscape::		yearEnd()
 		fs << "FireSpecies[" << s << "]";
 		stringstream vd;
 		vd << "VegDist[" << s << "]";
-		MyStats->addStat(fs.str(), gYear, gRep, _fireSpeciesStat[s].m_lTally);
-		MyStats->addStat(vd.str(), gYear, gRep, _vegDistributionStat[s].m_lTally);
+		RunStats->addStat(fs.str(), gYear, gRep, _fireSpeciesStat[s].m_lTally);
+		RunStats->addStat(vd.str(), gYear, gRep, _vegDistributionStat[s].m_lTally);
 		#endif
 
 	}
@@ -299,7 +299,7 @@ void Landscape::		succession()
 				#ifdef WITHSTATS
 				stringstream vd;
 				vd << "VegDist[" << (int)_pFrames[r][c]->type() << "]";
-				MyStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
+				RunStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 				#endif
 				//Process the succession.
 				delete _pFrames[r][c];
@@ -422,8 +422,8 @@ void Landscape::		doIgnitions()
 				_fireSizeStat.Add(gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 
 				#ifdef WITHSTATS
-				MyStats->addStat("FireSize", gYear, gRep, fireSize);
-				MyStats->addStat("FireSizeEvents", gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
+				RunStats->addStat("FireSize", gYear, gRep, fireSize);
+				RunStats->addStat("FireSizeEvents", gYear, gRep, fireSize, currentBurnCause==Fire::HUMAN?1:0, severitySizes[Fire::LOW], severitySizes[Fire::MODERATE], severitySizes[Fire::HIGH_LSS], severitySizes[Fire::HIGH_HSS]);
 				#endif
 				
 				fireSizeTotal += fireSize;
@@ -455,7 +455,7 @@ void Landscape::		doIgnitions()
 	}
 	_fireNumStat.Add(gYear, gRep, fireNum);
 	#ifdef WITHSTATS
-	MyStats->addStat("FireNum", gYear, gRep, fireNum);
+	RunStats->addStat("FireNum", gYear, gRep, fireNum);
 	#endif
 
 	delete[] severitySizes;
@@ -604,7 +604,7 @@ void Landscape::		logFireStats (int interval, bool ignoreFirstInterval)
 		stringstream ss;
 		ss << "FireInterval[" << (int)specSp << "]Events";
 		#ifdef WITHSTATS
-		MyStats->addStat(ss.str(), gYear, gRep, ((interval > 0) ? interval : -interval));
+		RunStats->addStat(ss.str(), gYear, gRep, ((interval > 0) ? interval : -interval));
 		#endif
 	}
 }
