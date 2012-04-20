@@ -11,6 +11,7 @@ Args::Args(){
 	debug = false;
 	help = false;
 	version = false;
+	startRep = 0;
 
 }
 void Args::parse(int argc, char** argv){
@@ -19,6 +20,7 @@ void Args::parse(int argc, char** argv){
 		("help,h", "produces helps message")
 		("version,v", "show the version information")
 		("debug,d", "enable debug mode")
+		("start,s", boost::program_options::value<int>(), "set the startng rep number")
 		("fif,f", boost::program_options::value<string>(), "set the fif file")
 		("fif-path", boost::program_options::value<string>(), "set the fif path")
 		("input-path", boost::program_options::value<string>(), "set the input path")
@@ -34,6 +36,9 @@ void Args::parse(int argc, char** argv){
 	if (varmap.count("debug")){
 		debug = true;
 	}
+	if (varmap.count("start")){
+        	startRep = varmap["start"].as<int>();
+	}
 	if (varmap.count("fif")){
         	fifFile = varmap["fif"].as<string>();
 	}
@@ -46,6 +51,9 @@ void Args::parse(int argc, char** argv){
 	if (varmap.count("output-path")){
         	outPath = varmap["output-path"].as<string>();
 	}
+}
+int Args::getStartRep(){
+	return startRep;
 }
 string Args::getFifName(){
 	return fifFile;

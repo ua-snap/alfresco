@@ -58,6 +58,9 @@ int main(int argc, char** argv) {
 		#endif
 		std::cout << "Fresco Client " << std::endl;
 		int startRep = 0;
+		if (args->getStartRep() > 0){
+			startRep = args->getStartRep();
+		}
 		_dummysim->clear();
 		delete _dummysim;
 		for (rc = startRep + id; rc < maxReps; rc+=max){
