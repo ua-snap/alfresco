@@ -22,4 +22,4 @@ frescocli_LDFLAGS = -L../lib -lboost_system -lboost_filesystem -lboost_program_o
 #frescocli_LDFLAGS += -lprofiler
 frescocli_CPPFLAGS = -I$(top_srcdir)/src
 frescocli_CXXFLAGS = -DWITHSTATS -O3 -funroll-loops -Wall
-#frescocli_CXXFLAGS += -g
+frescocli_CXXFLAGS += -g

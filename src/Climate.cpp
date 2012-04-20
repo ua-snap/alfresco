@@ -392,13 +392,15 @@ void Climate::			yearStart()
 			// because Decid's succession to Grassland uses a variable set of monthly climate files.
 			for (month=tempMonths.begin(); month!=tempMonths.end(); month++) {
 				//Read temp file.
-				filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, gYear, *month);
+				//filename = AppendYearMonth(_pCurrentTransition->SpatialTempFile, gYear, *month);
+				filename = AppendMonthYear(_pCurrentTransition->SpatialTempFile, *month, gYear);
 				ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][*month], false);
 			}
 			for (month=precipMonths.begin(); month!=precipMonths.end(); month++) {
 				//Read precip file.
-				filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, gYear, *month);
+				//filename = AppendYearMonth(_pCurrentTransition->SpatialPrecipFile, gYear, *month);
+				filename = AppendMonthYear(_pCurrentTransition->SpatialPrecipFile, *month, gYear);
 				ShowOutput(MAXIMUM, "\t\t\tReading precip file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 				gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialPrecip[circularIndex][*month], false);
 			}
