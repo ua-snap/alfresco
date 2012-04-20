@@ -9,7 +9,7 @@
 #include "StatFile.h"
 
 #ifdef WITHSTATS
-extern StatArray* MyStats;
+extern StatArray* RunStats;
 #endif
 
 class Climate;

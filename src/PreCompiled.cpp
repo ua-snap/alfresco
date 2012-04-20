@@ -63,7 +63,13 @@ std::string				AppendMonthYear(const std::string file, const int month, const in
 /** Inserts the month and year (_month_year) into the filename in front of the last decimal point so as not to corrupt the file extension. */
 {
 	std::string result;
-	result = file.substr(0,file.find_last_of(".")) + "_" + ToS(month) + "_" + ToS(year) + file.substr(file.find_last_of("."),file.length()) + '\0';
+	std::string monthString;
+	if (month < 10){
+		monthString = "0" + ToS(month);
+	} else {
+		monthString = ToS(month);
+	}
+	result = file.substr(0,file.find_last_of(".")) + "_" + monthString + "_" + ToS(year) + file.substr(file.find_last_of("."),file.length()) + '\0';
 	return result;
 }
 
