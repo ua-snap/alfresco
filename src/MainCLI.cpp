@@ -41,16 +41,18 @@ int main(int argc, char** argv) {
 	}
 	#endif
 
+
 	if (args->getHelp() != true){
 		RunStats = new StatArray();
 
 		int rc = 0;
 
-		//string runDirectory = "/home/apbennett/alfresco";
-		//string outDirectory = runDirectory + "/Output";
 		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
-		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
-		//int firstYear = _dummysim->fif().nGet("FirstYear");
+		long randSeedVal = 0;
+		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), randSeedVal);
+		if (FRESCO->fif().CheckKey("RandSeed")){
+			randSeedVal = _dummysim->fif().nGet("RandSeed");
+		}
 		int maxReps = _dummysim->fif().nGet("MaxReps");
 		RunStats->setFirstYear(_dummysim->fif().nGet("FirstYear"));
 		#ifdef WITHMPI
@@ -66,7 +68,9 @@ int main(int argc, char** argv) {
 		for (rc = startRep + id; rc < maxReps; rc+=max){
 			CustomFresco* _simulation = new CustomFresco(args->getDebug());
 			_simulation->setIsStopped(false);
-			_simulation->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), 1234763211);
+			srand(randSeedVal + rc);
+			long repRand = rand();
+			_simulation->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), repRand);
 			_simulation->runRep(rc,_simulation->fif().nGet("FirstYear")); 
 			_simulation->runEnd();
 			_simulation->clear();
