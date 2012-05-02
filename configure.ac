@@ -8,4 +8,4 @@ AC_PROG_CXX
 AC_OUTPUT
 
 AC_PROG_LIBTOOL
-AC_OUTPUT(Makefile mpi/Makefile src/Makefile)
+AC_OUTPUT(Makefile lib/Makefile mpi/Makefile src/Makefile)
