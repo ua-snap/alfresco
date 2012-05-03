@@ -7,7 +7,7 @@ INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXF
 frescocli_mpi_SOURCES = ../src/MainCLI.cpp  \
 		../src/Global.cpp ../src/demon_me.cpp ../src/Client.cpp ../src/RemoteNotification.cpp ../src/Messenger.cpp ../src/FrescoEngine.cpp \
 		../src/StatFile.cpp ../src/StatArray.cpp ../src/Args.cpp
-frescocli_mpi_LDFLAGS = -L../lib -lfrescofoundation -lfrescocustom -lboost_system -lboost_filesystem -lboost_program_options -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal -L/usr/lib64/openmpi
-frescocli_mpi_LDADD = ../lib/libfrescofoundation.la ../lib/libfrescocustom.la
+frescocli_mpi_LDFLAGS = -L../lib -lFrescoFoundation -lFrescoCustom -lboost_system -lboost_filesystem -lboost_program_options -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal -L/usr/lib64/openmpi
+frescocli_mpi_LDADD = ../lib/libFrescoFoundation.la ../lib/libFrescoCustom.la
 frescocli_mpi_CPPFLAGS = -I$(top_srcdir)/src
 frescocli_mpi_CXXFLAGS = -DWITHMPI -DWITHSTATS -O3 -funroll-loops -Wall
