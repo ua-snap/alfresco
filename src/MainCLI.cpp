@@ -1,8 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "Fresco.h"
-#include "Interface.h"
 #include "CustomFresco.h"
 #include "StatArray.h"
 #include "Args.h"
