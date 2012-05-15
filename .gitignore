@@ -8,6 +8,9 @@ frescocli
 frescocli_mpi
 # Libraries
 *.la
+# Documentation
+html/
+latex/
 # Output Maps #
 Output/
 # Build Files #
