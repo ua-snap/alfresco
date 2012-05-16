@@ -54,9 +54,10 @@ int main(int argc, char** argv) {
 		int maxReps = _dummysim->fif().nGet("MaxReps");
 		RunStats->setFirstYear(_dummysim->fif().nGet("FirstYear"));
 		#ifdef WITHMPI
-		std::cout << "MPI Rank: " << id << " of: " << max << std::endl;
+			std::cout << "Fresco Client Rank: " << id << " of: " << max << std::endl;
+		#else 
+			std::cout << "Fresco Client " << std::endl;
 		#endif
-		std::cout << "Fresco Client " << std::endl;
 		int startRep = 0;
 		if (args->getStartRep() > 0){
 			startRep = args->getStartRep();
