@@ -1,13 +1,25 @@
 #ifndef ALF_ReadRasterException_H
 #define ALF_ReadRasterException_H
 
+#include <iostream>
+#include <string>
+#include <stdexcept>
 
-#include "Poco/Exception.h"
-#include <typeinfo>
+class MyException : public std::exception
+{
+	public:
+		MyException(std::string m="exception!") : msg(m) { std::cout << m << std::endl; }
+		MyException(std::string m, const std::string fn) { std::cout << m << std::endl << fn << std::endl; }
+		MyException(const MyException&) throw();
+		MyException(const char& m, std::string fn) : msg(&m) { std::cout << m << std::endl << fn << std::endl; }
+		MyException& operator= (const MyException&) throw();
+	
+		~MyException() throw() { std::cout << msg << std::endl; }
+		MyException rethrow() { return MyException(msg); }
+		const char* what() const throw() { std::cout << msg << std::endl; return msg.c_str(); }
 
-POCO_DECLARE_EXCEPTION(FrescoFoundation_API, ReadRasterException, Poco::Exception)
-
-POCO_IMPLEMENT_EXCEPTION(ReadRasterException, Poco::Exception, "Error reading raster file")
-
+	private:
+		std::string msg;
+};
 
 #endif
