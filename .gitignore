@@ -5,12 +5,19 @@
 # Executables #
 fresco
 frescocli
+frescocli_mpi
+# Libraries
+*.la
+# Documentation
+html/
+latex/
 # Output Maps #
 Output/
 # Build Files #
 .Tpo
 .deps
 .libs
+*.lo
 config.guess
 config.sub
 config.status

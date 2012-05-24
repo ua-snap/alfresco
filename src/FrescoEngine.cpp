@@ -55,7 +55,7 @@ void FrescoEngine::clear()
         _ownerClient->sendYearToServer();
         _ownerClient->setState(Client::AVAILABLE);
     } catch (Poco::Exception& e) {  hadError=true;  errorMessage = "Clearing Error: " + e.displayText();
-    } catch (Exception& e) {        hadError=true;  errorMessage = "Clearing Error: " + e.message;
+    } catch (SimpleException& e) {        hadError=true;  errorMessage = "Clearing Error: " + e.message;
     } catch(...) {                  hadError=true;  errorMessage = "Clearing Error."; }
     
     if (hadError) {
@@ -93,9 +93,9 @@ void FrescoEngine::setup(const std::string basePath, const std::string fifFile, 
             _ownerClient->setState(Client::SETUP);
         }
         else
-            throw Exception(Exception::UNKNOWN,"System did not properly dispose of the previous simulation.");
+            throw SimpleException(SimpleException::UNKNOWN,"System did not properly dispose of the previous simulation.");
     } catch (Poco::Exception& e) {  hadError=true;  errorMessage = "Initialization Error: " + e.displayText();
-    } catch (Exception& e) {        hadError=true;  errorMessage = "Initialization Error: " + e.message;
+    } catch (SimpleException& e) {        hadError=true;  errorMessage = "Initialization Error: " + e.message;
     } catch(...) {                  hadError=true;  errorMessage = "Initialization Error."; }
     
     if (hadError) {
@@ -130,7 +130,7 @@ void FrescoEngine::run()
         _ownerClient->setState(Client::SIMULATING);
         _runReps();
     } catch (Poco::Exception& e) {  hadError=true;  errorMessage = "Simulation Error during rep " + ToS(_rep) + ": " + e.displayText();
-    } catch (Exception& e) {        hadError=true;  errorMessage = "Simulation Error during rep " + ToS(_rep) + ": " + e.message;
+    } catch (SimpleException& e) {        hadError=true;  errorMessage = "Simulation Error during rep " + ToS(_rep) + ": " + e.message;
     } catch(...) {                  hadError=true;  errorMessage = "Simulation Error during rep " + ToS(_rep) + "."; }
     
     if (hadError) {
@@ -184,14 +184,14 @@ void FrescoEngine::_resume()
             _rep++; 
             _year=gFirstYear; 
         }
-        else Exception(Exception::UNKNOWN, "Error while resuming simulation. Unexpected rep and/or year values.");
+        else SimpleException(SimpleException::UNKNOWN, "Error while resuming simulation. Unexpected rep and/or year values.");
 
         //Wake up the SimulationThread in _runReps() by changing client state.  
         //Note: can't just call _runReps() here.  Must allow the SimulationThread to pickup where it left off.
         _simulation->setIsStopped(false);
         _ownerClient->setState(Client::SIMULATING);
     }
-    else throw Exception(Exception::UNKNOWN, "Simulation Thread is missing.  Cannot continue.  Restart client.");
+    else throw SimpleException(SimpleException::UNKNOWN, "Simulation Thread is missing.  Cannot continue.  Restart client.");
 }
 
 void FrescoEngine::end()

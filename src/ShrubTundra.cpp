@@ -64,7 +64,7 @@ void ShrubTundra::			_ShrubTundra(const int treeDensity)
 //a default argument for TreeDensity is provided, but it is overwritten if possible.
 {
     if (!_isStaticSetupAlready)
-        throw Exception(Exception::UNKNOWN, "Static data members must be set before initializing species.");
+        throw SimpleException(SimpleException::UNKNOWN, "Static data members must be set before initializing species.");
 
 	//Calc a starting age if not yet assigned.
 	if (gFirstYear-1==_yearEstablished)
@@ -103,7 +103,7 @@ void ShrubTundra::           setStaticData()
 		_isFireProbAgeDependent = FRESCO->fif().bGet("ShrubTundra.FireProb.IsAgeDependent");
 		if (_isFireProbAgeDependent) {
 			if (3 != FRESCO->fif().pdGet("ShrubTundra.FireProb", _pAgeDependentFireParams))
-				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 3 for key: ShrubTundra.FireProb (because Tundra.FireProb.IsAgeDependent is set to TRUE)");
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: ShrubTundra.FireProb (because Tundra.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
 	        _fireProb = FRESCO->fif().dGet("ShrubTundra.FireProb");
@@ -120,16 +120,16 @@ void ShrubTundra::           setStaticData()
         _pStartAgeParms         = FRESCO->getStartAgeParms("ShrubTundra.StartAge", &_startAgeType);
         _meanGrowth             = FRESCO->fif().dGet("ShrubTundra.MeanGrowth");
         if (2 != FRESCO->fif().pdGet("ShrubTundra.SeedEstParms", _pSeedEstParams)) {
-            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedEstParms");
+            throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedEstParms");
         }
         if (3 != FRESCO->fif().pdGet("ShrubTundra.ClimGrowth", _pClimateGrowth)) {
-            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 3 for key: ShrubTundra.ClimGrowth");
+            throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: ShrubTundra.ClimGrowth");
         }
         if (2 != FRESCO->fif().pdGet("ShrubTundra.CalFactor", _pCalibrationFactor)) {
-            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.CalFactor");
+            throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.CalFactor");
         }
         if (2 != FRESCO->fif().pdGet("ShrubTundra.SeedSource", _pSeedSource)) {
-            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedSource");
+            throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedSource");
         }
 
 		//Calculate _ratioAK for use in getInitialBasalAreaI()

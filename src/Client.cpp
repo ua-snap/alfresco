@@ -98,7 +98,7 @@ void Client::		        selectProcedure(RemoteNotification* notification)
         {
         case RemoteNotification::VERSION_ASSERTION:
             if (Global::getInstance()->version != notification->parameters().at(0))
-                throw Exception(Exception::INITFAULT, "Version conflict.  Server is version " + notification->parameters().at(0) + ", but client is version " + Global::getInstance()->version + ".");
+                throw SimpleException(SimpleException::INITFAULT, "Version conflict.  Server is version " + notification->parameters().at(0) + ", but client is version " + Global::getInstance()->version + ".");
             break;
         case RemoteNotification::SET_CLIENT_ID:
             _clientID = notification->clientID();
@@ -132,7 +132,7 @@ void Client::		        selectProcedure(RemoteNotification* notification)
             throw Poco::Exception("SelectProcedure Failed: invalid command.");
         }
     } catch (Poco::Exception& e) {  hadError=true;  errorMessage = "Error: " + e.displayText();
-    } catch (Exception& e) {        hadError=true;  errorMessage = "Error: " + e.message;
+    } catch (SimpleException& e) {        hadError=true;  errorMessage = "Error: " + e.message;
     } catch(...) {                  hadError=true;  errorMessage = "Error: Could not complete remote command: " + notification->commandString()+"."; }
     
     if (hadError) {

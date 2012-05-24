@@ -63,7 +63,7 @@ void Decid::_Decid()
 //Local constructor - Initialize the local member variables and give the frame an initial age.
 {
     if (!_isStaticSetupAlready) {
-        throw Exception(Exception::UNKNOWN, "Static data members must be set before initializing species.");
+        throw SimpleException(SimpleException::UNKNOWN, "Static data members must be set before initializing species.");
     }
 
 	_degreesForGrassland = 0;
@@ -98,7 +98,7 @@ void Decid::setStaticData()
 		_isFireProbAgeDependent = FRESCO->fif().bGet("Decid.FireProb.IsAgeDependent");
 		if (_isFireProbAgeDependent) {
 			if (3 != FRESCO->fif().pdGet("Decid.FireProb", _pAgeDependentFireParams))
-				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 3 for key: Decid.FireProb (because Decid.FireProb.IsAgeDependent is set to TRUE)");
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: Decid.FireProb (because Decid.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
 	        _decidFireProb = FRESCO->fif().dGet("Decid.FireProb");
@@ -112,7 +112,7 @@ void Decid::setStaticData()
         _pBSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.BSpruce", &_bspruceStartAgeType);
         _pWSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.WSpruce", &_wspruceStartAgeType);
         if (2 != FRESCO->fif().pdGet("Decid->Tundra.Parms", _pDecidTundraParams))  {
-            throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
+            throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
         }
 		
 		//
@@ -132,7 +132,7 @@ void Decid::setStaticData()
 
 				int numMonths = FRESCO->fif().pnGet("Decid->Grassland.TempMonths", pTempMonths);
 				if (numMonths > 12)
-					throw Exception(Exception::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.TempMonths. There are only 12 months in a year.");
+					throw SimpleException(SimpleException::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.TempMonths. There are only 12 months in a year.");
 
 				for (int i=0; i<numMonths; i++) {
 					gClimate->tempMonths.push_back(pTempMonths[i]);
@@ -141,7 +141,7 @@ void Decid::setStaticData()
 
 				numMonths = FRESCO->fif().pnGet("Decid->Grassland.PrecipMonths", pPrecipMonths);
 				if (numMonths > 12)
-					throw Exception(Exception::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.PrecipMonths. There are only 12 months in a year.");
+					throw SimpleException(SimpleException::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.PrecipMonths. There are only 12 months in a year.");
 
 				for (int i=0; i<numMonths; i++) {
 					gClimate->precipMonths.push_back(pPrecipMonths[i]);
@@ -150,10 +150,10 @@ void Decid::setStaticData()
 			}
 			size_t expectedSize = 2 + _grassTempMonths.size() + _grassPrecipMonths.size();
 			if (expectedSize != FRESCO->fif().pdGet("Decid->Grassland.ClimateWeight", _pGrassClimateParams))
-				throw Exception(Exception::BADARRAYSIZE, "Expected array size of "+ToS(expectedSize)+" for key: Decid->Grassland.ClimateWeight = {Intercept,IfFlatInterceptAdjusment, [a temp multiplier per month in Grassland.TempMonths], [a precip multiplier per month in Grassland.PrecipMonths]}");
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of "+ToS(expectedSize)+" for key: Decid->Grassland.ClimateWeight = {Intercept,IfFlatInterceptAdjusment, [a temp multiplier per month in Grassland.TempMonths], [a precip multiplier per month in Grassland.PrecipMonths]}");
 
 			if (6 != FRESCO->fif().pdGet("Decid->Grassland.ClimateThreshholds", _pGrasslandThresholds))
-				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 6 for key: Decid->Grassland.ClimateThreshholds = {Low, Moderate, High_LSS, High_HSS, Low_And_WasGrassland, Moderate_And_WasGrassland}");
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 6 for key: Decid->Grassland.ClimateThreshholds = {Low, Moderate, High_LSS, High_HSS, Low_And_WasGrassland, Moderate_And_WasGrassland}");
 		}
 
 		//
@@ -168,7 +168,7 @@ void Decid::setStaticData()
 			const double* parms;
 			std::string key("Decid->BSpruce.BurnSeverity["+ToS(i)+"]");
 			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
-				throw Exception(Exception::BADARRAYSIZE, "Expected array size of 2 for key: " + key);
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: " + key);
 			}
 			_pDecidToBSpruceParams[i][0] = parms[0];
 			_pDecidToBSpruceParams[i][1] = parms[1];
@@ -182,7 +182,7 @@ void Decid::setStaticData()
 			const double* parms;
 			std::string key("Decid->WSpruce.BurnSeverity["+ToS(i)+"]");
 			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
-				throw Exception(Exception::BADARRAYSIZE, "Unexpected array size returned for Key: " + key);
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Unexpected array size returned for Key: " + key);
 			}
 			_pDecidToWSpruceParams[i][0] = parms[0];
 			_pDecidToWSpruceParams[i][1] = parms[1];

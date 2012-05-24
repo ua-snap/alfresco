@@ -17,6 +17,7 @@ class Args{
 	bool debug;
 	bool help;
 	bool version;
+	int startRep;
 public:
 	Args();
 	void parse(int argc, char** argv);
@@ -25,6 +26,8 @@ public:
 	string getFifPath();
 	string getInPath();
 	string getOutPath();
+	
+	int getStartRep();
 
 	inline const bool getDebug(){ return debug; }
 	inline const bool getHelp() const { return help; }

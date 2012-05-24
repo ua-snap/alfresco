@@ -137,7 +137,7 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
 	try { //Initialize the random number generator.
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
-    } catch (Exception& e) {throw Exception(Exception::INITFAULT,"Initializing random number generator failed.\n", e.message);}
+    } catch (SimpleException& e) {throw SimpleException(SimpleException::INITFAULT,"Initializing random number generator failed.\n", e.message);}
     gNoVegID            = _fif.nGet("NoVeg"); 
         
     //Fire
@@ -231,7 +231,7 @@ double* Fresco::	getSpruceFireParms(const std::string key)
 {
     const double* pTemp;
     if (_fif.pdGet(key.c_str(), pTemp) != 3) 
-        throw Exception(Exception::BADARRAYSIZE, (std::string("Unexpected array size returned for Key: ") + key).c_str());
+        throw SimpleException(SimpleException::BADARRAYSIZE, (std::string("Unexpected array size returned for Key: ") + key).c_str());
     
     //Transfer "const double*" to "double*"
     double* pReturn;
@@ -256,7 +256,7 @@ const double* Fresco::   getStartAgeParms(const std::string key, EStartAgeType* 
     else if (2==count) 
         *type=WEIBULL;
     else
-        throw Exception(Exception::BADARRAYSIZE,(std::string("Unexpected array size returned for Key: ") + key).c_str());
+        throw SimpleException(SimpleException::BADARRAYSIZE,(std::string("Unexpected array size returned for Key: ") + key).c_str());
     
     return params;
 }

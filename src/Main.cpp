@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
 		client.connectToServer();
 		applyConsoleInput();
     } catch (Poco::Exception& e) {  hadError=true;  errorMessage = "Error: " + e.displayText();
-    } catch (Exception& e) {        hadError=true;  errorMessage = "Error: " + e.message;
+    } catch (SimpleException& e) {        hadError=true;  errorMessage = "Error: " + e.message;
     } catch(...) {                  hadError=true;  errorMessage = "Error: Could not complete remote command: ."; }
     if (hadError) {
         std::cout << std::endl << errorMessage << std::endl;

@@ -127,7 +127,7 @@ private:
 inline SClimate Climate::getClimate(const int row, const int col, const int yearBP) const 
 {
 	//Calculate year to get climate.
-	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
+	if (yearBP+0 > _yearsOfArchivedHistory)		throw SimpleException(SimpleException::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - gFirstYear - yearBP;  
 
 	//Get climate from the spatial circular array and temporal array.
@@ -150,7 +150,7 @@ inline SClimate Climate::getClimate(const int row, const int col, const int year
 inline const float Climate::getTemp(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
-	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
+	if (yearBP+0 > _yearsOfArchivedHistory)		throw SimpleException(SimpleException::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - gFirstYear - yearBP;
 
 	float t = _pSpatialTemp[year % _yearsOfArchivedHistory][month][row][col];
@@ -164,7 +164,7 @@ inline const float Climate::getTemp(const int row, const int col, const int mont
 inline const float Climate::getPrecip(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
-	if (yearBP+0 > _yearsOfArchivedHistory)		throw Exception(Exception::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
+	if (yearBP+0 > _yearsOfArchivedHistory)		throw SimpleException(SimpleException::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
 	int year = gYear - gFirstYear - yearBP;
 
 	float p	 = _pSpatialPrecip[year % _yearsOfArchivedHistory][month][row][col];
@@ -188,7 +188,7 @@ inline void Climate::assertTempMonth(const int month) const
 		}
 	}
 	if (!found)
-		throw Exception(Exception::UNKNOWN, "Expected month "+ToS(month)+ " to be included in the FIF field TempMonths.");
+		throw SimpleException(SimpleException::UNKNOWN, "Expected month "+ToS(month)+ " to be included in the FIF field TempMonths.");
 }
 
 inline void Climate::assertPrecipMonth(const int month) const
@@ -204,7 +204,7 @@ inline void Climate::assertPrecipMonth(const int month) const
 		}
 	}
 	if (!found)
-		throw Exception(Exception::UNKNOWN, "Expected month "+ToS(month)+ " to be included in the FIF field PrecipMonths.");
+		throw SimpleException(SimpleException::UNKNOWN, "Expected month "+ToS(month)+ " to be included in the FIF field PrecipMonths.");
 }
 
 #endif

@@ -882,7 +882,7 @@ void RasterIO::_validateMetadata(GDALDataset* pDataset, GDALRasterBand* pBand, c
 	if (!errors.empty()) {
 		int count = 1;
 		while(!errors.empty()) {
-			s << " (" << count << ") " << errors.front() << "; ";
+			s << " (" << count << ") " << errors.front() << "; " << std::endl;
 			errors.pop();
 			count++;
 		}

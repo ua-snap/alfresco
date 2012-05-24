@@ -54,36 +54,36 @@ void CInterface::ParseFile (const char *pszFileName) {
 
 	// Need to open the file manually, because the associated array isn't created and therefore we can't use CInterface::OpenFile
     fpFIF.open(pszFileName, std::ios::in);
-	if (!fpFIF.is_open()) throw Exception(Exception::FILEBAD,std::string("Unable to open FIF file " + ToS(pszFileName)).c_str());
+	if (!fpFIF.is_open()) throw SimpleException(SimpleException::FILEBAD,std::string("Unable to open FIF file " + ToS(pszFileName)).c_str());
 
 	while (!fpFIF.eof()) {
 		fpFIF.getline(buf, BUFSIZE);
 		nLineNumber++;
 		if (int nLen = (int)strlen(buf)) {
 			if (nLen == BUFSIZE-1)			// Check that we caught the EOL otherwise give an error
-				throw Exception(Exception::INITFAULT, "Exceeded line length of " + ToS(BUFSIZE) + " characters on line " + ToS(nLineNumber) + " in " + pszFileName);
+				throw SimpleException(SimpleException::INITFAULT, "Exceeded line length of " + ToS(BUFSIZE) + " characters on line " + ToS(nLineNumber) + " in " + pszFileName);
 
 			int nWords = ParseLine(buf, pcWordList, nLen);
 			
 			if (nWords > 0) {		// Check that first word is a "semi" valid identifier - i.e. it doesn't contain any reserved symbols
 				if ( strpbrk(pcWordList[0],ResSep) ) {
-					throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Invalid IDENTIFIER found: " + pcWordList[0]);
+					throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Invalid IDENTIFIER found: " + pcWordList[0]);
 					continue;
 				}
 			} else continue;
 			
 			if (nWords > 1) {		// Check the second word is equals sign
 				if (pcWordList[1][0] != '=') {
-					throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '=' but found: " + pcWordList[1]);
+					throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '=' but found: " + pcWordList[1]);
 					continue;
 				}
 			} else {
-				throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '=' but found: end of line\n");
+				throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '=' but found: end of line\n");
 				continue;
 			}
 
 			if (nWords == 2) {		// Unexpected end of line error
-				throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected VALUE but found: end of line\n");
+				throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected VALUE but found: end of line\n");
 				continue;
 			}
 
@@ -103,7 +103,7 @@ void CInterface::ParseFile (const char *pszFileName) {
 						Value = new CVariable(false);
 					break;
 				default:															// This includes string type, and UNKNOWN since we only have 3 words
-					throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected VALUE but found: " + pcWordList[2] + "\n");
+					throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected VALUE but found: " + pcWordList[2] + "\n");
 					continue;
 				}
 			}
@@ -123,11 +123,11 @@ void CInterface::ParseFile (const char *pszFileName) {
 					else 
 					{
 						if ( strpbrk(pcWordList[3],ResSep) ) {						// Check the assignment does not contain any reserved seperators
-							throw Exception(Exception::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected STRING VALUE but found: " + pcWordList[3] + "\n");
+							throw SimpleException(SimpleException::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected STRING VALUE but found: " + pcWordList[3] + "\n");
 							continue;
 						}
 						if ( pcWordList[4][0] != '\"') {							// Check for a closing string
-							throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4] + "\n");
+							throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4] + "\n");
 							continue;
 						}
 						size_t destSize = strlen(pcWordList[3])+1; 
@@ -137,13 +137,13 @@ void CInterface::ParseFile (const char *pszFileName) {
 					Value = new CVariable(pcTmp);
 				} else if (pcWordList[2][0] != '{') {								// Make sure we don't have a simple array
 					if (pcWordList[nWords-1][0] == '\"') {							// Closed in a string so assume a string was intended
-						throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[2] + "\n");
+						throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[2] + "\n");
 						continue;
 					} else if (pcWordList[nWords-1][0] == '}') {					// Closed in a brace so assume an array was intended
-						throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '{' but found: " + pcWordList[2] + "\n");
+						throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '{' but found: " + pcWordList[2] + "\n");
 						continue;
 					} else {														// Run out of good guesses
-						throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected VALUE but found: " + pcWordList[2] + "\n");
+						throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected VALUE but found: " + pcWordList[2] + "\n");
 						continue;
 					}
 				}
@@ -153,12 +153,12 @@ void CInterface::ParseFile (const char *pszFileName) {
 				// Compute the number of words between the braces and check for a closing brace bracket
 				int nVars = 0;
 				if (pcWordList[nWords-1][0] != '}') {
-					throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '}' but found: end of line\n");
+					throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '}' but found: end of line\n");
 					continue;
 				}
 				while (pcWordList[nVars+3][0] != '}' && nVars < nWords-3) nVars++;
 				if (nVars == nWords-3) {
-					throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '}' but found: end of line\n");
+					throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '}' but found: end of line\n");
 					continue;
 				}
 
@@ -174,7 +174,7 @@ void CInterface::ParseFile (const char *pszFileName) {
 					for (int i = 0; ; i++) {
 						int nType = CheckNumber(pcWordList[2*i+nAdj]);
 						if (!nType) {
-							throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected NUMERIC VALUE but found: " + pcWordList[2*i+nAdj] + "\n");
+							throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected NUMERIC VALUE but found: " + pcWordList[2*i+nAdj] + "\n");
 							bValid = false;
 							if (pcWordList[2*i+(nAdj--)][0] == '}') break;
 						} else if (nType == dTag) {
@@ -182,7 +182,7 @@ void CInterface::ParseFile (const char *pszFileName) {
 						}
 						if ( pcWordList[2*i+nAdj+1][0] != ',' ) {						// Check for a comma or close braces
 							if (pcWordList[2*i+nAdj+1][0] == '}' && i>=nVars-1) break;	// This will be the usual exit from the loop
-							throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected ',' but found: " + pcWordList[2*i+nAdj+1]  + "\n");
+							throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected ',' but found: " + pcWordList[2*i+nAdj+1]  + "\n");
 							bValid = false;
 							if (pcWordList[2*i+(nAdj--)+1][0] == '}') break;
 						}
@@ -206,7 +206,7 @@ void CInterface::ParseFile (const char *pszFileName) {
 					nVars = (int)ceil(nVars/2.);
 					for (int i = 0; ; i++) {
 						if (CheckType(pcWordList[2*i+nAdj]) != bTag) {
-							throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected BOOLEAN VALUE but found: " + pcWordList[2*i+nAdj] + "\n");
+							throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected BOOLEAN VALUE but found: " + pcWordList[2*i+nAdj] + "\n");
 							bValid = false;
 							if (pcWordList[2*i+nAdj][0] == '}') break;
 							if (pcWordList[2*i+nAdj][0] == ',') nAdj--;					// Only adjust if this is not a word rather than a corrupted word
@@ -214,7 +214,7 @@ void CInterface::ParseFile (const char *pszFileName) {
 
 						if ( pcWordList[2*i+nAdj+1][0] != ',' ) {						// Check for a comma or close braces
 							if (pcWordList[2*i+nAdj+1][0] == '}' && i>=nVars-1) break;	// This will be the usual exit from the loop
-							throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected ',' but found: " + pcWordList[2*i+nAdj+1] + "\n");
+							throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected ',' but found: " + pcWordList[2*i+nAdj+1] + "\n");
 							bValid = false;
 							if (pcWordList[2*i+(nAdj--)+1][0] == '}') break;
 						}
@@ -235,37 +235,37 @@ void CInterface::ParseFile (const char *pszFileName) {
 				// Check for the empty array
 					if (nVars == 0) {														// Check the case of an empty array
 						if (pcWordList[3][0] != '}') {
-							throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '}' but found: end of line\n");
+							throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '}' but found: end of line\n");
 							continue;
 						}
 					} else {
 						nVars = (int)ceil(nVars/4.);
 						for (int i = 0; ; i++) {
 							if ( pcWordList[4*i+nAdj][0] != '\"' ) {						// Check for a opening quote
-								throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4*i+nAdj]  + "\n");
+								throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4*i+nAdj]  + "\n");
 								bValid = false;
 								if (pcWordList[4*i+(nAdj--)][0] == '}') break;				// We are guarenteed an close brace bracket by nVars counting algorithm
 							}
 							if ( strpbrk(pcWordList[4*i+nAdj+1],ResSep) ) {					// Check the assignment does not contain any reserved seperators
                                 //TODO...
 								if ( pcWordList[4*i+nAdj+1][0] != '\"' ) {					// Check the case of the empty string
-                                    throw Exception(Exception::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected STRING VALUE but found: " + pcWordList[4*i+nAdj+1] + "\n");
+                                    throw SimpleException(SimpleException::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected STRING VALUE but found: " + pcWordList[4*i+nAdj+1] + "\n");
 									bValid = false;
 									if (pcWordList[4*i+nAdj+1][0] == '}') break;
 								} else {
-									//throw Exception(Exception::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Empty string not permitted\n");
+									//throw SimpleException(SimpleException::INITFAULT, "Error line " + ToS(nLineNumber) + " in " + pszFileName + ": Empty string not permitted\n");
 									//bValid = false;
 									if (pcWordList[4*i+(nAdj--)+1][0] == '}') break;
 								}
 							}
 							if ( pcWordList[4*i+nAdj+2][0] != '\"' ) {						// Check for a closing quote
-								throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4*i+nAdj+2]  + "\n");
+								throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected '\"' but found: " + pcWordList[4*i+nAdj+2]  + "\n");
 								bValid = false;
 								if (pcWordList[4*i+(nAdj--)+2][0] == '}') break;
 							}
 							if ( pcWordList[4*i+nAdj+3][0] != ',' ) {						// Check for a comma or close braces
 								if (pcWordList[4*i+nAdj+3][0] == '}' && i>=nVars-1) break;	// This will be the usual exit from the loop
-								throw Exception(Exception::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected ',' but found: " + pcWordList[4*i+nAdj+3] + "\n");
+								throw SimpleException(SimpleException::INITFAULT, "Line " + ToS(nLineNumber) + " in " + pszFileName + ": Expected ',' but found: " + pcWordList[4*i+nAdj+3] + "\n");
 								bValid = false;
 								if (pcWordList[4*i+(nAdj--)+3][0] == '}') break;
 							}
@@ -532,9 +532,9 @@ CAssoc::AVLRes CAssoc::AVLPut (typeEntry *&pNode, typeEntry *const pInsert) {
 	}
 
 	if (strcmp(pInsert->pszKey, pNode->pszKey) == 0)
-		throw Exception(Exception::KEYDUP,"Duplicate Key found",pNode->pszKey);
+		throw SimpleException(SimpleException::KEYDUP,"Duplicate Key found",pNode->pszKey);
 
-	throw Exception(Exception::UNKNOWN,"Unknown error found in AVLPut",pNode->pszKey);
+	throw SimpleException(SimpleException::UNKNOWN,"Unknown error found in AVLPut",pNode->pszKey);
 }
 
 void CAssoc::AVLRotLeft(typeEntry *&pNode) {
@@ -599,7 +599,7 @@ CAssoc::AVLRes CAssoc::AVLGrownLeft(typeEntry *&pNode) {
 		pNode->nSkew = LEFT;
 		return BALANCE;
 
-	default : throw Exception(Exception::UNKNOWN,"Unexpected Skew value in AVLGrownLeft",pNode->pszKey);
+	default : throw SimpleException(SimpleException::UNKNOWN,"Unexpected Skew value in AVLGrownLeft",pNode->pszKey);
 	}
 }
 CAssoc::AVLRes CAssoc::AVLGrownRight(typeEntry *&pNode) {
@@ -643,7 +643,7 @@ CAssoc::AVLRes CAssoc::AVLGrownRight(typeEntry *&pNode) {
 		pNode->nSkew = RIGHT;
 		return BALANCE;
 
-	default : throw Exception(Exception::UNKNOWN,"Unexpected Skew value in AVLGrownRight",pNode->pszKey);
+	default : throw SimpleException(SimpleException::UNKNOWN,"Unexpected Skew value in AVLGrownRight",pNode->pszKey);
 	}
 }
 
@@ -696,7 +696,7 @@ const int CVariable::nVal () const {
 	case pbTag :
 		return (long) pb[0];
 	default:																	// Don't do anything for string types
-		throw Exception (Exception::BADVARTYPE,"Unable to handle string types for integer key retreival");
+		throw SimpleException (SimpleException::BADVARTYPE,"Unable to handle string types for integer key retreival");
 		return 0;
 	}
 }
@@ -710,7 +710,7 @@ const int CVariable::pnVal(const int *&pnArg) const {
 		pnArg = pn;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of integers");
+	throw SimpleException (SimpleException::BADVARTYPE,"Invalid data type, expected array of integers");
 	return 0;
 }
 
@@ -739,7 +739,7 @@ const double CVariable::dVal() const {
 		return (double) pb[0];
 		break;
 	default:																	// Don't do anything for string types
-		throw Exception (Exception::BADVARTYPE,"Unable to handle string types for double key retreival");
+		throw SimpleException (SimpleException::BADVARTYPE,"Unable to handle string types for double key retreival");
 		return 0.;
 	}
 }
@@ -753,7 +753,7 @@ const int CVariable::pdVal(const double *&pdArg) const {
 		pdArg = pd;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of doubles");
+	throw SimpleException (SimpleException::BADVARTYPE,"Invalid data type, expected array of doubles");
 	return 0;
 }
 
@@ -794,7 +794,7 @@ const bool CVariable::bVal() const {
 		return pb[0];
 		break;
 	default:																	// Don't do anything for string types
-		throw Exception (Exception::BADVARTYPE,"Unable to handle string types for boolean key retreival");
+		throw SimpleException (SimpleException::BADVARTYPE,"Unable to handle string types for boolean key retreival");
 		return 0.;
 	}
 }
@@ -808,7 +808,7 @@ const int CVariable::pbVal(const bool*&pbArg) const {
 		pbArg = pb;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of booleans");
+	throw SimpleException (SimpleException::BADVARTYPE,"Invalid data type, expected array of booleans");
 	return 0;
 }
 
@@ -823,7 +823,7 @@ const char *CVariable::sVal() const {
 	if (tag == psTag) {
 		return ps[0];
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected a string");
+	throw SimpleException (SimpleException::BADVARTYPE,"Invalid data type, expected a string");
 	return NULL;
 }
 
@@ -836,7 +836,7 @@ const int CVariable::psVal(char *const*&psArg) const {
 		psArg = ps;
 		return nSize;
 	}
-	throw Exception (Exception::BADVARTYPE,"Invalid data type, expected array of strings");
+	throw SimpleException (SimpleException::BADVARTYPE,"Invalid data type, expected array of strings");
 	return NULL;
 }
 

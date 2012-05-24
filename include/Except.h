@@ -6,8 +6,8 @@
 #include <string>
 
 
-class FrescoFoundation_API Exception 
-//The Exception class handles [very] basic exception handling.  Since most of the errors encountered in the code can be handled
+class FrescoFoundation_API SimpleException 
+//The SimpleException class handles [very] basic exception handling.  Since most of the errors encountered in the code can be handled
 //in some default way, and are non-fatal, the only thing we really need to do here is print the error.  It is conceivable that
 //as the error handling demand increases other functions could be added.  For example one to retreive the error code in cases
 //where multiple errors could occur and would be handled differently.
@@ -36,8 +36,8 @@ public :
 	std::string		specifier;		//A specifier that might accompany the message, for example a filename.  Really just another pointer to string.
 
 public :
-    Exception (const ErrorCause S=UNKNOWN, const std::string M="", const std::string Spec="") : state(S), message(M), specifier(Spec) {}
-	~Exception () {}
+    SimpleException (const ErrorCause S=UNKNOWN, const std::string M="", const std::string Spec="") : state(S), message(M), specifier(Spec) {}
+	~SimpleException () {}
 	void print ();
 };
 

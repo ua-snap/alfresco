@@ -52,7 +52,7 @@ void WSpruce::_WSpruce()
 /** Local constructor - Initialize the local member variables and give the frame an initial age. */
 {
     if (!_isStaticSetupAlready)
-        throw Exception(Exception::UNKNOWN, "Static data members must be set before initializing species.");
+        throw SimpleException(SimpleException::UNKNOWN, "Static data members must be set before initializing species.");
 
 	//Calc a starting age if not yet assigned.
 	if (gFirstYear-1==_yearEstablished)	
