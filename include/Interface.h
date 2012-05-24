@@ -111,7 +111,7 @@ public:
 // the string key and returns the data in CVariable.  At this time, the data structure is a simple linked list.  At
 // some point, it would make sense to make this an AVL tree or some other such efficient dynamic data structure.  There
 // is also provisions for printing out the whole data structure for debugging purposes.  Error handling is used in the 
-// event the key isn't found by throwing an error of type Exception.
+// event the key isn't found by throwing an error of type SimpleException.
 
 class FrescoFoundation_API CAssoc {												// An associative array class for managing string table. A linked list for first implementation, but should be made an AVL tree.
 public:
@@ -182,65 +182,65 @@ public:
 	const int nGet (const char *Key)					
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         int val = 0;
-        try { val = varTmp->nVal(); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { val = varTmp->nVal(); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return val; 
     }
 	const int pnGet (const char *Key, const int *&pn)	
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         int count = 0;
-        try { count = varTmp->pnVal(pn); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { count = varTmp->pnVal(pn); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return count; 
     }
 	const double dGet (const char *Key)					
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         double val = 0;
-        try { val = varTmp->dVal(); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { val = varTmp->dVal(); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return val; 
     }
 	const int pdGet (const char *Key, const double *&pd)
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         int count = 0;
-        try { count = varTmp->pdVal(pd); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { count = varTmp->pdVal(pd); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return count; 
     }
 	const bool bGet (const char *Key)					
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         bool val = false;
-        try { val = varTmp->bVal(); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { val = varTmp->bVal(); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return val; 
     }
 	const int pbGet (const char *Key, const bool *&pb)	
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         int count;
-        try { count = varTmp->pbVal(pb); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { count = varTmp->pbVal(pb); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return count; 
     }
 	const char *sGet (const char *Key)					
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         const char *val;
-        try { val = varTmp->sVal(); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { val = varTmp->sVal(); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return val; 
     }
 	const int psGet (const char *Key, char *const*&ps)	
     { 
         const CVariable *varTmp = IOAssoc.Get(Key); 
-        if (!varTmp) throw Exception(Exception::BADKEY,"Key not found: " + std::string(Key)); 
+        if (!varTmp) throw SimpleException(SimpleException::BADKEY,"Key not found: " + std::string(Key)); 
         int count = 0;
-        try { count = varTmp->psVal(ps); } catch(Exception& e) { throw Exception(Exception::BADVARTYPE, e.message + ": " + Key); }
+        try { count = varTmp->psVal(ps); } catch(SimpleException& e) { throw SimpleException(SimpleException::BADVARTYPE, e.message + ": " + Key); }
         return count; 
     }
 };

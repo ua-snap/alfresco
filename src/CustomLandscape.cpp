@@ -179,7 +179,7 @@ void CustomLandscape::		setup()
 	}
 
 	//Load fire transition data...
-	if (0==Fire::fireTransitions.size())			throw Exception(Exception::INITFAULT,"Fire transitions missing.  There must be at least one fire transition.\n");
+	if (0==Fire::fireTransitions.size())			throw SimpleException(SimpleException::INITFAULT,"Fire transitions missing.  There must be at least one fire transition.\n");
 	if (gDetailLevel>=MAXIMUM) {
 		ShowOutput("\tFire Transitions:\n");
 		ShowOutput("\t\tYear Type\n");
@@ -187,10 +187,10 @@ void CustomLandscape::		setup()
 	//...check for transition at FirstYear
 	std::string firstYearMsg("A fire trasition is required at the first year of simulation ("+ToS(gFirstYear)+".\n");
 	if (Fire::fireTransitions.empty()) 
-		throw Exception(Exception::INITFAULT,firstYearMsg,"");
+		throw SimpleException(SimpleException::INITFAULT,firstYearMsg,"");
 	iter=Fire::fireTransitions.begin();
 	if (iter->Year != gFirstYear) 
-		throw Exception(Exception::INITFAULT,firstYearMsg,"");
+		throw SimpleException(SimpleException::INITFAULT,firstYearMsg,"");
 	
 	for (iter=Fire::fireTransitions.begin(); iter!=Fire::fireTransitions.end(); iter++)	{
 		transition = Fire::fireTransitions[t];
@@ -200,7 +200,7 @@ void CustomLandscape::		setup()
 		tranStart = iter->Year;
 		if (tranStart < gFirstYear  || gLastYear < tranStart)
 		{
-			throw Exception(Exception::INITFAULT, "fire transition start year "
+			throw SimpleException(SimpleException::INITFAULT, "fire transition start year "
 							"("+ToS(tranStart)+") must be within the range of "
 							"this simulation's first and last years "
 							"("+ToS(gFirstYear)+", "+ToS(gLastYear)+").\n", "");
@@ -209,17 +209,17 @@ void CustomLandscape::		setup()
 		//...set up fire type
 		if (iter->Type==Fire::FIXED){
 			stream	<< " FIXED";
-			if (iter->Ignition==FRS_NULL)				throw Exception(Exception::INITFAULT,"Fire transition missing ignition.\n");
-			if (iter->Sensitivity==FRS_NULL)			throw Exception(Exception::INITFAULT,"Fire transition missing sensitivity.\n");
+			if (iter->Ignition==FRS_NULL)				throw SimpleException(SimpleException::INITFAULT,"Fire transition missing ignition.\n");
+			if (iter->Sensitivity==FRS_NULL)			throw SimpleException(SimpleException::INITFAULT,"Fire transition missing sensitivity.\n");
 		}
 		else if (iter->Type==Fire::SPATIAL) {
 			stream	<< " SPATIAL";
-			if (iter->SpatialIgnitionFile=="\"")		throw Exception(Exception::INITFAULT,"Fire transition missing spatial ignition file.\n");
-			if (iter->SpatialSensitivityFile=="\"")		throw Exception(Exception::INITFAULT,"Fire transition missing spatial sensitivity file.\n");
+			if (iter->SpatialIgnitionFile=="\"")		throw SimpleException(SimpleException::INITFAULT,"Fire transition missing spatial ignition file.\n");
+			if (iter->SpatialSensitivityFile=="\"")		throw SimpleException(SimpleException::INITFAULT,"Fire transition missing spatial sensitivity file.\n");
 		}
 		else if (iter->Type==Fire::HISTORICAL) {
 			stream	<< " HISTORICAL";
-			if (iter->HistoricalFile=="\"")	            throw Exception(Exception::INITFAULT,"Fire transition missing historical file name.\n");
+			if (iter->HistoricalFile=="\"")	            throw SimpleException(SimpleException::INITFAULT,"Fire transition missing historical file name.\n");
 		}
 		stream	<< std::endl;
 		if (gDetailLevel>=MAXIMUM) ShowOutput(stream);
@@ -307,7 +307,7 @@ void CustomLandscape::		repStart()
 			else if (frameTypeID==gWetlandTundraID)	{ _pFrames[r][c] = new WetlandTundra(gFirstYear - _pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
 			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (IsNodata(frameTypeID))    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
-			else								{ throw Exception(Exception::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS((int)frameTypeID)); }
+			else								{ throw SimpleException(SimpleException::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS((int)frameTypeID)); }
 
 			if (_isUsingVegMask && _pVegMaskSpatialInput[r][c] == 0){
 				_pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);
@@ -496,14 +496,14 @@ void CustomLandscape::      setupSuppressionTransitions()
     std::string   fireSizeKey(keyBase + "Threshold.FireSize");
     std::string   ignitionKey(keyBase + "Threshold.Ignitions");
     count = FRESCO->fif().pnGet(yearsKey.c_str(), pYears);
-    if (FRESCO->fif().pnGet(fireSizeKey.c_str(), pThresholdFireSizes) != count)   throw Exception(Exception::BADARRAYSIZE, errBase + fireSizeKey);
-    if (FRESCO->fif().pnGet(ignitionKey.c_str(), pThresholdIgnitions) != count)   throw Exception(Exception::BADARRAYSIZE, errBase + ignitionKey);
-    if (FRESCO->fif().pbGet(hasNewMapKey.c_str(), pHasNewMapFlags) != count)      throw Exception(Exception::BADARRAYSIZE, errBase + hasNewMapKey);
-    if (FRESCO->fif().pdGet(class1Key.c_str(), pClass1) != count)                 throw Exception(Exception::BADARRAYSIZE, errBase + class1Key);
-    if (FRESCO->fif().pdGet(class2Key.c_str(), pClass2) != count)                 throw Exception(Exception::BADARRAYSIZE, errBase + class2Key);
-    if (FRESCO->fif().pdGet(class3Key.c_str(), pClass3) != count)                 throw Exception(Exception::BADARRAYSIZE, errBase + class3Key);
-    if (FRESCO->fif().pdGet(class4Key.c_str(), pClass4) != count)                 throw Exception(Exception::BADARRAYSIZE, errBase + class4Key);
-    if (FRESCO->fif().pdGet(class5Key.c_str(), pClass5) != count)                 throw Exception(Exception::BADARRAYSIZE, errBase + class5Key);
+    if (FRESCO->fif().pnGet(fireSizeKey.c_str(), pThresholdFireSizes) != count)   throw SimpleException(SimpleException::BADARRAYSIZE, errBase + fireSizeKey);
+    if (FRESCO->fif().pnGet(ignitionKey.c_str(), pThresholdIgnitions) != count)   throw SimpleException(SimpleException::BADARRAYSIZE, errBase + ignitionKey);
+    if (FRESCO->fif().pbGet(hasNewMapKey.c_str(), pHasNewMapFlags) != count)      throw SimpleException(SimpleException::BADARRAYSIZE, errBase + hasNewMapKey);
+    if (FRESCO->fif().pdGet(class1Key.c_str(), pClass1) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class1Key);
+    if (FRESCO->fif().pdGet(class2Key.c_str(), pClass2) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class2Key);
+    if (FRESCO->fif().pdGet(class3Key.c_str(), pClass3) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class3Key);
+    if (FRESCO->fif().pdGet(class4Key.c_str(), pClass4) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class4Key);
+    if (FRESCO->fif().pdGet(class5Key.c_str(), pClass5) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class5Key);
 
     //Load array values into transition list.
     std::string temp = "";
@@ -528,7 +528,7 @@ void CustomLandscape::      setupSuppressionTransitions()
             if (_suppressionFilename.empty()) throw Poco::Exception("Developer note: Suppression filename expected during suppression transition setup.");
             std::string filepath(AppendYear(_suppressionFilename, t.Year));
             if (!InputFileExists(filepath)) 
-                throw Exception(Exception::INITFAULT, "Expected suppression map for year " + ToS(t.Year) + " at " + GetFullPath(gInputBasePath, filepath));
+                throw SimpleException(SimpleException::INITFAULT, "Expected suppression map for year " + ToS(t.Year) + " at " + GetFullPath(gInputBasePath, filepath));
         }
     }
     //Show a summary of scheduled suppression transitions.
@@ -537,7 +537,7 @@ void CustomLandscape::      setupSuppressionTransitions()
 		ShowOutput("\t\tYear Map? Class1 Class2 Class3 Class4 Class5 SizeThreshold IgnitThreshold \n");
 //                        1000 yes  0.23   0.1234 1      1      1      500000        500000
     }
-    if (_suppressionTransitions.empty()) throw Exception(Exception::INITFAULT,"Suppression transitions missing.  There must be at least one fire suppression transition.\n");
+    if (_suppressionTransitions.empty()) throw SimpleException(SimpleException::INITFAULT,"Suppression transitions missing.  There must be at least one fire suppression transition.\n");
     std::ostringstream	stream;
     for (it=_suppressionTransitions.begin(); it!=_suppressionTransitions.end(); it++)
     {
@@ -555,7 +555,7 @@ void CustomLandscape::      setupSuppressionTransitions()
         if (gDetailLevel>=MAXIMUM) ShowOutput(stream);
     }
     it = _suppressionTransitions.begin();
-    if (it->Year != gFirstYear) throw Exception(Exception::INITFAULT,"A suppression trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
+    if (it->Year != gFirstYear) throw SimpleException(SimpleException::INITFAULT,"A suppression trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
 }
 
 
@@ -643,7 +643,7 @@ void CustomLandscape::		doVegetationTransitions()
 					else if (newType==gWetlandTundraID)	pNewFrame = new WetlandTundra(*pCurFrame);
 					else if (newType==gNoVegID)		pNewFrame = new NoVeg(*pCurFrame);
 					else if (IsNodata(newType))	pNewFrame = new NoVeg(*pCurFrame);
-					else							throw Exception(Exception::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS((int)newType) + ".\n");
+					else							throw SimpleException(SimpleException::UNKNOWN,"Failed vegetation transition.  Cell (" + ToS(r) + "," + ToS(c) + ") has an unknown type (" + ToS((int)newType) + ".\n");
 					//Decrement cell count for old species and increment cell count for new species.
 					_vegDistributionStat[curType]--;
 					_vegDistributionStat[newType]++;
@@ -736,12 +736,12 @@ void CustomLandscape::		setupMapStats()
         && FRESCO->fif().CheckKey("MapYearFreq")) 
     {
         mapCount = FRESCO->fif().psGet("MapFiles", pMapFiles);
-        if (FRESCO->fif().psGet("MapCodes", pMapCodes) != mapCount)         throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: MapCodes");
-        if (FRESCO->fif().pnGet("MapFlags", pMapFlags) != mapCount)         throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: MapFlags");
-        if (FRESCO->fif().pnGet("MapRepStart", pMapRepStart) != mapCount)   throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepStart");
-        if (FRESCO->fif().pnGet("MapRepFreq", pMapRepFreq) != mapCount)     throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepFreq");
-        if (FRESCO->fif().pnGet("MapYearStart", pMapYearStart) != mapCount) throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearStart");
-        if (FRESCO->fif().pnGet("MapYearFreq", pMapYearFreq) != mapCount)   throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearFreq");
+        if (FRESCO->fif().psGet("MapCodes", pMapCodes) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapCodes");
+        if (FRESCO->fif().pnGet("MapFlags", pMapFlags) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapFlags");
+        if (FRESCO->fif().pnGet("MapRepStart", pMapRepStart) != mapCount)   throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepStart");
+        if (FRESCO->fif().pnGet("MapRepFreq", pMapRepFreq) != mapCount)     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepFreq");
+        if (FRESCO->fif().pnGet("MapYearStart", pMapYearStart) != mapCount) throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearStart");
+        if (FRESCO->fif().pnGet("MapYearFreq", pMapYearFreq) != mapCount)   throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearFreq");
     }
     else mapCount = 0;
 

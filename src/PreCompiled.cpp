@@ -123,7 +123,7 @@ void                    EnsureDirectoryExists(std::string path, bool includesFil
         try { f.createDirectory(); } catch (Poco::Exception& e) 
 		{
 			if (!f.exists())
-				throw Exception(Exception::UNKNOWN, "Unable to create the client output directory: "+f.path()+",  System message:"+e.displayText()+"\n");
+				throw SimpleException(SimpleException::UNKNOWN, "Unable to create the client output directory: "+f.path()+",  System message:"+e.displayText()+"\n");
 		}
     }
 }

@@ -120,7 +120,7 @@ void Climate::			setup()
 			}
 		}
 		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().sGet("Climate.Flammability.File"));
-		if (_spatialFlamabilityFile == "") 	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
+		if (_spatialFlamabilityFile == "") 	throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
 	}
 
 	//Set monthly status.
@@ -213,10 +213,10 @@ void Climate::			setup()
 	}
 	std::string errMsg("A climate trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
 	if (_transitions.empty())
-		throw Exception(Exception::INITFAULT,errMsg,"");
+		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
     std::vector<SClimateTransition>::iterator iter = _transitions.begin();
 	if (iter->Year != gFirstYear)
-		throw Exception(Exception::INITFAULT,errMsg,"");
+		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
 	
     std::ostringstream	Stream;
 	for (iter=_transitions.begin(); iter!=_transitions.end(); iter++)	{
@@ -226,30 +226,30 @@ void Climate::			setup()
 		switch (iter->ValuesType) {
 		case VTCONSTANT:
 			Stream	<< " CONSTANT";
-			if (_isMonthlyClimate)				throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tCONSTANT climate value type is not valid when using the monthly climate input option.\n");
-			if (_isExternFlam)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tCONSTANT climate value type is not valid when using the optional Climate.Flammability.File field. You can comment it out with a semi-colon at the beginning of the line.\n");
+			if (_isMonthlyClimate)				throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tCONSTANT climate value type is not valid when using the monthly climate input option.\n");
+			if (_isExternFlam)					throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tCONSTANT climate value type is not valid when using the optional Climate.Flammability.File field. You can comment it out with a semi-colon at the beginning of the line.\n");
 			break;
 		case VTSPATIAL:
 			Stream	<< " SPATIAL";
-			if (_isMonthlyClimate)				throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tSPATIAL climate value type is not valid when using the monthly climate input option.\n");
-			if (iter->SpatialTempFile=="")		throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing spatial temperature file name.\n");
-			if (iter->SpatialPrecipFile=="")	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing spatial precipitation file name.\n");
-			if (_isExternFlam)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tSPATIAL climate value type is not valid when using the optional Climate.Flammability.File field. You can comment it out with a semi-colon at the beginning of the line.\n");
+			if (_isMonthlyClimate)				throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tSPATIAL climate value type is not valid when using the monthly climate input option.\n");
+			if (iter->SpatialTempFile=="")		throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing spatial temperature file name.\n");
+			if (iter->SpatialPrecipFile=="")	throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing spatial precipitation file name.\n");
+			if (_isExternFlam)					throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tSPATIAL climate value type is not valid when using the optional Climate.Flammability.File field. You can comment it out with a semi-colon at the beginning of the line.\n");
 			break;
 		case VTEXPLICIT:
 			Stream	<< " EXPLICIT";
-			if (iter->SpatialTempFile=="")		throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit temperature file name.\n");
-			if (iter->SpatialPrecipFile=="")	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit precipitation file name.\n");
+			if (iter->SpatialTempFile=="")		throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit temperature file name.\n");
+			if (iter->SpatialPrecipFile=="")	throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit precipitation file name.\n");
 			break;
 		case VTRANDEXPLICIT:
 			Stream	<< " RANDEXPLICIT";
 			int min = iter->RandExplicitMinYear;
 			int max = iter->RandExplicitMaxYear;
-			if (min<0)						    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMin Rand Year must be greater than or equal to 0.\n");
-			if (max<0)						    throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be greater than or equal to 0.\n");
-			if (max-min < 1)					throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be greater than Min Rand Year.\n");
-			if (iter->SpatialTempFile=="")		throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit temperature file name.\n");
-			if (iter->SpatialPrecipFile=="")	throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit precipitation file name.\n");
+			if (min<0)						    throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMin Rand Year must be greater than or equal to 0.\n");
+			if (max<0)						    throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be greater than or equal to 0.\n");
+			if (max-min < 1)					throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMax Rand Year must be greater than Min Rand Year.\n");
+			if (iter->SpatialTempFile=="")		throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit temperature file name.\n");
+			if (iter->SpatialPrecipFile=="")	throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing explicit precipitation file name.\n");
 			break;
 		}
         //show OffsetsType...
@@ -263,7 +263,7 @@ void Climate::			setup()
 			break;
 		case OTFILE:
 			Stream	<< " FILE";
-			if (iter->OffsetsFile=="")			throw Exception(Exception::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing offsets file name.\n");
+			if (iter->OffsetsFile=="")			throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing offsets file name.\n");
 			break;
 		case OTRANDOM:
 			Stream	<< " RANDOM";
@@ -481,24 +481,24 @@ void Climate::          setupTransitions()
     
     //Get arrays of values and make sure all arrays have the same count.
     count = FRESCO->fif().pnGet("Climate.TransitionYears", pnYears);
-    if (FRESCO->fif().psGet("Climate.Values.Type", psValTypes) != count)                                      throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Type");
-    if (FRESCO->fif().pdGet("Climate.Values.Temp.Constant", pdValTempConstants) != count)                     throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.Constant");
-    if (FRESCO->fif().pdGet("Climate.Values.Precip.Constant", pdValPrecipConstants) != count)                 throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.Constant");
-    if (FRESCO->fif().psGet("Climate.Values.Temp.File", psValTempFiles) != count)                             throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.File");
-    if (FRESCO->fif().psGet("Climate.Values.Precip.File", psValPrecipFiles) != count)                         throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.File");
-    if (FRESCO->fif().pnGet("Climate.Values.RandExplicit.MinYear", pnValRandExplicitMinYears) != count)       throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MinYear");
-    if (FRESCO->fif().pnGet("Climate.Values.RandExplicit.MaxYear", pnValRandExplicitMaxYears) != count)       throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MaxYear");
-    if (FRESCO->fif().pbGet("Climate.Values.RandExplicit.Replicate", pbValRandExplicitReplicate) != count)    throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.Replicate");
+    if (FRESCO->fif().psGet("Climate.Values.Type", psValTypes) != count)                                      throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Type");
+    if (FRESCO->fif().pdGet("Climate.Values.Temp.Constant", pdValTempConstants) != count)                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.Constant");
+    if (FRESCO->fif().pdGet("Climate.Values.Precip.Constant", pdValPrecipConstants) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.Constant");
+    if (FRESCO->fif().psGet("Climate.Values.Temp.File", psValTempFiles) != count)                             throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.File");
+    if (FRESCO->fif().psGet("Climate.Values.Precip.File", psValPrecipFiles) != count)                         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.File");
+    if (FRESCO->fif().pnGet("Climate.Values.RandExplicit.MinYear", pnValRandExplicitMinYears) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MinYear");
+    if (FRESCO->fif().pnGet("Climate.Values.RandExplicit.MaxYear", pnValRandExplicitMaxYears) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MaxYear");
+    if (FRESCO->fif().pbGet("Climate.Values.RandExplicit.Replicate", pbValRandExplicitReplicate) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.Replicate");
 
-    if (FRESCO->fif().psGet("Climate.Offsets.Type", psOffTypes) != count)                                     throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Type");
-    if (FRESCO->fif().psGet("Climate.Offsets.File", psOffFiles) != count)                                     throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.File");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Constant.Temp", pdOffConstantTemps) != count)                    throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Temp");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Constant.Precip", pdOffConstantPrecips) != count)                throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Precip");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Temp.Mean", pdOffRandomTempMeans) != count)               throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.Mean");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Temp.StdDev", pdOffRandomPrecipMeans) != count)           throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.StdDev");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Precip.Mean", pdOffRandomTempStdDevs) != count)           throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.Mean");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Precip.StdDev", pdOffRandomPrecipStdDevs) != count)       throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.StdDev");
-    if (FRESCO->fif().pbGet("Climate.Offsets.Random.Replicate", pbOffRandomReplicate) != count)               throw Exception(Exception::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Replicate");
+    if (FRESCO->fif().psGet("Climate.Offsets.Type", psOffTypes) != count)                                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Type");
+    if (FRESCO->fif().psGet("Climate.Offsets.File", psOffFiles) != count)                                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.File");
+    if (FRESCO->fif().pdGet("Climate.Offsets.Constant.Temp", pdOffConstantTemps) != count)                    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Temp");
+    if (FRESCO->fif().pdGet("Climate.Offsets.Constant.Precip", pdOffConstantPrecips) != count)                throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Precip");
+    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Temp.Mean", pdOffRandomTempMeans) != count)               throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.Mean");
+    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Temp.StdDev", pdOffRandomPrecipMeans) != count)           throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.StdDev");
+    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Precip.Mean", pdOffRandomTempStdDevs) != count)           throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.Mean");
+    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Precip.StdDev", pdOffRandomPrecipStdDevs) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.StdDev");
+    if (FRESCO->fif().pbGet("Climate.Offsets.Random.Replicate", pbOffRandomReplicate) != count)               throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Replicate");
 
     std::string temp = "";
     for (int i=0; i<count; i++) {
@@ -610,7 +610,7 @@ int Climate::			getRandExplicitYear()
 		int max = _pCurrentTransition->RandExplicitMaxYear;
 		int canidateCount = max-min+1;
 		if (canidateCount < 1)	
-			throw Exception(Exception::UNKNOWN,"\tFailed loading climate: Min Year must be less than Max Year when using RANDEXPLICIT climate type.\n"); 
+			throw SimpleException(SimpleException::UNKNOWN,"\tFailed loading climate: Min Year must be less than Max Year when using RANDEXPLICIT climate type.\n"); 
 
         randomYear = (int)floor(GetNextRandom()*canidateCount+min);
 
@@ -665,7 +665,7 @@ void Climate::          setupStepOrRamp(const EClimateType climateType, const EO
     const double*   pAmounts;
     int count = FRESCO->fif().pnGet(yearsKey, pYears);
     if (FRESCO->fif().pdGet(offsetsKey, pAmounts) != count)     
-        throw Exception(Exception::BADARRAYSIZE, std::string("Unexpected array size returned for Key: ") + offsetsKey);
+        throw SimpleException(SimpleException::BADARRAYSIZE, std::string("Unexpected array size returned for Key: ") + offsetsKey);
     //Place values into appropriate list for later use.
     for (int i=0; i<count; i++) {
         //Create the offset with values from FIF.
@@ -704,7 +704,7 @@ void Climate::			setOffsetsFromFile(std::string filePath, int firstYear, int las
 	float temp, precip;
 
 	fp.open(filePath.c_str(),std::ios::in);
-	if (!fp.is_open()) throw Exception(Exception::FILEBAD,"Open file failed: " + filePath + "\n");
+	if (!fp.is_open()) throw SimpleException(SimpleException::FILEBAD,"Open file failed: " + filePath + "\n");
 	for (int y=gFirstYear; y<=lastYear && y<=gLastYear; y++) {
 		//Read a year in from Climate.File.
 		fp >> temp >> precip;
@@ -821,7 +821,7 @@ void Climate::          setStepsAndRampsInTimeRange(int firstYear, int lastYear)
 			}
 		}
 		catch (...) {						
-            throw Exception(Exception::INITFAULT, "Failed to calculate climate offset ramps and steps.\n");
+            throw SimpleException(SimpleException::INITFAULT, "Failed to calculate climate offset ramps and steps.\n");
 		}
 		if (firstYear <= y && y <= lastYear) {
 			//Apply steps and ramps to temporal climate array.

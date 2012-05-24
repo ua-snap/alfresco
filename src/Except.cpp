@@ -5,7 +5,7 @@
 #include "Fresco.h"
 
 
-void Exception::print()
+void SimpleException::print()
 {
 	std::string output;
 	output = "Error: ";
