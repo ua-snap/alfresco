@@ -209,18 +209,19 @@ void Fresco::runOneYear(const int rep, const int yearResume){
 		gRep = rep;
 		raiseBeforeRepStart.notify(this, gRep);
 		_landscape->repStart();
-	} else {
-		raiseBeforeYearStart.notify(this, gYear);
-		_landscape->yearStart();
-		raiseAfterYearStart.notify(this, gYear);
-        
-		if (gYear > gFirstYear) _landscape->succession();
-	        if (_isFireEnabled) _landscape->doIgnitions();
-        
-		raiseBeforeYearEnd.notify(this, gYear);
-        	_landscape->yearEnd();
-        	raiseAfterYearEnd.notify(this, gYear);
 	}
+	gYear = yearResume;
+	raiseBeforeYearStart.notify(this, gYear);
+	_landscape->yearStart();
+	raiseAfterYearStart.notify(this, gYear);
+
+	if (gYear > gFirstYear) _landscape->succession();
+	if (_isFireEnabled) _landscape->doIgnitions();
+
+	raiseBeforeYearEnd.notify(this, gYear);
+	_landscape->yearEnd();
+	raiseAfterYearEnd.notify(this, gYear);
+
     	if (gYear == gLastYear) {
 		//Finish rep.
 		raiseBeforeRepEnd.notify(this, gRep);
