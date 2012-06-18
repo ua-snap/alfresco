@@ -25,7 +25,6 @@ configure
 depcomp
 libtool
 ltmain.sh
-m4/
 Makefile
 Makefile.in
 missing
