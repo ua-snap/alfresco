@@ -297,9 +297,9 @@ void Landscape::		succession()
 				_vegResidenceStat[_pFrames[r][c]->type()].Add(gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 
 				#ifdef WITHSTATS
-				stringstream vd;
-				vd << "VegDist[" << (int)_pFrames[r][c]->type() << "]";
-				RunStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
+				stringstream vr;
+				vr << "VegRes[" << (int)_pFrames[r][c]->type() << "]";
+				RunStats->addStat(vr.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 				#endif
 				//Process the succession.
 				delete _pFrames[r][c];
