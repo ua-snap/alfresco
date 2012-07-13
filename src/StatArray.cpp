@@ -52,6 +52,55 @@ void StatArray::writeStats(){
 		#endif
 	}
 }
+void StatArray::writeRepStats(int mr){
+	std::ofstream sfile;
+	string sfile_ext = ".txt";
+	#ifdef WITHMPI
+	if (MPI::COMM_WORLD.Get_rank() == 0){
+	#endif
+		sfile.open("FireSizeEvents.txt");
+		sfile << "Year" << "\tRep" << "\tVal" << "\tCause" << "\tLow" << "\tMod" << "\tHighLSS" << "\tHighHSS" << std::endl;
+		sfile.close();
+	#ifdef WITHMPI
+	}
+	#endif
+	for (int i = 0; i < mr; i++){
+		for (unsigned int j = 0; j < statArray.size(); j++){
+			if (statArray[j]->statType == FIRESIZE){
+				sfile.open("FireSizeEvents.txt",ios_base::app);
+				for (unsigned int k = 0; k < statArray[j]->statVector.size(); k++){
+					if (statArray[j]->statVector[k][1] == i){
+						sfile << statArray[j]->statVector[k][0] << "\t";
+						sfile << statArray[j]->statVector[k][1] << "\t";
+						sfile << statArray[j]->statVector[k][2] << "\t";
+						sfile << statArray[j]->statVector[k][3] << "\t";
+						sfile << statArray[j]->statVector[k][4] << "\t";
+						sfile << statArray[j]->statVector[k][5] << "\t";
+						sfile << statArray[j]->statVector[k][6] << "\t";
+						sfile << statArray[j]->statVector[k][7] << std::endl;
+					}
+				}
+				sfile.close();
+			}	
+			if (statArray[j]->statType == LIST){
+				sfile.open((statArray[j]->getTitle() + sfile_ext).c_str(), ios_base::app);
+				for (unsigned int k = 0; k < statArray[j]->statVector.size(); k++){
+					if (statArray[j]->statVector[k][1] == i){
+						sfile << firstYear + statArray[j]->statVector[k][0] << "\t";
+						sfile << statArray[j]->statVector[k][1] << "\t";
+						sfile << statArray[j]->statVector[k][2] << std::endl;
+					}
+				}
+				sfile.close();
+			}
+		}
+
+		#ifdef WITHMPI
+		MPI::COMM_WORLD.Barrier();
+		#endif
+	}
+
+}
 void StatArray::gatherStats(){
 /**
  * Gather stats sent by the StatFile::sendFile() function
