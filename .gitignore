@@ -19,6 +19,7 @@ Output/
 .libs
 *.lo
 *.m4
+m4/*.m4
 config.guess
 config.sub
 config.status
