@@ -85,7 +85,6 @@ int main(int argc, char** argv) {
 		}
 		#endif
 		RunStats->writeStats();
-
 		RunStats->writeRepStats(maxReps);
 	}
 	#ifdef WITHMPI
