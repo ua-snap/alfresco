@@ -8,7 +8,6 @@
 
 
 #include "Fire.h"
-
 #include "Landscape.h"	
 
 
