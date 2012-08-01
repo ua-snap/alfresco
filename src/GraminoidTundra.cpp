@@ -193,73 +193,27 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 {
 	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
+	//std::cout << gYear << std::endl;
 	if (yearsSinceLastBurn == 1) {
         //This frame burned last year, so reset degree years to start tracking again.
-        _yearEstablished	= gYear;
+        	_yearEstablished	= gYear;
 		_speciesSubCanopy	= gGraminoidTundraID;
 		_basalArea	        = 0.;
 		_yearOfEstablishment= -_history;
 		_degrees		    = -1.;
+	//} else if (gYear > 20 && yearsSinceLastBurn >= 50) {
+	//	return new ShrubTundra(*this);
 	}
-
-	///////////////////////////////////////////
-	//> temporarily commenting out these lines with '>'.   Turning off time dependant transitions.
-	//Check time dependant transitions
-	//int yearsSinceEstablishment = gYear - _yearOfEstablishment;
-	//if (yearsSinceEstablishment<=_history && yearsSinceEstablishment>=0 ) {              //If it has been cold and the trees are young, then kill the trees
-	//    double	inc;
-	//	if (-1 == _degrees) {											                //This is the first go so compute all preceeding years - I think this is always just two, but there is no extra overhead to have it general
-	//		_degrees = 0.;
-	//		//for (int i=0; i<=yearsSinceEstablishment; i++) {				//Integrate degree-timesteps
-	//		//	inc = _pSeedEstParams[0] - pParent->cellClimate(i).Temp;
-	//		//	_degrees += (inc>0) ? inc : 0.;
-	//		//}
-	//	} 
-	//	else {															                //This is a standard run so just add the current year
-	//		//inc = _pSeedEstParams[0] - pParent->cellClimate(0).Temp;
-	//		//_degrees += (inc > 0) ? inc : 0.;
-	//	}
-
-	//	if (_degrees > _pSeedEstParams[1] * _history) {                   //Check to see if we kill the trees
-	//		_yearOfEstablishment = -_history;
-	//		_basalArea = 0.;
-	//		_degrees = -1.;
-	//	}
-	//}
-
-	//Compute seed source
 	double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 	double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
-	params[0] = 0.;
- 	seeds -= queryReply(pParent, FatTail (params));						                //Subtract off the contribution from this cell to give the sum of weighted BA/Ha of adjacent cells
-	seeds *= _seedBasalArea;									                        //Compute the seed source from by multiplying by seeds/(BA/Ha)
-	seeds /= _seedling;										                            //Factor in the seed to seedling and viability ratios
-
-	///////////////////////////////////////////
-	//> temporarily commenting out these lines with '>'.   Setting growth factor to zero.
-	//Compute growth factor from Climate
-	//>  SClimate climate = pParent->cellClimate(0);								            //Get the climate
-	//>  double growthFactor = _pClimateGrowth[0] + _pClimateGrowth[1]*climate.Temp + _pClimateGrowth[2]*climate.Precip;	//and plug in into the regression to compute the increase in BA/HA from growth
-	//>  growthFactor = growthFactor/1000. * _meanGrowth;			                        //Convert growth factor to fraction and multiply by mean annual growth
-	double growthFactor = 0;
-
-	//Find the new basal area for the plot
-	if (_basalArea == 0 && seeds > 0) _yearOfEstablishment = gYear;		            //If we are just getting establishment, record the year
-	//>  _basalArea += _basalArea * growthFactor * _pCalibrationFactor[0];		            //Portion of new basal area due to growth.  This is fitted in the Excel model to a cohort type model.
-	_basalArea += seeds * _seedlingBasalArea * _pCalibrationFactor[1];		            //Portion of new basal area due to seedlings.  This is also fitted in the Excel model.
-
+	_basalArea += seeds * 10;
 	//Transition if necessary
 	if (_basalArea>=_tundraSpruceBasalArea) {
-		if (_speciesSubCanopy==gWSpruceID) return new WSpruce(*this);
-		else if (_speciesSubCanopy==gBSpruceID) return new BSpruce(*this);
-		else {																			
-			//Evaluate site as per rest of model (decid)
-			const double probability = Site(_site,0.5);
-			if (probability > GetNextRandom())
-				return new BSpruce(*this);
-			else
-				return new WSpruce(*this);
-		}
+		const double probability = Site(_site,0.5);
+		if (probability > GetNextRandom())
+			return new BSpruce(*this);
+		else
+			return new WSpruce(*this);
 	}
 	return NULL;
 }
