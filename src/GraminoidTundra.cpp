@@ -208,7 +208,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
 	_basalArea += seeds * 10;
 	//Transition if necessary
-	if (_basalArea>=_tundraSpruceBasalArea) {
+	if (_basalArea >= _tundraSpruceBasalArea) {
 		const double probability = Site(_site,0.5);
 		if (probability > GetNextRandom())
 			return new BSpruce(*this);

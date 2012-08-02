@@ -36,7 +36,7 @@ public :
 	std::string		specifier;		//A specifier that might accompany the message, for example a filename.  Really just another pointer to string.
 
 public :
-    SimpleException (const ErrorCause S=UNKNOWN, const std::string M="", const std::string Spec="") : state(S), message(M), specifier(Spec) {}
+    SimpleException (const ErrorCause S=UNKNOWN, const std::string M="", const std::string Spec="") : state(S), message(M), specifier(Spec) { std::cout << message << std::endl; }
 	~SimpleException () {}
 	void print ();
 };
