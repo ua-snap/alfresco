@@ -575,7 +575,6 @@ double Landscape::		neighborsSuccess (double (Frame::*QueryFunction)(Landscape *
 	int rowMax = currRow + numCells;	rowMax = (rowMax >= gYSize) ? gYSize-1 : rowMax;
 	int colMin = currCol - numCells;	colMin = (colMin < 0) ? 0 : colMin;
 	int colMax = currCol + numCells;	colMax = (colMax >= gXSize) ? gXSize-1 : colMax;
-	std::cout << rowMax - rowMin << " - " << colMax - colMin << " - " << rowMin << ":" << rowMax << ":" << colMin << ":" << colMax << "\n";
 	//Start the inner loop
 	for (int row=rowMin; row<=rowMax; row++) {
 		for (int col = colMin; col <= colMax; col++) {
