@@ -192,6 +192,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 //general (long term) state changes. Specific algorithms are documented in the code
 {
 	//Check immediately after burn
+	return new GraminoidTundra(*this);
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {	
 		if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){

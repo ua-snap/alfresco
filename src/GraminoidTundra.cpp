@@ -204,11 +204,22 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	//} else if (gYear > 20 && yearsSinceLastBurn >= 50) {
 	//	return new ShrubTundra(*this);
 	}
-	double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-	double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
-	_basalArea += seeds * 10;
+	double avgMonthlyTemp = (pParent->cellTempByMonth(3) + pParent->cellTempByMonth(4) + pParent->cellTempByMonth(5) + pParent->cellTempByMonth(6)) / 4;
+	if (_basalArea < 5){
+		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
+		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+		_basalArea += seeds * 10;
+	} else {
+		double basalIncrement = 0;
+		if ((rand() % 10) < 6){
+			_basalArea += 0.1;
+		} else {
+			_basalArea += 0.9;
+		}
+	}
+
 	//Transition if necessary
-	if (_basalArea>=_tundraSpruceBasalArea) {
+	if (_basalArea >= _tundraSpruceBasalArea) {
 		const double probability = Site(_site,0.5);
 		if (probability > GetNextRandom())
 			return new BSpruce(*this);

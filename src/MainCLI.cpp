@@ -44,6 +44,10 @@ int main(int argc, char** argv) {
 		RunStats = new StatArray();
 
 		int rc = 0;
+		int startRep = 0;
+		if (args->getStartRep() > 0){
+			startRep = args->getStartRep();
+		}
 
 		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
 		long randSeedVal = 0;
@@ -58,10 +62,7 @@ int main(int argc, char** argv) {
 		#else 
 			std::cout << "Fresco Client " << std::endl;
 		#endif
-		int startRep = 0;
-		if (args->getStartRep() > 0){
-			startRep = args->getStartRep();
-		}
+
 		_dummysim->clear();
 		delete _dummysim;
 		for (rc = startRep + id; rc < maxReps; rc+=max){
