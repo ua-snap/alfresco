@@ -85,6 +85,7 @@ public:
     virtual void			customSetup() = 0;
     virtual void            runRep(const int newRep);
     virtual void            runRep(const int rep, const int yearResume);
+    virtual void            runOneYear(const int rep, const int yearResume);
     virtual void            runEnd();
 	//Output
     virtual void			output(const std::string output);

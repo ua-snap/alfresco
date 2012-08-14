@@ -202,6 +202,36 @@ void Fresco::       runRep(const int rep, const int yearResume)
     }
 }
 
+void Fresco::runOneYear(const int rep, const int yearResume){
+	setState(SIMULATING);
+    	if (yearResume == gFirstYear) {
+		//Begin new rep.
+		gRep = rep;
+		raiseBeforeRepStart.notify(this, gRep);
+		_landscape->repStart();
+	}
+	gYear = yearResume;
+	raiseBeforeYearStart.notify(this, gYear);
+	_landscape->yearStart();
+	raiseAfterYearStart.notify(this, gYear);
+
+	if (gYear > gFirstYear) _landscape->succession();
+	if (_isFireEnabled) _landscape->doIgnitions();
+
+	raiseBeforeYearEnd.notify(this, gYear);
+	_landscape->yearEnd();
+	raiseAfterYearEnd.notify(this, gYear);
+
+    	if (gYear == gLastYear) {
+		//Finish rep.
+		raiseBeforeRepEnd.notify(this, gRep);
+		_landscape->repEnd();
+		_isRunningFirstRep = false;
+			output("1. There were "+ToS(gTallyOfRandCalls)+" calls to GetNextRand().\n");
+		raiseAfterRepEnd.notify(this, gRep);  //Possible Stop point.
+			output("2. There were "+ToS(gTallyOfRandCalls)+" calls to GetNextRand().\n");
+	}
+}
 
 void Fresco::       runEnd()
 {

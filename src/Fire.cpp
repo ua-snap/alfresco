@@ -7,10 +7,7 @@
  */
 
 
-#include "PreCompiled.h"
 #include "Fire.h"
-#include "Fresco.h"
-#include "Interface.h"
 #include "Landscape.h"	
 
 

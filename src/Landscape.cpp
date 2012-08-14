@@ -297,9 +297,9 @@ void Landscape::		succession()
 				_vegResidenceStat[_pFrames[r][c]->type()].Add(gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 
 				#ifdef WITHSTATS
-				stringstream vd;
-				vd << "VegDist[" << (int)_pFrames[r][c]->type() << "]";
-				RunStats->addStat(vd.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
+				stringstream vr;
+				vr << "VegRes[" << (int)_pFrames[r][c]->type() << "]";
+				RunStats->addStat(vr.str(), gYear, gRep, abs(_pFrames[r][c]->frameAge()));
 				#endif
 				//Process the succession.
 				delete _pFrames[r][c];
@@ -504,7 +504,8 @@ bool Landscape::        testFireSpread(Frame* pFrame, const int rowOfNeighbor, c
 Fire::EBurnSeverity  Landscape::selectSpreadBurnSeverity(const Frame* pFrame, const Frame* pSpreaderFrame, const int fireSize)
 {
 	if (pFrame->type() == gTundraID) return Fire::LOW;
-	else if (pFrame->type() == gShrubTundraID) return Fire::LOW;
+	//else if (pFrame->type() == gShrubTundraID) return Fire::LOW;
+	else if (pFrame->type() == gShrubTundraID) return pSpreaderFrame->burnSeverity;
 	else if (pFrame->type() == gGraminoidTundraID) return Fire::LOW;
 	else if (pFrame->type() == gWetlandTundraID) return Fire::LOW;
 	else if (pFrame->type() == gDecidID) return pSpreaderFrame->burnSeverity;

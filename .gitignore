@@ -18,6 +18,8 @@ Output/
 .deps
 .libs
 *.lo
+*.m4
+m4/*.m4
 config.guess
 config.sub
 config.status
@@ -25,7 +27,6 @@ configure
 depcomp
 libtool
 ltmain.sh
-m4/
 Makefile
 Makefile.in
 missing
