@@ -376,18 +376,26 @@ void Landscape::		doIgnitions()
 					pFrame->lastBurnWasOrigin = true;
 					rowStored = _row;   //Remember where to pick up when this fire is done spreading.
 					colStored = _col;
+					#ifdef AIEM_MODEL
+						aiem->fireSeverity[_row][_col] = pFrame->burnSeverity;
+					#endif
 				}
 				else { //Existing (spreading) fire.
 					pFrame->lastBurnWasOrigin = false;
 					const Frame* pSpreaderFrame = _pFrames[currRow][currCol];
 					pFrame->burnSeverity = selectSpreadBurnSeverity(pFrame, pSpreaderFrame, fireSize);
 					severitySizes[pFrame->burnSeverity]++;
+					#ifdef AIEM_MODEL
+						aiem->fireSeverity[_row][_col] = pFrame->burnSeverity;
+					#endif
 				}
                 ////////////////////////////////////////////////
                 //Burn this frame and spread to its neighbors.
 				pFrame->fireScarID = fireScarID;
 				logFireStats((pFrame->yearOfLastBurn<0 ? -gYear : gYear-pFrame->yearOfLastBurn), Fire::ignoringFirstFireInterval());    //Must preceed resetting of this cell's age.
 				pFrame->yearOfLastBurn = gYear;																						
+
+
 				pFrame->lastBurnCause = currentBurnCause;
 				fireSize++;
 				if (fireSize > Fire::maxEmpiricalFireSizeEvent())   //Cap individual fire sizes with a max empirical fire size.
