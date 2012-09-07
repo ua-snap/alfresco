@@ -817,6 +817,11 @@ void CustomLandscape::      collectStats()
             //Habitat - Add to habitat stat if vegType and age meet criteria.
             veg = pCurFrame->type();
             age = pCurFrame->age();
+
+	    #ifdef AIEM_MODEL
+		aiem->setVegetationType(c, r, veg);
+		aiem->setTimeSinceLastFire(c, r, age);
+	    #endif
             for (habitat = _habitatStats.begin(); habitat<_habitatStats.end(); habitat++) {
                 if (age > habitat->MinAge && age < habitat->MaxAge)
                 {
