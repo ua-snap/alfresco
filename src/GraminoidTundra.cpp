@@ -29,6 +29,7 @@ double			GraminoidTundra::_ratioAK = 0.;
 double			GraminoidTundra::_tundraSpruceBasalArea;
 const double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
+double		GraminoidTundra::_rollingTempMean = 0;
 EStartAgeType	GraminoidTundra::_startAgeType;
 
 
@@ -192,6 +193,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 //general (long term) state changes. Specific algorithms are documented in the code
 {
 	//Check immediately after burn
+	//std::cout << yearOfLastBurn << "\n";
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	//std::cout << gYear << std::endl;
 	if (yearsSinceLastBurn == 1) {
@@ -204,7 +206,12 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	//} else if (gYear > 20 && yearsSinceLastBurn >= 50) {
 	//	return new ShrubTundra(*this);
 	}
-	double avgMonthlyTemp = (pParent->cellTempByMonth(3) + pParent->cellTempByMonth(4) + pParent->cellTempByMonth(5) + pParent->cellTempByMonth(6)) / 4;
+	if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
+		if (rand() % 100 < 5){
+			return new ShrubTundra(*this);
+		}
+	}
+	double avgMonthlyTemp = pParent->cellTempByMonth(6);
 	if (_basalArea < 5){
 		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
@@ -221,10 +228,11 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	//Transition if necessary
 	if (_basalArea >= _tundraSpruceBasalArea) {
 		const double probability = Site(_site,0.5);
-		if (probability > GetNextRandom())
-			return new BSpruce(*this);
-		else
-			return new WSpruce(*this);
+		if (probability > GetNextRandom()){
+	//		return new BSpruce(*this);
+		} else {
+	//		return new WSpruce(*this);
+		}
 	}
 	return NULL;
 }
