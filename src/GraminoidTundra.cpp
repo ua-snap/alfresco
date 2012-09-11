@@ -29,7 +29,7 @@ double			GraminoidTundra::_ratioAK = 0.;
 double			GraminoidTundra::_tundraSpruceBasalArea;
 const double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
-double		GraminoidTundra::_rollingTempMean = 0;
+std::vector<float>	GraminoidTundra::_rollingTempMean;
 EStartAgeType	GraminoidTundra::_startAgeType;
 
 
@@ -192,10 +192,9 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 //model used is to check immediate post burn stuff first, then time dependant state changes, and then 
 //general (long term) state changes. Specific algorithms are documented in the code
 {
+
 	//Check immediately after burn
-	//std::cout << yearOfLastBurn << "\n";
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
-	//std::cout << gYear << std::endl;
 	if (yearsSinceLastBurn == 1) {
         //This frame burned last year, so reset degree years to start tracking again.
         	_yearEstablished	= gYear;
@@ -203,14 +202,31 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		_basalArea	        = 0.;
 		_yearOfEstablishment= -_history;
 		_degrees		    = -1.;
-	//} else if (gYear > 20 && yearsSinceLastBurn >= 50) {
-	//	return new ShrubTundra(*this);
 	}
-	if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
-		if (rand() % 100 < 5){
-			return new ShrubTundra(*this);
+	float movingTempAverage = 0;
+	//Check to see if _rollingTempMean has been setup, or if this is the first pass
+	if (_rollingTempMean.size() < 10){
+		_rollingTempMean.push_back(pParent->cellTempByMonth(6));
+	} else {
+		_rollingTempMean.erase (_rollingTempMean.begin());	
+		_rollingTempMean.push_back(pParent->cellTempByMonth(6));
+	}
+	for (int i = 0; i < _rollingTempMean.size(); i++){
+		movingTempAverage += _rollingTempMean[i];
+	}
+	movingTempAverage /= 10.0;
+	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
+		if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
+			if (rand() % 100 < 5){
+				return new ShrubTundra(*this);
+			}
+		} else {
+			if (rand() % 100 < 1){
+				return new ShrubTundra(*this);
+			}
 		}
 	}
+
 	double avgMonthlyTemp = pParent->cellTempByMonth(6);
 	if (_basalArea < 5){
 		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
