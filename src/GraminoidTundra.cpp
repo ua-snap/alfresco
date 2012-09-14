@@ -206,10 +206,10 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	float movingTempAverage = 0;
 	//Check to see if _rollingTempMean has been setup, or if this is the first pass
 	if (_rollingTempMean.size() < 10){
-		_rollingTempMean.push_back(pParent->cellTempByMonth(6));
+		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
 	} else {
 		_rollingTempMean.erase (_rollingTempMean.begin());	
-		_rollingTempMean.push_back(pParent->cellTempByMonth(6));
+		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
 	}
 	for (int i = 0; i < _rollingTempMean.size(); i++){
 		movingTempAverage += _rollingTempMean[i];
@@ -222,9 +222,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (pParent->cellTempByMonth(6) > 0){ summerWarmthIndex += pParent->cellTempByMonth(6); }
 	if (pParent->cellTempByMonth(7) > 0){ summerWarmthIndex += pParent->cellTempByMonth(7); }
 	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
-		//std::cout << "MA: " << movingTempAverage << std::endl;
-		//std::cout << summerWarmthIndex << std::endl;
-		if (summerWarmthIndex > 25){
+		if (summerWarmthIndex > 30){
 			if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
 				if (rand() % 100 < 5){
 					return new ShrubTundra(*this);
@@ -239,7 +237,6 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (_rollingTempMean.size() > 10){
 		std::cout <<"ERROR"<<std::endl;
 	}
-	double avgMonthlyTemp = pParent->cellTempByMonth(6);
 	if (_basalArea < 5){
 		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
