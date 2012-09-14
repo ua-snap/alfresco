@@ -130,34 +130,34 @@ RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int
 	// nodata -- black
 	c.c1=0; c.c2=0; c.c3=0; c.c4=255;
 	_pVegColorTable->SetColorEntry(NODATA_BYTE, &c);
-	// noveg -- white
-	c.c1=255; c.c2=255; c.c3=255; c.c4=255;
+	// noveg -- gray
+	c.c1=104; c.c2=104; c.c3=104; c.c4=255;
 	_pVegColorTable->SetColorEntry(gNoVegID, &c);
-	// tundra -- yellow/orange
-	c.c1=255; c.c2=190; c.c3=41; c.c4=255;   // alternate, straight yellow: r=240 g=240 b=20
+	// tundra -- yellow
+	c.c1=255; c.c2=190; c.c3=41; c.c4=255; 
 	_pVegColorTable->SetColorEntry(gTundraID, &c);
-	// shrub tundra -- yellow/orange
-	c.c1=139; c.c2=69; c.c3=19; c.c4=255;   // alternate, straight yellow: r=240 g=240 b=20
+	// shrub tundra -- brown
+	c.c1=129; c.c2=105; c.c3=73; c.c4=255;
 	_pVegColorTable->SetColorEntry(gShrubTundraID, &c);
-	// grammanoid tundra -- yellow/orange
-	c.c1=205; c.c2=92; c.c3=92; c.c4=255;   // alternate, straight yellow: r=240 g=240 b=20
+	// graminoid tundra -- tan
+	c.c1=217; c.c2=190; c.c3=150; c.c4=255;
 	_pVegColorTable->SetColorEntry(gGraminoidTundraID, &c);
-	// wetland tundra -- yellow/orange
-	c.c1=127; c.c2=255; c.c3=212; c.c4=255;   // alternate, straight yellow: r=240 g=240 b=20
+	// wetland tundra -- blue
+	c.c1=2; c.c2=56; c.c3=188; c.c4=255;
 	_pVegColorTable->SetColorEntry(gWetlandTundraID, &c);
-	// decid -- bright green
-	c.c1=61; c.c2=168; c.c3=12; c.c4=255;
+	// decid -- light yellow
+	c.c1=247; c.c2=252; c.c3=185; c.c4=255;
 	_pVegColorTable->SetColorEntry(gDecidID, &c);
 	// white spruce -- faded green
-	c.c1=135; c.c2=180; c.c3=38; c.c4=255;
+	c.c1=65; c.c2=175; c.c3=93; c.c4=255;
 	_pVegColorTable->SetColorEntry(gWSpruceID, &c);
 	// black spruce -- dark green
-	c.c1=33; c.c2=102; c.c3=35; c.c4=255;
+	c.c1=0; c.c2=69; c.c3=41; c.c4=255;
 	_pVegColorTable->SetColorEntry(gBSpruceID, &c);
 	// grassland spruce -- muddy yellow
 	if (gGrasslandID != RasterIO::NODATA_BYTE)
 	{
-		c.c1=169; c.c2=157; c.c3=39; c.c4=255;
+		c.c1=255; c.c2=211; c.c3=127; c.c4=255;
 		_pVegColorTable->SetColorEntry(gGrasslandID, &c);
 	}
 	//

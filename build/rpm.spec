@@ -1,6 +1,6 @@
 Name:		alfresco
 Version:	%{version}
-Release:	%{release}
+Release:	%{release}.fc16
 Summary:	ALFRESCO Modeling Tool
 
 Group:		Productivity/Scientific/Other 
@@ -26,7 +26,7 @@ This package provides the ALFRESCO modeling tool, in command line form.
 
 %build
 %configure
-./configure --prefix=${RPM_BUILD_ROOT}/%{inst_dir}/lib
+./configure --prefix=${RPM_BUILD_ROOT}/%{inst_dir}
 make %{?_smp_mflags}
 make install
 
@@ -38,10 +38,9 @@ mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/bin
 mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/lib64
 mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/include
 
-cp src/fresco ${RPM_BUILD_ROOT}/%{inst_dir}/bin
 cp src/frescocli ${RPM_BUILD_ROOT}/%{inst_dir}/bin
-cp mpi/frescocli ${RPM_BUILD_ROOT}/%{inst_dir}/bin
-cp lib/ ${RPM_BUILD_ROOT}/%{inst_dir}/lib64
+cp mpi/frescocli_mpi ${RPM_BUILD_ROOT}/%{inst_dir}/bin
+cp lib/.libs/*.so* ${RPM_BUILD_ROOT}/%{inst_dir}/lib64
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -50,9 +49,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %files
 %defattr(-,root,root,-)
 %doc
-%{inst_dir}/fresco
-%{inst_dir}/frescocli
-%{inst_dir}/frescocli
+%{inst_dir}/bin/frescocli
+%{inst_dir}/bin/frescocli_mpi
+%{inst_dir}/lib64/*.so*
 
 
 
