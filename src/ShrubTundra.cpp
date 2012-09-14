@@ -194,7 +194,8 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {	
-		if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){
+		//if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){
+		if (burnSeverity >= 1 ){
 			return new GraminoidTundra(*this);
 		}
 	}

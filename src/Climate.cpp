@@ -136,6 +136,7 @@ void Climate::			setup()
 			tempMonths.push_back(4);
 			tempMonths.push_back(5);
 			tempMonths.push_back(6);
+			tempMonths.push_back(7);
 			precipMonths.push_back(6);
 			precipMonths.push_back(7);
 		}
