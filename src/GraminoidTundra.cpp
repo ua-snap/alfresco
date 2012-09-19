@@ -194,6 +194,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 {
 
 	//Check immediately after burn
+	float swi = FRESCO->fif().dGet("GraminoidTundra.SummerWarmthIndex");
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {
         //This frame burned last year, so reset degree years to start tracking again.
@@ -222,7 +223,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (pParent->cellTempByMonth(6) > 0){ summerWarmthIndex += pParent->cellTempByMonth(6); }
 	if (pParent->cellTempByMonth(7) > 0){ summerWarmthIndex += pParent->cellTempByMonth(7); }
 	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
-		if (summerWarmthIndex > 30){
+		if (summerWarmthIndex > swi){
 			if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
 				if (rand() % 100 < 5){
 					return new ShrubTundra(*this);
