@@ -33,7 +33,6 @@ void CustomFresco::	customSetup()
 	gBSpruceID = (byte)fif().nGet("BSpruce");
 	gWSpruceID = (byte)fif().nGet("WSpruce");
 	gDecidID   = (byte)fif().nGet("Decid"); 
-	gTundraID  = (byte)fif().nGet("Tundra");
 	gShrubTundraID  = (byte)fif().nGet("ShrubTundra");
 	gGraminoidTundraID  = (byte)fif().nGet("GraminoidTundra");
 	gWetlandTundraID  = (byte)fif().nGet("WetlandTundra");
@@ -42,7 +41,6 @@ void CustomFresco::	customSetup()
 	validVegTypes.insert(gBSpruceID);
 	validVegTypes.insert(gWSpruceID);
 	validVegTypes.insert(gDecidID);
-	validVegTypes.insert(gTundraID);
 	validVegTypes.insert(gShrubTundraID);
 	validVegTypes.insert(gGraminoidTundraID);
 	validVegTypes.insert(gWetlandTundraID);
@@ -55,11 +53,16 @@ void CustomFresco::	customSetup()
 		validVegTypes.insert(gGrasslandID);
 		Grassland::setStaticData();
 	}
+	if (fif().CheckKey("Tundra"))
+	{
+		gTundraID = (byte)fif().nGet("Tundra");
+		validVegTypes.insert(gTundraID);
+		Tundra::setStaticData();
+	}
 
 	BSpruce::setStaticData();
 	WSpruce::setStaticData();
 	Decid::setStaticData();
-	Tundra::setStaticData();
 	ShrubTundra::setStaticData();
 	GraminoidTundra::setStaticData();
 	WetlandTundra::setStaticData();
