@@ -38,7 +38,8 @@ ol li ol {
 	</li>
 	<li><a href="#getstarted">Getting Started</a>
 	    <ol>
-		<li><a href="#configurefif">Configuring the .FIF</a></li>
+		<li><a href="#fifconfig">Configuring the .FIF</a></li>
+		<li><a href="#running">Running ALFRESCO</a></li>
 	    </ol>
 	</li>
 	<li><a href="#references">ALFRESCO Model References</a></li>
@@ -152,11 +153,26 @@ ol li ol {
 			<li>export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:&lt;install-dir&gt;/lib</li>
 		</ul>
 	<p>At this point, the software will be installed, and you can move on to the Getting Started section for setting up runs and input files.</p>
-	<h2><a name="getstarted" ></a>Getting Started</h2>
-	<h3>Configuring the .FIF</h3>	
+	<h2><a name="getstarted"></a>Getting Started</h2>
+	<h3><a name="fifconfig"></a>Configuring the .FIF</h3>	
 	<p>
-
 	</p>
+	<h3><a name="running"></a>Running ALFRESCO</h3>	
+	<p>Once ALFRESCO is installed, and the .FIF has been configured, the model can be run in a few steps:
+		<ol>
+			<li>cd &lt;output-path&gt;</li>
+			<li>frescocli --fif &lt;fif-file&gt;</li>
+		</ol>
+	</p>
+	<p>
+		Alternatively, if MPI is installed, the parallel (MPI) version of the model can be run with:
+		<ol>
+                        <li>cd &lt;output-path&gt;</li>
+                        <li>mpirun -np &lt;num-tasks&gt; frescocli_mpi --fif &lt;fif-file&gt;</li>
+                </ol>
+	</p>
+	
+	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
 	<h2><a name="references" ></a>ALFRESCO Model References</h2>
 	<p> BUTLER, L.G., K. KIELLAND, T.S. RUPP, AND T.A. HANLEY. 2007. Interactive controls by herbivory
 	and fluvial dynamics over landscape vegetation patterns along the Tanana River, interior Alaska. Journal
