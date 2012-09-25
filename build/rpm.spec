@@ -38,8 +38,8 @@ mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/bin
 mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/lib64
 mkdir -p ${RPM_BUILD_ROOT}/%{inst_dir}/include
 
-cp src/frescocli ${RPM_BUILD_ROOT}/%{inst_dir}/bin
-cp mpi/frescocli_mpi ${RPM_BUILD_ROOT}/%{inst_dir}/bin
+cp src/fresco ${RPM_BUILD_ROOT}/%{inst_dir}/bin
+cp mpi/fresco-mpi ${RPM_BUILD_ROOT}/%{inst_dir}/bin
 cp lib/.libs/*.so* ${RPM_BUILD_ROOT}/%{inst_dir}/lib64
 
 %clean
@@ -49,8 +49,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %files
 %defattr(-,root,root,-)
 %doc
-%{inst_dir}/bin/frescocli
-%{inst_dir}/bin/frescocli_mpi
+%{inst_dir}/bin/fresco
+%{inst_dir}/bin/fresco-mpi
 %{inst_dir}/lib64/*.so*
 
 
