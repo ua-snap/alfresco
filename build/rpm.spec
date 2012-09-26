@@ -1,6 +1,6 @@
 Name:		alfresco
 Version:	%{version}
-Release:	%{release}.fc16
+Release:	%{release}.fc17
 Summary:	ALFRESCO Modeling Tool
 
 Group:		Productivity/Scientific/Other 
