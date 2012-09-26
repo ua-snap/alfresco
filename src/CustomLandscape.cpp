@@ -13,7 +13,6 @@
 #include "Fire.h"
 #include "RasterIO.h"
 #include "Poco/Path.h"
-#include "Poco/Stopwatch.h"
 
 
 CustomLandscape::		    CustomLandscape(const int rows, const int cols) : Landscape (rows, cols)
@@ -785,8 +784,6 @@ void CustomLandscape::    	writeMaps()
 void CustomLandscape::      collectStats()
 {
 	ShowOutput(MODERATE, "\t\tCollecting stats.\n");
-    //Poco::Stopwatch sw;
-    //sw.start();
 
     //Habitat items.
     int veg;
