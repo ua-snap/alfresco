@@ -1,5 +1,5 @@
 lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la libFrescoAIEM.la
-INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) -I/home/apbennett/aiem
+INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) #-I/home/apbennett/aiem
 libFrescoFoundation_la_LDFLAGS = -shared
 libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS
 libFrescoFoundation_la_SOURCES = ../src/PreCompiled.cpp ../src/Fresco.cpp ../src/Interface.cpp ../src/Fire.cpp ../src/Frame.cpp ../src/Except.cpp ../src/Species.cpp ../src/NoVeg.cpp ../src/Landscape.cpp ../src/Climate.cpp ../src/Stat.cpp ../src/RasterIO.cpp
