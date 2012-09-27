@@ -4,8 +4,7 @@
 *.txt
 # Executables #
 fresco
-frescocli
-frescocli_mpi
+fresco-mpi
 # Libraries
 *.la
 # Documentation
