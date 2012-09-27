@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la libFrescoAIEM.la
-INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) #-I/home/apbennett/aiem
-=======
 lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la #libFrescoAIEM.la
-INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) -I/home/apbennett/aiem
+INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) #-I/home/apbennett/aiem
 >>>>>>> apbennett
 libFrescoFoundation_la_LDFLAGS = -shared
 libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS
