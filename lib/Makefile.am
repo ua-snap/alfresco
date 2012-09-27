@@ -1,4 +1,4 @@
-lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la libFrescoAIEM.la
+lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la #libFrescoAIEM.la
 INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) -I/home/apbennett/aiem
 libFrescoFoundation_la_LDFLAGS = -shared
 libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS
