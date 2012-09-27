@@ -7,6 +7,8 @@ fresco
 fresco-mpi
 # Libraries
 *.la
+# RPMs
+*.rpm
 # Documentation
 html/
 latex/
