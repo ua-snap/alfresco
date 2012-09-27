@@ -13,7 +13,6 @@
 #include "Fire.h"
 #include "RasterIO.h"
 #include "Poco/Path.h"
-#include "Poco/Stopwatch.h"
 
 
 CustomLandscape::		    CustomLandscape(const int rows, const int cols) : Landscape (rows, cols)
@@ -785,8 +784,6 @@ void CustomLandscape::    	writeMaps()
 void CustomLandscape::      collectStats()
 {
 	ShowOutput(MODERATE, "\t\tCollecting stats.\n");
-    //Poco::Stopwatch sw;
-    //sw.start();
 
     //Habitat items.
     int veg;
@@ -817,6 +814,11 @@ void CustomLandscape::      collectStats()
             //Habitat - Add to habitat stat if vegType and age meet criteria.
             veg = pCurFrame->type();
             age = pCurFrame->age();
+
+	    #ifdef AIEM_MODEL
+		aiem->setVegetationType(c, r, veg);
+		aiem->setTimeSinceLastFire(c, r, age);
+	    #endif
             for (habitat = _habitatStats.begin(); habitat<_habitatStats.end(); habitat++) {
                 if (age > habitat->MinAge && age < habitat->MaxAge)
                 {

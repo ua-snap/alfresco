@@ -29,6 +29,7 @@ double			GraminoidTundra::_ratioAK = 0.;
 double			GraminoidTundra::_tundraSpruceBasalArea;
 const double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
+std::vector<float>	GraminoidTundra::_rollingTempMean;
 EStartAgeType	GraminoidTundra::_startAgeType;
 
 
@@ -191,9 +192,10 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 //model used is to check immediate post burn stuff first, then time dependant state changes, and then 
 //general (long term) state changes. Specific algorithms are documented in the code
 {
+
 	//Check immediately after burn
+	float swi = FRESCO->fif().dGet("GraminoidTundra.SummerWarmthIndex");
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
-	//std::cout << gYear << std::endl;
 	if (yearsSinceLastBurn == 1) {
         //This frame burned last year, so reset degree years to start tracking again.
         	_yearEstablished	= gYear;
@@ -201,10 +203,41 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		_basalArea	        = 0.;
 		_yearOfEstablishment= -_history;
 		_degrees		    = -1.;
-	//} else if (gYear > 20 && yearsSinceLastBurn >= 50) {
-	//	return new ShrubTundra(*this);
 	}
-	double avgMonthlyTemp = (pParent->cellTempByMonth(3) + pParent->cellTempByMonth(4) + pParent->cellTempByMonth(5) + pParent->cellTempByMonth(6)) / 4;
+	float movingTempAverage = 0;
+	//Check to see if _rollingTempMean has been setup, or if this is the first pass
+	if (_rollingTempMean.size() < 10){
+		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
+	} else {
+		_rollingTempMean.erase (_rollingTempMean.begin());	
+		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
+	}
+	for (int i = 0; i < _rollingTempMean.size(); i++){
+		movingTempAverage += _rollingTempMean[i];
+	}
+	movingTempAverage /= 10.0;
+	float summerWarmthIndex = 0;
+	if (pParent->cellTempByMonth(3) > 0){ summerWarmthIndex += pParent->cellTempByMonth(3); }
+	if (pParent->cellTempByMonth(4) > 0){ summerWarmthIndex += pParent->cellTempByMonth(4); }
+	if (pParent->cellTempByMonth(5) > 0){ summerWarmthIndex += pParent->cellTempByMonth(5); }
+	if (pParent->cellTempByMonth(6) > 0){ summerWarmthIndex += pParent->cellTempByMonth(6); }
+	if (pParent->cellTempByMonth(7) > 0){ summerWarmthIndex += pParent->cellTempByMonth(7); }
+	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
+		if (summerWarmthIndex > swi){
+			if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
+				if (rand() % 100 < 5){
+					return new ShrubTundra(*this);
+				}
+			} else {
+				if (rand() % 100 < 1){
+					return new ShrubTundra(*this);
+				}
+			}
+		}
+	}
+	if (_rollingTempMean.size() > 10){
+		std::cout <<"ERROR"<<std::endl;
+	}
 	if (_basalArea < 5){
 		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
@@ -221,10 +254,11 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	//Transition if necessary
 	if (_basalArea >= _tundraSpruceBasalArea) {
 		const double probability = Site(_site,0.5);
-		if (probability > GetNextRandom())
-			return new BSpruce(*this);
-		else
-			return new WSpruce(*this);
+		if (probability > GetNextRandom()){
+	//		return new BSpruce(*this);
+		} else {
+	//		return new WSpruce(*this);
+		}
 	}
 	return NULL;
 }

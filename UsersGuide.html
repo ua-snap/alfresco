@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>ALFRESCO User's Guide</title>
+<link rel="stylesheet" href="http://www.snap.uaf.edu/css/style.css" type="text/css" />
+<style type="text/css">
+html {
+	margin: auto;
+	margin-top: 50px;
+	width: 1000px;
+}
+h1 {
+	font-size: 40px;	
+	font-weight: normal;
+	color: #242D2F;
+}
+ol li ol {
+	list-style-type: lower-alpha;
+}
+</style>
+</head>
+
+<body>
+	<div class="methods">
+
+	<img alt="ALFRESCO Simulation Image" src="NALCMS.png" style="width: 1000px; margin-bottom: 50px; "  />
+	<h1>ALFRESCO User's Guide</h1>
+	<ol>
+	<li><a href="#intro">Introduction to ALFRESCO</a></li>
+	<li><a href="#install">Installing ALFRESCO</a>
+	    <ol>
+		<li><a href="#requirements">Minimum System Requirements</a></li>
+		<li><a href="#downloads">Downloads</a></li>
+		<li><a href="#installbin">Installing from RPM</a></li>
+		<li><a href="#installsrc">Compiling/Installing from Source</a></li>
+	    </ol>
+	</li>
+	<li><a href="#getstarted">Getting Started</a>
+	    <ol>
+		<li><a href="#fifconfig">Configuring the .FIF</a></li>
+		<li><a href="#running">Running ALFRESCO</a></li>
+	    </ol>
+	</li>
+	<li><a href="#references">ALFRESCO Model References</a></li>
+	</ol>
+	<h2><a name="intro" ></a>Introduction to ALFRESCO</h2>
+
+	<p>ALFRESCO was originally developed to simulate the response of subarctic vegetation to a changing
+	climate and disturbance regime (Rupp et al. 2000a, 2000b). Previous research has highlighted both
+	direct and indirect (through changes in fire regime) effects of climate on the expansion rate, species
+	composition, and extent of treeline in Alaska (Rupp et al. 2000b, 2001, Lloyd et al. 2003).
+	Additional research, focused on boreal forest vegetation dynamics, has emphasized that fire
+	frequency changes – both direct (climate-driven or anthropogenic) and indirect (as a result of
+	vegetation succession and species composition) – strongly influence landscape-level vegetation
+	patterns and associated feedbacks to future fire regime (Rupp et al. 2002, Chapin et al. 2003, Turner
+	et al. 2003). A detailed description of ALFRESCO can be obtained from the literature (Rupp et al.
+	2000a, 200b, 2001, 2002). The boreal forest version of ALFRESCO was developed to explore the
+	interactions and feedbacks between fire, climate, and vegetation in interior Alaska (Rupp et al. 2002,
+	2007, Duffy et al. 2005, 2007) and associated impacts to natural resources (Rupp et al. 2006, Butler
+	et al. 2007).</p>
+	<p>ALFRESCO is a state-and-transition model of successional dynamics that explicitly represents the
+	spatial processes of fire and vegetation recruitment across the landscape (Rupp et al. 2000a).
+	ALFRESCO does not model fire behavior, but rather models the empirical relationship between
+	growing-season climate (e.g., average temperature and total precipitation) and total annual area
+	burned (i.e., the footprint of fire on the landscape). ALFRESCO also models the changes in
+	vegetation flammability that occurs during succession through a flammability coefficient that
+	changes with vegetation type and stand age (Chapin et al. 2003).</p>
+	<p>The fire regime is simulated stochastically and is driven by climate, vegetation type, and time since
+	last fire (Rupp et al. 2000a, 2007). ALFRESCO employs a cellular automaton approach, where an
+	ignited pixel may spread to any of the eight surrounding pixels. ‘Ignition’ of a pixel is determined
+	using a random number generator and as a function of the flammability value of that pixel. Fire
+	‘spread’ depends on the flammability of the receptor pixel and any effects of natural firebreaks
+	including non-vegetated mountain slopes and large water bodies, which do not burn.</p>
+	<p>Version 1.0.1 can operate at any time step and pixel resolution, however the current model
+	calibration and parameterization was conducted at an annual time step and 1 km2 pixel resolution. A
+	30 m2 calibration and parameterization is currently underway. Other model developments include
+	refined tundra transition stages, fire suppression effects on fire size, simulated fire severity patterns
+	and fire severity effects on successional rates and trajectories.</p>
+
+	<h2><a name="install" ></a>Installing ALFRESCO</h2>
+	<h3><a name="requirements"></a>Minimum System Requirements</h3>
+	<p>ALFRESCO runs on the Linux operating system, and will run on most distributions.  Systems running the Fedora distribution can use the RPM downloads to install the software.  Installation using this method will also install required packages as well automatically. </p>
+	<h4>General Requirements</h4>
+		<ul>
+			<li>Linux - 2.4+</li>
+			<li>1.5GHz processor</li>
+			<li>1GB of RAM (2GB recommended for large simulation domains)</li>
+		</ul>
+	<h4>Required Libraries (minimum recommended version)</h4>
+		<ul>
+			<li>Boost - 1.47.x</li>
+			<li>GDAL - 1.8.x</li>
+			<li>Poco - 1.4.x</li>
+		</ul>
+	<h4>Optional Libraries</h4>
+		<ul>
+			<li>OpenMPI - 1.5.x (required for parallel runs)</li>
+		</ul>
+	<h3><a name="downloads"></a>Downloads</h3>
+	<p>Currently, ALFRESCO is available as a binary download or as a source package. The current version is provided in the links below.</p>
+	<h4>Binary Distribution</h4>
+	<p><a href="http://www.snap.uaf.edu/alfresco/alfresco.current.rpm">Fedora 16</a></p>
+	<h4>Source Code</h4>
+	<p><a href="http://www.snap.uaf.edu/alfresco/alfresco.tar.gz">Download Source Tarball</a></p>
+	<h3><a name="installbin"></a>Installing from an RPM</h3>
+	<p>After obtaining the binary for your distribution (see <a href="#downloads">Downloads</a>), install the software by running the following command:
+	</p>
+	<p>
+	<code>sudo yum install alfresco.rpm</code>
+	</p>
+	<p>Using yum, library dependencies will be downloaded and installed as well, so there should be no need to manually install the required libraries.  If you do not have access to install RPMs on your system, please contact your system administrator.</p>
+	<h3><a name="installsrc"></a>Compiling/Installing from Source</h3>
+	<p>Building ALFRESCO from source is a relatively straightforward process on most Linux distributions, but will have additional requirements.  This is intended for systems not supported via binary installs, or for users that need to custom configure the build.</p>
+		<h4>Library Requirements</h4>
+		<ul>
+			<li>Boost - 1.47.x (w/ header libraries)</li>
+			<li>GDAL - 1.8.x (w/ header libraries)</li>
+			<li>Poco - 1.4.x (w/ header libraries)</li>
+		</ul>
+		<h4>Optional Libraries</h4>
+		<ul>
+			<li>OpenMPI - 1.5.x (w/ header libraries)</li>
+		</ul>
+		<h4>Build Requirements</h4>
+		<ul>
+			<li>C++ Compiler (GNU C++)</li>
+			<li>Autoconf (2.59.x)</li>
+			<li>Automake (1.11.x)</li>
+			<li>Libtool (2.4.x)</li>
+		</ul>
+	<p>
+		Once the above requirements are installed, the source is downloaded (see <a name="downloads">Downloads</a>), and you have extracted it, you'll need to "cd" into the extracted directory.  The steps to build a default version of ALFRESCO are fairly simple:
+	</p>
+		<ol>
+			<li>cd alfresco/</li>
+			<li>./configure</li>
+			<li>make</li>
+			<li>sudo make install</li>
+		</ol>
+	<p>By default, this will install alfresco into the default user space, typically /usr/bin for executables, and /usr/lib for libraries.  If you wish to install alfresco in a non-standard location, the following steps will be used instead:</p>
+		<ol>
+			<li>cd alfresco/</li>
+                        <li>./configure --prefix=&lt;install-dir&gt;</li>
+                        <li>make</li>
+                        <li>make install</li>
+		</ol>
+	<p>
+		For a non-standard install, you may also need to set the PATH and LD_LIBRARY_PATH environment variables to point to the bin and lib directories inside the &lt;install-dir&gt; directory used in the above example.  This can be done with the following commands in the Bash shell:
+	</p>
+		<ul>
+			<li>export PATH=${PATH}:&lt;install-dir&gt;/bin</li>
+			<li>export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:&lt;install-dir&gt;/lib</li>
+		</ul>
+	<p>At this point, the software will be installed, and you can move on to the Getting Started section for setting up runs and input files.</p>
+	<h2><a name="getstarted"></a>Getting Started</h2>
+	<h3><a name="fifconfig"></a>Configuring the .FIF</h3>	
+	<p>
+	</p>
+	<h3><a name="running"></a>Running ALFRESCO</h3>	
+	<p>Once ALFRESCO is installed, and the .FIF has been configured, the model can be run in a few steps:
+		<ol>
+			<li>cd &lt;output-path&gt;</li>
+			<li>fresco --fif &lt;fif-file&gt;</li>
+		</ol>
+	</p>
+	<p>
+		Alternatively, if MPI is installed, the parallel (MPI) version of the model can be run with:
+		<ol>
+                        <li>cd &lt;output-path&gt;</li>
+                        <li>mpirun -np &lt;num-tasks&gt; fresco-mpi --fif &lt;fif-file&gt;</li>
+                </ol>
+	</p>
+	
+	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
+	<h2><a name="references" ></a>ALFRESCO Model References</h2>
+	<p> BUTLER, L.G., K. KIELLAND, T.S. RUPP, AND T.A. HANLEY. 2007. Interactive controls by herbivory
+	and fluvial dynamics over landscape vegetation patterns along the Tanana River, interior Alaska. Journal
+	of Biogeography. 34:1622-1631.</p>
+	<p>DUFFY, P., J. EPTING, J.M. GRAHAM, T.S. RUPP, AND A.D. McGuire. 2007. Analysis of Alaskan fire
+	severity patterns using remotely sensed data. International Journal of Wildland Fire. 16:277-284.</p>
+	<p>RUPP, T.S., X. CHEN, M. OLSON, AND A.D. McGUIRE. 2007. Sensitivity of simulated land cover
+	dynamics to uncertainties in climate drivers. Earth Interactions. 11(3):1-21.</p>
+	<p>HU, F.S., L.B. BRUBAKER, D.G. GAVIN, P.E. HIGUERA, J.A. LYNCH, T.S. RUPP, AND W. TINNER.
+	2006. How climate and vegetation influence the fire regime of the Alaskan boreal biome: the Holocene
+	perspective. Mitigation and Adaptation Strategies for Global Change (MITI). 11(4):829-846.</p>
+	<p>RUPP, T.S., OLSON, M., HENKELMAN, J., ADAMS, L., DALE, B., JOLY, K., COLLINS, W., and A.M.
+	STARFIELD. 2006. Simulating the influence of a changing fire regime on caribou winter foraging
+	habitat. Ecological Applications. 16(5):1730-1743.</p>
+	<p>CHAPIN, F.S., III, M. STURM, M.C. SERREZE, J.P McFADDEN, J.R. KEY, A.H. LLOYD, A.D.
+	McGUIRE, T.S. RUPP, A.H. LYNCH, J.P SCHIMEL, J. BERINGER, W.L. CHAPMAN, H.E.
+	EPSTEIN, E.S. EUSKIRCHEN, L.D. HINZMAN, G. JIA, C.L. PING, K.D. TAPE, C.D.C. THOMPSON,
+	D.A. WALKER, and J.M. WELKER,. 2005. Role of Land-Surface Changes in Arctic Summer Warming.
+	Science. Published online September 22 2005; 10.1126/science.1117368 (SCIENCE EXPRESS Reports).</p>
+	<p>DUFFY, P.A., J.E. WALSH, J.M. GRAHAM, D.H. MANN, and T.S. RUPP. 2005. Impacts of the east
+	Pacific teleconnection on Alaskan fire climate. Ecological Applications. 15(4):1317-1330.</p>
+	<p>LLOYD, A., T.S. RUPP, C. FASTIE, and A.M. STARFIELD. 2003. Patterns and dynamics of treeline
+	advance on the Seward Peninsula, Alaska. Journal of Geophysical Research - Atmospheres.
+	108(D2):8161, DOI: 10.1029/2001JD00852.</p>
+	<p>CHAPIN, F.S., III, T.S. RUPP, A.M. STARFIELD, L. DeWILDE, E.S. ZAVALETA, N. FRESCO, J.
+	HENKELMAN, and A.D. McGUIRE. 2003. Planning for resilience: modeling change in human-fire
+	interactions in the Alaskan boreal forest. Frontiers in Ecology and the Environment. 1(5):255-261.</p>
+	<p>TURNER, M.G., S.L. COLLINS, A.L. LUGO, J.J. MAGNUSON, T.S. RUPP, and F.J. SWANSON. 2003.
+	Disturbance Dynamics and Ecological Response: The Contribution of Long-term Ecological Research.
+	BioScience. 53(1)46-56.</p>
+	<p>RUPP, T.S., A.M. STARFIELD, F.S. CHAPIN III, and P. DUFFY. 2002. Modeling the impact of black
+	spruce on the fire regime of Alaskan boreal forest. Climatic Change 55: 213-233.</p>
+	<p>RUPP, T.S., R.E. KEANE, S. LAVOREL, M.D. FLANNIGAN, and G.J. CARY. 2001. Towards a
+	classification of landscape-fire-succession models. GCTE News 17: 1-4.</p>
+	<p>RUPP, T.S., F.S. CHAPIN III, and A.M. STARFIELD. 2001. Modeling the influence of topographic barriers
+	on treeline advance of the forest-tundra ecotone in northwestern Alaska. Climatic Change 48: 399-416.</p>
+	<p>RUPP, T.S., A.M. STARFIELD, and F.S. CHAPIN III. 2000. A frame-based spatially explicit model of
+	subarctic vegetation response to climatic change: comparison with a point model. Landscape Ecology 15:
+	383-400.</p>
+	<p>RUPP, T.S., F.S. CHAPIN III, and A.M. STARFIELD. 2000. Response of subarctic vegetation to transient
+	climatic change on the Seward Peninsula in northwest Alaska. Global Change Biology 6: 451-455.</p>
+	</div>
+</body>
+</html>

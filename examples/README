@@ -1,0 +1,12 @@
+README - Examples
+=================
+
+The examples files are used for running ALFRESCO in a set of predefined, 
+common ways, to make creating a custom configuration easier.
+
+SpinUpRun.fif - Designed to perform a long term (usually 1000+ year) spinup
+  phase.  This helps to establish fire/vegetation/age dynamics for a region 
+  and usually runs from a single Vegetation map in the initial settings and 
+  simulated Climate settings.
+
+Projected.fif - 

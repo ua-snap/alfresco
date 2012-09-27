@@ -245,7 +245,10 @@ void Fresco::       runEnd()
 void Fresco::		output(const std::string Output)
 /** Pass output to any subscribers of this event. */
 {
-    raiseOutput.notify(this, Output);
+   // raiseOutput.notify(this, Output);
+   if (isDebugOn()){
+	std::cout << Output << std::endl;
+   }
 }
 
 
