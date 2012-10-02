@@ -40,6 +40,7 @@ private:
 	static EStartAgeType	_startAgeType;
 	static double*			_pIntegral;
 	static std::vector<float>			_rollingTempMean;
+	static std::vector<float>			_rollingSWIMean;
 
 //Functions
 public:

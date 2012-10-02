@@ -30,6 +30,7 @@ double			GraminoidTundra::_tundraSpruceBasalArea;
 const double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
 std::vector<float>	GraminoidTundra::_rollingTempMean;
+std::vector<float>	GraminoidTundra::_rollingSWIMean;
 EStartAgeType	GraminoidTundra::_startAgeType;
 
 
@@ -205,6 +206,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		_degrees		    = -1.;
 	}
 	float movingTempAverage = 0;
+	float movingSWIAverage = 0;
 	//Check to see if _rollingTempMean has been setup, or if this is the first pass
 	if (_rollingTempMean.size() < 10){
 		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
@@ -222,8 +224,17 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (pParent->cellTempByMonth(5) > 0){ summerWarmthIndex += pParent->cellTempByMonth(5); }
 	if (pParent->cellTempByMonth(6) > 0){ summerWarmthIndex += pParent->cellTempByMonth(6); }
 	if (pParent->cellTempByMonth(7) > 0){ summerWarmthIndex += pParent->cellTempByMonth(7); }
+	if (_rollingSWIMean.size() < 10){
+                _rollingSWIMean.push_back(summerWarmthIndex);
+        } else {
+                _rollingSWIMean.erase (_rollingSWIMean.begin());
+                _rollingSWIMean.push_back(summerWarmthIndex);
+        }
+	for (int i = 0; i < _rollingSWIMean.size(); i++){
+                movingSWIAverage += _rollingSWIMean[i];
+        }
 	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
-		if (summerWarmthIndex > swi){
+		if (movingSWIAverage > swi){
 			if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
 				if (rand() % 100 < 5){
 					return new ShrubTundra(*this);
