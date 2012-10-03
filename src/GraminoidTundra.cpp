@@ -233,6 +233,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	for (int i = 0; i < _rollingSWIMean.size(); i++){
                 movingSWIAverage += _rollingSWIMean[i];
         }
+	movingSWIAverage /= 10.0;
 	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
 		if (movingSWIAverage > swi){
 			if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
