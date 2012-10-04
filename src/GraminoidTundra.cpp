@@ -236,7 +236,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	movingSWIAverage /= 10.0;
 	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
 		if (movingSWIAverage > swi){
-			if (yearsSinceLastBurn > 32 && yearOfLastBurn >= 0){
+			if (yearsSinceLastBurn > 32 && yearsSinceLastBurn <= 52 && yearOfLastBurn >= 0){
 				if (rand() % 100 < 5){
 					return new ShrubTundra(*this);
 				}
