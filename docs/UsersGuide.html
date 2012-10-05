@@ -38,10 +38,11 @@ ol li ol {
 	</li>
 	<li><a href="#getstarted">Getting Started</a>
 	    <ol>
-		<li><a href="#fifconfig">Configuring the .FIF</a></li>
+		<li><a href="#fifsetup">.FIF Setup</a></li>
 		<li><a href="#running">Running ALFRESCO</a></li>
 	    </ol>
 	</li>
+	<li><a href="#fifconfig">Appendix A: .FIF Configuration</a></li>
 	<li><a href="#references">ALFRESCO Model References</a></li>
 	</ol>
 	<h2><a name="intro" ></a>Introduction to ALFRESCO</h2>
@@ -154,7 +155,7 @@ ol li ol {
 		</ul>
 	<p>At this point, the software will be installed, and you can move on to the Getting Started section for setting up runs and input files.</p>
 	<h2><a name="getstarted"></a>Getting Started</h2>
-	<h3><a name="fifconfig"></a>Configuring the .FIF</h3>	
+	<h3><a name="fifsetup"></a>.FIF Setup</h3>	
 	<p>
 	</p>
 	<h3><a name="running"></a>Running ALFRESCO</h3>	
@@ -173,6 +174,35 @@ ol li ol {
 	</p>
 	
 	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
+	<h2><a name="fifconfig" ></a>Appendix A: .FIF Configuration</h2>
+	<h3>Burn Severity</h3>
+	<p>Burn Severity in Boreal ALFRESCO is modeled to reflect the following two assumptions (Duffy et al. 2007):</p>
+	<ol>
+		<li>Burn Severity increases w/ Firesize (as a consequence of sub-regions of larger fires burning more severely as opposed to a uniform increase in burn severity).</li>
+		<li>Fires burning in the Flats have greater spatial correlation in burn severity than those burning in complex topography.</li>
+	</ol>
+Algorithm:
+	<ol>
+		<li>Ignition of cell -&gt; Assign Low Severity</li>
+		<li>As a fire spreads, a logistic probability function is used to assign severity to each
+burned cell (slope and intercept user specified in .fif).  <p><code>IF (rand.uniform(0,1) &lt; Prob[High Severity Fire]) Severity = High, ELSE Severity = (Low or Moderate)</code></p></li>
+		<li>Select Severity sub-category from the binary partition above. High severity fires
+can have either Low or High surface severity, and also partition the Low or Moderate
+severity fires. The ‘decision’ weights are user specified in .fif.
+		<code><p>IF (Init.severity = High &amp;&amp; rand.uniform(0,1) &lt; High.LSS.HSS.wt) severity = High + HSS, ELSE severity = High + LSS</p>
+<p>IF (Init.severity = Low.Mod &amp;&amp; rand.uniform(0,1) &lt; Low.Mod.wt) severity = Moderate, ELSE severity = Low</p></code></li>
+		<li>A second set of decision weights (user specified in .fif) are used to determine if
+topographical influences override the severity assignment resulting from 2) and 3)
+above.
+		<code>
+		<p>IF (Topography = Flat &amp;&amp; rand.uniform(0,1) &lt; Flats.Topo.wt)
+severity -&gt; ‘Spreader Cell Severity’</p>
+		<p>IF (Topography = Complex &amp;&amp; rand.uniform(0,1) < Complex.Topo.wt)
+Severity -&gt; ‘Spreader Cell Severity’</p>
+		</code>
+		</li>
+	</ol>
+	<img src="BurnSeverity.png" />
 	<h2><a name="references" ></a>ALFRESCO Model References</h2>
 	<p> BUTLER, L.G., K. KIELLAND, T.S. RUPP, AND T.A. HANLEY. 2007. Interactive controls by herbivory
 	and fluvial dynamics over landscape vegetation patterns along the Tanana River, interior Alaska. Journal
