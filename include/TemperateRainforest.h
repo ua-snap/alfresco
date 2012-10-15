@@ -1,34 +1,34 @@
-#ifndef Fresco_CoastalRainforest_h
-#define Fresco_CoastalRainforest_h
+#ifndef Fresco_TemperateRainforest_h
+#define Fresco_TemperateRainforest_h
 
 
 #include "Frame.h"
 
 
-class FrescoFoundation_API CoastalRainforest : public Frame
+class FrescoFoundation_API TemperateRainforest : public Frame
 /*
- * Intended primarily as a placeholder currently.  Coastal Rainforest has an 
+ * Intended primarily as a placeholder currently.  Temperate Rainforest has an 
  * extremely low likelihood of burn, so at this time, the class is intended
  * as a way to track this veg type, and little else.
  */
 {
 public:
-    CoastalRainforest(const int& rAge=0,
+    TemperateRainforest(const int& rAge=0,
           const bool& rIsTopoComplex=false,
           const float& rSite=0.,
           const int& rYearOfLastBurn=-1,
           const int& rLastBurnSeverity=0,
           const float& rFireIgnitionFactor=0.,
           const float& rFireSensitivity=0.,
-          const Species& rSpeciesSubCanopy=gCoastalRainforestID);
-    CoastalRainforest(const Frame& rFrame);
-    ~CoastalRainforest() {}
+          const Species& rSpeciesSubCanopy=gTemperateRainforestID);
+    TemperateRainforest(const Frame& rFrame);
+    ~TemperateRainforest() {}
     static void				clear();
     Frame*					success (Landscape* pParent) {
         return NULL;
     }
     const unsigned char		type () const {
-        return gCoastalRainforestID;
+        return gTemperateRainforestID;
     }
     const float				getHumanIgnitionProb() const {
         return _humanIgnitionsProb;

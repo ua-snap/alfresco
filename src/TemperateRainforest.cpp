@@ -1,11 +1,11 @@
-// CoastalRainforest.cpp
+// TemperateRainforest.cpp
 
 
 #include "PreCompiled.h"
-#include "CoastalRainforest.h"
+#include "TemperateRainforest.h"
 
 
-CoastalRainforest::CoastalRainforest (const Frame& rFrame)
+TemperateRainforest::TemperateRainforest (const Frame& rFrame)
     : Frame(rFrame)
 {
     _yearEstablished         = gYear;
@@ -13,7 +13,7 @@ CoastalRainforest::CoastalRainforest (const Frame& rFrame)
 }
 
 
-CoastalRainforest::CoastalRainforest (const int& rAge,
+TemperateRainforest::TemperateRainforest (const int& rAge,
               const bool& rIsTopoComplex,
               const float& rSite,
               const int& rYearOfLastBurn,
@@ -26,7 +26,7 @@ CoastalRainforest::CoastalRainforest (const int& rAge,
 }
 
 
-void CoastalRainforest::clear()
+void TemperateRainforest::clear()
 //Clear existing run if any and return to before a run is specified.
 {
 }
