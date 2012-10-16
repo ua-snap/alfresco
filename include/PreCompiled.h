@@ -118,6 +118,8 @@ extern int          FrescoFoundation_API    gXSize;
 extern long         FrescoFoundation_API    gNumSpecies;
 extern EDetailLevel FrescoFoundation_API    gDetailLevel;
 extern byte          FrescoFoundation_API    gNoVegID;
+extern byte          FrescoFoundation_API    gBarrenLichenMossID;
+extern byte          FrescoFoundation_API    gTemperateRainforestID;
 extern byte          FrescoFoundation_API    gTundraID;
 extern byte          FrescoFoundation_API    gShrubTundraID;
 extern byte          FrescoFoundation_API    gGraminoidTundraID;

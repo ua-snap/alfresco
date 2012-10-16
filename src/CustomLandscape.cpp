@@ -69,6 +69,8 @@ void CustomLandscape::		clear()
 	Decid::clear();
 	BSpruce::clear();
 	WSpruce::clear();
+    //BarrenLichenMoss::clear();
+    //TemperateRainforest::clear();
 	
     //Clear stats.
     _burnPartitionBySuppClassStats.clear();
@@ -304,6 +306,8 @@ void CustomLandscape::		repStart()
 			else if (frameTypeID==gShrubTundraID)	{ _pFrames[r][c] = new ShrubTundra(gFirstYear - _pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
 			else if (frameTypeID==gGraminoidTundraID)	{ _pFrames[r][c] = new GraminoidTundra(gFirstYear - _pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
 			else if (frameTypeID==gWetlandTundraID)	{ _pFrames[r][c] = new WetlandTundra(gFirstYear - _pAgeSpatialInput[r][c],  _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID, _pTreeDensitySpatialInput[r][c]);}
+			else if (frameTypeID==gBarrenLichenMossID)	    { _pFrames[r][c] = new BarrenLichenMoss(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gBarrenLichenMossID);}
+			else if (frameTypeID==gTemperateRainforestID)	    { _pFrames[r][c] = new TemperateRainforest(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gTemperateRainforestID);}
 			else if (frameTypeID==gNoVegID)	    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (IsNodata(frameTypeID))    { _pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else								{ throw SimpleException(SimpleException::INITFAULT, "Unknown vegetation type ID at cell [" + ToS(r) + "][" + ToS(c) + "]: " + ToS((int)frameTypeID)); }
@@ -634,6 +638,8 @@ void CustomLandscape::		doVegetationTransitions()
 					//Get the new frame type.
 					if (newType==gBSpruceID)		pNewFrame = new BSpruce(*pCurFrame);
 					else if (newType==gWSpruceID)	pNewFrame = new WSpruce(*pCurFrame);
+					else if (newType==gBarrenLichenMossID)	pNewFrame = new BarrenLichenMoss(*pCurFrame);
+					else if (newType==gTemperateRainforestID)	pNewFrame = new TemperateRainforest(*pCurFrame);
 					else if (newType==gGrasslandID)	pNewFrame = new Grassland(*pCurFrame);
 					else if (newType==gDecidID)		pNewFrame = new Decid(*pCurFrame);
 					else if (newType==gTundraID)	pNewFrame = new Tundra(*pCurFrame);

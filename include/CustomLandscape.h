@@ -6,6 +6,8 @@
 #include "Landscape.h"
 //Include frame types
 #include "Tundra.h"
+#include "BarrenLichenMoss.h"
+#include "TemperateRainforest.h"
 #include "ShrubTundra.h"
 #include "GraminoidTundra.h"
 #include "WetlandTundra.h"

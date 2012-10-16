@@ -3,6 +3,8 @@
 
 #include "CustomFresco.h"
 #include "CustomLandscape.h"
+#include "BarrenLichenMoss.h"
+#include "TemperateRainforest.h"
 #include "BSpruce.h"
 #include "Decid.h"
 #include "Tundra.h"
@@ -58,6 +60,18 @@ void CustomFresco::	customSetup()
 		gTundraID = (byte)fif().nGet("Tundra");
 		validVegTypes.insert(gTundraID);
 		Tundra::setStaticData();
+	}
+	if (fif().CheckKey("BarrenLichenMoss"))
+	{
+		gBarrenLichenMossID = (byte)fif().nGet("BarrenLichenMoss");
+		validVegTypes.insert(gBarrenLichenMossID);
+	//	BarrenLichenMoss::setStaticData();
+	}
+	if (fif().CheckKey("TemperateRainforest"))
+	{
+		gTemperateRainforestID = (byte)fif().nGet("TemperateRainforest");
+		validVegTypes.insert(gTemperateRainforestID);
+	//	TemperateRainforest::setStaticData();
 	}
 
 	BSpruce::setStaticData();
