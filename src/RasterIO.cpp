@@ -158,11 +158,17 @@ RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int
 	c.c1=0; c.c2=69; c.c3=41; c.c4=255;
 	_pVegColorTable->SetColorEntry(gBSpruceID, &c);
 	// Temperate Rainforest
-	c.c1=43; c.c2=212; c.c3=224; c.c4=255; 
-	_pVegColorTable->SetColorEntry(gTemperateRainforestID, &c);
+	if (gTemperateRainforestID != RasterIO::NODATA_BYTE)
+	{
+		c.c1=43; c.c2=212; c.c3=224; c.c4=255; 
+		_pVegColorTable->SetColorEntry(gTemperateRainforestID, &c);
+	}
 	// Barren-Lichen-Moss
-	c.c1=235; c.c2=120; c.c3=38; c.c4=255; 
-	_pVegColorTable->SetColorEntry(gBarrenLichenMossID, &c);
+	if (gBarrenLichenMossID != RasterIO::NODATA_BYTE)
+	{
+		c.c1=235; c.c2=120; c.c3=38; c.c4=255; 
+		_pVegColorTable->SetColorEntry(gBarrenLichenMossID, &c);
+	}
 	// grassland spruce -- muddy yellow
 	if (gGrasslandID != RasterIO::NODATA_BYTE)
 	{
