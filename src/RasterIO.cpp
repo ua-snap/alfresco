@@ -135,7 +135,10 @@ RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int
 	_pVegColorTable->SetColorEntry(gNoVegID, &c);
 	// tundra -- yellow
 	c.c1=255; c.c2=190; c.c3=41; c.c4=255; 
-	_pVegColorTable->SetColorEntry(gTundraID, &c);
+	if (gTundraID != RasterIO::NODATA_BYTE)
+	{
+		_pVegColorTable->SetColorEntry(gTundraID, &c);
+	}
 	// shrub tundra -- brown
 	c.c1=129; c.c2=105; c.c3=73; c.c4=255;
 	_pVegColorTable->SetColorEntry(gShrubTundraID, &c);
@@ -155,10 +158,10 @@ RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int
 	c.c1=0; c.c2=69; c.c3=41; c.c4=255;
 	_pVegColorTable->SetColorEntry(gBSpruceID, &c);
 	// Temperate Rainforest
-	c.c1=255; c.c2=190; c.c3=41; c.c4=255; 
+	c.c1=43; c.c2=212; c.c3=224; c.c4=255; 
 	_pVegColorTable->SetColorEntry(gTemperateRainforestID, &c);
 	// Barren-Lichen-Moss
-	c.c1=255; c.c2=190; c.c3=41; c.c4=255; 
+	c.c1=235; c.c2=120; c.c3=38; c.c4=255; 
 	_pVegColorTable->SetColorEntry(gBarrenLichenMossID, &c);
 	// grassland spruce -- muddy yellow
 	if (gGrasslandID != RasterIO::NODATA_BYTE)
@@ -580,7 +583,11 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 				switch(mapType)
 				{
 				case VEGEGATION:
-					buf[c] = pFrames[r][c]->type();
+					if (FRESCO->_pNoData[r][c]){
+						buf[c] = nodata;
+					} else {
+						buf[c] = pFrames[r][c]->type();
+					}
 					break;
 				case AGE:
 					if (pFrames[r][c]->type() == gNoVegID)

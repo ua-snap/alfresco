@@ -151,6 +151,7 @@ void CustomLandscape::		setup()
 	_pBurnSeveritySpatialInput		= new byte*[gYSize];
 	_pSuppressions                  = new byte*[gYSize];
 	_pHistoricalFireSpatialInput	= new byte*[gYSize];
+	FRESCO->_pNoData 			= new bool*[gYSize];
 	for (r=0;r<gYSize;r++) {
 		_pVegSpatialInput[r]		    = new byte[gXSize];
 		_pVegMaskSpatialInput[r]		    = new byte[gXSize];
@@ -163,6 +164,7 @@ void CustomLandscape::		setup()
 		_pBurnSeveritySpatialInput[r]	= new byte[gXSize];
 		_pSuppressions[r]				= new byte[gXSize];
 		_pHistoricalFireSpatialInput[r] = new byte[gXSize];
+		FRESCO->_pNoData[r]			= new bool[gXSize];
 
         	for (c=0;c<gXSize;c++) {
 			_pVegSpatialInput[r][c]		        = 0;
@@ -176,6 +178,7 @@ void CustomLandscape::		setup()
 			_pBurnSeveritySpatialInput[r][c]    = 0;
 			_pSuppressions[r][c]	            = 0;
 			_pHistoricalFireSpatialInput[r][c]	= 0;
+			FRESCO->_pNoData[r][c]				= false;
 		}
 	}
 
@@ -298,7 +301,10 @@ void CustomLandscape::		repStart()
 			pFrame = _pFrames[r][c];
 			if (pFrame) delete pFrame;
 			byte frameTypeID = _pVegSpatialInput[r][c];
-			if (frameTypeID==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(gFirstYear - _pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
+			if (IsNodata(frameTypeID))	{ 
+				FRESCO->_pNoData[r][c] = true;
+				_pFrames[r][c] = new NoVeg(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID); }
+			else if (frameTypeID==gBSpruceID)	{ _pFrames[r][c] = new BSpruce(gFirstYear - _pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gWSpruceID)	{ _pFrames[r][c] = new WSpruce(gFirstYear - _pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gGrasslandID)	{ _pFrames[r][c] = new Grassland(gFirstYear - _pAgeSpatialInput[r][c], _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}
 			else if (frameTypeID==gDecidID)	    { _pFrames[r][c] = new Decid(gFirstYear - _pAgeSpatialInput[r][c],   _pTopoSpatialInput[r][c]>0, _pSiteSpatialInput[r][c], -1, _pBurnSeveritySpatialInput[r][c], _pIgnitionFactorSpatialInput[r][c], _pSensitivitySpatialInput[r][c], gNoVegID);}

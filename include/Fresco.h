@@ -93,6 +93,8 @@ public:
     //Setup: Move these two to Fire?
     double*                 getSpruceFireParms(const std::string key);              
     const double*           getStartAgeParms(const std::string key, EStartAgeType* type);
+
+    bool**			_pNoData;
 };
 
 

@@ -55,7 +55,7 @@ void CustomFresco::	customSetup()
 		validVegTypes.insert(gGrasslandID);
 		Grassland::setStaticData();
 	}
-	if (fif().CheckKey("Tundra"))
+	if (fif().CheckKey("Tundra")) 
 	{
 		gTundraID = (byte)fif().nGet("Tundra");
 		validVegTypes.insert(gTundraID);
