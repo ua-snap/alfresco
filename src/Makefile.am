@@ -7,5 +7,4 @@ fresco_SOURCES = ../src/MainCLI.cpp \
 fresco_LDFLAGS = -L../lib -lFrescoFoundation -lFrescoCustom -lboost_system -lboost_filesystem -lboost_program_options -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal
 fresco_LDADD = ../lib/libFrescoFoundation.la ../lib/libFrescoCustom.la
 fresco_CPPFLAGS = -I$(top_srcdir)/src
-fresco_CXXFLAGS = -DWITHSTATS -O3 -funroll-loops -Wall
-fresco_CXXFLAGS += -g
+fresco_CXXFLAGS = -DWITHSTATS -funroll-loops -Wall

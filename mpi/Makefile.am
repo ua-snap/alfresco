@@ -10,4 +10,4 @@ fresco_mpi_SOURCES = ../src/MainCLI.cpp  \
 fresco_mpi_LDFLAGS = -L../lib -lFrescoFoundation -lFrescoCustom -lboost_system -lboost_filesystem -lboost_program_options -L/usr/lib64/Poco -lPocoFoundation -lPocoNet -lPocoXML -lgdal -L/usr/lib64/openmpi
 fresco_mpi_LDADD = ../lib/libFrescoFoundation.la ../lib/libFrescoCustom.la
 fresco_mpi_CPPFLAGS = -I$(top_srcdir)/src
-fresco_mpi_CXXFLAGS = -DWITHMPI -DWITHSTATS -O3 -funroll-loops -Wall
+fresco_mpi_CXXFLAGS = -DWITHMPI -DWITHSTATS -funroll-loops -Wall
