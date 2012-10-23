@@ -250,27 +250,29 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (_rollingTempMean.size() > 10){
 		std::cout <<"ERROR"<<std::endl;
 	}
-	if (_basalArea < 5){
-		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
-		_basalArea += seeds * 10;
-	} else {
-		double basalIncrement = 0;
-		if ((rand() % 10) < 6){
-			_basalArea += 0.1;
-		} else {
-			_basalArea += 0.9;
+	if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
+		if (movingTempAverage > 18.0){
+			std::cout << movingTempAverage << std::endl;
 		}
+		if (_basalArea < _tundraSpruceBasalArea){
+			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
+			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+			_basalArea += seeds * 10;
+		} else {
+			double basalIncrement = 0;
+			if ((rand() % 10) < 6){
+				_basalArea += 0.1;
+			} else {
+				_basalArea += 0.9;
+			}
+		}
+	} else {
+		_basalArea = 0.0;
 	}
 
 	//Transition if necessary
-	if (_basalArea >= _tundraSpruceBasalArea) {
-		const double probability = Site(_site,0.5);
-		if (probability > GetNextRandom()){
-	//		return new BSpruce(*this);
-		} else {
-	//		return new WSpruce(*this);
-		}
+	if (_basalArea >= FRESCO->fif().dGet("GraminoidTundra.Spruce.EstBA")) {
+		return new WSpruce(*this);
 	}
 	return NULL;
 }
