@@ -251,27 +251,25 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		std::cout <<"ERROR"<<std::endl;
 	}
 	if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
-		if (movingTempAverage > 18.0){
-			std::cout << movingTempAverage << std::endl;
+		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
+		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+		params[0];
+		seeds -= queryReply(pParent, FatTail (params));
+		seeds *= _seedBasalArea;
+		seeds /= _seedling;
+		if (_basalArea == 0 && seeds > 0) {
+			_yearOfEstablishment = gYear; 
 		}
-		if (_basalArea < _tundraSpruceBasalArea){
-			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
-			_basalArea += seeds * 10;
-		} else {
-			double basalIncrement = 0;
-			if ((rand() % 10) < 6){
-				_basalArea += 0.1;
-			} else {
-				_basalArea += 0.9;
-			}
-		}
+		double baFromGrowth = 0;
+		double baFromSeed = seeds * _seedlingBasalArea * _pCalibrationFactor[1];
+		_basalArea += baFromGrowth + baFromSeed;
 	} else {
 		_basalArea = 0.0;
 	}
 
 	//Transition if necessary
 	if (_basalArea >= FRESCO->fif().dGet("GraminoidTundra.Spruce.EstBA")) {
+		std::cout << "Transition Occured at Age: " << gYear - _yearOfEstablishment << "\n";
 		return new WSpruce(*this);
 	}
 	return NULL;
