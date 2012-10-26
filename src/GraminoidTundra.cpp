@@ -260,7 +260,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		if (_basalArea == 0 && seeds > 0) {
 			_yearOfEstablishment = gYear; 
 		}
-		double baFromGrowth = 0;
+		double baFromGrowth = _basalArea * 0.001;
 		double baFromSeed = seeds * _seedlingBasalArea * _pCalibrationFactor[1];
 		_basalArea += baFromGrowth + baFromSeed;
 	} else {
