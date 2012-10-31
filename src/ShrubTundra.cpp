@@ -29,6 +29,8 @@ double			ShrubTundra::_ratioAK = 0.;
 double			ShrubTundra::_tundraSpruceBasalArea;
 const double*	ShrubTundra::_pStartAgeParms;
 double*			ShrubTundra::_pIntegral;
+std::vector<double>	ShrubTundra::_rollingTempMean;
+std::vector<double>	ShrubTundra::_rollingSWIMean;
 EStartAgeType	ShrubTundra::_startAgeType;
 
 
@@ -198,6 +200,64 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 		if (burnSeverity >= 1 ){
 			return new GraminoidTundra(*this);
 		}
+	}
+	float movingTempAverage = 0;
+	float movingSWIAverage = 0;
+	//Check to see if _rollingTempMean has been setup, or if this is the first pass
+	if (_rollingTempMean.size() < 10){
+		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
+	} else {
+		_rollingTempMean.erase (_rollingTempMean.begin());	
+		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
+	}
+	for (int i = 0; i < _rollingTempMean.size(); i++){
+		movingTempAverage += _rollingTempMean[i];
+	}
+	movingTempAverage /= 10.0;
+	float summerWarmthIndex = 0;
+	if (pParent->cellTempByMonth(3) > 0){ summerWarmthIndex += pParent->cellTempByMonth(3); }
+	if (pParent->cellTempByMonth(4) > 0){ summerWarmthIndex += pParent->cellTempByMonth(4); }
+	if (pParent->cellTempByMonth(5) > 0){ summerWarmthIndex += pParent->cellTempByMonth(5); }
+	if (pParent->cellTempByMonth(6) > 0){ summerWarmthIndex += pParent->cellTempByMonth(6); }
+	if (pParent->cellTempByMonth(7) > 0){ summerWarmthIndex += pParent->cellTempByMonth(7); }
+	if (_rollingSWIMean.size() < 10){
+                _rollingSWIMean.push_back(summerWarmthIndex);
+        } else {
+                _rollingSWIMean.erase (_rollingSWIMean.begin());
+                _rollingSWIMean.push_back(summerWarmthIndex);
+        }
+	for (int i = 0; i < _rollingSWIMean.size(); i++){
+                movingSWIAverage += _rollingSWIMean[i];
+        }
+	movingSWIAverage /= 10.0;
+	if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
+		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
+		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+		params[0] = 0;
+		seeds -= queryReply(pParent, FatTail (params));
+		seeds *= _seedBasalArea;
+		seeds /= _seedling;
+		if (_basalArea == 0 && seeds > 0) {
+			_yearOfEstablishment = gYear; 
+		}
+		double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
+		double modGrowth = NormDist(gparams);
+		modGrowth *= 5;
+		double baFromGrowth = 0;
+		if (_basalArea > 0){
+			baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
+		}
+		double baFromSeed = 0;
+		baFromSeed = seeds * _seedlingBasalArea * _pCalibrationFactor[1];
+		baFromSeed = seeds * _seedlingBasalArea;
+		_basalArea += baFromGrowth + baFromSeed;
+	} else {
+		_basalArea = 0.0;
+	}
+
+	//Transition if necessary
+	if (_basalArea >= FRESCO->fif().dGet("ShrubTundra.Spruce.EstBA")) {
+		return new WSpruce(*this);
 	}
 	return NULL;
 }

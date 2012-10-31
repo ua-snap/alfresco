@@ -29,8 +29,8 @@ double			GraminoidTundra::_ratioAK = 0.;
 double			GraminoidTundra::_tundraSpruceBasalArea;
 const double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
-std::vector<float>	GraminoidTundra::_rollingTempMean;
-std::vector<float>	GraminoidTundra::_rollingSWIMean;
+std::vector<double>	GraminoidTundra::_rollingTempMean;
+std::vector<double>	GraminoidTundra::_rollingSWIMean;
 EStartAgeType	GraminoidTundra::_startAgeType;
 
 
@@ -195,7 +195,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 {
 
 	//Check immediately after burn
-	float swi = FRESCO->fif().dGet("GraminoidTundra.SummerWarmthIndex");
+	double swi = FRESCO->fif().dGet("GraminoidTundra.SummerWarmthIndex");
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {
         //This frame burned last year, so reset degree years to start tracking again.
@@ -205,8 +205,8 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		_yearOfEstablishment= -_history;
 		_degrees		    = -1.;
 	}
-	float movingTempAverage = 0;
-	float movingSWIAverage = 0;
+	double movingTempAverage = 0;
+	double movingSWIAverage = 0;
 	//Check to see if _rollingTempMean has been setup, or if this is the first pass
 	if (_rollingTempMean.size() < 10){
 		_rollingTempMean.push_back(pParent->cellTempByMonth(7));
@@ -260,11 +260,16 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		if (_basalArea == 0 && seeds > 0) {
 			_yearOfEstablishment = gYear; 
 		}
-		double gparams[3] = {_basalArea, 15., 2.};		                    //The first location will get set to the actual distance
-		//double mGrowth = -((movingTempAverage-15) * (movingTempAverage-15))*.07 + 2.0;
+		double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
 		double modGrowth = NormDist(gparams);
-		double baFromGrowth = -(_basalArea *_basalArea) * modGrowth + 0.4;
-		double baFromSeed = seeds * _seedlingBasalArea * _pCalibrationFactor[1];
+		modGrowth *= 5;
+		double baFromGrowth = 0;
+		if (_basalArea > 0){
+			baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
+		}
+		double baFromSeed = 0;
+		baFromSeed = seeds * _seedlingBasalArea * _pCalibrationFactor[1];
+		baFromSeed = seeds * _seedlingBasalArea;
 		_basalArea += baFromGrowth + baFromSeed;
 	} else {
 		_basalArea = 0.0;
@@ -272,10 +277,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 
 	//Transition if necessary
 	if (_basalArea >= FRESCO->fif().dGet("GraminoidTundra.Spruce.EstBA")) {
-		//std::cout << "Col/Row" << pParent->_col << "/" << pParent->_row << std::endl;
-		std::cout << "Transition Occured at Age: " << gYear - _yearOfEstablishment << " BA: " << _basalArea << "\n";
-		//return new WSpruce(*this);
-		return new TemperateRainforest(*this);
+		return new WSpruce(*this);
 	}
 	return NULL;
 }
