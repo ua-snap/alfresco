@@ -175,6 +175,146 @@ ol li ol {
 	
 	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
 	<h2><a name="fifconfig" ></a>Appendix A: .FIF Configuration</h2>
+	<h3>Intro to the .FIF</h3>
+	<p>The Boreal ALFRESCO .fif is an ascii text file containing all parameterizations for any
+	particular simulation scenario. It can be edited within any general text editor (e.g., Notepad,
+	Vim, gedit, etc.). Details for each .fif section
+	are provided below. When a .fif file is opened, you can modify the parameters shown in the
+	central column of the figure below. Do not change the default values highlighted in the
+	following tables.</p>
+	<style>
+		.fixedValue { background-color: #ffff77; }
+		.fixedValue td { background-color: #ffff77; }
+		.deprecatedValue { color: #999999; }
+	</style>
+	<h3>Program Parameters</h3>
+	<h4>Base Input</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr class="deprecatedValue"><td>ClientFifPath</td><td>Base directory for clients where input files can be found and map output will be saved.</td><td>DEPRECATED - 2.0</td></tr>
+	<tr><td>ClientInputBasePath</td><td>Base path for input data</td><td></td></tr>
+	<tr class="deprecatedValue"><td>ClientOutputBasePath</td><td>Base path for local output data</td><td>DEPRECATED - 2.0</td></tr>
+	<tr class="deprecatedValue"><td>ServerOutputBasePath</td><td>Base path for output data</td><td>DEPRECATED - 2.0</td></tr>
+	<tr><td></td><td></td></tr>
+	</table>
+
+	<h4>Simulation Settings</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>	
+	<tr><td>RandSeed</td><td>A manually set number used to seed the random number generator. If not set, the current time is used to seed the random number generator.</td><td></td></tr>
+	<tr><td>Output.DetailLevel</td><td>MINIMAL: Show only run progress.  MODERATE: Show some interim calculations along with run detail.  MAXIMUM: Show maximum detail along with run detail.</td><td></td></tr>
+	<tr><td>FirstYear</td><td>The first year of the simulation to run</td><td></td></tr>
+        <tr><td>LastYear</td><td>The last year of the simulation to run</td><td></td></tr>
+        <tr><td>MaxReps</td><td>The number of replicates to run the model (i.e. x replicates total).</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Raster Settings</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>XULCorner</td><td>"x origin", "top left corner". Usually in meters.</td><td></td></tr>
+	<tr><td>YULCorner</td><td>"y origin", "top left corner". Usually in meters.</td><td></td></tr>
+	<tr><td>XOffset</td><td>Number of pixels from the left (XULCorner) to start counting columns</td><td></td></tr>
+	<tr><td>YOffset</td><td>Number of pixels from the top (YULCorner) to start counting rows</td><td></td></tr>
+	<tr><td>XSize</td><td>Landscape's width in pixels.</td><td></td></tr>
+	<tr><td>YSize</td><td>Landscape's height in pixels.</td><td></td></tr>
+	<tr class="fixedValue"><td>CellSize</td><td>The size of each cell (in meters)</td><td></td></tr>
+	<tr><td>RequireAAEACProjectedInputRasters</td><td>(optional -- defaults to TRUE) if TRUE, each input raster file will be checked for the Alaska Albers projection.</td><td></td></tr>
+	<tr><td>ApplyAAEACProjectionToOutputRasters</td><td>(optional -- defaults to TRUE) if TRUE, each output raster file will include metadata for the Alaska Albers projection.</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Landscape Parameters</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>SiteInputFile</td><td>The site input file</td><td></td></tr>
+	<tr><td>TreeDensityInputFile</td><td>The initial tree density input file</td><td></td></tr>
+	<tr><td>TopoInputFile</td><td>Elevation/akcanada_prism_slopeComplexity_1km.tifThe topography input file.  0=flat, 1=complex</td><td></td></tr>
+	<tr><td>BurnSeverityInputFile</td><td>The initial burn severity input file. 0=No Burn, 1=Low, 2=Moderate, 3=High w Low Surface Severity, 4=High w/ High Surface Severity</td><td></td></tr>
+	<tr><td>AgeInputFile</td><td>The initial age input file - years before present so positive values</td><td></td></tr>
+	<tr><td>VegInputFile</td><td>The vegetation input file, in format filename_REP_YEAR.tif</td><td></td></tr>
+	<tr><td>VegTransitionFile</td><td>Base filename for forced vegetation transitions.  Year is appended as  _YR</td><td></td></tr>
+	<tr><td>IsForcedVegTransitions</td><td>TRUE: Succession trajectories are read from files as well as simulated.  FALSE: Succession is simulated only.</td><td></td></tr>
+	<tr><td>UseUniqueVegAndAgePerRep</td><td>Use unique input files for veg and age.  This can be used to prevent a bias due to all reps starting from the same input data.</td><td></td></tr>
+	<tr><td>UseUniqueBurnSeverityPerRep</td><td>Use unique input files for burn severity per rep.  This prevents a bias due to all reps starting from the same input data.</td><td></td></tr>
+	<tr><td>YearOfUniqueInputPerRep</td><td>The year to be appended to the base filename when using unique veg, age andor burn severity files per rep.  File format: filename_REP#_YEAR#.txt</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Succession</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr class="fixedValue"><td>CropNeighbors</td><td>Should the neighbours algorithm crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.</td><td></td></tr>
+	</table>
+
+	<h4></h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h3>Veg Class Parameters</h3>
+	</style>
+	<h4>NoVeg</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>NoVeg</td><td>The species number for the default frame type - should be 0 if possible</td><td></td></tr>
+	</table>
+	
+	<h4>Black Spruce</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>BSpruce</td><td>The species number for the black spruce frame type - should be 1 if possible</td><td></td></tr>
+	<tr class="fixedValue"><td>BSpruce.StartAge</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>BSpruce.FireParms</td><td>Parameters for the fire age function : k   Max Fire Factor  a   Age Coefficient (Age   ab)  b   Slope Coefficient</td><td></td></tr>
+	<tr><td>BSpruce.HumanFireProb</td><td>Probability of human causes will cause this species type  to burn.</td><td></td></tr>
+	</table>
+	
+	<h4>White Spruce</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>WSpruce</td><td>The species number for the white spruce frame type - should be 2 if possible</td><td></td></tr>
+	<tr class="fixedValue"><td>WSpruce.StartAge</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>WSpruce.FireParms</td><td>Parameters for the fire age function : k   Max Fire Factor  a   Age Coefficient (Age   ab)  b   Slope Coefficient</td><td></td></tr>
+	<tr><td>WSpruce.HumanFireProb</td><td>Probability of human causes will cause this species type  to burn.</td><td></td></tr>
+	</table>
+	
+	<h4>Deciduous</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>Decid</td><td>The species number for the deciduous frame type - should be 3 if possible</td><td></td></tr>
+	<tr><td>Decid.StartAge.WSpruce</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>Decid.StartAge.BSpruce</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>Decid.FireProb.IsAgeDependent</td><td>If TRUE: Decid.FirePorb requires an array of three parameters {k,a,b} in that order for a logistic function k(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Decid.FireProb requires a single constant value (no array).</td><td></td></tr>
+	<tr><td>Decid.FireProb</td><td>Probability of this species type burning.</td><td></td></tr>
+	<tr><td>Decid.HumanFireProb</td><td>Probability of human causes will cause this species type  to burn.</td><td></td></tr>
+	<tr><td>Decid.History</td><td>The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.</td><td></td></tr>
+	<tr><td>Decid-&gt;Tundra.Parms</td><td>Degree-years are integrated from base A (i.e. temp &lt; A).  A transition occurs if the integrand exceeds B*(The maximum number of steps i.e. HistoryTimeStep).</td><td></td></tr>
+	<tr><td colspan="3" style="background-color: #dddddd; font-style: italic">The following 8 fields are sets of two coefficients, {A, B}, used depending on the trajectory and last burn severity of the given decid cell. The chosen values are used in a linear function relating age to the probability of transitioning to white or black spruce: A*Age + B.</td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[1]</td><td>1 = Low Severity 20:40 years</td><td></td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[2]</td><td>2 = Moderate Severity 40:60 years</td><td></td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[3]</td><td>3 = High Severity + Low Surface Severity 60:90 years</td><td></td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[4]</td><td>4 = High Severity + High Surface Severity 90:130 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[1]</td><td>1 = Low Severity 5:15 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[2]</td><td>2 = Moderate Severity 15:30 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[3]</td><td>3 = High Severity + Low Surface Severity 30:50 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[4]</td><td>4 = High Severity + High Surface Severity 50:90 years</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Shrub Tundra</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>ShrubTundra</td><td>The species number for the shrub frame type - should be 4 if possible</td><td></td></tr>
+	<tr><td>ShrubTundra.StartAge</td><td>Parameters for the starting age function.  If one parameter is specified assume a constant distribution.  Otherwise  parameters are the lifetime and shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h3>Tundra Parameters</h3>
+	<h3>Tundra Parameters</h3>
 	<h3>Burn Severity</h3>
 	<p>Burn Severity in Boreal ALFRESCO is modeled to reflect the following two assumptions (Duffy et al. 2007):</p>
 	<ol>
