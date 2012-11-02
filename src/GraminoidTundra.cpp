@@ -256,7 +256,15 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		params[0] = 0;
 		seeds -= queryReply(pParent, FatTail (params));
 		seeds *= _seedBasalArea;
-		seeds /= _seedling;
+		double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
+		if (yearsSinceLastBurn <= 5){  // Seedling establishment is modified by recent burnSeverity
+			if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){ //High severity results in higher establishment rates
+				modSeedling = 0.5;
+			} else if (burnSeverity == HIGH_HSS){
+				modSeedling = 0.1;
+			}
+		}
+		seeds /= (_seedling * modSeedling);
 		if (_basalArea == 0 && seeds > 0) {
 			_yearOfEstablishment = gYear; 
 		}
@@ -268,8 +276,9 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 			baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
 		}
 		double baFromSeed = 0;
-		baFromSeed = seeds * _seedlingBasalArea * _pCalibrationFactor[1];
-		baFromSeed = seeds * _seedlingBasalArea;
+		if (seeds > 0.00001){
+			baFromSeed = seeds * _seedlingBasalArea;
+		}
 		_basalArea += baFromGrowth + baFromSeed;
 	} else {
 		_basalArea = 0.0;

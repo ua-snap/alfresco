@@ -586,7 +586,13 @@ double Landscape::		neighborsSuccess (double (Frame::*QueryFunction)(Landscape *
 	//Start the inner loop
 	for (int row=rowMin; row<=rowMax; row++) {
 		for (int col = colMin; col <= colMax; col++) {
-			if ( (Parms[0] = sqrt((double)(currRow-row)*(currRow-row) + (currCol-col)*(currCol-col)) * gCellSize ) <= MaxDist || !_cropNeighbors)
+			Parms[0] = sqrt((double)(currRow-row)*(currRow-row) + (double)(currCol-col)*(currCol-col)) * gCellSize;
+			if (Parms == 0){
+				Parms[0] = 1;
+			} else {
+				Parms[0] = 1 / Parms[0];
+			}
+			if ( Parms[0] <= MaxDist || !_cropNeighbors)
 				_row = row;
 				_col = col;
 				pFrame = _pFrames[_row][_col];

@@ -99,7 +99,11 @@ inline const unsigned char  ShrubTundra::type () const
 inline double				ShrubTundra::queryReply (Landscape* pParent, const double weight, const double* pParams) 
 //Return the weighted seed source from this cell
 { 
-	return _basalArea*weight; 
+	if (_basalArea > _tundraSpruceBasalArea){
+		return _basalArea*weight; 
+	} else {
+		return 0;
+	}
 }		
 
 
