@@ -29,6 +29,7 @@ double			GraminoidTundra::_ratioAK = 0.;
 double			GraminoidTundra::_tundraSpruceBasalArea;
 const double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
+int			GraminoidTundra::_transitionYear;
 std::vector<double>	GraminoidTundra::_rollingTempMean;
 std::vector<double>	GraminoidTundra::_rollingSWIMean;
 EStartAgeType	GraminoidTundra::_startAgeType;
@@ -121,6 +122,11 @@ void GraminoidTundra::           setStaticData()
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("GraminoidTundra->Spruce.BasalArea");
         _pStartAgeParms         = FRESCO->getStartAgeParms("GraminoidTundra.StartAge", &_startAgeType);
         _meanGrowth             = FRESCO->fif().dGet("GraminoidTundra.MeanGrowth");
+	if (FRESCO->fif().CheckKey("GraminoidTundra.TransitionYear")){
+		_transitionYear 	= FRESCO->fif().nGet("GraminoidTundra.TransitionYear");
+	} else {
+		_transitionYear		= 0;
+	}	
         if (2 != FRESCO->fif().pdGet("GraminoidTundra.SeedEstParms", _pSeedEstParams)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: GraminoidTundra.SeedEstParms");
         }
@@ -201,7 +207,16 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
         //This frame burned last year, so reset degree years to start tracking again.
         	_yearEstablished	= gYear;
 		_speciesSubCanopy	= gGraminoidTundraID;
-		_basalArea	        = 0.;
+		if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){
+			//Reduce basal area by 50%
+			_basalArea 		*= 0.5;
+		} else if (burnSeverity == HIGH_HSS){
+			//Reduce basal area to 0
+			_basalArea	         = 0.;
+		} else if (burnSeverity == LOW){
+			//Unchanged
+			_basalArea               = _basalArea;
+		}
 		_yearOfEstablishment= -_history;
 		_degrees		    = -1.;
 	}
@@ -234,15 +249,17 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
                 movingSWIAverage += _rollingSWIMean[i];
         }
 	movingSWIAverage /= 10.0;
-	if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
-		if (movingSWIAverage > swi){
-			if (yearsSinceLastBurn > 32 && yearsSinceLastBurn <= 52 && yearOfLastBurn >= 0){
-				if (rand() % 100 < 5){
-					return new ShrubTundra(*this);
-				}
-			} else {
-				if (rand() % 100 < 1){
-					return new ShrubTundra(*this);
+	if (gYear >= _transitionYear){
+		if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
+			if (movingSWIAverage > swi){
+				if (yearsSinceLastBurn > 32 && yearsSinceLastBurn <= 52 && yearOfLastBurn >= 0){
+					if (rand() % 100 < 5){
+						return new ShrubTundra(*this);
+					}
+				} else {
+					if (rand() % 100 < 1){
+						return new ShrubTundra(*this);
+					}
 				}
 			}
 		}
@@ -250,43 +267,44 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (_rollingTempMean.size() > 10){
 		std::cout <<"ERROR"<<std::endl;
 	}
-	if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
-		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
-		params[0] = 0;
-		seeds -= queryReply(pParent, FatTail (params));
-		seeds *= _seedBasalArea;
-		double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
-		if (yearsSinceLastBurn <= 5){  // Seedling establishment is modified by recent burnSeverity
-			if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){ //High severity results in higher establishment rates
-				modSeedling = 0.5;
-			} else if (burnSeverity == HIGH_HSS){
-				modSeedling = 0.1;
+	if (gYear >= _transitionYear){
+		if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
+			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
+			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+			params[0] = 0;
+			seeds -= queryReply(pParent, FatTail (params));
+			seeds *= _seedBasalArea;
+			double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
+			if (yearsSinceLastBurn <= 5){  // Seedling establishment is modified by recent burnSeverity
+				if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){ //High severity results in higher establishment rates
+					modSeedling = 0.5;
+				} else if (burnSeverity == HIGH_HSS){
+					modSeedling = 0.1;
+				}
 			}
+			seeds /= (_seedling * modSeedling);
+			if (_basalArea == 0 && seeds > 0) {
+				_yearOfEstablishment = gYear; 
+			}
+			double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
+			double modGrowth = NormDist(gparams);
+			modGrowth *= 5;
+			double baFromGrowth = 0;
+			if (_basalArea > 0){
+				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
+			}
+			double baFromSeed = 0;
+			if (seeds > 0.00001){
+				baFromSeed = seeds * _seedlingBasalArea;
+			}
+			_basalArea += baFromGrowth + baFromSeed;
+		} else {
+			_basalArea = 0.0;
 		}
-		seeds /= (_seedling * modSeedling);
-		if (_basalArea == 0 && seeds > 0) {
-			_yearOfEstablishment = gYear; 
+		//Transition if necessary
+		if (_basalArea >= FRESCO->fif().dGet("GraminoidTundra.Spruce.EstBA")) {
+			return new WSpruce(*this);
 		}
-		double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
-		double modGrowth = NormDist(gparams);
-		modGrowth *= 5;
-		double baFromGrowth = 0;
-		if (_basalArea > 0){
-			baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
-		}
-		double baFromSeed = 0;
-		if (seeds > 0.00001){
-			baFromSeed = seeds * _seedlingBasalArea;
-		}
-		_basalArea += baFromGrowth + baFromSeed;
-	} else {
-		_basalArea = 0.0;
-	}
-
-	//Transition if necessary
-	if (_basalArea >= FRESCO->fif().dGet("GraminoidTundra.Spruce.EstBA")) {
-		return new WSpruce(*this);
 	}
 	return NULL;
 }

@@ -29,6 +29,7 @@ double			ShrubTundra::_ratioAK = 0.;
 double			ShrubTundra::_tundraSpruceBasalArea;
 const double*	ShrubTundra::_pStartAgeParms;
 double*			ShrubTundra::_pIntegral;
+int			ShrubTundra::_transitionYear;
 std::vector<double>	ShrubTundra::_rollingTempMean;
 std::vector<double>	ShrubTundra::_rollingSWIMean;
 EStartAgeType	ShrubTundra::_startAgeType;
@@ -121,6 +122,11 @@ void ShrubTundra::           setStaticData()
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("ShrubTundra->Spruce.BasalArea");
         _pStartAgeParms         = FRESCO->getStartAgeParms("ShrubTundra.StartAge", &_startAgeType);
         _meanGrowth             = FRESCO->fif().dGet("ShrubTundra.MeanGrowth");
+	if (FRESCO->fif().CheckKey("ShrubTundra.TransitionYear")){
+        	_transitionYear          = FRESCO->fif().nGet("ShrubTundra.TransitionYear");
+	} else {
+		_transitionYear		 = 0;
+	}
         if (2 != FRESCO->fif().pdGet("ShrubTundra.SeedEstParms", _pSeedEstParams)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedEstParms");
         }
@@ -196,10 +202,20 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {	
-		//if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){
-		if (burnSeverity >= 1 ){
-			return new GraminoidTundra(*this);
+		if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){
+			//Reduce basal area by 50%
+			_basalArea 		*= 0.5;
+		} else if (burnSeverity == HIGH_HSS){
+			//Reduce basal area to 0
+			_basalArea	         = 0.;
+			if (gYear >= _transitionYear){
+				return new GraminoidTundra(*this);
+			}
+		} else if (burnSeverity == LOW){
+			//Unchanged
+			_basalArea               = _basalArea;
 		}
+		//if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){
 	}
 	float movingTempAverage = 0;
 	float movingSWIAverage = 0;
@@ -230,43 +246,45 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
                 movingSWIAverage += _rollingSWIMean[i];
         }
 	movingSWIAverage /= 10.0;
-	if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
-		double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-		double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
-		params[0] = 0;
-		seeds -= queryReply(pParent, FatTail (params));
-		seeds *= _seedBasalArea;
-		double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
-		if (yearsSinceLastBurn <= 5){
-			if (burnSeverity == MODERATE || burnSeverity == HIGH_HSS){
-				modSeedling = 0.5;
-			} else if (burnSeverity == HIGH_LSS){
-				modSeedling = 0.1;
+	if (gYear >= _transitionYear){
+		if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
+			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
+			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+			params[0] = 0;
+			seeds -= queryReply(pParent, FatTail (params));
+			seeds *= _seedBasalArea;
+			double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
+			if (yearsSinceLastBurn <= 5){
+				if (burnSeverity == MODERATE || burnSeverity == HIGH_HSS){
+					modSeedling = 0.5;
+				} else if (burnSeverity == HIGH_LSS){
+					modSeedling = 0.1;
+				}
 			}
+			seeds /= (_seedling * modSeedling);
+			if (_basalArea == 0 && seeds > 0) {
+				_yearOfEstablishment = gYear; 
+			}
+			double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
+			double modGrowth = NormDist(gparams);
+			modGrowth *= 5;
+			double baFromGrowth = 0;
+			if (_basalArea > 0){
+				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
+			}
+			double baFromSeed = 0;
+			if (seeds > 0.00001){
+				baFromSeed = seeds * _seedlingBasalArea;
+			}
+			_basalArea += baFromGrowth + baFromSeed;
+		} else {
+			_basalArea = 0.0;
 		}
-		seeds /= (_seedling * modSeedling);
-		if (_basalArea == 0 && seeds > 0) {
-			_yearOfEstablishment = gYear; 
-		}
-		double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
-		double modGrowth = NormDist(gparams);
-		modGrowth *= 5;
-		double baFromGrowth = 0;
-		if (_basalArea > 0){
-			baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
-		}
-		double baFromSeed = 0;
-		if (seeds > 0.00001){
-			baFromSeed = seeds * _seedlingBasalArea;
-		}
-		_basalArea += baFromGrowth + baFromSeed;
-	} else {
-		_basalArea = 0.0;
-	}
 
-	//Transition if necessary
-	if (_basalArea >= FRESCO->fif().dGet("ShrubTundra.Spruce.EstBA")) {
-		return new WSpruce(*this);
+		//Transition if necessary
+		if (_basalArea >= FRESCO->fif().dGet("ShrubTundra.Spruce.EstBA")) {
+			return new WSpruce(*this);
+		}
 	}
 	return NULL;
 }

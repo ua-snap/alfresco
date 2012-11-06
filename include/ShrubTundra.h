@@ -39,6 +39,7 @@ private:
 	static const double*	_pStartAgeParms;
 	static EStartAgeType	_startAgeType;
 	static double*			_pIntegral;
+	static int 			_transitionYear;
 	static std::vector<double>			_rollingTempMean;
 	static std::vector<double>			_rollingSWIMean;
 
