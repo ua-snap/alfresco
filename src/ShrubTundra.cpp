@@ -29,7 +29,8 @@ double			ShrubTundra::_ratioAK = 0.;
 double			ShrubTundra::_tundraSpruceBasalArea;
 const double*	ShrubTundra::_pStartAgeParms;
 double*			ShrubTundra::_pIntegral;
-int			ShrubTundra::_transitionYear;
+int			ShrubTundra::_spruceTransitionYear;
+int			ShrubTundra::_tundraTransitionYear;
 std::vector<double>	ShrubTundra::_rollingTempMean;
 std::vector<double>	ShrubTundra::_rollingSWIMean;
 EStartAgeType	ShrubTundra::_startAgeType;
@@ -122,10 +123,15 @@ void ShrubTundra::           setStaticData()
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("ShrubTundra->Spruce.BasalArea");
         _pStartAgeParms         = FRESCO->getStartAgeParms("ShrubTundra.StartAge", &_startAgeType);
         _meanGrowth             = FRESCO->fif().dGet("ShrubTundra.MeanGrowth");
-	if (FRESCO->fif().CheckKey("ShrubTundra.TransitionYear")){
-        	_transitionYear          = FRESCO->fif().nGet("ShrubTundra.TransitionYear");
+	if (FRESCO->fif().CheckKey("ShrubTundra.SpruceTransitionYear")){
+        	_spruceTransitionYear          = FRESCO->fif().nGet("ShrubTundra.SpruceTransitionYear");
 	} else {
-		_transitionYear		 = 0;
+		_spruceTransitionYear		 = 0;
+	}
+	if (FRESCO->fif().CheckKey("ShrubTundra.TundraTransitionYear")){
+        	_tundraTransitionYear          = FRESCO->fif().nGet("ShrubTundra.TundraTransitionYear");
+	} else {
+		_tundraTransitionYear		 = 0;
 	}
         if (2 != FRESCO->fif().pdGet("ShrubTundra.SeedEstParms", _pSeedEstParams)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedEstParms");
@@ -208,7 +214,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 		} else if (burnSeverity == HIGH_HSS){
 			//Reduce basal area to 0
 			_basalArea	         = 0.;
-			if (gYear >= _transitionYear){
+			if (gYear >= _tundraTransitionYear){
 				return new GraminoidTundra(*this);
 			}
 		} else if (burnSeverity == LOW){
@@ -246,7 +252,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
                 movingSWIAverage += _rollingSWIMean[i];
         }
 	movingSWIAverage /= 10.0;
-	if (gYear >= _transitionYear){
+	if (gYear >= _spruceTransitionYear){
 		if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area

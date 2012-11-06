@@ -29,7 +29,8 @@ double			GraminoidTundra::_ratioAK = 0.;
 double			GraminoidTundra::_tundraSpruceBasalArea;
 const double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
-int			GraminoidTundra::_transitionYear;
+int			GraminoidTundra::_spruceTransitionYear;
+int			GraminoidTundra::_tundraTransitionYear;
 std::vector<double>	GraminoidTundra::_rollingTempMean;
 std::vector<double>	GraminoidTundra::_rollingSWIMean;
 EStartAgeType	GraminoidTundra::_startAgeType;
@@ -122,10 +123,15 @@ void GraminoidTundra::           setStaticData()
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("GraminoidTundra->Spruce.BasalArea");
         _pStartAgeParms         = FRESCO->getStartAgeParms("GraminoidTundra.StartAge", &_startAgeType);
         _meanGrowth             = FRESCO->fif().dGet("GraminoidTundra.MeanGrowth");
-	if (FRESCO->fif().CheckKey("GraminoidTundra.TransitionYear")){
-		_transitionYear 	= FRESCO->fif().nGet("GraminoidTundra.TransitionYear");
+	if (FRESCO->fif().CheckKey("GraminoidTundra.SpruceTransitionYear")){
+		_spruceTransitionYear 	= FRESCO->fif().nGet("GraminoidTundra.SpruceTransitionYear");
 	} else {
-		_transitionYear		= 0;
+		_spruceTransitionYear		= 0;
+	}	
+	if (FRESCO->fif().CheckKey("GraminoidTundra.TundraTransitionYear")){
+		_tundraTransitionYear 	= FRESCO->fif().nGet("GraminoidTundra.TundraTransitionYear");
+	} else {
+		_tundraTransitionYear		= 0;
 	}	
         if (2 != FRESCO->fif().pdGet("GraminoidTundra.SeedEstParms", _pSeedEstParams)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: GraminoidTundra.SeedEstParms");
@@ -249,10 +255,10 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
                 movingSWIAverage += _rollingSWIMean[i];
         }
 	movingSWIAverage /= 10.0;
-	if (gYear >= _transitionYear){
+	if (gYear >= _tundraTransitionYear){
 		if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
 			if (movingSWIAverage > swi){
-				if (yearsSinceLastBurn > 32 && yearsSinceLastBurn <= 52 && yearOfLastBurn >= 0){
+				if (yearsSinceLastBurn > 32 && yearsSinceLastBurn <= 52 && yearOfLastBurn >= 1){
 					if (rand() % 100 < 5){
 						return new ShrubTundra(*this);
 					}
@@ -267,7 +273,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (_rollingTempMean.size() > 10){
 		std::cout <<"ERROR"<<std::endl;
 	}
-	if (gYear >= _transitionYear){
+	if (gYear >= _spruceTransitionYear){
 		if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
