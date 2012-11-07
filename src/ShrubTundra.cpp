@@ -58,6 +58,7 @@ ShrubTundra::				ShrubTundra(const Frame& rFrame, const int treeDensity)
 	_yearEstablished		= gYear;
 	_yearFrameEstablished	= gYear;
 	_ShrubTundra(treeDensity);
+	_basalArea = rFrame.basalArea();
 }
 
 

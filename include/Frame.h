@@ -27,6 +27,7 @@ public:
     Species                 speciesSubCanopy() const { return _speciesSubCanopy; }
     const float             site() const { return _site; }
 	const bool				hasComplexTopo() const { return _isTopoComplex; }
+	const double	    basalArea() const { return _basalArea; }
 protected:
 	static int				_outFlags;												        //A flag indicating which data to output when the object is written
 	int						_yearEstablished;												//The year this stand was established
@@ -34,6 +35,8 @@ protected:
 	float					_site;													        //A surrogate variable to describe the site characteristics (currently just wet/dry)
 	bool					_isTopoComplex;													//Topography is categorized as either flat or complex (hilly/mountainous)
 	Species				    _speciesSubCanopy;											    //Store the type of the subcanopy if there is one. Should this be a linked list so we could potentially store more than one subcanopy.  Maybe with a percent cover type thing.  Maybe for a later implementation!?
+	double				    _basalArea;
+
 
 //Functions
 public:
