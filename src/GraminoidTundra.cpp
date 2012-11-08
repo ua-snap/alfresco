@@ -58,6 +58,7 @@ GraminoidTundra::				GraminoidTundra(const Frame& rFrame, const int treeDensity)
 	_yearEstablished		= gYear;
 	_yearFrameEstablished	= gYear;
 	_GraminoidTundra(treeDensity);
+	_basalArea = rFrame.basalArea();
 }
 
 
