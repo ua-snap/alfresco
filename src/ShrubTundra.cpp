@@ -284,8 +284,6 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 				baFromSeed = seeds * _seedlingBasalArea;
 			}
 			_basalArea += baFromGrowth + baFromSeed;
-		} else if ( movingTempAverage < 9 || movingTempAverage > 21) {
-			_basalArea = 0.0;
 		}
 
 		//Transition if necessary
