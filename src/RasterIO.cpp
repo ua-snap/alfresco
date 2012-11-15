@@ -660,7 +660,7 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 						buf[c] = nodata;
 					break;
 				case TUNDRA_BASAL_AREA:
-					if (pFrames[r][c]->type() == gTundraID)
+					if (pFrames[r][c]->type() == gTundraID || pFrames[r][c]->type() == gShrubTundraID || pFrames[r][c]->type() == gGraminoidTundraID)
 						buf[c] = pFrames[r][c]->getAsFloat(TUNDRA_BASAL_AREA);
 					else
 						buf[c] = nodata;
