@@ -587,17 +587,12 @@ double Landscape::		neighborsSuccess (double (Frame::*QueryFunction)(Landscape *
 	for (int row=rowMin; row<=rowMax; row++) {
 		for (int col = colMin; col <= colMax; col++) {
 			Parms[0] = sqrt((double)(currRow-row)*(currRow-row) + (double)(currCol-col)*(currCol-col)) * gCellSize;
-			if (Parms == 0){
-				Parms[0] = 1;
-			} else {
-				Parms[0] = 1 / Parms[0];
-			}
 			if ( Parms[0] <= MaxDist || !_cropNeighbors)
 				_row = row;
 				_col = col;
 				pFrame = _pFrames[_row][_col];
 				if (pFrame->type()!=gNoVegID && pFrame->type()!=gTemperateRainforestID && pFrame->type()!=gBarrenLichenMossID)
-					total += pFrame->queryReply(this, WeightFunc(Parms));
+					total += (pFrame->*QueryFunction)(this, WeightFunc(Parms), FuncParms);
 		}
 	}
 	_row = currRow;																//Need to reset these on exit for the next cell on the call stack

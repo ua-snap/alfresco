@@ -16,7 +16,6 @@ class FrescoCustom_API GraminoidTundra : public Frame
 {
 //Data
 private:
-	double					_basalArea;             //Can increase or decrease over time leading to succession to forest
 	int						_yearOfEstablishment;	//Date of tree establishment
 	float					_degrees;				//Number of degree days - used to kill young seedlings
 	static bool				_isStaticSetupAlready;
