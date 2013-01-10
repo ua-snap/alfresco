@@ -275,7 +275,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		std::cout <<"ERROR"<<std::endl;
 	}
 	if (gYear >= _spruceTransitionYear){
-		if (movingTempAverage >= 10.0 && movingTempAverage <= 18.0){
+		if (movingTempAverage >= 10.0 && movingTempAverage <= 20.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
 			params[0] = 0;
