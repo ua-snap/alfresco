@@ -43,6 +43,7 @@ ol li ol {
 	    </ol>
 	</li>
 	<li><a href="#fifconfig">Appendix A: .FIF Configuration</a></li>
+	<li><a href="#changelog">Change Log</a></li>
 	<li><a href="#references">ALFRESCO Model References</a></li>
 	</ol>
 	<h2><a name="intro" ></a>Introduction to ALFRESCO</h2>
@@ -182,6 +183,9 @@ ol li ol {
 	are provided below. When a .fif file is opened, you can modify the parameters shown in the
 	central column of the figure below. Do not change the default values highlighted in the
 	following tables.</p>
+	<p>Values in the FIF follow the form of:
+		<p><code>Variable = Value;</code></p>
+	</p>
 	<style>
 		.fixedValue { background-color: #ffff77; }
 		.fixedValue td { background-color: #ffff77; }
@@ -308,6 +312,67 @@ ol li ol {
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
 	<tr><td>ShrubTundra</td><td>The species number for the shrub frame type - should be 4 if possible</td><td></td></tr>
 	<tr><td>ShrubTundra.StartAge</td><td>Parameters for the starting age function.  If one parameter is specified assume a constant distribution.  Otherwise  parameters are the lifetime and shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>ShrubTundra.FireProb</td><td>{0.77,0.73,0.1} Probablity of this species type burning.</td><td></td></tr>
+	<tr><td>ShrubTundra.FireProb.IsAgeDependent</td><td>If TRUE: Tundra.FireProb requires an array of three parameters {k,a,b} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Tundra.FireProb requires a single constant value (no array).</td><td></td></tr>
+	<tr><td>ShrubTundra.HumanFireProb</td><td>Probability of human causes that will cause this species type  to burn.</td><td></td></tr>
+	<tr><td>ShrubTundra.Spruce.EstBA</td><td>Estimate of the basal area of mature forest - used to calculate seed dispersal for the initial BA assignment routine.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedRange</td><td>Distance to the maximum seed source in meters.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedSource</td><td>The mean travel distance(meters) and fraction of thin tail (1-fraction fat tail) in the distribution kernel.</td><td></td></tr>
+	<tr><td>ShrubTundra.Seed.BasalArea</td><td>The number of seeds/Ha produced per unit basal area (m2/Ha).</td><td></td></tr>
+	<tr><td>ShrubTundra.Seedling</td><td>Seed to seedling ratio including viability factor.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedlingBA</td><td>Initial basal area of a seedling (m2) - based on a 5mm diameter</td><td></td></tr>
+	<tr><td>ShrubTundra.History</td><td>The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedEstParms</td><td>Seedling establishment parameters -  cuttoff temp  avg degree days/year cutoff</td><td></td></tr>
+	<tr><td>ShrubTundra.MeanGrowth</td><td>Mean spruce growth (m) - this discounts the known trend in growth through time.</td><td></td></tr>
+	<tr><td>ShrubTundra.ClimGrowth</td><td>Three coefficients (Int  Temp  Precip) for the relative growth factor - from a regression against climate.</td><td></td></tr>
+	<tr><td>ShrubTundra.CalFactor</td><td>Calibration factors to move from cohort growth model to exponential growth model -  growth  seed set</td><td></td></tr>
+	<tr><td>ShrubTundra-&gt;Spruce.BasalArea</td><td>Basal area at which tundra transitions to spruce (m2/Ha).  A mature spruce stand is assumed to be about double this.</td><td></td></tr>
+	<tr><td>ShrubTundra.IgnitionDepressor</td><td>[optional]  Value should be between 0 and 1.  Decreases the likelihood of ignitions for any cell of this species.</td><td></td></tr>
+	<tr><td>ShrubTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Shrub Tundra</td><td></td></tr>
+	<tr><td>ShrubTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Shrub Tundra</td><td></td></tr>
+	</table>
+
+	<h4>Graminoid Tundra</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>GraminoidTundra</td><td>The species number for the shrub frame type - should be 4 if possible</td><td></td></tr>
+	<tr><td>GraminoidTundra.StartAge</td><td>Parameters for the starting age function.  If one parameter is specified assume a constant distribution.  Otherwise  parameters are the lifetime and shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>GraminoidTundra.FireProb</td><td>{0.77,0.73,0.1} Probablity of this species type burning.</td><td></td></tr>
+	<tr><td>GraminoidTundra.FireProb.IsAgeDependent</td><td>If TRUE: Tundra.FireProb requires an array of three parameters {k,a,b} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Tundra.FireProb requires a single constant value (no array).</td><td></td></tr>
+	<tr><td>GraminoidTundra.HumanFireProb</td><td>Probability of human causes that will cause this species type  to burn.</td><td></td></tr>
+	<tr><td>GraminoidTundra.Spruce.EstBA</td><td>Estimate of the basal area of mature forest - used to calculate seed dispersal for the initial BA assignment routine.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedRange</td><td>Distance to the maximum seed source in meters.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedSource</td><td>The mean travel distance(meters) and fraction of thin tail (1-fraction fat tail) in the distribution kernel.</td><td></td></tr>
+	<tr><td>GraminoidTundra.Seed.BasalArea</td><td>The number of seeds/Ha produced per unit basal area (m2/Ha).</td><td></td></tr>
+	<tr><td>GraminoidTundra.Seedling</td><td>Seed to seedling ratio including viability factor.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedlingBA</td><td>Initial basal area of a seedling (m2) - based on a 5mm diameter</td><td></td></tr>
+	<tr><td>GraminoidTundra.History</td><td>The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedEstParms</td><td>Seedling establishment parameters -  cuttoff temp  avg degree days/year cutoff</td><td></td></tr>
+	<tr><td>GraminoidTundra.MeanGrowth</td><td>Mean spruce growth (m) - this discounts the known trend in growth through time.</td><td></td></tr>
+	<tr><td>GraminoidTundra.ClimGrowth</td><td>Three coefficients (Int  Temp  Precip) for the relative growth factor - from a regression against climate.</td><td></td></tr>
+	<tr><td>GraminoidTundra.CalFactor</td><td>Calibration factors to move from cohort growth model to exponential growth model -  growth  seed set</td><td></td></tr>
+	<tr><td>GraminoidTundra-&gt;Spruce.BasalArea</td><td>Basal area at which tundra transitions to spruce (m2/Ha).  A mature spruce stand is assumed to be about double this.</td><td></td></tr>
+	<tr><td>GraminoidTundra.IgnitionDepressor</td><td>[optional]  Value should be between 0 and 1.  Decreases the likelihood of ignitions for any cell of this species.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SummerWarmthIndex</td><td>Summer Warmth Index Value (Summer mean monthly degrees &gt; 0) at which transitions toward Shrub Tundra may begin</td><td></td></tr>
+	<tr><td>GraminoidTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Graminoid Tundra</td><td></td></tr>
+	<tr><td>GraminoidTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Graminoid Tundra</td><td></td></tr>
+	</table>
+
+	<h4>Barren / Lichen Moss</h4>
+	<p>This class is currently used as a placeholder.  It does not burn or transition, and is primarily used for integrating with other models.
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>BarrenLichenMoss</td><td>The species number for the barren lichen moss frame type - should be 7 if possible</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Temperate Rainforest</h4>
+	<p>This class is currently used as a placeholder.  It does not burn or transition, and is primarily used for integrating with other models.
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>TemperateRainforest</td><td>The species number for the temperate rainforest frame type - should be 8 if possible</td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
@@ -343,6 +408,11 @@ Severity -&gt; ‘Spreader Cell Severity’</p>
 		</li>
 	</ol>
 	<img src="BurnSeverity.png" />
+	<h2><a name="changelog" ></a>Change Log</h2>
+	<h3>2.1</h3>
+	<p>Added support for tundra type transitions.</p>
+	<h3>2.0</h3>
+	<p>Major changes to ALFRESCO. Windows client deprecated.  Command line Linux client initiated. MPI Support added.</p> 
 	<h2><a name="references" ></a>ALFRESCO Model References</h2>
 	<p> BUTLER, L.G., K. KIELLAND, T.S. RUPP, AND T.A. HANLEY. 2007. Interactive controls by herbivory
 	and fluvial dynamics over landscape vegetation patterns along the Tanana River, interior Alaska. Journal
