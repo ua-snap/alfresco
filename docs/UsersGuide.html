@@ -18,6 +18,12 @@ h1 {
 ol li ol {
 	list-style-type: lower-alpha;
 }
+table th {
+	min-width: 150px;
+}
+table td {
+	min-width: 150px;
+}
 </style>
 </head>
 
@@ -252,12 +258,6 @@ ol li ol {
 	<tr class="fixedValue"><td>CropNeighbors</td><td>Should the neighbours algorithm crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.</td><td></td></tr>
 	</table>
 
-	<h4></h4>
-	<table style="width: 100%">
-	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
-	<tr><td></td><td></td><td></td></tr>
-	</table>
-
 	<h3>Veg Class Parameters</h3>
 	</style>
 	<h4>NoVeg</h4>
@@ -328,14 +328,14 @@ ol li ol {
 	<tr><td>ShrubTundra.CalFactor</td><td>Calibration factors to move from cohort growth model to exponential growth model -  growth  seed set</td><td></td></tr>
 	<tr><td>ShrubTundra-&gt;Spruce.BasalArea</td><td>Basal area at which tundra transitions to spruce (m2/Ha).  A mature spruce stand is assumed to be about double this.</td><td></td></tr>
 	<tr><td>ShrubTundra.IgnitionDepressor</td><td>[optional]  Value should be between 0 and 1.  Decreases the likelihood of ignitions for any cell of this species.</td><td></td></tr>
-	<tr><td>ShrubTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Shrub Tundra</td><td></td></tr>
-	<tr><td>ShrubTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Shrub Tundra</td><td></td></tr>
+	<tr><td>ShrubTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Shrub Tundra</td><td>ADDED - 2.1</td></tr>
+	<tr><td>ShrubTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Shrub Tundra</td><td>ADDED - 2.1</td></tr>
 	</table>
 
 	<h4>Graminoid Tundra</h4>
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
-	<tr><td>GraminoidTundra</td><td>The species number for the shrub frame type - should be 4 if possible</td><td></td></tr>
+	<tr><td>GraminoidTundra</td><td>The species number for the shrub frame type - should be 5 if possible</td><td></td></tr>
 	<tr><td>GraminoidTundra.StartAge</td><td>Parameters for the starting age function.  If one parameter is specified assume a constant distribution.  Otherwise  parameters are the lifetime and shape parameters for a Weibull distribution.</td><td></td></tr>
 	<tr><td>GraminoidTundra.FireProb</td><td>{0.77,0.73,0.1} Probablity of this species type burning.</td><td></td></tr>
 	<tr><td>GraminoidTundra.FireProb.IsAgeDependent</td><td>If TRUE: Tundra.FireProb requires an array of three parameters {k,a,b} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Tundra.FireProb requires a single constant value (no array).</td><td></td></tr>
@@ -354,15 +354,15 @@ ol li ol {
 	<tr><td>GraminoidTundra-&gt;Spruce.BasalArea</td><td>Basal area at which tundra transitions to spruce (m2/Ha).  A mature spruce stand is assumed to be about double this.</td><td></td></tr>
 	<tr><td>GraminoidTundra.IgnitionDepressor</td><td>[optional]  Value should be between 0 and 1.  Decreases the likelihood of ignitions for any cell of this species.</td><td></td></tr>
 	<tr><td>GraminoidTundra.SummerWarmthIndex</td><td>Summer Warmth Index Value (Summer mean monthly degrees &gt; 0) at which transitions toward Shrub Tundra may begin</td><td></td></tr>
-	<tr><td>GraminoidTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Graminoid Tundra</td><td></td></tr>
-	<tr><td>GraminoidTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Graminoid Tundra</td><td></td></tr>
+	<tr><td>GraminoidTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Graminoid Tundra</td><td>ADDED - 2.1</td></tr>
+	<tr><td>GraminoidTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Graminoid Tundra</td><td>ADDED - 2.1</td></tr>
 	</table>
 
 	<h4>Barren / Lichen Moss</h4>
 	<p>This class is currently used as a placeholder.  It does not burn or transition, and is primarily used for integrating with other models.
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
-	<tr><td>BarrenLichenMoss</td><td>The species number for the barren lichen moss frame type - should be 7 if possible</td><td></td></tr>
+	<tr><td>BarrenLichenMoss</td><td>The species number for the barren lichen moss frame type - should be 7 if possible</td><td>ADDED - 2.1</td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
@@ -372,13 +372,12 @@ ol li ol {
 	<p>This class is currently used as a placeholder.  It does not burn or transition, and is primarily used for integrating with other models.
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
-	<tr><td>TemperateRainforest</td><td>The species number for the temperate rainforest frame type - should be 8 if possible</td><td></td></tr>
+	<tr><td>TemperateRainforest</td><td>The species number for the temperate rainforest frame type - should be 8 if possible</td><td>ADDED - 2.1</td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	</table>
 
-	<h3>Tundra Parameters</h3>
 	<h3>Tundra Parameters</h3>
 	<h3>Burn Severity</h3>
 	<p>Burn Severity in Boreal ALFRESCO is modeled to reflect the following two assumptions (Duffy et al. 2007):</p>
