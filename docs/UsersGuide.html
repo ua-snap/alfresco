@@ -258,6 +258,47 @@ table td {
 	<tr class="fixedValue"><td>CropNeighbors</td><td>Should the neighbours algorithm crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.</td><td></td></tr>
 	</table>
 
+	<h4>Fire Behavior</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>Fire.Types</td><td>FIXED: Single ignition and sensitivity factor used. SPATIAL: Read ignition and sensitivity factors from files.  HISTORICAL: Burns are scheduled across the landscape.</td><td></td></tr>
+	<tr><td>Fire.TypeTransitionYears</td><td>The years in which fire type transitions occur.</td><td></td></tr>
+	<tr><td>Fire.Enabled</td><td>Enable the fire model - usually set to TRUE.</td><td></td></tr>
+	<tr><td>Fire.SpreadRadius</td><td>The maximum distance fire can spread (meters) - if CropNeighbours is set to false and this is less than CellSize  it will check the adjacent cells only</td><td></td></tr>
+	<tr><td>Fire.SpreadParms</td><td>The mean and stddev of the fire spread weighting function.  Mean should always remain 0.</td><td></td></tr>
+	<tr><td>Fire.Climate</td><td>Relationship between fire probability and climate.  Results of a regression analysis. {6.775, 0.1, -0.08, 0.17, 0.35, -0.01275, 0.002, 0.005}</td><td></td></tr>
+	<tr><td>Fire.IgnoreFirstInterval</td><td>Ignore the first fire interval for a cell when calculating statistics - used to help eliminate startup bias in statistical calculations.</td><td></td></tr>
+	<tr><td>Fire.IgnitionFactor</td><td>Fire ignition multiplier - used to tweak fire ignition rates</td><td></td></tr>
+	<tr><td>Fire.Sensitivity</td><td>General fire sensitivity parameter - used to tweak over fire sizenumber for a region</td><td></td></tr>
+	<tr><td>Fire.MaxEmpiricalFireSizeEvent</td><td>Maximum fire size event as observed in empirical data. (4000)</td><td></td></tr>
+	<tr><td>Fire.MaxEmpiricalFireSizeEventWeight</td><td>Weight to be applied to fire spread probability when fire size exceeds the maximum.</td><td></td></tr>
+	<tr><td>Fire.Historical</td><td>Base filename for historical fire maps.</td><td></td></tr>
+	<tr><td>Fire.HumanIgnition.Basename</td><td>Base filename for human igntion fire maps.   Map Legend: 0 No human ignition  1 Possible human ignition (dependent on Human Ignition Prob).</td><td></td></tr>
+	<tr><td>Fire.Spatial.IgnitionFactor</td><td>Filename for spatially explicit ignition map.</td><td></td></tr>
+	<tr><td>Fire.Spatial.Sensitivity</td><td>Filename for spatially explicit sensitivity map.</td><td></td></tr>
+	<tr><td>Fire.Suppression.On</td><td>Apply suppression maps to fire spread caclulations?</td><td></td></tr>
+	<tr><td>Fire.Suppression.Basename</td><td>Base filename for suppression maps. Map Legend: 1-5 where 1 Most Suppression and 5 Least.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Years</td><td>Year of suppression transitions (## '0' redundant here, but would make it easier to keep track of multiplier arrays below ##)</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.HasNewMap</td><td>FALSE = do not input new map, TRUE = input new map (must be supplied w corresponding <base>_tran.year.txt)</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class1</td><td>Highest suppression level.  Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class2</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class3</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class4</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class5</td><td>Lowest suppression level. Usually 1 to give no suppression. Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Threshold.FireSize</td><td>The cutting point where suppressions stop being applied  because the sum of the year's fire sizes exceeds the capability of available suppression resources.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Threshold.Ignitions</td><td>The cutting point where suppressions stop being applied  because the amount of ignitions for the year exceeds the capability of available suppression resources.</td><td></td></tr>
+	</table>
+
+	<h4>Burn Severity</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>BurnSeverity.FxnOfFireSize</td><td>The intercept and slope for logistic regression fxn returning probability of High Severity (level 3 or 4)</td><td></td></tr>
+	<tr><td>BurnSeverity.LSS-vs-HSS.wt</td><td>Probability that a burn that is assigned High Severity has HSS.  Low value is more likely to be LSS (level 3), high value is more likely to be HSS (level 4).</td><td></td></tr>
+	<tr><td>BurnSeverity.Low-vs-Moderate.wt</td><td>Probability that a burn not assigned High Severity has Moderate Severity. Low value is more likely to give Low Severity (level 1), high value is more likely give Moderate (level 2)</td><td></td></tr>
+	<tr><td>BurnSeverity.FlatTopo.wt</td><td>(0,1); Prob that Topo spatial correlation overrides initial Severity assignment; eg takes on Severity of Spreader cell</td><td></td></tr>
+	<tr><td>BurnSeverity.ComplexTopo.wt</td><td>(0,1); Prob that Topo spatial correlation overrides initial Severity assignment</td><td></td></tr>
+	</table>
+
 	<h3>Veg Class Parameters</h3>
 	</style>
 	<h4>NoVeg</h4>
