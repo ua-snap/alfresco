@@ -262,16 +262,35 @@ table td {
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
 	<tr><td>Climate.IsMonthly</td><td>If true, Climate.TempMonths and PrecipMonths must be provided and the new fire equation based on monthly climate will be used.  Monthly data does not work with SPATIAL or CONSTANT climate.value.types.</td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
+	<tr><td>Climate.NumHistory</td><td>The number of years to remember climate history  including the current year.</td><td></td></tr>
+	<tr><td>Climate.TransitionYears</td><td>The years in which fire type transitions occur.</td><td></td></tr>
+	<tr><td>Climate.Values.Type</td><td>CONSTANT: Single temp and precip value used for every cell over all years and reps.  SPATIAL: Read in spatially unique temp and precip values from a file once and reuse it each year and rep.  EXPLICIT: Read in spatially unique temp and precip values from a different file each year.  Year is appended as _YR</td><td></td></tr>
+	<tr><td>Climate.Values.Temp.Constant</td><td>Constant temperature value for entire simulation on all land cells.</td><td></td></tr>
+	<tr><td>Climate.Values.Precip.Constant</td><td>Constant precipitation value for entire simulation on all land cells.</td><td></td></tr>
+	<tr><td>Climate.Values.Temp.File</td><td>Base filename for temperature maps.</td><td></td></tr>
+	<tr><td>Climate.Values.Precip.File</td><td>Base filename for precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.MinYear</td><td>For use with RANDEXPLICIT climate type: Minimum simulation year for the random selection of climate temperature and precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.MaxYear</td><td>For use with RANDEXPLICIT climate type: Maximum simulation year for the random selection of climate temperature and precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.Replicate</td><td>If true  the RANDOMEXPLICIT climate type will apply the same random sequence of climate files every rep.  Otherwise a different sequence is genereated per rep.</td><td></td></tr>
+	<tr><td>Climate.Flammability.File</td><td>Climate Flammibility Map path</td><td></td></tr>
+	<tr><td>Climate.Offsets.Type</td><td>NONE: No offsets applied.  CONSTANT: Single temp and precip offset used for all cells on all years and reps. FILE: Offsets are read in from a file.  RANDOM: Offsets are generated stochastically.</td><td></td></tr>
+	<tr><td>Climate.Offsets.File</td><td>The file to use as inputoutput when using the FILE offset type.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Constant.Temp</td><td>The temperature offset used when for CONSTANT offset type scenarios.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Constant.Precip</td><td>The precipitation offset used when for CONSTANT offset type scenarios.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Temp.Mean</td><td>The mean of the offset from climate temperatures.  Mean is of course expected to be 0 as the mean difference from the mean for that cell should be 0.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Temp.StdDev</td><td>The standard deviation of the offset from mean climate temperatures.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Precip.Mean</td><td>The mean of the offset from mean climate precipitation.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Precip.StdDev</td><td>The standard deviation of the offset from mean climate precipitation.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Replicate</td><td>If true  RANDOM offset type will apply the same stochastic offset sequence every rep.  Otherwise a different sequence is genereated per rep.</td><td></td></tr>
+	<tr><td>Climate.StepsAndRampsEnabled</td><td>If true  Ramps and Steps will be applied to the temporal offsets</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempStepYear</td><td>The year that temperature steps occur.  Must be a multiple of TempStep to occur.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempStep</td><td>The amount of the step that occurs in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempRampYear</td><td>The year that temperature ramps change  i.e. the new ramp is applied if the year is &gt;  the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempRamp</td><td>The ramp (amount per year) that starts in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipStepYear</td><td>The year that precipitation steps occur.  Must be a multiple of TempStep to occur.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipStep</td><td>The amount of the step that occurs in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipRampYear</td><td>The year that precipitation ramps change  i.e. the new ramp is applied if the year is &gt;  the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipRamp</td><td>The ramp (amount per year) that starts in the specified year.</td><td></td></tr>
 	<tr><td></td><td></td><td></td></tr>
 	</table>
 
