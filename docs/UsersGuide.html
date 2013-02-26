@@ -302,7 +302,7 @@ table td {
 	<tr><td>Fire.Enabled</td><td>Enable the fire model - usually set to TRUE.</td><td></td></tr>
 	<tr><td>Fire.SpreadRadius</td><td>The maximum distance fire can spread (meters) - if CropNeighbours is set to false and this is less than CellSize  it will check the adjacent cells only</td><td></td></tr>
 	<tr><td>Fire.SpreadParms</td><td>The mean and stddev of the fire spread weighting function.  Mean should always remain 0.</td><td></td></tr>
-	<tr><td>Fire.Climate</td><td>Relationship between fire probability and climate.  Results of a regression analysis. {6.775, 0.1, -0.08, 0.17, 0.35, -0.01275, 0.002, 0.005}</td><td></td></tr>
+	<tr><td>Fire.Climate</td><td>Regression relationship between fire probability and climate. When Climate.IsMonthly = FALSE the coefficients = {intercept, temp, precip}.  When Climate.IsMonthly = TRUE, the coefficients = {intercept, tMar, tApr, tMay, tJun, pJun, pJul, tAprXpJul}</td><td></td></tr>
 	<tr><td>Fire.IgnoreFirstInterval</td><td>Ignore the first fire interval for a cell when calculating statistics - used to help eliminate startup bias in statistical calculations.</td><td></td></tr>
 	<tr><td>Fire.IgnitionFactor</td><td>Fire ignition multiplier - used to tweak fire ignition rates</td><td></td></tr>
 	<tr><td>Fire.Sensitivity</td><td>General fire sensitivity parameter - used to tweak over fire sizenumber for a region</td><td></td></tr>
@@ -440,9 +440,6 @@ table td {
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
 	<tr><td>BarrenLichenMoss</td><td>The species number for the barren lichen moss frame type - should be 7 if possible</td><td>ADDED - 2.1</td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
 	</table>
 
 	<h4>Temperate Rainforest</h4>
@@ -450,9 +447,6 @@ table td {
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
 	<tr><td>TemperateRainforest</td><td>The species number for the temperate rainforest frame type - should be 8 if possible</td><td>ADDED - 2.1</td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
 	</table>
 
 	<h3>Tundra Parameters</h3>
@@ -486,9 +480,24 @@ Severity -&gt; ‘Spreader Cell Severity’</p>
 	<img src="BurnSeverity.png" />
 	<h2><a name="changelog" ></a>Change Log</h2>
 	<h3>2.1</h3>
-	<p>Added support for tundra type transitions.</p>
+	<p>	
+		<ul>
+			<li>Added Tundra types (GraminoidTundra, ShrubTundra, WetlandTundra replace Tundra).</li>
+			<li>Seed dispersal / establishment routines added.</li>
+			<li>Allow colonization of Tundra</li>
+		</ul>
+	</p>
 	<h3>2.0</h3>
-	<p>Major changes to ALFRESCO. Windows client deprecated.  Command line Linux client initiated. MPI Support added.</p> 
+	<p>
+		<ul>
+			<li>Major changes to ALFRESCO.</li>
+			<li>Windows client deprecated.</li>
+			<li>Command line Linux client initiated.</li>
+			<li>MPI Support added for parallel execution.</li>
+			<li>Rework of how statistics files are gathered.</li>
+			<li>New data sets supported, with larger extent covering much of Canada</li>
+		</ul>
+	</p> 
 	<h2><a name="references" ></a>ALFRESCO Model References</h2>
 	<p> BUTLER, L.G., K. KIELLAND, T.S. RUPP, AND T.A. HANLEY. 2007. Interactive controls by herbivory
 	and fluvial dynamics over landscape vegetation patterns along the Tanana River, interior Alaska. Journal
