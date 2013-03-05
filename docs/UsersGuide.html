@@ -164,22 +164,42 @@ table td {
 	<h2><a name="getstarted"></a>Getting Started</h2>
 	<h3><a name="fifsetup"></a>.FIF Setup</h3>	
 	<p>
+		The .FIF file is the main component of configuration of the ALFRESCO model.  It contains parameterizations for model dynamics that allow the user to customize the scenario produced, offering options for fire dynamics, climate impacts, vegetation information, and more.
 	</p>
+	<p>Configuration is done by editing a text file in compliance with the .FIF configuration settings.  For available options, see <a href="#fifconfig">Appendix A</a>
 	<h3><a name="running"></a>Running ALFRESCO</h3>	
 	<p>Once ALFRESCO is installed, and the .FIF has been configured, the model can be run in a few steps:
+		<code>
 		<ol>
 			<li>cd &lt;output-path&gt;</li>
 			<li>fresco --fif &lt;fif-file&gt;</li>
 		</ol>
+		</code>
 	</p>
 	<p>
 		Alternatively, if MPI is installed, the parallel (MPI) version of the model can be run with:
+		<code>
 		<ol>
                         <li>cd &lt;output-path&gt;</li>
                         <li>mpirun -np &lt;num-tasks&gt; fresco-mpi --fif &lt;fif-file&gt;</li>
                 </ol>
+		</code>
 	</p>
-	
+	<p>
+		For help options, run <code>fresco --help</code>
+		<code>
+		<ul style="list-style: none">
+			<li>-h [ --help ]         produces helps message
+			<li>-v [ --version ]      show the version information
+			<li>-d [ --debug ]        enable debug mode
+			<li>-s [ --start ] arg    set the startng rep number
+			<li>-f [ --fif ] arg      set the fif file
+			<li>--fif-path arg        set the fif path
+			<li>--input-path arg      set the input path
+			<li>--output-path arg     set the output path
+		</ul>
+		</code>
+
 	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
 	<h2><a name="fifconfig" ></a>Appendix A: .FIF Configuration</h2>
 	<h3>Intro to the .FIF</h3>
