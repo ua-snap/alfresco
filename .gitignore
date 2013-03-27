@@ -12,8 +12,6 @@ fresco-mpi
 # Documentation
 html/
 latex/
-# Output Maps #
-Output/
 # Build Files #
 .Tpo
 .deps
