@@ -256,7 +256,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
                 movingSWIAverage += _rollingSWIMean[i];
         }
 	movingSWIAverage /= 10.0;
-	if (gYear >= _tundraTransitionYear){
+	if (gYear >= _tundraTransitionYear && _tundraTransitionYear > 0){
 		if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
 			if (movingSWIAverage > swi){
 				if (yearsSinceLastBurn > 32 && yearsSinceLastBurn <= 52 && yearOfLastBurn >= 1){
@@ -274,7 +274,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (_rollingTempMean.size() > 10){
 		std::cout <<"ERROR"<<std::endl;
 	}
-	if (gYear >= _spruceTransitionYear){
+	if (gYear >= _spruceTransitionYear && _spruceTransitionYear > 0){
 		if (movingTempAverage >= 10.0 && movingTempAverage <= 20.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
