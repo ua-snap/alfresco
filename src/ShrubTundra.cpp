@@ -215,7 +215,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 		} else if (burnSeverity == HIGH_HSS){
 			//Reduce basal area to 0
 			_basalArea	         = 0.;
-			if (gYear >= _tundraTransitionYear){
+			if (gYear >= _tundraTransitionYear && _tundraTransitionYear > 0){
 				return new GraminoidTundra(*this);
 			}
 		} else if (burnSeverity == LOW){
@@ -253,7 +253,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
                 movingSWIAverage += _rollingSWIMean[i];
         }
 	movingSWIAverage /= 10.0;
-	if (gYear >= _spruceTransitionYear){
+	if (gYear >= _spruceTransitionYear && _spruceTransitionYear > 0){
 		if (movingTempAverage >= 10.0 && movingTempAverage <= 20.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
 			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
