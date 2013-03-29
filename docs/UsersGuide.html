@@ -30,7 +30,7 @@ table td {
 <body>
 	<div class="methods">
 
-	<img alt="ALFRESCO Simulation Image" src="NALCMS.png" style="width: 1000px; margin-bottom: 50px; "  />
+	<img alt="ALFRESCO Simulation Image" src="Map.png" style="width: 250px; margin-bottom: 50px; "  />
 	<h1>ALFRESCO User's Guide</h1>
 	<ol>
 	<li><a href="#intro">Introduction to ALFRESCO</a></li>
@@ -164,22 +164,42 @@ table td {
 	<h2><a name="getstarted"></a>Getting Started</h2>
 	<h3><a name="fifsetup"></a>.FIF Setup</h3>	
 	<p>
+		The .FIF file is the main component of configuration of the ALFRESCO model.  It contains parameterizations for model dynamics that allow the user to customize the scenario produced, offering options for fire dynamics, climate impacts, vegetation information, and more.
 	</p>
+	<p>Configuration is done by editing a text file in compliance with the .FIF configuration settings.  For available options, see <a href="#fifconfig">Appendix A</a>
 	<h3><a name="running"></a>Running ALFRESCO</h3>	
 	<p>Once ALFRESCO is installed, and the .FIF has been configured, the model can be run in a few steps:
+		<code>
 		<ol>
 			<li>cd &lt;output-path&gt;</li>
 			<li>fresco --fif &lt;fif-file&gt;</li>
 		</ol>
+		</code>
 	</p>
 	<p>
 		Alternatively, if MPI is installed, the parallel (MPI) version of the model can be run with:
+		<code>
 		<ol>
                         <li>cd &lt;output-path&gt;</li>
                         <li>mpirun -np &lt;num-tasks&gt; fresco-mpi --fif &lt;fif-file&gt;</li>
                 </ol>
+		</code>
 	</p>
-	
+	<p>
+		For help options, run <code>fresco --help</code>
+		<code>
+		<ul style="list-style: none">
+			<li>-h [ --help ]         produces helps message
+			<li>-v [ --version ]      show the version information
+			<li>-d [ --debug ]        enable debug mode
+			<li>-s [ --start ] arg    set the startng rep number
+			<li>-f [ --fif ] arg      set the fif file
+			<li>--fif-path arg        set the fif path
+			<li>--input-path arg      set the input path
+			<li>--output-path arg     set the output path
+		</ul>
+		</code>
+
 	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
 	<h2><a name="fifconfig" ></a>Appendix A: .FIF Configuration</h2>
 	<h3>Intro to the .FIF</h3>
@@ -256,6 +276,83 @@ table td {
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
 	<tr class="fixedValue"><td>CropNeighbors</td><td>Should the neighbours algorithm crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.</td><td></td></tr>
+	</table>
+
+	<h4>Climate Settings</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>Climate.IsMonthly</td><td>If true, Climate.TempMonths and PrecipMonths must be provided and the new fire equation based on monthly climate will be used.  Monthly data does not work with SPATIAL or CONSTANT climate.value.types.</td><td></td></tr>
+	<tr><td>Climate.NumHistory</td><td>The number of years to remember climate history  including the current year.</td><td></td></tr>
+	<tr><td>Climate.TransitionYears</td><td>The years in which fire type transitions occur.</td><td></td></tr>
+	<tr><td>Climate.Values.Type</td><td>CONSTANT: Single temp and precip value used for every cell over all years and reps.  SPATIAL: Read in spatially unique temp and precip values from a file once and reuse it each year and rep.  EXPLICIT: Read in spatially unique temp and precip values from a different file each year.  Year is appended as _YR</td><td></td></tr>
+	<tr><td>Climate.Values.Temp.Constant</td><td>Constant temperature value for entire simulation on all land cells.</td><td></td></tr>
+	<tr><td>Climate.Values.Precip.Constant</td><td>Constant precipitation value for entire simulation on all land cells.</td><td></td></tr>
+	<tr><td>Climate.Values.Temp.File</td><td>Base filename for temperature maps.</td><td></td></tr>
+	<tr><td>Climate.Values.Precip.File</td><td>Base filename for precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.MinYear</td><td>For use with RANDEXPLICIT climate type: Minimum simulation year for the random selection of climate temperature and precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.MaxYear</td><td>For use with RANDEXPLICIT climate type: Maximum simulation year for the random selection of climate temperature and precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.Replicate</td><td>If true  the RANDOMEXPLICIT climate type will apply the same random sequence of climate files every rep.  Otherwise a different sequence is genereated per rep.</td><td></td></tr>
+	<tr><td>Climate.Flammability.File</td><td>Climate Flammibility Map path</td><td></td></tr>
+	<tr><td>Climate.Offsets.Type</td><td>NONE: No offsets applied.  CONSTANT: Single temp and precip offset used for all cells on all years and reps. FILE: Offsets are read in from a file.  RANDOM: Offsets are generated stochastically.</td><td></td></tr>
+	<tr><td>Climate.Offsets.File</td><td>The file to use as inputoutput when using the FILE offset type.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Constant.Temp</td><td>The temperature offset used when for CONSTANT offset type scenarios.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Constant.Precip</td><td>The precipitation offset used when for CONSTANT offset type scenarios.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Temp.Mean</td><td>The mean of the offset from climate temperatures.  Mean is of course expected to be 0 as the mean difference from the mean for that cell should be 0.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Temp.StdDev</td><td>The standard deviation of the offset from mean climate temperatures.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Precip.Mean</td><td>The mean of the offset from mean climate precipitation.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Precip.StdDev</td><td>The standard deviation of the offset from mean climate precipitation.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Replicate</td><td>If true  RANDOM offset type will apply the same stochastic offset sequence every rep.  Otherwise a different sequence is genereated per rep.</td><td></td></tr>
+	<tr><td>Climate.StepsAndRampsEnabled</td><td>If true  Ramps and Steps will be applied to the temporal offsets</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempStepYear</td><td>The year that temperature steps occur.  Must be a multiple of TempStep to occur.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempStep</td><td>The amount of the step that occurs in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempRampYear</td><td>The year that temperature ramps change  i.e. the new ramp is applied if the year is &gt;  the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempRamp</td><td>The ramp (amount per year) that starts in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipStepYear</td><td>The year that precipitation steps occur.  Must be a multiple of TempStep to occur.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipStep</td><td>The amount of the step that occurs in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipRampYear</td><td>The year that precipitation ramps change  i.e. the new ramp is applied if the year is &gt;  the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipRamp</td><td>The ramp (amount per year) that starts in the specified year.</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Fire Behavior</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>Fire.Types</td><td>FIXED: Single ignition and sensitivity factor used. SPATIAL: Read ignition and sensitivity factors from files.  HISTORICAL: Burns are scheduled across the landscape.</td><td></td></tr>
+	<tr><td>Fire.TypeTransitionYears</td><td>The years in which fire type transitions occur.</td><td></td></tr>
+	<tr><td>Fire.Enabled</td><td>Enable the fire model - usually set to TRUE.</td><td></td></tr>
+	<tr><td>Fire.SpreadRadius</td><td>The maximum distance fire can spread (meters) - if CropNeighbours is set to false and this is less than CellSize  it will check the adjacent cells only</td><td></td></tr>
+	<tr><td>Fire.SpreadParms</td><td>The mean and stddev of the fire spread weighting function.  Mean should always remain 0.</td><td></td></tr>
+	<tr><td>Fire.Climate</td><td>Regression relationship between fire probability and climate. When Climate.IsMonthly = FALSE the coefficients = {intercept, temp, precip}.  When Climate.IsMonthly = TRUE, the coefficients = {intercept, tMar, tApr, tMay, tJun, pJun, pJul, tAprXpJul}</td><td></td></tr>
+	<tr><td>Fire.IgnoreFirstInterval</td><td>Ignore the first fire interval for a cell when calculating statistics - used to help eliminate startup bias in statistical calculations.</td><td></td></tr>
+	<tr><td>Fire.IgnitionFactor</td><td>Fire ignition multiplier - used to tweak fire ignition rates</td><td></td></tr>
+	<tr><td>Fire.Sensitivity</td><td>General fire sensitivity parameter - used to tweak over fire sizenumber for a region</td><td></td></tr>
+	<tr><td>Fire.MaxEmpiricalFireSizeEvent</td><td>Maximum fire size event as observed in empirical data. (4000)</td><td></td></tr>
+	<tr><td>Fire.MaxEmpiricalFireSizeEventWeight</td><td>Weight to be applied to fire spread probability when fire size exceeds the maximum.</td><td></td></tr>
+	<tr><td>Fire.Historical</td><td>Base filename for historical fire maps.</td><td></td></tr>
+	<tr><td>Fire.HumanIgnition.Basename</td><td>Base filename for human igntion fire maps.   Map Legend: 0 No human ignition  1 Possible human ignition (dependent on Human Ignition Prob).</td><td></td></tr>
+	<tr><td>Fire.Spatial.IgnitionFactor</td><td>Filename for spatially explicit ignition map.</td><td></td></tr>
+	<tr><td>Fire.Spatial.Sensitivity</td><td>Filename for spatially explicit sensitivity map.</td><td></td></tr>
+	<tr><td>Fire.Suppression.On</td><td>Apply suppression maps to fire spread caclulations?</td><td></td></tr>
+	<tr><td>Fire.Suppression.Basename</td><td>Base filename for suppression maps. Map Legend: 1-5 where 1 Most Suppression and 5 Least.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Years</td><td>Year of suppression transitions (## '0' redundant here, but would make it easier to keep track of multiplier arrays below ##)</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.HasNewMap</td><td>FALSE = do not input new map, TRUE = input new map (must be supplied w corresponding <base>_tran.year.txt)</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class1</td><td>Highest suppression level.  Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class2</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class3</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class4</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class5</td><td>Lowest suppression level. Usually 1 to give no suppression. Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Threshold.FireSize</td><td>The cutting point where suppressions stop being applied  because the sum of the year's fire sizes exceeds the capability of available suppression resources.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Threshold.Ignitions</td><td>The cutting point where suppressions stop being applied  because the amount of ignitions for the year exceeds the capability of available suppression resources.</td><td></td></tr>
+	</table>
+
+	<h4>Burn Severity</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>BurnSeverity.FxnOfFireSize</td><td>The intercept and slope for logistic regression fxn returning probability of High Severity (level 3 or 4)</td><td></td></tr>
+	<tr><td>BurnSeverity.LSS-vs-HSS.wt</td><td>Probability that a burn that is assigned High Severity has HSS.  Low value is more likely to be LSS (level 3), high value is more likely to be HSS (level 4).</td><td></td></tr>
+	<tr><td>BurnSeverity.Low-vs-Moderate.wt</td><td>Probability that a burn not assigned High Severity has Moderate Severity. Low value is more likely to give Low Severity (level 1), high value is more likely give Moderate (level 2)</td><td></td></tr>
+	<tr><td>BurnSeverity.FlatTopo.wt</td><td>(0,1); Prob that Topo spatial correlation overrides initial Severity assignment; eg takes on Severity of Spreader cell</td><td></td></tr>
+	<tr><td>BurnSeverity.ComplexTopo.wt</td><td>(0,1); Prob that Topo spatial correlation overrides initial Severity assignment</td><td></td></tr>
 	</table>
 
 	<h3>Veg Class Parameters</h3>
@@ -363,9 +460,6 @@ table td {
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
 	<tr><td>BarrenLichenMoss</td><td>The species number for the barren lichen moss frame type - should be 7 if possible</td><td>ADDED - 2.1</td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
 	</table>
 
 	<h4>Temperate Rainforest</h4>
@@ -373,9 +467,6 @@ table td {
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
 	<tr><td>TemperateRainforest</td><td>The species number for the temperate rainforest frame type - should be 8 if possible</td><td>ADDED - 2.1</td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
 	</table>
 
 	<h3>Tundra Parameters</h3>
@@ -409,9 +500,24 @@ Severity -&gt; ‘Spreader Cell Severity’</p>
 	<img src="BurnSeverity.png" />
 	<h2><a name="changelog" ></a>Change Log</h2>
 	<h3>2.1</h3>
-	<p>Added support for tundra type transitions.</p>
+	<p>	
+		<ul>
+			<li>Added Tundra types (GraminoidTundra, ShrubTundra, WetlandTundra replace Tundra).</li>
+			<li>Seed dispersal / establishment routines added.</li>
+			<li>Allow colonization of Tundra</li>
+		</ul>
+	</p>
 	<h3>2.0</h3>
-	<p>Major changes to ALFRESCO. Windows client deprecated.  Command line Linux client initiated. MPI Support added.</p> 
+	<p>
+		<ul>
+			<li>Major changes to ALFRESCO.</li>
+			<li>Windows client deprecated.</li>
+			<li>Command line Linux client initiated.</li>
+			<li>MPI Support added for parallel execution.</li>
+			<li>Rework of how statistics files are gathered.</li>
+			<li>New data sets supported, with larger extent covering much of Canada</li>
+		</ul>
+	</p> 
 	<h2><a name="references" ></a>ALFRESCO Model References</h2>
 	<p> BUTLER, L.G., K. KIELLAND, T.S. RUPP, AND T.A. HANLEY. 2007. Interactive controls by herbivory
 	and fluvial dynamics over landscape vegetation patterns along the Tanana River, interior Alaska. Journal
