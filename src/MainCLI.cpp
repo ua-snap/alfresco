@@ -32,9 +32,9 @@ int main(int argc, char** argv) {
 	if (id == 0){
 	#endif
 
-	//args->parse(argc, argv);
 	if (args->getHelp() == true){ args->showHelp(); }
-
+	if (args->getVersion() == true){ args->showVersion(); }
+	
 	#ifdef WITHMPI
 	}
 	#endif

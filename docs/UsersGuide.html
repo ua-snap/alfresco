@@ -106,11 +106,13 @@ table td {
 			<li>OpenMPI - 1.5.x (required for parallel runs)</li>
 		</ul>
 	<h3><a name="downloads"></a>Downloads</h3>
-	<p>Currently, ALFRESCO is available as a binary download or as a source package. The current version is provided in the links below.</p>
+	<p>Currently, ALFRESCO is available to the public as a binary download. The current version is provided in the links below.</p>
 	<h4>Binary Distribution</h4>
-	<p><a href="http://www.snap.uaf.edu/alfresco/alfresco.current.rpm">Fedora 16</a></p>
+	<p><a href="http://www.snap.uaf.edu/alfresco/alfresco.current.rpm">alfresco.rpm (CentOS 6)</a></p>
+	<!--
 	<h4>Source Code</h4>
 	<p><a href="http://www.snap.uaf.edu/alfresco/alfresco.tar.gz">Download Source Tarball</a></p>
+	-->
 	<h3><a name="installbin"></a>Installing from an RPM</h3>
 	<p>After obtaining the binary for your distribution (see <a href="#downloads">Downloads</a>), install the software by running the following command:
 	</p>
@@ -118,6 +120,21 @@ table td {
 	<code>sudo yum install alfresco.rpm</code>
 	</p>
 	<p>Using yum, library dependencies will be downloaded and installed as well, so there should be no need to manually install the required libraries.  If you do not have access to install RPMs on your system, please contact your system administrator.</p>
+	<h3><a name="yumrepo"></a>Installing via the SNAP repository</h3>
+	<p>
+		In addition to the above distribution methods, the ALFRESCO rpm can be installed / managed via a yum repo for CentOS based distributions.  On CentOS, the alfresco rpm requires having a repository such as EPEL or ELGIS installed in order to provide access to GDAL prior to installing alfresco.
+	</p>
+	<p>The repository can be added be creating a file in the <code>/etc/yum.repos.d</code> directory called snap.repo, and adding the following text to that file:</p>
+	<p><code>
+		[snap-pub]<br/>
+		name=SNAP Public Software Repo<br/>
+		baseurl=http://helios.snap.uaf.edu/repos/pub<br/>
+		enabled=1<br/>
+		gpgcheck=0<br/>
+	</code></p>
+	<p>
+		After this, running "<code>yum install alfresco</code>" will allow you to install the model, provided a valid GDAL repository is in place.</p>
+	</p>
 	<h3><a name="installsrc"></a>Compiling/Installing from Source</h3>
 	<p>Building ALFRESCO from source is a relatively straightforward process on most Linux distributions, but will have additional requirements.  This is intended for systems not supported via binary installs, or for users that need to custom configure the build.</p>
 		<h4>Library Requirements</h4>

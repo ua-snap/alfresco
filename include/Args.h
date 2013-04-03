@@ -14,14 +14,16 @@ class Args{
 	string fifPath;
 	string inPath;
 	string outPath;
+	string version;
 	bool debug;
 	bool help;
-	bool version;
+	bool showversion;
 	int startRep;
 public:
 	Args();
 	void parse(int argc, char** argv);
 	void showHelp();
+	void showVersion();
 	string getFifName();
 	string getFifPath();
 	string getInPath();
@@ -31,5 +33,5 @@ public:
 
 	inline const bool getDebug(){ return debug; }
 	inline const bool getHelp() const { return help; }
-	inline const bool getVersion() const { return version; }
+	inline const bool getVersion() const { return showversion; }
 };
