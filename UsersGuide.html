@@ -1,0 +1,581 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>ALFRESCO User's Guide</title>
+<link rel="stylesheet" href="http://www.snap.uaf.edu/css/style.css" type="text/css" />
+<style type="text/css">
+html {
+	margin: auto;
+	margin-top: 50px;
+	width: 1000px;
+}
+h1 {
+	font-size: 40px;	
+	font-weight: normal;
+	color: #242D2F;
+}
+ol li ol {
+	list-style-type: lower-alpha;
+}
+table th {
+	min-width: 150px;
+}
+table td {
+	min-width: 150px;
+}
+</style>
+</head>
+
+<body>
+	<div class="methods">
+
+	<img alt="ALFRESCO Simulation Image" src="Map.png" style="width: 250px; margin-bottom: 50px; "  />
+	<h1>ALFRESCO User's Guide</h1>
+	<ol>
+	<li><a href="#intro">Introduction to ALFRESCO</a></li>
+	<li><a href="#install">Installing ALFRESCO</a>
+	    <ol>
+		<li><a href="#requirements">Minimum System Requirements</a></li>
+		<li><a href="#downloads">Downloads</a></li>
+		<li><a href="#installbin">Installing from RPM</a></li>
+		<li><a href="#installsrc">Compiling/Installing from Source</a></li>
+	    </ol>
+	</li>
+	<li><a href="#getstarted">Getting Started</a>
+	    <ol>
+		<li><a href="#fifsetup">.FIF Setup</a></li>
+		<li><a href="#running">Running ALFRESCO</a></li>
+	    </ol>
+	</li>
+	<li><a href="#fifconfig">Appendix A: .FIF Configuration</a></li>
+	<li><a href="#changelog">Change Log</a></li>
+	<li><a href="#references">ALFRESCO Model References</a></li>
+	</ol>
+	<h2><a name="intro" ></a>Introduction to ALFRESCO</h2>
+
+	<p>ALFRESCO was originally developed to simulate the response of subarctic vegetation to a changing
+	climate and disturbance regime (Rupp et al. 2000a, 2000b). Previous research has highlighted both
+	direct and indirect (through changes in fire regime) effects of climate on the expansion rate, species
+	composition, and extent of treeline in Alaska (Rupp et al. 2000b, 2001, Lloyd et al. 2003).
+	Additional research, focused on boreal forest vegetation dynamics, has emphasized that fire
+	frequency changes – both direct (climate-driven or anthropogenic) and indirect (as a result of
+	vegetation succession and species composition) – strongly influence landscape-level vegetation
+	patterns and associated feedbacks to future fire regime (Rupp et al. 2002, Chapin et al. 2003, Turner
+	et al. 2003). A detailed description of ALFRESCO can be obtained from the literature (Rupp et al.
+	2000a, 200b, 2001, 2002). The boreal forest version of ALFRESCO was developed to explore the
+	interactions and feedbacks between fire, climate, and vegetation in interior Alaska (Rupp et al. 2002,
+	2007, Duffy et al. 2005, 2007) and associated impacts to natural resources (Rupp et al. 2006, Butler
+	et al. 2007).</p>
+	<p>ALFRESCO is a state-and-transition model of successional dynamics that explicitly represents the
+	spatial processes of fire and vegetation recruitment across the landscape (Rupp et al. 2000a).
+	ALFRESCO does not model fire behavior, but rather models the empirical relationship between
+	growing-season climate (e.g., average temperature and total precipitation) and total annual area
+	burned (i.e., the footprint of fire on the landscape). ALFRESCO also models the changes in
+	vegetation flammability that occurs during succession through a flammability coefficient that
+	changes with vegetation type and stand age (Chapin et al. 2003).</p>
+	<p>The fire regime is simulated stochastically and is driven by climate, vegetation type, and time since
+	last fire (Rupp et al. 2000a, 2007). ALFRESCO employs a cellular automaton approach, where an
+	ignited pixel may spread to any of the eight surrounding pixels. ‘Ignition’ of a pixel is determined
+	using a random number generator and as a function of the flammability value of that pixel. Fire
+	‘spread’ depends on the flammability of the receptor pixel and any effects of natural firebreaks
+	including non-vegetated mountain slopes and large water bodies, which do not burn.</p>
+	<p>Version 1.0.1 can operate at any time step and pixel resolution, however the current model
+	calibration and parameterization was conducted at an annual time step and 1 km2 pixel resolution. A
+	30 m2 calibration and parameterization is currently underway. Other model developments include
+	refined tundra transition stages, fire suppression effects on fire size, simulated fire severity patterns
+	and fire severity effects on successional rates and trajectories.</p>
+
+	<h2><a name="install" ></a>Installing ALFRESCO</h2>
+	<h3><a name="requirements"></a>Minimum System Requirements</h3>
+	<p>ALFRESCO runs on the Linux operating system, and will run on most distributions.  Systems running the Fedora distribution can use the RPM downloads to install the software.  Installation using this method will also install required packages as well automatically. </p>
+	<h4>General Requirements</h4>
+		<ul>
+			<li>Linux - 2.4+</li>
+			<li>1.5GHz processor</li>
+			<li>1GB of RAM (2GB recommended for large simulation domains)</li>
+		</ul>
+	<h4>Required Libraries (minimum recommended version)</h4>
+		<ul>
+			<li>Boost - 1.47.x</li>
+			<li>GDAL - 1.8.x</li>
+			<li>Poco - 1.4.x</li>
+		</ul>
+	<h4>Optional Libraries</h4>
+		<ul>
+			<li>OpenMPI - 1.5.x (required for parallel runs)</li>
+		</ul>
+	<h3><a name="downloads"></a>Downloads</h3>
+	<p>Currently, ALFRESCO is available to the public as a binary download. The current version is provided in the links below.</p>
+	<h4>Binary Distribution</h4>
+	<p><a href="http://www.snap.uaf.edu/alfresco/alfresco.current.rpm">alfresco.rpm (CentOS 6)</a></p>
+	<!--
+	<h4>Source Code</h4>
+	<p><a href="http://www.snap.uaf.edu/alfresco/alfresco.tar.gz">Download Source Tarball</a></p>
+	-->
+	<h3><a name="installbin"></a>Installing from an RPM</h3>
+	<p>After obtaining the binary for your distribution (see <a href="#downloads">Downloads</a>), install the software by running the following command:
+	</p>
+	<p>
+	<code>sudo yum install alfresco.rpm</code>
+	</p>
+	<p>Using yum, library dependencies will be downloaded and installed as well, so there should be no need to manually install the required libraries.  If you do not have access to install RPMs on your system, please contact your system administrator.</p>
+	<h3><a name="yumrepo"></a>Installing via the SNAP repository</h3>
+	<p>
+		In addition to the above distribution methods, the ALFRESCO rpm can be installed / managed via a yum repo for CentOS based distributions.  On CentOS, the alfresco rpm requires having a repository such as EPEL or ELGIS installed in order to provide access to GDAL prior to installing alfresco.
+	</p>
+	<p>The repository can be added be creating a file in the <code>/etc/yum.repos.d</code> directory called snap.repo, and adding the following text to that file:</p>
+	<p><code>
+		[snap-pub]<br/>
+		name=SNAP Public Software Repo<br/>
+		baseurl=http://helios.snap.uaf.edu/repos/pub<br/>
+		enabled=1<br/>
+		gpgcheck=0<br/>
+	</code></p>
+	<p>
+		After this, running "<code>yum install alfresco</code>" will allow you to install the model, provided a valid GDAL repository is in place.</p>
+	</p>
+	<h3><a name="installsrc"></a>Compiling/Installing from Source</h3>
+	<p>Building ALFRESCO from source is a relatively straightforward process on most Linux distributions, but will have additional requirements.  This is intended for systems not supported via binary installs, or for users that need to custom configure the build.</p>
+		<h4>Library Requirements</h4>
+		<ul>
+			<li>Boost - 1.47.x (w/ header libraries)</li>
+			<li>GDAL - 1.8.x (w/ header libraries)</li>
+			<li>Poco - 1.4.x (w/ header libraries)</li>
+		</ul>
+		<h4>Optional Libraries</h4>
+		<ul>
+			<li>OpenMPI - 1.5.x (w/ header libraries)</li>
+		</ul>
+		<h4>Build Requirements</h4>
+		<ul>
+			<li>C++ Compiler (GNU C++)</li>
+			<li>Autoconf (2.59.x)</li>
+			<li>Automake (1.11.x)</li>
+			<li>Libtool (2.4.x)</li>
+		</ul>
+	<p>
+		Once the above requirements are installed, the source is downloaded (see <a name="downloads">Downloads</a>), and you have extracted it, you'll need to "cd" into the extracted directory.  The steps to build a default version of ALFRESCO are fairly simple:
+	</p>
+		<ol>
+			<li>cd alfresco/</li>
+			<li>./configure</li>
+			<li>make</li>
+			<li>sudo make install</li>
+		</ol>
+	<p>By default, this will install alfresco into the default user space, typically /usr/bin for executables, and /usr/lib for libraries.  If you wish to install alfresco in a non-standard location, the following steps will be used instead:</p>
+		<ol>
+			<li>cd alfresco/</li>
+                        <li>./configure --prefix=&lt;install-dir&gt;</li>
+                        <li>make</li>
+                        <li>make install</li>
+		</ol>
+	<p>
+		For a non-standard install, you may also need to set the PATH and LD_LIBRARY_PATH environment variables to point to the bin and lib directories inside the &lt;install-dir&gt; directory used in the above example.  This can be done with the following commands in the Bash shell:
+	</p>
+		<ul>
+			<li>export PATH=${PATH}:&lt;install-dir&gt;/bin</li>
+			<li>export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:&lt;install-dir&gt;/lib</li>
+		</ul>
+	<p>At this point, the software will be installed, and you can move on to the Getting Started section for setting up runs and input files.</p>
+	<h2><a name="getstarted"></a>Getting Started</h2>
+	<h3><a name="fifsetup"></a>.FIF Setup</h3>	
+	<p>
+		The .FIF file is the main component of configuration of the ALFRESCO model.  It contains parameterizations for model dynamics that allow the user to customize the scenario produced, offering options for fire dynamics, climate impacts, vegetation information, and more.
+	</p>
+	<p>Configuration is done by editing a text file in compliance with the .FIF configuration settings.  For available options, see <a href="#fifconfig">Appendix A</a>
+	<h3><a name="running"></a>Running ALFRESCO</h3>	
+	<p>Once ALFRESCO is installed, and the .FIF has been configured, the model can be run in a few steps:
+		<code>
+		<ol>
+			<li>cd &lt;output-path&gt;</li>
+			<li>fresco --fif &lt;fif-file&gt;</li>
+		</ol>
+		</code>
+	</p>
+	<p>
+		Alternatively, if MPI is installed, the parallel (MPI) version of the model can be run with:
+		<code>
+		<ol>
+                        <li>cd &lt;output-path&gt;</li>
+                        <li>mpirun -np &lt;num-tasks&gt; fresco-mpi --fif &lt;fif-file&gt;</li>
+                </ol>
+		</code>
+	</p>
+	<p>
+		For help options, run <code>fresco --help</code>
+		<code>
+		<ul style="list-style: none">
+			<li>-h [ --help ]         produces helps message
+			<li>-v [ --version ]      show the version information
+			<li>-d [ --debug ]        enable debug mode
+			<li>-s [ --start ] arg    set the startng rep number
+			<li>-f [ --fif ] arg      set the fif file
+			<li>--fif-path arg        set the fif path
+			<li>--input-path arg      set the input path
+			<li>--output-path arg     set the output path
+		</ul>
+		</code>
+
+	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
+	<h2><a name="fifconfig" ></a>Appendix A: .FIF Configuration</h2>
+	<h3>Intro to the .FIF</h3>
+	<p>The Boreal ALFRESCO .fif is an ascii text file containing all parameterizations for any
+	particular simulation scenario. It can be edited within any general text editor (e.g., Notepad,
+	Vim, gedit, etc.). Details for each .fif section
+	are provided below. When a .fif file is opened, you can modify the parameters shown in the
+	central column of the figure below. Do not change the default values highlighted in the
+	following tables.</p>
+	<p>Values in the FIF follow the form of:
+		<p><code>Variable = Value;</code></p>
+	</p>
+	<style>
+		.fixedValue { background-color: #ffff77; }
+		.fixedValue td { background-color: #ffff77; }
+		.deprecatedValue { color: #999999; }
+	</style>
+	<h3>Program Parameters</h3>
+	<h4>Base Input</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr class="deprecatedValue"><td>ClientFifPath</td><td>Base directory for clients where input files can be found and map output will be saved.</td><td>DEPRECATED - 2.0</td></tr>
+	<tr><td>ClientInputBasePath</td><td>Base path for input data</td><td></td></tr>
+	<tr class="deprecatedValue"><td>ClientOutputBasePath</td><td>Base path for local output data</td><td>DEPRECATED - 2.0</td></tr>
+	<tr class="deprecatedValue"><td>ServerOutputBasePath</td><td>Base path for output data</td><td>DEPRECATED - 2.0</td></tr>
+	<tr><td></td><td></td></tr>
+	</table>
+
+	<h4>Simulation Settings</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>	
+	<tr><td>RandSeed</td><td>A manually set number used to seed the random number generator. If not set, the current time is used to seed the random number generator.</td><td></td></tr>
+	<tr><td>Output.DetailLevel</td><td>MINIMAL: Show only run progress.  MODERATE: Show some interim calculations along with run detail.  MAXIMUM: Show maximum detail along with run detail.</td><td></td></tr>
+	<tr><td>FirstYear</td><td>The first year of the simulation to run</td><td></td></tr>
+        <tr><td>LastYear</td><td>The last year of the simulation to run</td><td></td></tr>
+        <tr><td>MaxReps</td><td>The number of replicates to run the model (i.e. x replicates total).</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Raster Settings</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>XULCorner</td><td>"x origin", "top left corner". Usually in meters.</td><td></td></tr>
+	<tr><td>YULCorner</td><td>"y origin", "top left corner". Usually in meters.</td><td></td></tr>
+	<tr><td>XOffset</td><td>Number of pixels from the left (XULCorner) to start counting columns</td><td></td></tr>
+	<tr><td>YOffset</td><td>Number of pixels from the top (YULCorner) to start counting rows</td><td></td></tr>
+	<tr><td>XSize</td><td>Landscape's width in pixels.</td><td></td></tr>
+	<tr><td>YSize</td><td>Landscape's height in pixels.</td><td></td></tr>
+	<tr class="fixedValue"><td>CellSize</td><td>The size of each cell (in meters)</td><td></td></tr>
+	<tr><td>RequireAAEACProjectedInputRasters</td><td>(optional -- defaults to TRUE) if TRUE, each input raster file will be checked for the Alaska Albers projection.</td><td></td></tr>
+	<tr><td>ApplyAAEACProjectionToOutputRasters</td><td>(optional -- defaults to TRUE) if TRUE, each output raster file will include metadata for the Alaska Albers projection.</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Landscape Parameters</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>SiteInputFile</td><td>The site input file</td><td></td></tr>
+	<tr><td>TreeDensityInputFile</td><td>The initial tree density input file</td><td></td></tr>
+	<tr><td>TopoInputFile</td><td>Elevation/akcanada_prism_slopeComplexity_1km.tifThe topography input file.  0=flat, 1=complex</td><td></td></tr>
+	<tr><td>BurnSeverityInputFile</td><td>The initial burn severity input file. 0=No Burn, 1=Low, 2=Moderate, 3=High w Low Surface Severity, 4=High w/ High Surface Severity</td><td></td></tr>
+	<tr><td>AgeInputFile</td><td>The initial age input file - years before present so positive values</td><td></td></tr>
+	<tr><td>VegInputFile</td><td>The vegetation input file, in format filename_REP_YEAR.tif</td><td></td></tr>
+	<tr><td>VegTransitionFile</td><td>Base filename for forced vegetation transitions.  Year is appended as  _YR</td><td></td></tr>
+	<tr><td>IsForcedVegTransitions</td><td>TRUE: Succession trajectories are read from files as well as simulated.  FALSE: Succession is simulated only.</td><td></td></tr>
+	<tr><td>UseUniqueVegAndAgePerRep</td><td>Use unique input files for veg and age.  This can be used to prevent a bias due to all reps starting from the same input data.</td><td></td></tr>
+	<tr><td>UseUniqueBurnSeverityPerRep</td><td>Use unique input files for burn severity per rep.  This prevents a bias due to all reps starting from the same input data.</td><td></td></tr>
+	<tr><td>YearOfUniqueInputPerRep</td><td>The year to be appended to the base filename when using unique veg, age andor burn severity files per rep.  File format: filename_REP#_YEAR#.txt</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Succession</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr class="fixedValue"><td>CropNeighbors</td><td>Should the neighbours algorithm crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.</td><td></td></tr>
+	</table>
+
+	<h4>Climate Settings</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>Climate.IsMonthly</td><td>If true, Climate.TempMonths and PrecipMonths must be provided and the new fire equation based on monthly climate will be used.  Monthly data does not work with SPATIAL or CONSTANT climate.value.types.</td><td></td></tr>
+	<tr><td>Climate.NumHistory</td><td>The number of years to remember climate history  including the current year.</td><td></td></tr>
+	<tr><td>Climate.TransitionYears</td><td>The years in which fire type transitions occur.</td><td></td></tr>
+	<tr><td>Climate.Values.Type</td><td>CONSTANT: Single temp and precip value used for every cell over all years and reps.  SPATIAL: Read in spatially unique temp and precip values from a file once and reuse it each year and rep.  EXPLICIT: Read in spatially unique temp and precip values from a different file each year.  Year is appended as _YR</td><td></td></tr>
+	<tr><td>Climate.Values.Temp.Constant</td><td>Constant temperature value for entire simulation on all land cells.</td><td></td></tr>
+	<tr><td>Climate.Values.Precip.Constant</td><td>Constant precipitation value for entire simulation on all land cells.</td><td></td></tr>
+	<tr><td>Climate.Values.Temp.File</td><td>Base filename for temperature maps.</td><td></td></tr>
+	<tr><td>Climate.Values.Precip.File</td><td>Base filename for precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.MinYear</td><td>For use with RANDEXPLICIT climate type: Minimum simulation year for the random selection of climate temperature and precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.MaxYear</td><td>For use with RANDEXPLICIT climate type: Maximum simulation year for the random selection of climate temperature and precipitation maps.</td><td></td></tr>
+	<tr><td>Climate.Values.RandExplicit.Replicate</td><td>If true  the RANDOMEXPLICIT climate type will apply the same random sequence of climate files every rep.  Otherwise a different sequence is genereated per rep.</td><td></td></tr>
+	<tr><td>Climate.Flammability.File</td><td>Climate Flammibility Map path</td><td></td></tr>
+	<tr><td>Climate.Offsets.Type</td><td>NONE: No offsets applied.  CONSTANT: Single temp and precip offset used for all cells on all years and reps. FILE: Offsets are read in from a file.  RANDOM: Offsets are generated stochastically.</td><td></td></tr>
+	<tr><td>Climate.Offsets.File</td><td>The file to use as inputoutput when using the FILE offset type.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Constant.Temp</td><td>The temperature offset used when for CONSTANT offset type scenarios.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Constant.Precip</td><td>The precipitation offset used when for CONSTANT offset type scenarios.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Temp.Mean</td><td>The mean of the offset from climate temperatures.  Mean is of course expected to be 0 as the mean difference from the mean for that cell should be 0.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Temp.StdDev</td><td>The standard deviation of the offset from mean climate temperatures.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Precip.Mean</td><td>The mean of the offset from mean climate precipitation.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Precip.StdDev</td><td>The standard deviation of the offset from mean climate precipitation.</td><td></td></tr>
+	<tr><td>Climate.Offsets.Random.Replicate</td><td>If true  RANDOM offset type will apply the same stochastic offset sequence every rep.  Otherwise a different sequence is genereated per rep.</td><td></td></tr>
+	<tr><td>Climate.StepsAndRampsEnabled</td><td>If true  Ramps and Steps will be applied to the temporal offsets</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempStepYear</td><td>The year that temperature steps occur.  Must be a multiple of TempStep to occur.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempStep</td><td>The amount of the step that occurs in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempRampYear</td><td>The year that temperature ramps change  i.e. the new ramp is applied if the year is &gt;  the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.TempRamp</td><td>The ramp (amount per year) that starts in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipStepYear</td><td>The year that precipitation steps occur.  Must be a multiple of TempStep to occur.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipStep</td><td>The amount of the step that occurs in the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipRampYear</td><td>The year that precipitation ramps change  i.e. the new ramp is applied if the year is &gt;  the specified year.</td><td></td></tr>
+	<tr><td>Climate.Offsets.PrecipRamp</td><td>The ramp (amount per year) that starts in the specified year.</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Fire Behavior</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>Fire.Types</td><td>FIXED: Single ignition and sensitivity factor used. SPATIAL: Read ignition and sensitivity factors from files.  HISTORICAL: Burns are scheduled across the landscape.</td><td></td></tr>
+	<tr><td>Fire.TypeTransitionYears</td><td>The years in which fire type transitions occur.</td><td></td></tr>
+	<tr><td>Fire.Enabled</td><td>Enable the fire model - usually set to TRUE.</td><td></td></tr>
+	<tr><td>Fire.SpreadRadius</td><td>The maximum distance fire can spread (meters) - if CropNeighbours is set to false and this is less than CellSize  it will check the adjacent cells only</td><td></td></tr>
+	<tr><td>Fire.SpreadParms</td><td>The mean and stddev of the fire spread weighting function.  Mean should always remain 0.</td><td></td></tr>
+	<tr><td>Fire.Climate</td><td>Regression relationship between fire probability and climate. When Climate.IsMonthly = FALSE the coefficients = {intercept, temp, precip}.  When Climate.IsMonthly = TRUE, the coefficients = {intercept, tMar, tApr, tMay, tJun, pJun, pJul, tAprXpJul}</td><td></td></tr>
+	<tr><td>Fire.IgnoreFirstInterval</td><td>Ignore the first fire interval for a cell when calculating statistics - used to help eliminate startup bias in statistical calculations.</td><td></td></tr>
+	<tr><td>Fire.IgnitionFactor</td><td>Fire ignition multiplier - used to tweak fire ignition rates</td><td></td></tr>
+	<tr><td>Fire.Sensitivity</td><td>General fire sensitivity parameter - used to tweak over fire sizenumber for a region</td><td></td></tr>
+	<tr><td>Fire.MaxEmpiricalFireSizeEvent</td><td>Maximum fire size event as observed in empirical data. (4000)</td><td></td></tr>
+	<tr><td>Fire.MaxEmpiricalFireSizeEventWeight</td><td>Weight to be applied to fire spread probability when fire size exceeds the maximum.</td><td></td></tr>
+	<tr><td>Fire.Historical</td><td>Base filename for historical fire maps.</td><td></td></tr>
+	<tr><td>Fire.HumanIgnition.Basename</td><td>Base filename for human igntion fire maps.   Map Legend: 0 No human ignition  1 Possible human ignition (dependent on Human Ignition Prob).</td><td></td></tr>
+	<tr><td>Fire.Spatial.IgnitionFactor</td><td>Filename for spatially explicit ignition map.</td><td></td></tr>
+	<tr><td>Fire.Spatial.Sensitivity</td><td>Filename for spatially explicit sensitivity map.</td><td></td></tr>
+	<tr><td>Fire.Suppression.On</td><td>Apply suppression maps to fire spread caclulations?</td><td></td></tr>
+	<tr><td>Fire.Suppression.Basename</td><td>Base filename for suppression maps. Map Legend: 1-5 where 1 Most Suppression and 5 Least.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Years</td><td>Year of suppression transitions (## '0' redundant here, but would make it easier to keep track of multiplier arrays below ##)</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.HasNewMap</td><td>FALSE = do not input new map, TRUE = input new map (must be supplied w corresponding <base>_tran.year.txt)</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class1</td><td>Highest suppression level.  Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class2</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class3</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class4</td><td>Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Class5</td><td>Lowest suppression level. Usually 1 to give no suppression. Used as a multiplier in the fire spread function.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Threshold.FireSize</td><td>The cutting point where suppressions stop being applied  because the sum of the year's fire sizes exceeds the capability of available suppression resources.</td><td></td></tr>
+	<tr><td>Fire.Suppression.Tran.Threshold.Ignitions</td><td>The cutting point where suppressions stop being applied  because the amount of ignitions for the year exceeds the capability of available suppression resources.</td><td></td></tr>
+	</table>
+
+	<h4>Burn Severity</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>BurnSeverity.FxnOfFireSize</td><td>The intercept and slope for logistic regression fxn returning probability of High Severity (level 3 or 4)</td><td></td></tr>
+	<tr><td>BurnSeverity.LSS-vs-HSS.wt</td><td>Probability that a burn that is assigned High Severity has HSS.  Low value is more likely to be LSS (level 3), high value is more likely to be HSS (level 4).</td><td></td></tr>
+	<tr><td>BurnSeverity.Low-vs-Moderate.wt</td><td>Probability that a burn not assigned High Severity has Moderate Severity. Low value is more likely to give Low Severity (level 1), high value is more likely give Moderate (level 2)</td><td></td></tr>
+	<tr><td>BurnSeverity.FlatTopo.wt</td><td>(0,1); Prob that Topo spatial correlation overrides initial Severity assignment; eg takes on Severity of Spreader cell</td><td></td></tr>
+	<tr><td>BurnSeverity.ComplexTopo.wt</td><td>(0,1); Prob that Topo spatial correlation overrides initial Severity assignment</td><td></td></tr>
+	</table>
+
+	<h3>Veg Class Parameters</h3>
+	</style>
+	<h4>NoVeg</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>NoVeg</td><td>The species number for the default frame type - should be 0 if possible</td><td></td></tr>
+	</table>
+	
+	<h4>Black Spruce</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>BSpruce</td><td>The species number for the black spruce frame type - should be 1 if possible</td><td></td></tr>
+	<tr class="fixedValue"><td>BSpruce.StartAge</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>BSpruce.FireParms</td><td>Parameters for the fire age function : k   Max Fire Factor  a   Age Coefficient (Age   ab)  b   Slope Coefficient</td><td></td></tr>
+	<tr><td>BSpruce.HumanFireProb</td><td>Probability of human causes will cause this species type  to burn.</td><td></td></tr>
+	</table>
+	
+	<h4>White Spruce</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>WSpruce</td><td>The species number for the white spruce frame type - should be 2 if possible</td><td></td></tr>
+	<tr class="fixedValue"><td>WSpruce.StartAge</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>WSpruce.FireParms</td><td>Parameters for the fire age function : k   Max Fire Factor  a   Age Coefficient (Age   ab)  b   Slope Coefficient</td><td></td></tr>
+	<tr><td>WSpruce.HumanFireProb</td><td>Probability of human causes will cause this species type  to burn.</td><td></td></tr>
+	</table>
+	
+	<h4>Deciduous</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>Decid</td><td>The species number for the deciduous frame type - should be 3 if possible</td><td></td></tr>
+	<tr><td>Decid.StartAge.WSpruce</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>Decid.StartAge.BSpruce</td><td>A constant distribution is used if only one parameter is specified.   Otherwise two parameters should be specified: the lifetime and the shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>Decid.FireProb.IsAgeDependent</td><td>If TRUE: Decid.FirePorb requires an array of three parameters {k,a,b} in that order for a logistic function k(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Decid.FireProb requires a single constant value (no array).</td><td></td></tr>
+	<tr><td>Decid.FireProb</td><td>Probability of this species type burning.</td><td></td></tr>
+	<tr><td>Decid.HumanFireProb</td><td>Probability of human causes will cause this species type  to burn.</td><td></td></tr>
+	<tr><td>Decid.History</td><td>The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.</td><td></td></tr>
+	<tr><td>Decid-&gt;Tundra.Parms</td><td>Degree-years are integrated from base A (i.e. temp &lt; A).  A transition occurs if the integrand exceeds B*(The maximum number of steps i.e. HistoryTimeStep).</td><td></td></tr>
+	<tr><td colspan="3" style="background-color: #dddddd; font-style: italic">The following 8 fields are sets of two coefficients, {A, B}, used depending on the trajectory and last burn severity of the given decid cell. The chosen values are used in a linear function relating age to the probability of transitioning to white or black spruce: A*Age + B.</td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[1]</td><td>1 = Low Severity 20:40 years</td><td></td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[2]</td><td>2 = Moderate Severity 40:60 years</td><td></td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[3]</td><td>3 = High Severity + Low Surface Severity 60:90 years</td><td></td></tr>
+	<tr><td>Decid-&gt;WSpruce.BurnSeverity[4]</td><td>4 = High Severity + High Surface Severity 90:130 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[1]</td><td>1 = Low Severity 5:15 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[2]</td><td>2 = Moderate Severity 15:30 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[3]</td><td>3 = High Severity + Low Surface Severity 30:50 years</td><td></td></tr>
+	<tr><td>Decid-&gt;BSpruce.BurnSeverity[4]</td><td>4 = High Severity + High Surface Severity 50:90 years</td><td></td></tr>
+	<tr><td></td><td></td><td></td></tr>
+	</table>
+
+	<h4>Shrub Tundra</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>ShrubTundra</td><td>The species number for the shrub frame type - should be 4 if possible</td><td></td></tr>
+	<tr><td>ShrubTundra.StartAge</td><td>Parameters for the starting age function.  If one parameter is specified assume a constant distribution.  Otherwise  parameters are the lifetime and shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>ShrubTundra.FireProb</td><td>{0.77,0.73,0.1} Probablity of this species type burning.</td><td></td></tr>
+	<tr><td>ShrubTundra.FireProb.IsAgeDependent</td><td>If TRUE: Tundra.FireProb requires an array of three parameters {k,a,b} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Tundra.FireProb requires a single constant value (no array).</td><td></td></tr>
+	<tr><td>ShrubTundra.HumanFireProb</td><td>Probability of human causes that will cause this species type  to burn.</td><td></td></tr>
+	<tr><td>ShrubTundra.Spruce.EstBA</td><td>Estimate of the basal area of mature forest - used to calculate seed dispersal for the initial BA assignment routine.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedRange</td><td>Distance to the maximum seed source in meters.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedSource</td><td>The mean travel distance(meters) and fraction of thin tail (1-fraction fat tail) in the distribution kernel.</td><td></td></tr>
+	<tr><td>ShrubTundra.Seed.BasalArea</td><td>The number of seeds/Ha produced per unit basal area (m2/Ha).</td><td></td></tr>
+	<tr><td>ShrubTundra.Seedling</td><td>Seed to seedling ratio including viability factor.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedlingBA</td><td>Initial basal area of a seedling (m2) - based on a 5mm diameter</td><td></td></tr>
+	<tr><td>ShrubTundra.History</td><td>The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.</td><td></td></tr>
+	<tr><td>ShrubTundra.SeedEstParms</td><td>Seedling establishment parameters -  cuttoff temp  avg degree days/year cutoff</td><td></td></tr>
+	<tr><td>ShrubTundra.MeanGrowth</td><td>Mean spruce growth (m) - this discounts the known trend in growth through time.</td><td></td></tr>
+	<tr><td>ShrubTundra.ClimGrowth</td><td>Three coefficients (Int  Temp  Precip) for the relative growth factor - from a regression against climate.</td><td></td></tr>
+	<tr><td>ShrubTundra.CalFactor</td><td>Calibration factors to move from cohort growth model to exponential growth model -  growth  seed set</td><td></td></tr>
+	<tr><td>ShrubTundra-&gt;Spruce.BasalArea</td><td>Basal area at which tundra transitions to spruce (m2/Ha).  A mature spruce stand is assumed to be about double this.</td><td></td></tr>
+	<tr><td>ShrubTundra.IgnitionDepressor</td><td>[optional]  Value should be between 0 and 1.  Decreases the likelihood of ignitions for any cell of this species.</td><td></td></tr>
+	<tr><td>ShrubTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Shrub Tundra</td><td>ADDED - 2.1</td></tr>
+	<tr><td>ShrubTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Shrub Tundra</td><td>ADDED - 2.1</td></tr>
+	</table>
+
+	<h4>Graminoid Tundra</h4>
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>GraminoidTundra</td><td>The species number for the shrub frame type - should be 5 if possible</td><td></td></tr>
+	<tr><td>GraminoidTundra.StartAge</td><td>Parameters for the starting age function.  If one parameter is specified assume a constant distribution.  Otherwise  parameters are the lifetime and shape parameters for a Weibull distribution.</td><td></td></tr>
+	<tr><td>GraminoidTundra.FireProb</td><td>{0.77,0.73,0.1} Probablity of this species type burning.</td><td></td></tr>
+	<tr><td>GraminoidTundra.FireProb.IsAgeDependent</td><td>If TRUE: Tundra.FireProb requires an array of three parameters {k,a,b} in that order for a logistic function k/(1+exp(a-b*x)) used to translate age to fire factor. If FALSE: Tundra.FireProb requires a single constant value (no array).</td><td></td></tr>
+	<tr><td>GraminoidTundra.HumanFireProb</td><td>Probability of human causes that will cause this species type  to burn.</td><td></td></tr>
+	<tr><td>GraminoidTundra.Spruce.EstBA</td><td>Estimate of the basal area of mature forest - used to calculate seed dispersal for the initial BA assignment routine.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedRange</td><td>Distance to the maximum seed source in meters.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedSource</td><td>The mean travel distance(meters) and fraction of thin tail (1-fraction fat tail) in the distribution kernel.</td><td></td></tr>
+	<tr><td>GraminoidTundra.Seed.BasalArea</td><td>The number of seeds/Ha produced per unit basal area (m2/Ha).</td><td></td></tr>
+	<tr><td>GraminoidTundra.Seedling</td><td>Seed to seedling ratio including viability factor.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedlingBA</td><td>Initial basal area of a seedling (m2) - based on a 5mm diameter</td><td></td></tr>
+	<tr><td>GraminoidTundra.History</td><td>The number of years of climate that a deciduous frame uses to make decisions.  Includes the current year.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SeedEstParms</td><td>Seedling establishment parameters -  cuttoff temp  avg degree days/year cutoff</td><td></td></tr>
+	<tr><td>GraminoidTundra.MeanGrowth</td><td>Mean spruce growth (m) - this discounts the known trend in growth through time.</td><td></td></tr>
+	<tr><td>GraminoidTundra.ClimGrowth</td><td>Three coefficients (Int  Temp  Precip) for the relative growth factor - from a regression against climate.</td><td></td></tr>
+	<tr><td>GraminoidTundra.CalFactor</td><td>Calibration factors to move from cohort growth model to exponential growth model -  growth  seed set</td><td></td></tr>
+	<tr><td>GraminoidTundra-&gt;Spruce.BasalArea</td><td>Basal area at which tundra transitions to spruce (m2/Ha).  A mature spruce stand is assumed to be about double this.</td><td></td></tr>
+	<tr><td>GraminoidTundra.IgnitionDepressor</td><td>[optional]  Value should be between 0 and 1.  Decreases the likelihood of ignitions for any cell of this species.</td><td></td></tr>
+	<tr><td>GraminoidTundra.SummerWarmthIndex</td><td>Summer Warmth Index Value (Summer mean monthly degrees &gt; 0) at which transitions toward Shrub Tundra may begin</td><td></td></tr>
+	<tr><td>GraminoidTundra.SpruceTransitionYear</td><td>Year to begin dispersal of Spruce into Graminoid Tundra</td><td>ADDED - 2.1</td></tr>
+	<tr><td>GraminoidTundra.TundraTransitionYear</td><td>Year to begin succession transitions for Graminoid Tundra</td><td>ADDED - 2.1</td></tr>
+	</table>
+
+	<h4>Barren / Lichen Moss</h4>
+	<p>This class is currently used as a placeholder.  It does not burn or transition, and is primarily used for integrating with other models.
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>BarrenLichenMoss</td><td>The species number for the barren lichen moss frame type - should be 7 if possible</td><td>ADDED - 2.1</td></tr>
+	</table>
+
+	<h4>Temperate Rainforest</h4>
+	<p>This class is currently used as a placeholder.  It does not burn or transition, and is primarily used for integrating with other models.
+	<table style="width: 100%">
+	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
+	<tr><td>TemperateRainforest</td><td>The species number for the temperate rainforest frame type - should be 8 if possible</td><td>ADDED - 2.1</td></tr>
+	</table>
+
+	<h3>Tundra Parameters</h3>
+	<h3>Burn Severity</h3>
+	<p>Burn Severity in Boreal ALFRESCO is modeled to reflect the following two assumptions (Duffy et al. 2007):</p>
+	<ol>
+		<li>Burn Severity increases w/ Firesize (as a consequence of sub-regions of larger fires burning more severely as opposed to a uniform increase in burn severity).</li>
+		<li>Fires burning in the Flats have greater spatial correlation in burn severity than those burning in complex topography.</li>
+	</ol>
+Algorithm:
+	<ol>
+		<li>Ignition of cell -&gt; Assign Low Severity</li>
+		<li>As a fire spreads, a logistic probability function is used to assign severity to each
+burned cell (slope and intercept user specified in .fif).  <p><code>IF (rand.uniform(0,1) &lt; Prob[High Severity Fire]) Severity = High, ELSE Severity = (Low or Moderate)</code></p></li>
+		<li>Select Severity sub-category from the binary partition above. High severity fires
+can have either Low or High surface severity, and also partition the Low or Moderate
+severity fires. The ‘decision’ weights are user specified in .fif.
+		<code><p>IF (Init.severity = High &amp;&amp; rand.uniform(0,1) &lt; High.LSS.HSS.wt) severity = High + HSS, ELSE severity = High + LSS</p>
+<p>IF (Init.severity = Low.Mod &amp;&amp; rand.uniform(0,1) &lt; Low.Mod.wt) severity = Moderate, ELSE severity = Low</p></code></li>
+		<li>A second set of decision weights (user specified in .fif) are used to determine if
+topographical influences override the severity assignment resulting from 2) and 3)
+above.
+		<code>
+		<p>IF (Topography = Flat &amp;&amp; rand.uniform(0,1) &lt; Flats.Topo.wt)
+severity -&gt; ‘Spreader Cell Severity’</p>
+		<p>IF (Topography = Complex &amp;&amp; rand.uniform(0,1) < Complex.Topo.wt)
+Severity -&gt; ‘Spreader Cell Severity’</p>
+		</code>
+		</li>
+	</ol>
+	<img src="BurnSeverity.png" />
+	<h2><a name="changelog" ></a>Change Log</h2>
+	<h3>2.1</h3>
+	<p>	
+		<ul>
+			<li>Added Tundra types (GraminoidTundra, ShrubTundra, WetlandTundra replace Tundra).</li>
+			<li>Seed dispersal / establishment routines added.</li>
+			<li>Allow colonization of Tundra</li>
+		</ul>
+	</p>
+	<h3>2.0</h3>
+	<p>
+		<ul>
+			<li>Major changes to ALFRESCO.</li>
+			<li>Windows client deprecated.</li>
+			<li>Command line Linux client initiated.</li>
+			<li>MPI Support added for parallel execution.</li>
+			<li>Rework of how statistics files are gathered.</li>
+			<li>New data sets supported, with larger extent covering much of Canada</li>
+		</ul>
+	</p> 
+	<h2><a name="references" ></a>ALFRESCO Model References</h2>
+	<p> BUTLER, L.G., K. KIELLAND, T.S. RUPP, AND T.A. HANLEY. 2007. Interactive controls by herbivory
+	and fluvial dynamics over landscape vegetation patterns along the Tanana River, interior Alaska. Journal
+	of Biogeography. 34:1622-1631.</p>
+	<p>DUFFY, P., J. EPTING, J.M. GRAHAM, T.S. RUPP, AND A.D. McGuire. 2007. Analysis of Alaskan fire
+	severity patterns using remotely sensed data. International Journal of Wildland Fire. 16:277-284.</p>
+	<p>RUPP, T.S., X. CHEN, M. OLSON, AND A.D. McGUIRE. 2007. Sensitivity of simulated land cover
+	dynamics to uncertainties in climate drivers. Earth Interactions. 11(3):1-21.</p>
+	<p>HU, F.S., L.B. BRUBAKER, D.G. GAVIN, P.E. HIGUERA, J.A. LYNCH, T.S. RUPP, AND W. TINNER.
+	2006. How climate and vegetation influence the fire regime of the Alaskan boreal biome: the Holocene
+	perspective. Mitigation and Adaptation Strategies for Global Change (MITI). 11(4):829-846.</p>
+	<p>RUPP, T.S., OLSON, M., HENKELMAN, J., ADAMS, L., DALE, B., JOLY, K., COLLINS, W., and A.M.
+	STARFIELD. 2006. Simulating the influence of a changing fire regime on caribou winter foraging
+	habitat. Ecological Applications. 16(5):1730-1743.</p>
+	<p>CHAPIN, F.S., III, M. STURM, M.C. SERREZE, J.P McFADDEN, J.R. KEY, A.H. LLOYD, A.D.
+	McGUIRE, T.S. RUPP, A.H. LYNCH, J.P SCHIMEL, J. BERINGER, W.L. CHAPMAN, H.E.
+	EPSTEIN, E.S. EUSKIRCHEN, L.D. HINZMAN, G. JIA, C.L. PING, K.D. TAPE, C.D.C. THOMPSON,
+	D.A. WALKER, and J.M. WELKER,. 2005. Role of Land-Surface Changes in Arctic Summer Warming.
+	Science. Published online September 22 2005; 10.1126/science.1117368 (SCIENCE EXPRESS Reports).</p>
+	<p>DUFFY, P.A., J.E. WALSH, J.M. GRAHAM, D.H. MANN, and T.S. RUPP. 2005. Impacts of the east
+	Pacific teleconnection on Alaskan fire climate. Ecological Applications. 15(4):1317-1330.</p>
+	<p>LLOYD, A., T.S. RUPP, C. FASTIE, and A.M. STARFIELD. 2003. Patterns and dynamics of treeline
+	advance on the Seward Peninsula, Alaska. Journal of Geophysical Research - Atmospheres.
+	108(D2):8161, DOI: 10.1029/2001JD00852.</p>
+	<p>CHAPIN, F.S., III, T.S. RUPP, A.M. STARFIELD, L. DeWILDE, E.S. ZAVALETA, N. FRESCO, J.
+	HENKELMAN, and A.D. McGUIRE. 2003. Planning for resilience: modeling change in human-fire
+	interactions in the Alaskan boreal forest. Frontiers in Ecology and the Environment. 1(5):255-261.</p>
+	<p>TURNER, M.G., S.L. COLLINS, A.L. LUGO, J.J. MAGNUSON, T.S. RUPP, and F.J. SWANSON. 2003.
+	Disturbance Dynamics and Ecological Response: The Contribution of Long-term Ecological Research.
+	BioScience. 53(1)46-56.</p>
+	<p>RUPP, T.S., A.M. STARFIELD, F.S. CHAPIN III, and P. DUFFY. 2002. Modeling the impact of black
+	spruce on the fire regime of Alaskan boreal forest. Climatic Change 55: 213-233.</p>
+	<p>RUPP, T.S., R.E. KEANE, S. LAVOREL, M.D. FLANNIGAN, and G.J. CARY. 2001. Towards a
+	classification of landscape-fire-succession models. GCTE News 17: 1-4.</p>
+	<p>RUPP, T.S., F.S. CHAPIN III, and A.M. STARFIELD. 2001. Modeling the influence of topographic barriers
+	on treeline advance of the forest-tundra ecotone in northwestern Alaska. Climatic Change 48: 399-416.</p>
+	<p>RUPP, T.S., A.M. STARFIELD, and F.S. CHAPIN III. 2000. A frame-based spatially explicit model of
+	subarctic vegetation response to climatic change: comparison with a point model. Landscape Ecology 15:
+	383-400.</p>
+	<p>RUPP, T.S., F.S. CHAPIN III, and A.M. STARFIELD. 2000. Response of subarctic vegetation to transient
+	climatic change on the Seward Peninsula in northwest Alaska. Global Change Biology 6: 451-455.</p>
+	</div>
+</body>
+</html>
