@@ -629,13 +629,7 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 					else
 					{
 						// format: [if ignition cell use -, otherwise +][LastBurnYear].[FireID]
-						if      (pFrames[r][c]->fireScarID < 10)       scale = 0.1;
-						else if (pFrames[r][c]->fireScarID < 100)      scale = 0.01;
-						else if (pFrames[r][c]->fireScarID < 1000)     scale = 0.001;
-						else if (pFrames[r][c]->fireScarID < 10000)    scale = 0.0001;
-						else if (pFrames[r][c]->fireScarID < 100000)   scale = 0.00001;
-						else if (pFrames[r][c]->fireScarID < 1000000)  scale = 0.000001;
-						else if (pFrames[r][c]->fireScarID < 10000000) scale = 0.0000001;
+						scale = 0.000001;
 						fscar = pFrames[r][c]->yearOfLastBurn + (pFrames[r][c]->fireScarID * scale);
 						if (pFrames[r][c]->lastBurnWasOrigin) fscar *= -1;
 						buf[c] = fscar;
