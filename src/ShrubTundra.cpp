@@ -206,6 +206,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 //model used is to check immediate post burn stuff first, then time dependant state changes, and then 
 //general (long term) state changes. Specific algorithms are documented in the code
 {
+	if(FRESCO->fif().bGet("ShrubTundra.Transitions")){
 	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {	
@@ -290,6 +291,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 		if (_basalArea >= FRESCO->fif().dGet("ShrubTundra.Spruce.EstBA")) {
 			return new WSpruce(*this);
 		}
+	}
 	}
 	return NULL;
 }

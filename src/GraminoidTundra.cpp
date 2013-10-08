@@ -206,7 +206,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 //model used is to check immediate post burn stuff first, then time dependant state changes, and then 
 //general (long term) state changes. Specific algorithms are documented in the code
 {
-
+	if (FRESCO->fif().bGet("GraminoidTundra.Transitions")){
 	//Check immediately after burn
 	double swi = FRESCO->fif().dGet("GraminoidTundra.SummerWarmthIndex");
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
@@ -310,6 +310,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		if (_basalArea >= FRESCO->fif().dGet("GraminoidTundra.Spruce.EstBA")) {
 			return new WSpruce(*this);
 		}
+	}
 	}
 	return NULL;
 }
