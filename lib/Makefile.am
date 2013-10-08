@@ -4,7 +4,7 @@ lib_LTLIBRARIES += libFrescoAIEM.la
 endif
 INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS)
 if AIEM
-INCLUDES += -I/home/apbennett/aiem
+INCLUDES += -I/home/UA/apbennett/aiem
 endif
 libFrescoFoundation_la_LDFLAGS = -shared
 libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS
