@@ -70,11 +70,11 @@ int main(int argc, char** argv) {
 		if (boost::filesystem::create_directory(dir))
 		    std::cout << "Created Log Directory" << "\n";
 	
-		std::ofstream logfile;
-		std::stringstream logfile_title;
-		logfile_title << "./logs/LogFile_" << id << ".txt";
 		
 		for (rc = startRep + id; rc < maxReps; rc+=max){
+			std::ofstream logfile;
+			std::stringstream logfile_title;
+			logfile_title << "./logs/LogFile_" << rc << ".txt";
 			logfile.open((logfile_title.str().c_str()));
 			logfile << "Rep " << rc << " started on Task ID (" << id << ")\n";
 			logfile << "======================================\n\n" << std::endl;
