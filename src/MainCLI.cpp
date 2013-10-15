@@ -65,7 +65,20 @@ int main(int argc, char** argv) {
 
 		_dummysim->clear();
 		delete _dummysim;
+	
+		boost::filesystem::path dir("logs");
+		if (boost::filesystem::create_directory(dir))
+		    std::cout << "Created Log Directory" << "\n";
+	
+		std::ofstream logfile;
+		std::stringstream logfile_title;
+		logfile_title << "./logs/LogFile_" << id << ".txt";
+		
 		for (rc = startRep + id; rc < maxReps; rc+=max){
+			logfile.open((logfile_title.str().c_str()));
+			logfile << "Rep " << rc << " started on Task ID (" << id << ")\n";
+			logfile << "======================================\n\n" << std::endl;
+			logfile.close();
 			CustomFresco* _simulation = new CustomFresco(args->getDebug());
 			_simulation->setIsStopped(false);
 			srand(randSeedVal + rc);
@@ -75,7 +88,11 @@ int main(int argc, char** argv) {
 			_simulation->runEnd();
 			_simulation->clear();
 			delete _simulation; _simulation = 0;
-			std::cout << "Rep " << rc + 1 << " of " << maxReps << " complete" << std::endl;
+			//std::cout << "Rep " << rc + 1 << " of " << maxReps << " complete" << std::endl;
+			logfile.open((logfile_title.str().c_str()), fstream::app);
+			logfile << "======================================" << std::endl;
+			logfile << "Rep " << rc << " complete" << std::endl;
+			logfile.close();
 		}
 
 

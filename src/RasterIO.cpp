@@ -643,7 +643,7 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 						buf[c] = pFrames[r][c]->yearOfLastBurn;
 					break;
 				case FIRE_SCAR:
-					if (pFrames[r][c]->type() == gNoVegID || pFrames[r][c]->yearOfLastBurn < 0)
+					if (pFrames[r][c]->type() == gNoVegID || pFrames[r][c]->yearOfLastBurn != gYear)
 					{
 						buf[c] = nodata;
 						buf2[c] = nodata;

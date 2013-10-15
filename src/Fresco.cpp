@@ -17,6 +17,7 @@
 #include <sys/timeb.h>
 
 
+
 //Global variables
 std::string  FrescoFoundation_API   gWorkingDirectory;
 std::string  FrescoFoundation_API   gInputBasePath;
@@ -251,7 +252,15 @@ void Fresco::		output(const std::string Output)
 {
    // raiseOutput.notify(this, Output);
    if (isDebugOn()){
-	std::cout << Output << std::endl;
+		/* 
+  		*	Produce a log file for each rep being run.
+  		*/
+		std::ofstream logfile;
+                std::stringstream logfile_title;
+                logfile_title << "./logs/LogFile_" << gRep << ".txt";
+		logfile.open((logfile_title.str().c_str()), fstream::app);
+		logfile << Output << std::endl;
+		logfile.close();
    }
 }
 
