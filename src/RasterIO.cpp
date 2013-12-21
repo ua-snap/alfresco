@@ -356,7 +356,7 @@ void RasterIO::writeRasterFile(const string filepath, Frame*** pFrames, ALFMapTy
 			Poco::format(_mapDescriptions[FIRE_AGE], year, rep));
 		break;
 	case FIRE_SCAR:
-		_writeRasterFile<float>(filepath, pFrames, mapType, GDT_Float32, 
+		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
 			Poco::format(_mapDescriptions[FIRE_SCAR], year, rep));
 		break;
 	case BURN_SEVERITY:
@@ -543,13 +543,21 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 		pWriteOptions = CSLSetNameValue(pWriteOptions, "PHOTOMETRIC", "PALETTE");
 
 	EnsureDirectoryExists(filepath, true);
-	GDALDataset *pDataset = pDriver->Create(filepath.c_str(), this->_xSize, this->_ySize, 1, dataType, pWriteOptions);
+	GDALDataset *pDataset;
+	if (mapType == FIRE_SCAR){
+	pDataset = pDriver->Create(filepath.c_str(), this->_xSize, this->_ySize, 3, dataType, pWriteOptions);
+	} else {
+	pDataset = pDriver->Create(filepath.c_str(), this->_xSize, this->_ySize, 1, dataType, pWriteOptions);
+	}
 	if(pDataset == NULL)
 		throw WriteRasterException("unable to create output file at " + filepath);
 
 
 
 	T* buf;
+	T* buf2; 
+	T* buf3; 
+
 	try
 	{
 		pDataset->SetGeoTransform(this->_geoTransform);
@@ -557,6 +565,12 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 			pDataset->SetProjection(this->_pSpatialReference);
 	
 		GDALRasterBand *pBand = pDataset->GetRasterBand(1);
+		GDALRasterBand *pBand2;
+		GDALRasterBand *pBand3;
+		if (mapType == FIRE_SCAR){
+			pBand2 = pDataset->GetRasterBand(2);
+			pBand3 = pDataset->GetRasterBand(3);
+		}
 	
 		T nodata;
 		this->getNodata(nodata);
@@ -570,12 +584,19 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 		{
 			//if (CE_None != pBand->SetColorInterpretation(GCI_PaletteIndex))
 			//	throw WriteRasterException("unable to set the color interpratation");
-			if (CE_None != pBand->SetColorTable(pColorTable))
-				throw WriteRasterException("unable to set the color table");
+			//if (CE_None != pBand->SetColorTable(pColorTable))
+			//	throw WriteRasterException("unable to set the color table");
 		}
+
 
 		buf = (T*) malloc(this->_xSize * sizeof(T));
 		if (buf == NULL) throw WriteRasterException("out of memory!");
+		if (mapType == FIRE_SCAR){
+			buf2 = (T*) malloc(this->_xSize * sizeof(T));
+			if (buf2 == NULL) throw WriteRasterException("out of memory!");
+			buf3 = (T*) malloc(this->_xSize * sizeof(T));
+			if (buf3 == NULL) throw WriteRasterException("out of memory!");
+		}
 
 		// Set the write buffer values per pixel. Evaluate whether the nodata 
 		// value is appropriate.
@@ -622,23 +643,22 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 						buf[c] = pFrames[r][c]->yearOfLastBurn;
 					break;
 				case FIRE_SCAR:
-					if (pFrames[r][c]->type() == gNoVegID || pFrames[r][c]->yearOfLastBurn < 0)
+					if (pFrames[r][c]->type() == gNoVegID || pFrames[r][c]->yearOfLastBurn != gYear)
 					{
 						buf[c] = nodata;
+						buf2[c] = nodata;
+						buf3[c] = nodata;
 					}
 					else
 					{
 						// format: [if ignition cell use -, otherwise +][LastBurnYear].[FireID]
-						if      (pFrames[r][c]->fireScarID < 10)       scale = 0.1;
-						else if (pFrames[r][c]->fireScarID < 100)      scale = 0.01;
-						else if (pFrames[r][c]->fireScarID < 1000)     scale = 0.001;
-						else if (pFrames[r][c]->fireScarID < 10000)    scale = 0.0001;
-						else if (pFrames[r][c]->fireScarID < 100000)   scale = 0.00001;
-						else if (pFrames[r][c]->fireScarID < 1000000)  scale = 0.000001;
-						else if (pFrames[r][c]->fireScarID < 10000000) scale = 0.0000001;
-						fscar = pFrames[r][c]->yearOfLastBurn + (pFrames[r][c]->fireScarID * scale);
-						if (pFrames[r][c]->lastBurnWasOrigin) fscar *= -1;
-						buf[c] = fscar;
+						buf[c] = (int)pFrames[r][c]->yearOfLastBurn;
+						buf2[c] = (int)pFrames[r][c]->fireScarID;
+						if (pFrames[r][c]->lastBurnWasOrigin) { 
+							buf3[c] = 1; 
+						} else { 
+							buf3[c] = 0; 
+						}
 					}
 					break;
 				case BURN_SEVERITY:
@@ -673,9 +693,21 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 			err = pBand->RasterIO(GF_Write, 0, r, this->_xSize, 1, 
 									buf, this->_xSize, 1, 
 									dataType, 0, 0);
+			if (mapType == FIRE_SCAR){
+				pBand2->RasterIO(GF_Write, 0, r, this->_xSize, 1, 
+								buf2, this->_xSize, 1, 
+								dataType, 0, 0);
+				pBand3->RasterIO(GF_Write, 0, r, this->_xSize, 1, 
+								buf3, this->_xSize, 1, 
+								dataType, 0, 0);
+			}
 		}
 
 		if (buf != NULL) free(buf);
+		if (mapType == FIRE_SCAR){
+		if (buf2 != NULL) free(buf2);
+		if (buf3 != NULL) free(buf3);
+		}
 		if (pDataset != NULL)
 			GDALClose( (GDALDatasetH) pDataset );
 		CSLDestroy(pWriteOptions);
@@ -685,6 +717,10 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 	catch(WriteRasterException& e)
 	{
 		if (buf != NULL) free(buf);
+		if (mapType == FIRE_SCAR){
+		if (buf2 != NULL) free(buf2);
+		if (buf3 != NULL) free(buf3);
+		}
 		if (pDataset != NULL)
 			GDALClose( (GDALDatasetH) pDataset );
 		CSLDestroy(pWriteOptions);
@@ -693,6 +729,10 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 	catch(...)
 	{
 		if (buf != NULL) free(buf);
+		if (mapType == FIRE_SCAR){
+		if (buf2 != NULL) free(buf2);
+		if (buf3 != NULL) free(buf3);
+		}
 		if (pDataset != NULL)
 			GDALClose( (GDALDatasetH) pDataset );
 		CSLDestroy(pWriteOptions);
