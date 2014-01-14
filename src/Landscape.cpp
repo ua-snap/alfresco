@@ -377,7 +377,7 @@ void Landscape::		doIgnitions()
 					rowStored = _row;   //Remember where to pick up when this fire is done spreading.
 					colStored = _col;
 					#ifdef AIEM_MODEL
-						aiem->setFireSeverity(_col, _row, pFrame->burnSeverity);
+						aiem->fireSeverity.setValue(_col, _row, pFrame->burnSeverity);
 					#endif
 				}
 				else { //Existing (spreading) fire.
@@ -386,7 +386,7 @@ void Landscape::		doIgnitions()
 					pFrame->burnSeverity = selectSpreadBurnSeverity(pFrame, pSpreaderFrame, fireSize);
 					severitySizes[pFrame->burnSeverity]++;
 					#ifdef AIEM_MODEL
-						aiem->setFireSeverity(_col, _row, pFrame->burnSeverity);
+						aiem->fireSeverity.setValue(_col, _row, pFrame->burnSeverity);
 					#endif
 				}
                 ////////////////////////////////////////////////

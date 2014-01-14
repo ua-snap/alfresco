@@ -16,6 +16,7 @@ class Args{
 	string outPath;
 	string version;
 	bool debug;
+	bool nostats;
 	bool help;
 	bool showversion;
 	int startRep;
@@ -32,6 +33,7 @@ public:
 	int getStartRep();
 
 	inline const bool getDebug(){ return debug; }
+	inline const bool getNostats(){ return nostats; }
 	inline const bool getHelp() const { return help; }
 	inline const bool getVersion() const { return showversion; }
 };
