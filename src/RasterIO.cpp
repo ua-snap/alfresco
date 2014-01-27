@@ -582,10 +582,10 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 
 		if (pColorTable != NULL)
 		{
-			//if (CE_None != pBand->SetColorInterpretation(GCI_PaletteIndex))
-			//	throw WriteRasterException("unable to set the color interpratation");
-			//if (CE_None != pBand->SetColorTable(pColorTable))
-			//	throw WriteRasterException("unable to set the color table");
+			if (CE_None != pBand->SetColorInterpretation(GCI_PaletteIndex))
+				throw WriteRasterException("unable to set the color interpratation");
+			if (CE_None != pBand->SetColorTable(pColorTable))
+				throw WriteRasterException("unable to set the color table");
 		}
 
 

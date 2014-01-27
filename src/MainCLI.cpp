@@ -95,15 +95,16 @@ int main(int argc, char** argv) {
 			logfile.close();
 		}
 
-
-		#ifdef WITHMPI
-		if (max > 1){
-		RunStats->gatherStats();
-		MPI::COMM_WORLD.Barrier();
+		if (args->getNostats() != true){
+			#ifdef WITHMPI
+			if (max > 1){
+			RunStats->gatherStats();
+			MPI::COMM_WORLD.Barrier();
+			}
+			#endif
+			RunStats->writeStats();
+			RunStats->writeRepStats(maxReps);
 		}
-		#endif
-		RunStats->writeStats();
-		RunStats->writeRepStats(maxReps);
 	}
 	#ifdef WITHMPI
 	MPI::Finalize();

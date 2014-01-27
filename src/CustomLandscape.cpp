@@ -828,8 +828,8 @@ void CustomLandscape::      collectStats()
             age = pCurFrame->age();
 
 	    #ifdef AIEM_MODEL
-		aiem->setVegetationType(c, r, veg);
-		aiem->setTimeSinceLastFire(c, r, age);
+		aiem->vegetationType.setValue(c, r, veg);
+		aiem->timeSinceLastFire.setValue(c, r, age);
 	    #endif
             for (habitat = _habitatStats.begin(); habitat<_habitatStats.end(); habitat++) {
                 if (age > habitat->MinAge && age < habitat->MaxAge)
