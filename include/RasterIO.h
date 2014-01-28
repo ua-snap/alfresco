@@ -73,7 +73,7 @@ public:
 
 	enum ALFMapType 
 	{
-		VEGEGATION,
+		VEGETATION,
 		AGE,
 		SUBCANOPY,
 		SITE_VARIABLE,

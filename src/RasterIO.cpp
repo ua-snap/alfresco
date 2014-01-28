@@ -79,7 +79,7 @@ RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int
 	_mapDescriptions[FIRE_AGE] = "Fire Age for year %d of rep %d.";
 	_mapDescriptions[FIRE_SCAR] = "Fire Scar for year %d of rep %d.  Value Key: [if ignition cell use -, otherwise +][YearOfLastBurn].[FireID]";
 	_mapDescriptions[TUNDRA_BASAL_AREA] = "Tundra Basal Area for year %d of rep %d.";
-	_mapDescriptions[VEGEGATION] = "Vegetation Type for year %d of rep %d.  Value Index: "+ToS((int)gNoVegID)+"=NoVeg, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
+	_mapDescriptions[VEGETATION] = "Vegetation Type for year %d of rep %d.  Value Index: "+ToS((int)gNoVegID)+"=NoVeg, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
 	_mapDescriptions[SUBCANOPY] = "Subcanopy Type for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE)+"=NoData, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
 	_mapDescriptions[BURN_SEVERITY] = "Burn Severity for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE)+"=NoData (no burn for the given year), 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity";
 	_mapDescriptions[BURN_SEVERITY_HISTORY] = "Burn Severity History for year %d of rep %d.  Value Index: 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity";
@@ -253,7 +253,7 @@ void RasterIO::getAlternateNodata(float &result)
 
 RasterIO::ALFMapType RasterIO::getMapType(int f)
 {
-	if (f & outVeg) return VEGEGATION;
+	if (f & outVeg) return VEGETATION;
 	else if (f & outAge) return AGE;
 	else if (f & outSite) return SITE_VARIABLE;
 	else if (f & outSub) return SUBCANOPY;
@@ -275,7 +275,7 @@ const std::string RasterIO::getMapTypeAsString(ALFMapType type)
 {
 	switch(type)
 	{
-	case VEGEGATION: return "VEGETATION"; break;
+	case VEGETATION: return "VEGETATION"; break;
 	case AGE: return "AGE"; break;
 	case SUBCANOPY: return "SUBCANOPY"; break;
 	case SITE_VARIABLE: return "SITE_VARIABLE"; break;
@@ -335,9 +335,9 @@ void RasterIO::writeRasterFile(const string filepath, Frame*** pFrames, ALFMapTy
 { 
 	switch(mapType)
 	{
-	case VEGEGATION:
+	case VEGETATION:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[VEGEGATION], year, rep), _pVegColorTable);
+			Poco::format(_mapDescriptions[VEGETATION], year, rep), _pVegColorTable);
 		break;
 	case AGE:
 		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
@@ -609,7 +609,7 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 			{
 				switch(mapType)
 				{
-				case VEGEGATION:
+				case VEGETATION:
 					if (FRESCO->_pNoData[r][c]){
 						buf[c] = nodata;
 					} else {
