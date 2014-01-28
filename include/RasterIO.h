@@ -56,6 +56,7 @@
 #include <cmath>
 #include <sstream>
 #include <algorithm>
+#include <boost/format.hpp>
 
 
 class Frame;

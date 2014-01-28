@@ -7,7 +7,6 @@
 #include "ReadRasterException.h"
 #include "WriteRasterException.h"
 #include "Frame.h"
-#include "Poco/Format.h"
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include <ogr_spatialref.h> // for OGRSpatialReference
@@ -24,6 +23,8 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::queue;
+
+using boost::format;
 
 
 const byte  RasterIO::NODATA_BYTE      = 255;
@@ -332,48 +333,49 @@ void RasterIO::readRasterFile(const string filepath, byte**  &pMatrix, const boo
 void RasterIO::readRasterFile(const string filepath, int**   &pMatrix, const bool isMalloc) { _readRasterFile<int>(  filepath, pMatrix, isMalloc, GDT_Int32); }
 void RasterIO::readRasterFile(const string filepath, float** &pMatrix, const bool isMalloc) { _readRasterFile<float>(filepath, pMatrix, isMalloc, GDT_Float32); }
 void RasterIO::writeRasterFile(const string filepath, Frame*** pFrames, ALFMapType mapType, const int year, const int rep) 
+
 { 
 	switch(mapType)
 	{
 	case VEGETATION:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[VEGETATION], year, rep), _pVegColorTable);
+			(boost::format(_mapDescriptions[VEGETATION]) % year % rep).str(), _pVegColorTable);
 		break;
 	case AGE:
 		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
-			Poco::format(_mapDescriptions[AGE], year, rep));
+			(boost::format(_mapDescriptions[AGE]) % year % rep).str());
 		break;
 	case SUBCANOPY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[SUBCANOPY], year, rep), _pVegColorTable);
+			(boost::format(_mapDescriptions[SUBCANOPY]) % year % rep).str(), _pVegColorTable);
 		break;
 	case SITE_VARIABLE:
 		_writeRasterFile<float>(filepath, pFrames, mapType, GDT_Float32, 
-			Poco::format(_mapDescriptions[SITE_VARIABLE], year, rep));
+			(boost::format(_mapDescriptions[SITE_VARIABLE]) % year % rep).str());
 		break;
 	case FIRE_AGE:
 		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
-			Poco::format(_mapDescriptions[FIRE_AGE], year, rep));
+			(boost::format(_mapDescriptions[FIRE_AGE]) % year % rep).str());
 		break;
 	case FIRE_SCAR:
 		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
-			Poco::format(_mapDescriptions[FIRE_SCAR], year, rep));
+			(boost::format(_mapDescriptions[FIRE_SCAR]) % year % rep).str());
 		break;
 	case BURN_SEVERITY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[BURN_SEVERITY], year, rep),_pBurnSevColorTable);
+			(boost::format(_mapDescriptions[BURN_SEVERITY]) % year % rep).str(), _pBurnSevColorTable);
 		break;
 	case BURN_SEVERITY_HISTORY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[BURN_SEVERITY_HISTORY], year, rep),_pBurnSevColorTable);
+			(boost::format(_mapDescriptions[BURN_SEVERITY_HISTORY]) % year % rep).str(), _pBurnSevColorTable);
 		break;
 	case DECID_SPECIES_TRAJECTORY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[DECID_SPECIES_TRAJECTORY], year, rep), _pVegColorTable);
+			(boost::format(_mapDescriptions[DECID_SPECIES_TRAJECTORY]) % year % rep).str(), _pVegColorTable);
 		break;
 	case TUNDRA_BASAL_AREA:
 		_writeRasterFile<float>(filepath, pFrames, mapType, GDT_Float32, 
-			Poco::format(_mapDescriptions[TUNDRA_BASAL_AREA], year, rep));
+			(boost::format(_mapDescriptions[TUNDRA_BASAL_AREA]) % year % rep).str());
 		break;
 	default:
 		throw WriteRasterException("undefined map type");
