@@ -16,7 +16,6 @@
 
 #include "Except.h"
 #include "Interface.h"
-#include "Poco/Path.h"
 
 
 // Constants

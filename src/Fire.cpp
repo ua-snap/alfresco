@@ -19,6 +19,7 @@ float		    Fire::_fireSpreadRadius			        = 0;
 const double*	Fire::_pFireSpreadParms;
 bool			Fire::_ignoringFirstInterval	        = false;
 bool			Fire::_isMonthly						= false;
+bool			Fire::_isExperimental						= false;
 int				Fire::_maxEmpiricalFireSizeEvent        = -1;
 float			Fire::_maxEmpiricalFireSizeEventWeight  = 1;
 const double*	Fire::_pFireClimate;
@@ -90,7 +91,17 @@ void Fire::setup()
 	_isMonthly = false;
 	if (FRESCO->fif().CheckKey("Climate.IsMonthly"))
 		_isMonthly = FRESCO->fif().bGet("Climate.IsMonthly");
-	int numParams = _isMonthly ? 8 : 3;
+	if (FRESCO->fif().CheckKey("Climate.IsExperimental"))
+		_isExperimental = FRESCO->fif().bGet("Climate.IsExperimental");
+
+	int numParams;
+	if (_isExperimental){
+		numParams = 13;
+	} else if (_isMonthly){
+		numParams = 8;
+	} else {
+		numParams = 3;
+	}
 	if (FRESCO->fif().pdGet("Fire.Climate", _pFireClimate) != numParams)            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
 
 	_fireSpreadRadius				    = FRESCO->fif().dGet("Fire.SpreadRadius");
@@ -129,6 +140,42 @@ const float Fire::getClimateFireProb (const Landscape* l)
 		else {
 			_climateFireProb = p;
 		}
+	}
+	else if (_isExperimental)  //use monthly equation
+	{
+		const float t3 = l->cellTempByMonth(3);
+		const float t4 = l->cellTempByMonth(4);
+		const float t5 = l->cellTempByMonth(5);
+		const float t6 = l->cellTempByMonth(6);
+		const float t7 = l->cellTempByMonth(7);
+		const float t8 = l->cellTempByMonth(8);
+		const float t9 = l->cellTempByMonth(9);
+		const float p6 = l->cellPrecipByMonth(6);
+		const float p7 = l->cellPrecipByMonth(7);
+		const float p8 = l->cellPrecipByMonth(8);
+		const float p9 = l->cellPrecipByMonth(9);
+
+		if (IsNodata(t3) || IsNodata(t4) || IsNodata(t5) || IsNodata(t6)
+			|| IsNodata(t7) || IsNodata(t8) || IsNodata(t9)
+			|| IsNodata(p6) || IsNodata(p7) || IsNodata(p8) || IsNodata(p9))
+			return 0;
+
+		_climateFireProb =    _pFireClimate[0]	//intercept
+							//Temps: mar apr may jun jul aug sep
+							+ _pFireClimate[1] * t3 
+							+ _pFireClimate[2] * t4 
+							+ _pFireClimate[3] * t5 
+							+ _pFireClimate[4] * t6
+							+ _pFireClimate[5] * t7
+							+ _pFireClimate[6] * t8
+							+ _pFireClimate[7] * t9
+							//Precips: jun jul
+							+ _pFireClimate[8] * p6 
+							+ _pFireClimate[9] * p7
+							+ _pFireClimate[10] * p8
+							+ _pFireClimate[11] * p9
+							//aprT*julP
+							+ _pFireClimate[12] * t4 * p7;
 	}
 	else if (_isMonthly)  //use monthly equation
 	{

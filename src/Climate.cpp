@@ -137,8 +137,12 @@ void Climate::			setup()
 			tempMonths.push_back(5);
 			tempMonths.push_back(6);
 			tempMonths.push_back(7);
+			tempMonths.push_back(8);
+			tempMonths.push_back(9);
 			precipMonths.push_back(6);
 			precipMonths.push_back(7);
+			precipMonths.push_back(8);
+			precipMonths.push_back(9);
 		}
 		//
 		// Moved this chunk of code to Decid's setup due to the this 
