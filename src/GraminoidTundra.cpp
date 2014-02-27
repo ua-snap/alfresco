@@ -59,6 +59,7 @@ GraminoidTundra::				GraminoidTundra(const Frame& rFrame, const int treeDensity)
 	_yearFrameEstablished	= gYear;
 	_GraminoidTundra(treeDensity);
 	_basalArea = rFrame.basalArea();
+	_inoculumScore = rFrame.inoculumScore();
 }
 
 
@@ -92,6 +93,8 @@ void GraminoidTundra::			_GraminoidTundra(const int treeDensity)
 	_yearOfEstablishment = 0;
 //OLD TODO:	_yearOfEstablishment = -_history;
 	_degrees = -1;
+	_inoculumMax = 0.25;
+	_inoculumScore = _inoculumMax;
 }
 
 

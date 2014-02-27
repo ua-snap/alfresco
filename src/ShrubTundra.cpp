@@ -59,6 +59,7 @@ ShrubTundra::				ShrubTundra(const Frame& rFrame, const int treeDensity)
 	_yearFrameEstablished	= gYear;
 	_ShrubTundra(treeDensity);
 	_basalArea = rFrame.basalArea();
+	_inoculumScore = rFrame.inoculumScore();
 }
 
 
@@ -92,6 +93,8 @@ void ShrubTundra::			_ShrubTundra(const int treeDensity)
 	_yearOfEstablishment = 0;
 //OLD TODO:	_yearOfEstablishment = -_history;
 	_degrees = -1;
+	_inoculumMax = 0.75;
+	_inoculumScore = _inoculumMax;
 }
 
 

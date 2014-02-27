@@ -28,6 +28,7 @@ public:
     const float             site() const { return _site; }
 	const bool				hasComplexTopo() const { return _isTopoComplex; }
 	const double	    basalArea() const { return _basalArea; }
+	const double	    inoculumScore() const { return _inoculumScore; }
 protected:
 	static int				_outFlags;												        //A flag indicating which data to output when the object is written
 	int						_yearEstablished;												//The year this stand was established
@@ -35,7 +36,9 @@ protected:
 	float					_site;													        //A surrogate variable to describe the site characteristics (currently just wet/dry)
 	bool					_isTopoComplex;													//Topography is categorized as either flat or complex (hilly/mountainous)
 	Species				    _speciesSubCanopy;											    //Store the type of the subcanopy if there is one. Should this be a linked list so we could potentially store more than one subcanopy.  Maybe with a percent cover type thing.  Maybe for a later implementation!?
-	double				    _basalArea;
+	double				    _basalArea; //Store basalArea in Frame class to allow for retention as transitions occur
+	double		_inoculumScore; //Current inoculum score.  Can be lower than _inoculumMax based on recent fire history, or other factors
+	double		_inoculumMax;  //Maximum inoculum score for a species
 
 
 //Functions
