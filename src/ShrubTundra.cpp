@@ -93,7 +93,11 @@ void ShrubTundra::			_ShrubTundra(const int treeDensity)
 	_yearOfEstablishment = 0;
 //OLD TODO:	_yearOfEstablishment = -_history;
 	_degrees = -1;
-	_inoculumMax = 0.75;
+	if (FRESCO->fif().CheckKey("ShrubTundra.Inoculum")){
+		_inoculumMax = FRESCO->fif().dGet("ShrubTundra.Inoculum");
+	} else {
+		_inoculumMax = 1.0;
+	}
 	_inoculumScore = _inoculumMax;
 }
 

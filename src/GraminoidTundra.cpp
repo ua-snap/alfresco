@@ -93,7 +93,11 @@ void GraminoidTundra::			_GraminoidTundra(const int treeDensity)
 	_yearOfEstablishment = 0;
 //OLD TODO:	_yearOfEstablishment = -_history;
 	_degrees = -1;
-	_inoculumMax = 0.25;
+	if (FRESCO->fif().CheckKey("GraminoidTundra.Inoculum")){
+		_inoculumMax = FRESCO->fif().dGet("GraminoidTundra.Inoculum");
+	} else {
+		_inoculumMax = 1.0;
+	}
 	_inoculumScore = _inoculumMax;
 }
 
@@ -127,6 +131,7 @@ void GraminoidTundra::           setStaticData()
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("GraminoidTundra->Spruce.BasalArea");
         _pStartAgeParms         = FRESCO->getStartAgeParms("GraminoidTundra.StartAge", &_startAgeType);
         _meanGrowth             = FRESCO->fif().dGet("GraminoidTundra.MeanGrowth");
+
 	if (FRESCO->fif().CheckKey("GraminoidTundra.SpruceTransitionYear")){
 		_spruceTransitionYear 	= FRESCO->fif().nGet("GraminoidTundra.SpruceTransitionYear");
 	} else {
