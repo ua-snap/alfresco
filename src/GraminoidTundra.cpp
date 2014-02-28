@@ -225,15 +225,23 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){
 			//Reduce basal area by 50%
 			_basalArea 		*= 0.5;
+			_inoculumScore *= 0.5;
 		} else if (burnSeverity == HIGH_HSS){
 			//Reduce basal area to 0
 			_basalArea	         = 0.;
+			_inoculumScore = 0.0;
 		} else if (burnSeverity == LOW){
 			//Unchanged
 			_basalArea               = _basalArea;
 		}
 		_yearOfEstablishment= -_history;
 		_degrees		    = -1.;
+	}
+	if (_inoculumScore < _inoculumMax){
+		_inoculumScore += _inoculumMax * 0.1;
+		if (_inoculumScore > _inoculumMax){
+			_inoculumScore = _inoculumMax;
+		}
 	}
 	double movingTempAverage = 0;
 	double movingSWIAverage = 0;

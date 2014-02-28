@@ -220,9 +220,11 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 		if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){
 			//Reduce basal area by 50%
 			_basalArea 		*= 0.5;
+			_inoculumScore *= 0.5;
 		} else if (burnSeverity == HIGH_HSS){
 			//Reduce basal area to 0
 			_basalArea	         = 0.;
+			_inoculumScore = 0.0;
 			if (gYear >= _tundraTransitionYear && _tundraTransitionYear > 0){
 				return new GraminoidTundra(*this);
 			}
@@ -231,6 +233,12 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 			_basalArea               = _basalArea;
 		}
 		//if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){
+	}
+	if (_inoculumScore < _inoculumMax){
+		_inoculumScore += _inoculumMax * 0.1;
+		if (_inoculumScore > _inoculumMax){
+			_inoculumScore = _inoculumMax;
+		}
 	}
 	float movingTempAverage = 0;
 	float movingSWIAverage = 0;
