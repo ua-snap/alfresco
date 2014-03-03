@@ -2,7 +2,7 @@ lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la
 if AIEM
 lib_LTLIBRARIES += libFrescoAIEM.la
 endif
-INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS)
+INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) -I/home/UA/apbennett/include
 if AIEM
 INCLUDES += -I/home/UA/apbennett/aiem/include
 endif
@@ -19,7 +19,8 @@ libFrescoFoundation_la_SOURCES = ../src/Climate.cpp \
 				../src/PreCompiled.cpp \
 				../src/RasterIO.cpp \
 				../src/Species.cpp \
-				../src/Stat.cpp
+				../src/Stat.cpp \
+				../src/FIF.cpp
 libFrescoCustom_la_LDFLAGS = -shared
 libFrescoCustom_la_CXXFLAGS = -DWITHSTATS
 libFrescoCustom_la_SOURCES = 	../src/BarrenLichenMoss.cpp \

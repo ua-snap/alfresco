@@ -10,6 +10,7 @@
 #include <queue>
 #include <string>
 #include <vector>
+#include "FIF.h"
 
 
 using Poco::BasicEvent;

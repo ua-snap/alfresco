@@ -127,6 +127,7 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
 	
     output("Reading FIF File.\n");
     _fif.Initialize(basePath, fifName);
+    FIF *fif = new FIF();
 
     output("Loading General settings.\n");
     std::string temp = "";
@@ -136,8 +137,11 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
     gOutputDirectory    = GetFullPath(gOutputBasePath, outputTimestamp);
     EnsureDirectoryExists(gOutputDirectory, false);
     gMaxRep             = _fif.nGet("MaxReps");
+    gMaxRep		= fif->root["Simulation"]["MaxReps"].asInt();
     gFirstYear          = _fif.nGet("FirstYear");
+    gFirstYear		= fif->root["Simulation"]["FirstXYear"].asInt();
     gLastYear           = _fif.nGet("LastYear");
+    gLastYear		= fif->root["Simulation"]["LastYear"].asInt();
 	gDetailLevel        = (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
 	try { //Initialize the random number generator.
         _randomSeed = SeedRandom(randSeed);
