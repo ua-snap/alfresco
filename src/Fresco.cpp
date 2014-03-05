@@ -126,8 +126,8 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
 	setState(SETTING_UP);
 	
     output("Reading FIF File.\n");
+    //_fif.Initialize(basePath, fifName);
     _fif.Initialize(basePath, fifName);
-    FIF *fif = new FIF();
 
     output("Loading General settings.\n");
     std::string temp = "";
@@ -136,22 +136,19 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
     gOutputBasePath     = FormatDirectory(_fif.sGet("ClientOutputBasePath"));
     gOutputDirectory    = GetFullPath(gOutputBasePath, outputTimestamp);
     EnsureDirectoryExists(gOutputDirectory, false);
-    gMaxRep             = _fif.nGet("MaxReps");
-    gMaxRep		= fif->root["Simulation"]["MaxReps"].asInt();
-    gFirstYear          = _fif.nGet("FirstYear");
-    gFirstYear		= fif->root["Simulation"]["FirstXYear"].asInt();
-    gLastYear           = _fif.nGet("LastYear");
-    gLastYear		= fif->root["Simulation"]["LastYear"].asInt();
-	gDetailLevel        = (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
+    gMaxRep		= fif().root["Simulation"]["MaxReps"].asInt();
+    gFirstYear		= fif().root["Simulation"]["FirstYear"].asInt();
+    gLastYear		= fif().root["Simulation"]["LastYear"].asInt();
+	gDetailLevel        = (temp=fif().root["Simulation"]["Output.DetailLevel"].asString())=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
 	try { //Initialize the random number generator.
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
     } catch (SimpleException& e) {throw SimpleException(SimpleException::INITFAULT,"Initializing random number generator failed.\n", e.message);}
-    gNoVegID            = _fif.nGet("NoVeg"); 
+    gNoVegID            = fif().root["Vegetation"]["NoVeg"].asInt(); 
         
     //Fire
     output("Loading Fire settings.\n");
-    _isFireEnabled      = _fif.bGet("Fire.Enabled");
+    _isFireEnabled      = fif().root["Fire"]["Enabled"].asBool();
     Fire::setup();
 	
     customSetup();

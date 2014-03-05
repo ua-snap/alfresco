@@ -36,7 +36,7 @@ public:
         STOPPED,				    //Simulation stopped.
         COMPLETED                   //Simulation completed.
     };	
-    CInterface&             fif();
+    FIF&             fif();
     const bool              getIsStopped() const;
     void                    setIsStopped(const bool newVal);
     const int               getLastYear() const;
@@ -64,7 +64,7 @@ public:
 	BasicEvent<const int>           raiseBeforeYearEnd;
 	BasicEvent<const int>           raiseAfterYearEnd;
 private:
-    CInterface              _fif;
+    FIF              _fif;
     Landscape*				_landscape;
     FrescoState				_state;
     bool                    _isDebugOn;
@@ -99,7 +99,7 @@ public:
 };
 
 
-inline CInterface&          Fresco::fif()
+inline FIF&          Fresco::fif()
 {
     return _fif;
 }
