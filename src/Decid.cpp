@@ -130,7 +130,7 @@ void Decid::setStaticData()
 				const int* pPrecipMonths;
 				const int* pTempMonths;
 
-				int numMonths = FRESCO->fif().pnGet("Decid->Grassland.TempMonths", pTempMonths);
+				int numMonths = FRESCO->fif().pnGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.TempMonths"], pTempMonths);
 				if (numMonths > 12)
 					throw SimpleException(SimpleException::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.TempMonths. There are only 12 months in a year.");
 
@@ -139,7 +139,7 @@ void Decid::setStaticData()
 					_grassTempMonths.push_back(pTempMonths[i]);
 				}
 
-				numMonths = FRESCO->fif().pnGet("Decid->Grassland.PrecipMonths", pPrecipMonths);
+				numMonths = FRESCO->fif().pnGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.PrecipMonths"], pPrecipMonths);
 				if (numMonths > 12)
 					throw SimpleException(SimpleException::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.PrecipMonths. There are only 12 months in a year.");
 
@@ -149,10 +149,10 @@ void Decid::setStaticData()
 				}
 			}
 			size_t expectedSize = 2 + _grassTempMonths.size() + _grassPrecipMonths.size();
-			if (expectedSize != FRESCO->fif().pdGet("Decid->Grassland.ClimateWeight", _pGrassClimateParams))
+			if (expectedSize != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.ClimateWeight"], _pGrassClimateParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of "+ToS(expectedSize)+" for key: Decid->Grassland.ClimateWeight = {Intercept,IfFlatInterceptAdjusment, [a temp multiplier per month in Grassland.TempMonths], [a precip multiplier per month in Grassland.PrecipMonths]}");
 
-			if (6 != FRESCO->fif().pdGet("Decid->Grassland.ClimateThreshholds", _pGrasslandThresholds))
+			if (6 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.ClimateThreshholds"], _pGrasslandThresholds))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 6 for key: Decid->Grassland.ClimateThreshholds = {Low, Moderate, High_LSS, High_HSS, Low_And_WasGrassland, Moderate_And_WasGrassland}");
 		}
 
