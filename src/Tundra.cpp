@@ -99,41 +99,41 @@ void Tundra::           setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-        _humanIgnitionsProb	    = FRESCO->fif().dGet("Tundra.HumanFireProb");
-		_isFireProbAgeDependent = FRESCO->fif().bGet("Tundra.FireProb.IsAgeDependent");
+        _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["Tundra"]["HumanFireProb"].asDouble();
+		_isFireProbAgeDependent = FRESCO->fif().root["Vegetation"]["Tundra"]["FireProb.IsAgeDependent"].asBool();
 		if (_isFireProbAgeDependent) {
-			if (3 != FRESCO->fif().pdGet("Tundra.FireProb", _pAgeDependentFireParams))
+			if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Tundra"]["FireProb"], _pAgeDependentFireParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: Tundra.FireProb (because Tundra.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
-	        _fireProb = FRESCO->fif().dGet("Tundra.FireProb");
-		if (FRESCO->fif().CheckKey("Tundra.IgnitionDepressor"))
-			_ignitionDepressor = FRESCO->fif().dGet("Tundra.IgnitionDepressor");
+	        _fireProb = FRESCO->fif().root["Vegetation"]["Tundra"]["FireProb"].asDouble();
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["Tundra"]["IgnitionDepressor"]))
+			_ignitionDepressor = FRESCO->fif().root["Vegetation"]["Tundra"]["IgnitionDepressor"].asDouble();
 		else
 			_ignitionDepressor = 1;
-        _history			    = FRESCO->fif().nGet("Tundra.History");
-        _seedRange		        = FRESCO->fif().dGet("Tundra.SeedRange");
-        _seedBasalArea	        = FRESCO->fif().dGet("Tundra.Seed.BasalArea");
-        _seedling			    = FRESCO->fif().dGet("Tundra.Seedling");
-        _seedlingBasalArea      = FRESCO->fif().dGet("Tundra.SeedlingBA");
-        _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
-        _pStartAgeParms         = FRESCO->getStartAgeParms("Tundra.StartAge", &_startAgeType);
-        _meanGrowth             = FRESCO->fif().dGet("Tundra.MeanGrowth");
-        if (2 != FRESCO->fif().pdGet("Tundra.SeedEstParms", _pSeedEstParams)) {
+        _history			    = FRESCO->fif().root["Vegetation"]["Tundra"]["History"].asInt();
+        _seedRange		        = FRESCO->fif().root["Vegetation"]["Tundra"]["SeedRange"].asDouble();
+        _seedBasalArea	        = FRESCO->fif().root["Vegetation"]["Tundra"]["Seed.BasalArea"].asDouble();
+        _seedling			    = FRESCO->fif().root["Vegetation"]["Tundra"]["Seedling"].asDouble();
+        _seedlingBasalArea      = FRESCO->fif().root["Vegetation"]["Tundra"]["SeedlingBA"].asDouble();
+        _tundraSpruceBasalArea  = FRESCO->fif().root["Vegetation"]["Tundra"]["Spruce.BasalArea"].asDouble();
+        _pStartAgeParms         = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Tundra"]["StartAge"], &_startAgeType);
+        _meanGrowth             = FRESCO->fif().root["Vegetation"]["Tundra"]["MeanGrowth"].asDouble();
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Tundra"]["SeedEstParms"], _pSeedEstParams)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: Tundra.SeedEstParms");
         }
-        if (3 != FRESCO->fif().pdGet("Tundra.ClimGrowth", _pClimateGrowth)) {
+        if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Tundra"]["ClimGrowth"], _pClimateGrowth)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: Tundra.ClimGrowth");
         }
-        if (2 != FRESCO->fif().pdGet("Tundra.CalFactor", _pCalibrationFactor)) {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Tundra"]["CalFactor"], _pCalibrationFactor)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: Tundra.CalFactor");
         }
-        if (2 != FRESCO->fif().pdGet("Tundra.SeedSource", _pSeedSource)) {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Tundra"]["SeedSource"], _pSeedSource)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: Tundra.SeedSource");
         }
 
 		//Calculate _ratioAK for use in getInitialBasalAreaI()
-        double spruceEstBasalAarea	= FRESCO->fif().dGet("Tundra.Spruce.EstBA");
+        double spruceEstBasalAarea	= FRESCO->fif().root["Vegetation"]["Tundra"]["Spruce.EstBA"].asDouble();
 		const double pSeedSourceFatTailParams[3] = {gCellSize, _pSeedSource[0], _pSeedSource[1]};  //Parameters for calling FatTail()
 		const double alpha = _pCalibrationFactor[1] * spruceEstBasalAarea * _seedBasalArea * FatTail(pSeedSourceFatTailParams) / _seedling * _seedlingBasalArea;
 		double k = _pCalibrationFactor[0] * _meanGrowth;

@@ -86,14 +86,13 @@ void Fire::clear()
 void Fire::setup()
 {
     setupFireTransitions();
-	if (FRESCO->fif().pdGet("Fire.SpreadParms", _pFireSpreadParms) != 2)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.SpreadParms");
+	if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["SpreadParms"], _pFireSpreadParms) != 2)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.SpreadParms");
 
 	_isMonthly = false;
-	if (FRESCO->fif().CheckKey("Climate.IsMonthly"))
-		_isMonthly = FRESCO->fif().bGet("Climate.IsMonthly");
-	if (FRESCO->fif().CheckKey("Climate.IsExperimental"))
-		_isExperimental = FRESCO->fif().bGet("Climate.IsExperimental");
-
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["IsMonthly"]))
+		_isMonthly = FRESCO->fif().root["Climate"]["IsMonthly"].asBool();
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["IsExperimental"]))
+		_isExperimental = FRESCO->fif().root["Climate"]["IsExperimental"].asBool();
 	int numParams;
 	if (_isExperimental){
 		numParams = 13;
@@ -102,22 +101,25 @@ void Fire::setup()
 	} else {
 		numParams = 3;
 	}
-	if (FRESCO->fif().pdGet("Fire.Climate", _pFireClimate) != numParams)            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["Climate"], _pFireClimate) != numParams){
+		throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	}
 
-	_fireSpreadRadius				    = FRESCO->fif().dGet("Fire.SpreadRadius");
-	_ignoringFirstInterval              = FRESCO->fif().bGet("Fire.IgnoreFirstInterval");
-    _maxEmpiricalFireSizeEvent          = FRESCO->fif().nGet("Fire.MaxEmpiricalFireSizeEvent");
-    _maxEmpiricalFireSizeEventWeight    = FRESCO->fif().dGet("Fire.MaxEmpiricalFireSizeEventWeight");
-    _yearsOfHistory                     = FRESCO->fif().nGet("Climate.NumHistory");
+	_fireSpreadRadius				    = FRESCO->fif().root["Fire"]["SpreadRadius"].asDouble();
+	_ignoringFirstInterval              = FRESCO->fif().root["Fire"]["IgnoreFirstInterval"].asBool();
+    _maxEmpiricalFireSizeEvent          = FRESCO->fif().root["Fire"]["MaxEmpiricalFireSizeEvent"].asInt();
+    _maxEmpiricalFireSizeEventWeight    = FRESCO->fif().root["Fire"]["MaxEmpiricalFireSizeEventWeight"].asDouble();
+    _yearsOfHistory                     = FRESCO->fif().root["Climate"]["NumHistory"].asInt();
 
 	const double* params;
-	if (FRESCO->fif().pdGet("BurnSeverity.FxnOfFireSize", params) != 2)		throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	//std::cout << FRESCO->fif().pdGet(FRESCO->fif().root["BurnSeverity"]["FxnOfFireSize"], params) << ":" << 2 << std::endl;
+	if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["BurnSeverity"]["FxnOfFireSize"], params) != 2)		throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: BurnSeverity.FxnOfFireSize");
 	burnSeveritySettings.FxnIntercept = params[0];
 	burnSeveritySettings.FxnSlope = params[1];
-	burnSeveritySettings.LssVsHssWeight			= FRESCO->fif().dGet("BurnSeverity.LSS-vs-HSS.wt");
-	burnSeveritySettings.LowVsModerateWeight	= FRESCO->fif().dGet("BurnSeverity.Low-vs-Moderate.wt");
-	burnSeveritySettings.FlatTopoWeight			= FRESCO->fif().dGet("BurnSeverity.FlatTopo.wt");
-	burnSeveritySettings.ComplexTopoWeight		= FRESCO->fif().dGet("BurnSeverity.ComplexTopo.wt");
+	burnSeveritySettings.LssVsHssWeight			= FRESCO->fif().root["Fire"]["BurnSeverity"]["LSS-vs-HSS.wt"].asDouble();
+	burnSeveritySettings.LowVsModerateWeight	= FRESCO->fif().root["Fire"]["BurnSeverity"]["Low-vs-Moderate.wt"].asDouble();
+	burnSeveritySettings.FlatTopoWeight			= FRESCO->fif().root["Fire"]["BurnSeverity"]["FlatTopo.wt"].asDouble();
+	burnSeveritySettings.ComplexTopoWeight		= FRESCO->fif().root["Fire"]["BurnSeverity"]["ComplexTopo.wt"].asDouble();
 }
 
 

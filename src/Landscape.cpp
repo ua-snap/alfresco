@@ -116,15 +116,15 @@ void Landscape::		setup()
 {
     //Get variables from FIF.
 	if (FRESCO->fif().CheckKey("YOffset"))
-		gYOffset				= FRESCO->fif().nGet("YOffset");
+		gYOffset = FRESCO->fif().root["RasterSettings"]["YOffset"].asInt();
 	if (FRESCO->fif().CheckKey("XOffset"))
-	    gXOffset				= FRESCO->fif().nGet("XOffset");
-    gYSize				    = FRESCO->fif().nGet("YSize");
-    gXSize				        = FRESCO->fif().nGet("XSize");
-    gCellSize				    = FRESCO->fif().dGet("CellSize");
-    _cropNeighbors		        = FRESCO->fif().bGet("CropNeighbors");
-    _xulCorner		            = FRESCO->fif().dGet("XULCorner");
-    _yulCorner			        = FRESCO->fif().dGet("YULCorner");
+	    gXOffset = FRESCO->fif().root["RasterSettings"]["XOffset"].asInt();
+    gYSize				    = FRESCO->fif().root["RasterSettings"]["YSize"].asInt();
+    gXSize				        = FRESCO->fif().root["RasterSettings"]["XSize"].asInt();
+    gCellSize				    = FRESCO->fif().root["RasterSettings"]["CellSize"].asDouble();
+    _cropNeighbors		        = FRESCO->fif().root["Simulation"]["CropNeighbors"].asBool();
+    _xulCorner		            = FRESCO->fif().root["RasterSettings"]["XULCorner"].asDouble();
+    _yulCorner			        = FRESCO->fif().root["RasterSettings"]["YULCorner"].asDouble();
     _vegDistributionStatFlags	= FRESCO->fif().nGet("Stat.VegDist.Flags");
     _vegResidenceStatFlags	    = FRESCO->fif().nGet("Stat.VegResidence.Flags");
     _fireSpeciesStatFlags	    = FRESCO->fif().nGet("Stat.FireSpecies.Flags");

@@ -19,6 +19,9 @@ std::string FIF::fileName(){
 bool FIF::CheckKey(std::string key){
 	return root[key].isNull();
 }
+bool FIF::CheckKey(Json::Value& n){
+	return !n.isNull();
+}
 bool FIF::bGet(std::string key){
 	return root[key].asBool();
 }
@@ -34,6 +37,15 @@ double FIF::dGet(std::string key){
 int FIF::pnGet(const char* key, const int*& ptr){
 	return root[key].size();
 }
+/*
+int FIF::pnGet(Json::Value& n, const int*& ptr){
+	int temp_array[n.size()];
+	for (int i = 0; i < n.size(); i++){
+		temp_array[i] = n[i].asInt();
+	}
+	ptr = temp_array;
+	return n.size();
+}*/
 int FIF::psGet(const char* key, const char*& ptr){
 	return root[key].size();
 }
@@ -42,6 +54,14 @@ int FIF::psGet(const char* key, char* const*& ptr){
 }
 int FIF::pdGet(const char* key, const double*& ptr){
 	return root[key].size();
+}
+int FIF::pdGet(Json::Value& n, const double*& ptr){
+	double temp_array[n.size()];
+	for (int i = 0; i < n.size(); i++){
+		temp_array[i] = n[i].asDouble();
+	}
+	ptr = temp_array;
+	return n.size();
 }
 int FIF::pbGet(const char* key, const bool*& ptr){
 	return root[key].size();

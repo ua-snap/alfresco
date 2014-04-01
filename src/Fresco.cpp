@@ -144,7 +144,7 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
     } catch (SimpleException& e) {throw SimpleException(SimpleException::INITFAULT,"Initializing random number generator failed.\n", e.message);}
-    gNoVegID            = fif().root["Vegetation"]["NoVeg"].asInt(); 
+    gNoVegID            = fif().root["Vegetation"]["NoVeg"]["id"].asInt(); 
         
     //Fire
     output("Loading Fire settings.\n");
@@ -274,11 +274,11 @@ void Fresco::		outputError(const std::string message)
 }
 
 
-double* Fresco::	getSpruceFireParms(const std::string key)
+double* Fresco::	getSpruceFireParms(Json::Value key)
 {
     const double* pTemp;
-    if (_fif.pdGet(key.c_str(), pTemp) != 3) 
-        throw SimpleException(SimpleException::BADARRAYSIZE, (std::string("Unexpected array size returned for Key: ") + key).c_str());
+    if (_fif.pdGet(key, pTemp) != 3) 
+        throw SimpleException(SimpleException::BADARRAYSIZE, (std::string("Unexpected array size returned for Key: ") + key.asCString()).c_str());
     
     //Transfer "const double*" to "double*"
     double* pReturn;
@@ -292,10 +292,10 @@ double* Fresco::	getSpruceFireParms(const std::string key)
 }
 
 
-const double* Fresco::   getStartAgeParms(const std::string key, EStartAgeType* type)
+const double* Fresco::   getStartAgeParms(Json::Value key, EStartAgeType* type)
 {
     const double* params;
-    int count=_fif.pdGet(key.c_str(),params);
+    int count=_fif.pdGet(key,params);
     
     //Set start age type.
     if (1==count)      
@@ -303,7 +303,7 @@ const double* Fresco::   getStartAgeParms(const std::string key, EStartAgeType* 
     else if (2==count) 
         *type=WEIBULL;
     else
-        throw SimpleException(SimpleException::BADARRAYSIZE,(std::string("Unexpected array size returned for Key: ") + key).c_str());
+        throw SimpleException(SimpleException::BADARRAYSIZE,(std::string("Unexpected array size returned for Key: ") + key.asCString()).c_str());
     
     return params;
 }

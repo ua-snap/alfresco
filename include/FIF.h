@@ -18,14 +18,18 @@ class FIF {
 		std::string fileName();
 		void Initialize(std::string path, std::string fifName);
 		bool CheckKey(std::string key);
+		bool CheckKey(Json::Value& n);
 		bool bGet(std::string key);
 		double dGet(std::string key);
 		int nGet(std::string key);
 		std::string sGet(std::string key);
 		int pnGet(const char* key, const int*& ptr);
+		//int pnGet(Json::Value& n, const int*& ptr){
 		int psGet(const char* key, const char*& ptr);
 		int psGet(const char* key, char* const*& ptr);
 		int pdGet(const char* key, const double*& ptr);
+		int pdGet(Json::Value& n, const double*& ptr);
 		int pbGet(const char* key, const bool*& ptr);
+		int setArray(Json::Value& n, const double*& ptr);
 };
 #endif
