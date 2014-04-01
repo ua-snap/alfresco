@@ -111,7 +111,7 @@ void Decid::setStaticData()
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
         _pBSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.BSpruce"], &_bspruceStartAgeType);
         _pWSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.WSpruce"], &_wspruceStartAgeType);
-        if (2 != FRESCO->fif().pdGet("Decid->Tundra.Parms", _pDecidTundraParams))  {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["Tundra.Parms"], _pDecidTundraParams))  {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
         }
 		
@@ -120,7 +120,7 @@ void Decid::setStaticData()
 		//
 		if (usingGrassland())
 		{
-			_yearsOfGrasslandCheck = FRESCO->fif().nGet("Decid->Grassland.History");
+			_yearsOfGrasslandCheck = FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.History"].asInt();
 
 			if (!IsNodata(gGrasslandID))
 			{
