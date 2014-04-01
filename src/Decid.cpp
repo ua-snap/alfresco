@@ -97,20 +97,20 @@ void Decid::setStaticData()
     {
 		_isFireProbAgeDependent = FRESCO->fif().bGet("Decid.FireProb.IsAgeDependent");
 		if (_isFireProbAgeDependent) {
-			if (3 != FRESCO->fif().pdGet("Decid.FireProb", _pAgeDependentFireParams))
+			if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["FireProb"], _pAgeDependentFireParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: Decid.FireProb (because Decid.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
-	        _decidFireProb = FRESCO->fif().dGet("Decid.FireProb");
-		if (FRESCO->fif().CheckKey("Decid.IgnitionDepressor"))
-			_ignitionDepressor = FRESCO->fif().dGet("Decid.IgnitionDepressor");
+	        _decidFireProb = FRESCO->fif().root["Vegetation"]["Decid"]["FireProb"].asDouble();
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["Decid"]["IgnitionDepressor"]))
+			_ignitionDepressor = FRESCO->fif().root["Vegetation"]["Decid"]["IgnitionDepressor"].asDouble();
 		else
 			_ignitionDepressor = 1;
-        _humanIgnitionsProb	    = FRESCO->fif().dGet("Decid.HumanFireProb");
-        _decidHistory           = FRESCO->fif().nGet("Decid.History");
+        _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["Decid"]["HumanFireProb"].asDouble();
+        _decidHistory           = FRESCO->fif().root["Vegetation"]["Decid"]["History"].asInt();
         _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
-        _pBSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.BSpruce", &_bspruceStartAgeType);
-        _pWSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.WSpruce", &_wspruceStartAgeType);
+        _pBSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.BSpruce"], &_bspruceStartAgeType);
+        _pWSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.WSpruce"], &_wspruceStartAgeType);
         if (2 != FRESCO->fif().pdGet("Decid->Tundra.Parms", _pDecidTundraParams))  {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
         }
