@@ -132,8 +132,8 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
     output("Loading General settings.\n");
     std::string temp = "";
     //Get class variables with parsed FIF values.
-    gInputBasePath      = FormatDirectory(_fif.sGet("ClientInputBasePath"));
-    gOutputBasePath     = FormatDirectory(_fif.sGet("ClientOutputBasePath"));
+    gInputBasePath      = FormatDirectory(_fif.root["PathSetup"]["ClientInputBasePath"].asString());
+    gOutputBasePath     = FormatDirectory(_fif.root["PathSetup"]["ClientOutputBasePath"].asString());
     gOutputDirectory    = GetFullPath(gOutputBasePath, outputTimestamp);
     EnsureDirectoryExists(gOutputDirectory, false);
     gMaxRep		= fif().root["Simulation"]["MaxReps"].asInt();
@@ -283,7 +283,7 @@ double* Fresco::	getSpruceFireParms(Json::Value key)
     //Transfer "const double*" to "double*"
     double* pReturn;
     pReturn = new double[3];
-    pReturn[0] = pTemp[0] - _fif.dGet("Decid.FireProb");
+    pReturn[0] = pTemp[0] - _fif.root["Vegetation"]["Decid"]["FireProb"].asDouble();
     pReturn[1] = pTemp[1];
     pReturn[2] = pTemp[2];
     

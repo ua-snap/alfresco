@@ -112,29 +112,29 @@ void CustomLandscape::		setup()
     setupHabitatStats();
     setupMapStats();
     
-    _isUsingUniqueVegAndAgePerRep   = FRESCO->fif().bGet("UseUniqueVegAndAgePerRep");
-    if (FRESCO->fif().CheckKey("UseVegMask")){
-    	_isUsingVegMask = FRESCO->fif().bGet("UseVegMask");
+    _isUsingUniqueVegAndAgePerRep   = FRESCO->fif().root["Landscape"]["UseUniqueVegAndAgePerRep"].asBool();
+    if (FRESCO->fif().CheckKey(FRESCO->fif().root["Landscape"]["UseVegMask"])){
+    	_isUsingVegMask = FRESCO->fif().root["Landscape"]["UseVegMask"].asBool();
     } else {
 	_isUsingVegMask = false;
     }
-    _isUsingUniqueBurnSeverityPerRep= FRESCO->fif().bGet("UseUniqueBurnSeverityPerRep");
-    _yearOfUniqueInputPerRep        = FRESCO->fif().nGet("YearOfUniqueInputPerRep");
-    _vegInputFile			        = FormatDirectory(FRESCO->fif().sGet("VegInputFile"));
-    if (FRESCO->fif().CheckKey("UseVegMask")){
-    	_vegMaskInputFile			        = FormatDirectory(FRESCO->fif().sGet("VegMaskFile"));
+    _isUsingUniqueBurnSeverityPerRep= FRESCO->fif().root["Landscape"]["UseUniqueBurnSeverityPerRep"].asBool();
+    _yearOfUniqueInputPerRep        = FRESCO->fif().root["Landscape"]["YearOfUniqueInputPerRep"].asInt();
+    _vegInputFile			        = FormatDirectory(FRESCO->fif().root["Landscape"]["VegInputFile"].asString());
+    if (FRESCO->fif().CheckKey(FRESCO->fif().root["Landscape"]["UseVegMask"])){
+    	_vegMaskInputFile			        = FormatDirectory(FRESCO->fif().root["Landscape"]["VegMaskFile"].asString());
     } else {
 	_isUsingVegMask = false;
     }
-    _vegTransitionFile		        = FormatDirectory(FRESCO->fif().sGet("VegTransitionFile"));
+    _vegTransitionFile		        = FormatDirectory(FRESCO->fif().root["Landscape"]["VegTransitionFile"].asString());
     _isForcedVegTransitions	        = FRESCO->fif().bGet("IsForcedVegTransitions");
-    _ageInputFile			        = FormatDirectory(FRESCO->fif().sGet("AgeInputFile"));
-	_treeDensityInputFile	        = FormatDirectory(FRESCO->fif().sGet("TreeDensityInputFile"));
-    _siteInputFile			        = FormatDirectory(FRESCO->fif().sGet("SiteInputFile"));
-	_topoInputFile					= FormatDirectory(FRESCO->fif().sGet("TopoInputFile"));
+    _ageInputFile			        = FormatDirectory(FRESCO->fif().root["Landscape"]["AgeInputFile"].asString());
+	_treeDensityInputFile	        = FormatDirectory(FRESCO->fif().root["Landscape"]["TreeDensityInputFile"].asString());
+    _siteInputFile			        = FormatDirectory(FRESCO->fif().root["Landscape"]["SiteInputFile"].asString());
+	_topoInputFile					= FormatDirectory(FRESCO->fif().root["Landscape"]["TopoInputFile"].asString());
 	_burnSeverityInputFile = "";
-	if (FRESCO->fif().CheckKey("BurnSeverityInputFile"))  
-		_burnSeverityInputFile = FormatDirectory(FRESCO->fif().sGet("BurnSeverityInputFile"));
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Landscape"]["BurnSeverityInputFile"]))  
+		_burnSeverityInputFile = FormatDirectory(FRESCO->fif().root["Landscape"]["BurnSeverityInputFile"].asString());
 
     Landscape::setup();
 
@@ -230,8 +230,8 @@ void CustomLandscape::		setup()
 	}
 
     //Load suppression transition data.
-    if ((_isFireSuppressionOn = FRESCO->fif().bGet("Fire.Suppression.On"))) {
-        _suppressionFilename = FormatDirectory(FRESCO->fif().sGet("Fire.Suppression.Basename"));
+    if ((_isFireSuppressionOn = FRESCO->fif().root["Fire"]["Suppression"]["On"].asBool())) {
+        _suppressionFilename = FormatDirectory(FRESCO->fif().root["Fire"]["Suppression"]["Basename"].asString());
         setupSuppressionTransitions();
     }
 
@@ -694,9 +694,9 @@ void CustomLandscape::      setupHabitatStats()
 {
     //Get values for each habitat type.
     long flags = FRESCO->fif().nGet("Stat.Habitat.Flags");
-    if (FRESCO->fif().CheckKey("Stat.Habitat.Types")) {
-        char *const* pTypes;
-        int count = FRESCO->fif().psGet("Stat.Habitat.Types", pTypes);
+    if (FRESCO->fif().CheckKey(FRESCO->fif().root["Stat"]["Habitat"]["Types"])) {
+        std::string * pTypes;
+        int count = FRESCO->fif().psGet(FRESCO->fif().root["Stat"]["Habitat"]["Types"], pTypes);
         for (int i=0; i<count; i++) {
             //Get values from FIF for each habitat type.
             const int* pVegTypes;  int vegCount;  std::string keyVegTypes("Stat.Habitat." + ToS(pTypes[i]) + ".VegTypes");
@@ -709,8 +709,8 @@ void CustomLandscape::      setupHabitatStats()
             habitat.Stat.setup("Habitat"+ToS(pTypes[i]), flags, false);
 
 	    #ifdef WITHSTATS
-	    int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
-	    int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
+	    int numYears = FRESCO->fif().root["Simulation"]["LastYear"].asInt() - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
+	    int numReps = FRESCO->fif().root["Simulation"]["MaxReps"].asInt();  // Used for number of columns in StatArray
 	    RunStats->addStatFile("Habitat"+ToS(pTypes[i]), numYears, numReps, MATRIX);
 	    #endif
             habitat.MinAge = pAgeRange[0];

@@ -470,15 +470,15 @@ void Climate::          setupTransitions()
 {
     int           count = 0;
     const int     *pnYears;
-    char* const   *psValTypes;
+    std::string   *psValTypes;
     const double  *pdValTempConstants, *pdValPrecipConstants;
-    char* const   *psValTempFiles;
-    char* const   *psValPrecipFiles;
+    std::string   *psValTempFiles;
+    std::string   *psValPrecipFiles;
     const int     *pnValRandExplicitMinYears, *pnValRandExplicitMaxYears;
     const bool    *pbValRandExplicitReplicate;
     
-    char *const   *psOffTypes;
-    char *const   *psOffFiles;
+    std::string   *psOffTypes;
+    std::string   *psOffFiles;
     const double  *pdOffConstantTemps, *pdOffConstantPrecips;
     const double  *pdOffRandomTempMeans, *pdOffRandomPrecipMeans;
     const double  *pdOffRandomTempStdDevs, *pdOffRandomPrecipStdDevs;
@@ -519,7 +519,6 @@ void Climate::          setupTransitions()
 	    Transition.RandExplicitMinYear		= pnValRandExplicitMinYears[i];
 	    Transition.RandExplicitMaxYear		= pnValRandExplicitMaxYears[i];
 	    Transition.IsRandExplicitReplicated = pbValRandExplicitReplicate[i];
-	std::cout << psOffTypes[0] << psOffTypes[1] << psOffTypes[2] << std::endl;
         Transition.OffsetsType				= ((temp=psOffTypes[i]) == "NONE" ? OTNONE : (temp == "CONSTANT" ? OTCONSTANT : (temp == "FILE" ? OTFILE : OTRANDOM)));
         Transition.OffsetsFile				= FormatDirectory(std::string(psOffFiles[i]));
 	    Transition.ConstantTempOffset		= pdOffConstantTemps[i];

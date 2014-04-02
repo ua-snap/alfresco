@@ -46,12 +46,11 @@ int FIF::pnGet(Json::Value& n, const int*& ptr){
 	ptr = temp_array;
 	return n.size();
 }
-int FIF::psGet(Json::Value& n, char* const*& ptr){
-	const char *a[n.size()];
+int FIF::psGet(Json::Value& n, std::string *&ptr){
+	ptr = new std::string[n.size()];
 	for (int i = 0; i < n.size(); i++){
-		a[i] = n.asCString();
+		ptr[i] = n[i].asString();
 	}
-	ptr = (char* const*) a;
 	return n.size();
 }
 int FIF::psGet(const char* key, char* const*& ptr){

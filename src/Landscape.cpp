@@ -146,7 +146,7 @@ void Landscape::		setup()
 						requireAaeacForInput, applyAaeacToOutput);
 
     // Should this be in Fire?
-    _humanIgnitionsFilename     = FormatDirectory(FRESCO->fif().sGet("Fire.HumanIgnition.Basename"));
+    _humanIgnitionsFilename     = FormatDirectory(FRESCO->fif().root["Fire"]["HumanIgnition.Basename"].asString());
 	_pfireSpreadParams = new double[3];
 	_pfireSpreadParams[0] = 0.; //The first value is set to the cell's distance from a neighbor in each call to testFireSpread.
 	_pfireSpreadParams[1] = Fire::fireSpreadMean();
@@ -179,8 +179,8 @@ void Landscape::		setup()
 	_fireIntervalStat.resize(gNumSpecies);
 
 	#ifdef WITHSTATS
-	int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
-	int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
+	int numYears = FRESCO->fif().root["Simulation"]["LastYear"].asInt() - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
+	int numReps = FRESCO->fif().root["Simulation"]["MaxReps"].asInt();  // Used for number of columns in StatArray
 	#endif
 
 	for (int s=0; s<gNumSpecies; s++) 

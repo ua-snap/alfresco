@@ -25,8 +25,8 @@ class FIF {
 		std::string sGet(std::string key);
 		int pnGet(const char* key, const int*& ptr);
 		int pnGet(Json::Value& n, const int*& ptr);
-		int psGet(Json::Value&, const char*&);
-		int psGet(Json::Value&, char* const*&);
+		int psGet(Json::Value& n, std::string *&ptr);
+
 		int psGet(const char* key, char* const*& ptr);
 		int pdGet(const char* key, const double*& ptr);
 		int pdGet(Json::Value& n, const double*& ptr);
