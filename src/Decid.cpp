@@ -166,9 +166,10 @@ void Decid::setStaticData()
 		}
 		for (int i=1; i<5; i++){
 			const double* parms;
-			std::string key("Decid->BSpruce.BurnSeverity["+ToS(i)+"]");
-			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
-				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: " + key);
+			std::string key_burnsev("BSpruce.BurnSeverity["+ToS(i)+"]");
+			Json::Value key(FRESCO->fif().root["Vegetation"]["Decid"][key_burnsev.c_str()]);
+			if (2 != FRESCO->fif().pdGet(key, parms)) {
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: " + key_burnsev);
 			}
 			_pDecidToBSpruceParams[i][0] = parms[0];
 			_pDecidToBSpruceParams[i][1] = parms[1];
@@ -180,9 +181,10 @@ void Decid::setStaticData()
 		}
 		for (int i=1; i<5; i++){
 			const double* parms;
-			std::string key("Decid->WSpruce.BurnSeverity["+ToS(i)+"]");
-			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
-				throw SimpleException(SimpleException::BADARRAYSIZE, "Unexpected array size returned for Key: " + key);
+			std::string key_burnsev("WSpruce.BurnSeverity["+ToS(i)+"]");
+			Json::Value key(FRESCO->fif().root["Vegetation"]["Decid"][key_burnsev.c_str()]);
+			if (2 != FRESCO->fif().pdGet(key, parms)) {
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Unexpected array size returned for Key: " + key_burnsev);
 			}
 			_pDecidToWSpruceParams[i][0] = parms[0];
 			_pDecidToWSpruceParams[i][1] = parms[1];
