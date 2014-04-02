@@ -119,14 +119,14 @@ void Climate::			setup()
 				_pSpatialFlammability[r][c] = 0.;
 			}
 		}
-		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().sGet("Climate.Flammability.File"));
+		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().root["Climate"]["Flammability.File"].asString());
 		if (_spatialFlamabilityFile == "") 	throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
 	}
 
 	//Set monthly status.
 	_isMonthlyClimate = false;
-	if (FRESCO->fif().CheckKey("Climate.IsMonthly"))
-		_isMonthlyClimate = FRESCO->fif().bGet("Climate.IsMonthly");
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["IsMonthly"]))
+		_isMonthlyClimate = FRESCO->fif().root["Climate"]["IsMonthly"].asBool();
 	if (_isMonthlyClimate)
 	{
 		if (!_isExternFlam)
