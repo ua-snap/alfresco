@@ -49,6 +49,26 @@ int FIF::pnGet(Json::Value& n, const int*& ptr){
 int FIF::psGet(const char* key, const char*& ptr){
 	return root[key].size();
 }
+int FIF::psGet(Json::Value& n, const char*& ptr){
+	std::cout << "Way1";
+	//char* temp_array[n.size()];
+	//for (int i = 0; i < n.size(); i++){
+	//	temp_array[i] = n[i].asCString();
+	//}
+	//ptr = temp_array;
+	return n.size();
+}
+int FIF::psGet(Json::Value& n, char* const*& ptr){
+	std::cout << "Way2" << n.size() << std::endl;
+	const char* temp_array[n.size()];
+	for (int i = 0; i < n.size(); i++){
+		temp_array[i] = n[i].asCString();
+		std::cout << temp_array[i] << std::endl;
+	}
+	std::cout << &ptr << std::endl;
+	//ptr = temp_array;
+	return n.size();
+}
 int FIF::psGet(const char* key, char* const*& ptr){
 	return root[key].size();
 }
@@ -65,4 +85,12 @@ int FIF::pdGet(Json::Value& n, const double*& ptr){
 }
 int FIF::pbGet(const char* key, const bool*& ptr){
 	return root[key].size();
+}
+int FIF::pbGet(Json::Value& n, const bool*& ptr){
+	bool temp_array[n.size()];
+	for (int i = 0; i < n.size(); i++){
+		temp_array[i] = n[i].asBool();
+	}
+	ptr = temp_array;
+	return n.size();
 }

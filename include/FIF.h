@@ -26,10 +26,12 @@ class FIF {
 		int pnGet(const char* key, const int*& ptr);
 		int pnGet(Json::Value& n, const int*& ptr);
 		int psGet(const char* key, const char*& ptr);
+		int psGet(Json::Value&, const char*&);
+		int psGet(Json::Value&, char* const*&);
 		int psGet(const char* key, char* const*& ptr);
 		int pdGet(const char* key, const double*& ptr);
 		int pdGet(Json::Value& n, const double*& ptr);
 		int pbGet(const char* key, const bool*& ptr);
-		int setArray(Json::Value& n, const double*& ptr);
+		int pbGet(Json::Value& key, const bool*& ptr);
 };
 #endif
