@@ -519,6 +519,7 @@ void Climate::          setupTransitions()
 	    Transition.RandExplicitMinYear		= pnValRandExplicitMinYears[i];
 	    Transition.RandExplicitMaxYear		= pnValRandExplicitMaxYears[i];
 	    Transition.IsRandExplicitReplicated = pbValRandExplicitReplicate[i];
+	std::cout << psOffTypes[0] << psOffTypes[1] << psOffTypes[2] << std::endl;
         Transition.OffsetsType				= ((temp=psOffTypes[i]) == "NONE" ? OTNONE : (temp == "CONSTANT" ? OTCONSTANT : (temp == "FILE" ? OTFILE : OTRANDOM)));
         Transition.OffsetsFile				= FormatDirectory(std::string(psOffFiles[i]));
 	    Transition.ConstantTempOffset		= pdOffConstantTemps[i];
@@ -653,7 +654,7 @@ float Climate::			getClimateFlammability(int row, int col)
 //Offsets
 void Climate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffsetType OffsetType, int Year, float Amount)
 {
-    _stepsAndRampsEnabled = FRESCO->fif().bGet("Climate.StepsAndRampsEnabled");
+    _stepsAndRampsEnabled = FRESCO->fif().root["Climate"]["StepsAndRampsEnabled"].asBool();
     if (_stepsAndRampsEnabled)
     {
         setupStepOrRamp(TEMP,     STEP,  "Climate.Offsets.TempStepYear",     "Climate.Offsets.TempStep");
