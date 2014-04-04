@@ -658,21 +658,21 @@ void Climate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffse
     _stepsAndRampsEnabled = FRESCO->fif().root["Climate"]["StepsAndRampsEnabled"].asBool();
     if (_stepsAndRampsEnabled)
     {
-        setupStepOrRamp(TEMP,     STEP,  "Climate.Offsets.TempStepYear",     "Climate.Offsets.TempStep");
-        setupStepOrRamp(TEMP,     RAMP,  "Climate.Offsets.TempRampYear",     "Climate.Offsets.TempRamp");
-        setupStepOrRamp(PRECIP,   STEP,  "Climate.Offsets.PrecipStepYear",   "Climate.Offsets.PrecipStep");
-        setupStepOrRamp(PRECIP,   RAMP,  "Climate.Offsets.PrecipRampYear",   "Climate.Offsets.PrecipRamp");
+        setupStepOrRamp(TEMP,     STEP,  FRESCO->fif().root["Climate"]["Offsets"]["TempStepYear"],     FRESCO->fif().root["Climate"]["Offsets"]["TempStep"]);
+        setupStepOrRamp(TEMP,     RAMP,  FRESCO->fif().root["Climate"]["Offsets"]["TempRampYear"],     FRESCO->fif().root["Climate"]["Offsets"]["TempRamp"]);
+        setupStepOrRamp(PRECIP,   STEP,  FRESCO->fif().root["Climate"]["Offsets"]["PrecipStepYear"],   FRESCO->fif().root["Climate"]["Offsets"]["PrecipStep"]);
+        setupStepOrRamp(PRECIP,   RAMP,  FRESCO->fif().root["Climate"]["Offsets"]["PrecipRampYear"],   FRESCO->fif().root["Climate"]["Offsets"]["PrecipRamp"]);
     }
 }
 
-void Climate::          setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, const char* yearsKey, const char* offsetsKey)
+void Climate::          setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, Json::Value& yearsKey, Json::Value& offsetsKey)
 {        
     //Get values from FIF.
     const int*      pYears;
     const double*   pAmounts;
     int count = FRESCO->fif().pnGet(yearsKey, pYears);
     if (FRESCO->fif().pdGet(offsetsKey, pAmounts) != count)     
-        throw SimpleException(SimpleException::BADARRAYSIZE, std::string("Unexpected array size returned for Key: ") + offsetsKey);
+        throw SimpleException(SimpleException::BADARRAYSIZE, std::string("Unexpected array size returned for Key: ") + offsetsKey.asCString());
     //Place values into appropriate list for later use.
     for (int i=0; i<count; i++) {
         //Create the offset with values from FIF.
