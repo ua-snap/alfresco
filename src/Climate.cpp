@@ -374,6 +374,7 @@ void Climate::			yearStart()
 		{
 			// Use external calculations for annual climate flammability.
 			filename = AppendYear(_spatialFlamabilityFile, gYear);
+
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialFlammability, false);
 		}
@@ -384,6 +385,7 @@ void Climate::			yearStart()
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
+
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][0], false);
 			//Read precip file.
 			filename = AppendYear(_pCurrentTransition->SpatialPrecipFile, gYear);

@@ -76,10 +76,10 @@ void Grassland::setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-        _humanIgnitionsProb	    = FRESCO->fif().dGet("Grassland.HumanFireProb");
+        _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["Grassland"]["HumanFireProb"].asDouble();
         _decidFireProb          = FRESCO->fif().root["Decid"]["FireProb"].asDouble();
-		if (FRESCO->fif().CheckKey("Grassland.IgnitionDepressor"))
-			_ignitionDepressor = FRESCO->fif().dGet("Grassland.IgnitionDepressor");
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["Grassland"]["IgnitionDepressor"]))
+			_ignitionDepressor = FRESCO->fif().root["Vegetation"]["Grassland"]["IgnitionDepressor"].asDouble();
 		else
 			_ignitionDepressor = 1;
 		_tundraSpruceBasalArea  = FRESCO->fif().root["Vegetation"]["Tundra"]["Spruce.BasalArea"].asDouble();

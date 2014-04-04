@@ -1,7 +1,7 @@
 #ifndef Fresco_CustomLandscape_h
 #define Fresco_CustomLandscape_h
 
-
+#include <string>
 #include "Custom.h"
 #include "Landscape.h"
 //Include frame types

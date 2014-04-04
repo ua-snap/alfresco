@@ -95,7 +95,7 @@ void Decid::setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-		_isFireProbAgeDependent = FRESCO->fif().bGet("Decid.FireProb.IsAgeDependent");
+		_isFireProbAgeDependent = FRESCO->fif().root["Vegetation"]["Decid"]["FireProb.IsAgeDependent"].asBool();
 		if (_isFireProbAgeDependent) {
 			if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["FireProb"], _pAgeDependentFireParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: Decid.FireProb (because Decid.FireProb.IsAgeDependent is set to TRUE)");
@@ -108,7 +108,7 @@ void Decid::setStaticData()
 			_ignitionDepressor = 1;
         _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["Decid"]["HumanFireProb"].asDouble();
         _decidHistory           = FRESCO->fif().root["Vegetation"]["Decid"]["History"].asInt();
-        _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
+        _tundraSpruceBasalArea  = FRESCO->fif().root["Vegetation"]["Tundra"]["Spruce.BasalArea"].asDouble();
         _pBSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.BSpruce"], &_bspruceStartAgeType);
         _pWSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.WSpruce"], &_wspruceStartAgeType);
         if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["Tundra.Parms"], _pDecidTundraParams))  {

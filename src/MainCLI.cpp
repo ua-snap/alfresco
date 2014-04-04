@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 			srand(randSeedVal + rc);
 			long repRand = rand();
 			_simulation->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), repRand);
-			_simulation->runRep(rc,_simulation->fif().nGet("FirstYear")); 
+			_simulation->runRep(rc,_simulation->fif().root["Simulation"]["FirstYear"].asInt()); 
 			_simulation->runEnd();
 			_simulation->clear();
 			delete _simulation; _simulation = 0;

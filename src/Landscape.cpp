@@ -125,19 +125,19 @@ void Landscape::		setup()
     _cropNeighbors		        = FRESCO->fif().root["Simulation"]["CropNeighbors"].asBool();
     _xulCorner		            = FRESCO->fif().root["RasterSettings"]["XULCorner"].asDouble();
     _yulCorner			        = FRESCO->fif().root["RasterSettings"]["YULCorner"].asDouble();
-    _vegDistributionStatFlags	= FRESCO->fif().nGet("Stat.VegDist.Flags");
-    _vegResidenceStatFlags	    = FRESCO->fif().nGet("Stat.VegResidence.Flags");
-    _fireSpeciesStatFlags	    = FRESCO->fif().nGet("Stat.FireSpecies.Flags");
-    _fireIntervalStatFlags	    = FRESCO->fif().nGet("Stat.FireInterval.Flags");
-    _fireSizeStatFlags		    = FRESCO->fif().nGet("Stat.FireSize.Flags");
-    _fireNumStatFlags		    = FRESCO->fif().nGet("Stat.FireNum.Flags");
+    _vegDistributionStatFlags	= FRESCO->fif().root["Stat"]["VegDist.Flags"].asInt();
+    _vegResidenceStatFlags	    = FRESCO->fif().root["Stat"]["VegResidence.Flags"].asInt();
+    _fireSpeciesStatFlags	    = FRESCO->fif().root["Stat"]["FireSpecies.Flags"].asInt();
+    _fireIntervalStatFlags	    = FRESCO->fif().root["Stat"]["FireInterval.Flags"].asInt();
+    _fireSizeStatFlags		    = FRESCO->fif().root["Stat"]["FireSize.Flags"].asInt();
+    _fireNumStatFlags		    = FRESCO->fif().root["Stat"]["FireNum.Flags"].asInt();
 
 	bool requireAaeacForInput = true;
 	bool applyAaeacToOutput = true;
 	if (FRESCO->fif().CheckKey("RequireAAEACProjectedInputRasters"))
-		requireAaeacForInput = FRESCO->fif().bGet("RequireAAEACProjectedInputRasters");
+		requireAaeacForInput = FRESCO->fif().root["RasterSettings"]["RequireAAEACProjectedInputRasters"].asBool();
 	if (FRESCO->fif().CheckKey("ApplyAAEACProjectionToOutputRasters"))
-		applyAaeacToOutput = FRESCO->fif().bGet("ApplyAAEACProjectionToOutputRasters");
+		applyAaeacToOutput = FRESCO->fif().root["RasterSettings"]["ApplyAAEACProjectionToOutputRasters"].asBool();
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
@@ -179,7 +179,7 @@ void Landscape::		setup()
 	_fireIntervalStat.resize(gNumSpecies);
 
 	#ifdef WITHSTATS
-	int numYears = FRESCO->fif().root["Simulation"]["LastYear"].asInt() - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
+	int numYears = FRESCO->fif().root["Simulation"]["LastYear"].asInt() - FRESCO->fif().root["Simulation"]["FirstYear"].asInt() + 1;  // Used for number of rows in StatArray
 	int numReps = FRESCO->fif().root["Simulation"]["MaxReps"].asInt();  // Used for number of columns in StatArray
 	#endif
 
