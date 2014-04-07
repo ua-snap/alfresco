@@ -226,6 +226,7 @@ void Climate::			setup()
 	if (_transitions.empty())
 		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
     std::vector<SClimateTransition>::iterator iter = _transitions.begin();
+	std::cout << iter->Year << " : " << gFirstYear << std::endl;
 	if (iter->Year != gFirstYear)
 		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
 	
@@ -477,20 +478,20 @@ void Climate::			yearEnd()
 void Climate::          setupTransitions()
 {
     int           count = 0;
-    const int     *pnYears;
+    int     *pnYears;
     std::string   *psValTypes;
-    const double  *pdValTempConstants, *pdValPrecipConstants;
+    double  *pdValTempConstants, *pdValPrecipConstants;
     std::string   *psValTempFiles;
     std::string   *psValPrecipFiles;
-    const int     *pnValRandExplicitMinYears, *pnValRandExplicitMaxYears;
-    const bool    *pbValRandExplicitReplicate;
+    int     *pnValRandExplicitMinYears, *pnValRandExplicitMaxYears;
+    bool    *pbValRandExplicitReplicate;
     
     std::string   *psOffTypes;
     std::string   *psOffFiles;
-    const double  *pdOffConstantTemps, *pdOffConstantPrecips;
-    const double  *pdOffRandomTempMeans, *pdOffRandomPrecipMeans;
-    const double  *pdOffRandomTempStdDevs, *pdOffRandomPrecipStdDevs;
-    const bool    *pbOffRandomReplicate;
+    double  *pdOffConstantTemps, *pdOffConstantPrecips;
+    double  *pdOffRandomTempMeans, *pdOffRandomPrecipMeans;
+    double  *pdOffRandomTempStdDevs, *pdOffRandomPrecipStdDevs;
+    bool    *pbOffRandomReplicate;
     
     //Get arrays of values and make sure all arrays have the same count.
     count = FRESCO->fif().pnGet(FRESCO->fif().root["Climate"]["TransitionYears"], pnYears);
@@ -519,6 +520,7 @@ void Climate::          setupTransitions()
 	    std::vector<SClimateTransition>::iterator Iter;
 	    //Create the climate transition.
 	    Transition.Year						= pnYears[i];
+	    std::cout << pnYears[i] << std::endl;
         Transition.ValuesType				= ((temp=psValTypes[i]) == "CONSTANT" ? VTCONSTANT : (temp == "SPATIAL" ? VTSPATIAL : (temp == "EXPLICIT" ? VTEXPLICIT : VTRANDEXPLICIT)));
 	    Transition.ConstantTemp				= pdValTempConstants[i];
 	    Transition.ConstantPrecip			= pdValPrecipConstants[i];
@@ -674,8 +676,8 @@ void Climate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffse
 void Climate::          setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, Json::Value& yearsKey, Json::Value& offsetsKey)
 {        
     //Get values from FIF.
-    const int*      pYears;
-    const double*   pAmounts;
+    int*      pYears;
+    double*   pAmounts;
     int count = FRESCO->fif().pnGet(yearsKey, pYears);
     if (FRESCO->fif().pdGet(offsetsKey, pAmounts) != count)     
         throw SimpleException(SimpleException::BADARRAYSIZE, std::string("Unexpected array size returned for Key: ") + offsetsKey.asCString());

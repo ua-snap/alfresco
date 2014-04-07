@@ -490,9 +490,9 @@ void CustomLandscape::      setupSuppressionTransitions()
     std::vector<SSuppressionTransition>::iterator it;
     //Get arrays of values and make sure all arrays have the same count.
     int           count = 0;
-    const int     *pYears, *pThresholdFireSizes, *pThresholdIgnitions; 
-    const bool    *pHasNewMapFlags;
-    const double  *pClass1,*pClass2, *pClass3, *pClass4, *pClass5;
+    int     *pYears, *pThresholdFireSizes, *pThresholdIgnitions; 
+    bool    *pHasNewMapFlags;
+    double  *pClass1,*pClass2, *pClass3, *pClass4, *pClass5;
     std::string   errBase("Unexpected array size returned for Key: ");
     Json::Value&  keyBase = FRESCO->fif().root["Fire"]["Suppression"]["Tran"];
     //std::string   keyBase("Fire.Suppression.Tran.");

@@ -232,11 +232,11 @@ void Fire::setupFireTransitions()
  */
 {
     int           count = 0;
-    const int*    pYears;
+    int*    pYears;
     //char *const*  pTypes;
     std::string*   pTypes;
-    const double* pIgnitionFactors;
-    const double* pSensitivities;
+    double* pIgnitionFactors;
+    double* pSensitivities;
     std::string*  pSpatialIgnitionFactorFiles;
     std::string*  pSpatialSensitivityFiles;
     std::string*  pHistoryFireFiles;
