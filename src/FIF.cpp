@@ -49,9 +49,6 @@ int FIF::psGet(Json::Value& n, std::string *&ptr){
 	}
 	return n.size();
 }
-int FIF::psGet(const char* key, char* const*& ptr){
-	return root[key].size();
-}
 int FIF::pdGet(Json::Value& n, const double*& ptr){
 	double temp_array[n.size()];
 	for (int i = 0; i < n.size(); i++){
