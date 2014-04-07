@@ -60,9 +60,6 @@ int FIF::pdGet(Json::Value& n, const double*& ptr){
 	ptr = temp_array;
 	return n.size();
 }
-int FIF::pbGet(const char* key, const bool*& ptr){
-	return root[key].size();
-}
 int FIF::pbGet(Json::Value& n, const bool*& ptr){
 	bool temp_array[n.size()];
 	for (int i = 0; i < n.size(); i++){
