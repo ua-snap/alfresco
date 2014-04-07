@@ -740,11 +740,11 @@ void CustomLandscape::		setupMapStats()
     int mapCount = 0;
     std::string* pMapFiles;
     std::string* pMapCodes;
-    const int* pMapFlags;
-    const int* pMapRepStart;
-    const int* pMapRepFreq;
-    const int* pMapYearStart;
-    const int* pMapYearFreq;
+    int* pMapFlags;
+    int* pMapRepStart;
+    int* pMapRepFreq;
+    int* pMapYearStart;
+    int* pMapYearFreq;
 
     if (FRESCO->fif().CheckKey("MapFiles")
         && FRESCO->fif().CheckKey("MapCodes")

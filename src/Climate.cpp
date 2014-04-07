@@ -220,13 +220,9 @@ void Climate::			setup()
 	}
 	std::string errMsg("A climate trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
 	std::vector<SClimateTransition>::iterator T;
-	for (T=_transitions.begin(); T!=_transitions.end(); T++) {
-		std::cout << T->Year << std::endl;
-	}
 	if (_transitions.empty())
 		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
     std::vector<SClimateTransition>::iterator iter = _transitions.begin();
-	std::cout << iter->Year << " : " << gFirstYear << std::endl;
 	if (iter->Year != gFirstYear)
 		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
 	
@@ -520,7 +516,6 @@ void Climate::          setupTransitions()
 	    std::vector<SClimateTransition>::iterator Iter;
 	    //Create the climate transition.
 	    Transition.Year						= pnYears[i];
-	    std::cout << pnYears[i] << std::endl;
         Transition.ValuesType				= ((temp=psValTypes[i]) == "CONSTANT" ? VTCONSTANT : (temp == "SPATIAL" ? VTSPATIAL : (temp == "EXPLICIT" ? VTEXPLICIT : VTRANDEXPLICIT)));
 	    Transition.ConstantTemp				= pdValTempConstants[i];
 	    Transition.ConstantPrecip			= pdValPrecipConstants[i];
