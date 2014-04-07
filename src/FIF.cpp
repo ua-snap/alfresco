@@ -34,9 +34,9 @@ int FIF::nGet(std::string key){
 double FIF::dGet(std::string key){
 	return root[key].asDouble();
 }
-int FIF::pnGet(const char* key, const int*& ptr){
-	return root[key].size();
-}
+//int FIF::pnGet(const char* key, const int*& ptr){
+//	return root[key].size();
+//}
 
 int FIF::pnGet(Json::Value& n, const int*& ptr){
 	int temp_array[n.size()];

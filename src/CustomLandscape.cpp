@@ -494,25 +494,28 @@ void CustomLandscape::      setupSuppressionTransitions()
     const bool    *pHasNewMapFlags;
     const double  *pClass1,*pClass2, *pClass3, *pClass4, *pClass5;
     std::string   errBase("Unexpected array size returned for Key: ");
-    std::string   keyBase("Fire.Suppression.Tran.");
-    std::string   yearsKey(keyBase + "Years");
-    std::string   hasNewMapKey(keyBase + "HasNewMap");
-    std::string   class1Key(keyBase + "Class1");
-    std::string   class2Key(keyBase + "Class2");
-    std::string   class3Key(keyBase + "Class3");
-    std::string   class4Key(keyBase + "Class4");
-    std::string   class5Key(keyBase + "Class5");
-    std::string   fireSizeKey(keyBase + "Threshold.FireSize");
-    std::string   ignitionKey(keyBase + "Threshold.Ignitions");
-    count = FRESCO->fif().pnGet(yearsKey.c_str(), pYears);
-    if (FRESCO->fif().pnGet(fireSizeKey.c_str(), pThresholdFireSizes) != count)   throw SimpleException(SimpleException::BADARRAYSIZE, errBase + fireSizeKey);
-    if (FRESCO->fif().pnGet(ignitionKey.c_str(), pThresholdIgnitions) != count)   throw SimpleException(SimpleException::BADARRAYSIZE, errBase + ignitionKey);
-    if (FRESCO->fif().pbGet(hasNewMapKey.c_str(), pHasNewMapFlags) != count)      throw SimpleException(SimpleException::BADARRAYSIZE, errBase + hasNewMapKey);
-    if (FRESCO->fif().pdGet(class1Key.c_str(), pClass1) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class1Key);
-    if (FRESCO->fif().pdGet(class2Key.c_str(), pClass2) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class2Key);
-    if (FRESCO->fif().pdGet(class3Key.c_str(), pClass3) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class3Key);
-    if (FRESCO->fif().pdGet(class4Key.c_str(), pClass4) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class4Key);
-    if (FRESCO->fif().pdGet(class5Key.c_str(), pClass5) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class5Key);
+    Json::Value&  keyBase = FRESCO->fif().root["Fire"]["Suppression"]["Tran"];
+    //std::string   keyBase("Fire.Suppression.Tran.");
+    //std::string   yearsKey(keyBase + "Years");
+    Json::Value&  yearsKey = keyBase["Years"];
+    Json::Value&  hasNewMapKey = keyBase["HasNewMap"];
+    //std::string   hasNewMapKey(keyBase + "HasNewMap");
+    Json::Value&   class1Key = keyBase["Class1"];
+    Json::Value&   class2Key = keyBase["Class2"];
+    Json::Value&   class3Key = keyBase["Class3"];
+    Json::Value&   class4Key = keyBase["Class4"];
+    Json::Value&   class5Key = keyBase["Class5"];
+    Json::Value&   fireSizeKey = keyBase["Threshold.FireSize"];
+    Json::Value&   ignitionKey = keyBase["Threshold.Ignitions"];
+    count = FRESCO->fif().pnGet(FRESCO->fif().root["Fire"]["Suppression"]["Tran"]["Years"], pYears);
+    if (FRESCO->fif().pnGet(fireSizeKey, pThresholdFireSizes) != count)   throw SimpleException(SimpleException::BADARRAYSIZE, errBase + fireSizeKey.asCString());
+    if (FRESCO->fif().pnGet(ignitionKey, pThresholdIgnitions) != count)   throw SimpleException(SimpleException::BADARRAYSIZE, errBase + ignitionKey.asCString());
+    if (FRESCO->fif().pbGet(hasNewMapKey, pHasNewMapFlags) != count)      throw SimpleException(SimpleException::BADARRAYSIZE, errBase + hasNewMapKey.asCString());
+    if (FRESCO->fif().pdGet(class1Key, pClass1) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class1Key.asCString());
+    if (FRESCO->fif().pdGet(class2Key, pClass2) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class2Key.asCString());
+    if (FRESCO->fif().pdGet(class3Key, pClass3) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class3Key.asCString());
+    if (FRESCO->fif().pdGet(class4Key, pClass4) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class4Key.asCString());
+    if (FRESCO->fif().pdGet(class5Key, pClass5) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE, errBase + class5Key.asCString());
 
     //Load array values into transition list.
     std::string temp = "";
@@ -699,11 +702,16 @@ void CustomLandscape::      setupHabitatStats()
         int count = FRESCO->fif().psGet(FRESCO->fif().root["Stat"]["Habitat"]["Types"], pTypes);
         for (int i=0; i<count; i++) {
             //Get values from FIF for each habitat type.
-            const int* pVegTypes;  int vegCount;  std::string keyVegTypes("Stat.Habitat." + ToS(pTypes[i]) + ".VegTypes");
-            const int* pAgeRange;  int ageCount;  std::string keyAgeRange("Stat.Habitat." + ToS(pTypes[i]) + ".AgeRange"); 
-            vegCount = FRESCO->fif().pnGet(keyVegTypes.c_str(), pVegTypes);
-            ageCount = FRESCO->fif().pnGet(keyAgeRange.c_str(), pAgeRange);
-            if (ageCount!=2) throw Poco::Exception("Expected array size of 2 for key, " + keyAgeRange + ".  Received " + ToS(ageCount) + ".");
+            const int* pVegTypes;  
+            int vegCount;  
+	    Json::Value& keyVegTypes = FRESCO->fif().root["Stat"]["Habitat." + ToS(pTypes[i]) + ".VegTypes"];
+            const int* pAgeRange;  
+	    int ageCount;  
+	    //std::string keyAgeRange("Stat.Habitat." + ToS(pTypes[i]) + ".AgeRange"); 
+	    Json::Value& keyAgeRange = FRESCO->fif().root["Stat"]["Habitat." + ToS(pTypes[i]) + ".AgeRange"]; 
+            vegCount = FRESCO->fif().pnGet(keyVegTypes, pVegTypes);
+            ageCount = FRESCO->fif().pnGet(keyAgeRange, pAgeRange);
+            if (ageCount!=2) throw Poco::Exception("Expected array size of 2 for key, " + keyAgeRange.asString() + ".  Received " + ToS(ageCount) + ".");
             //Organize values into SHabitatStat collection.
             SHabitatStat habitat;
             habitat.Stat.setup("Habitat"+ToS(pTypes[i]), flags, false);
@@ -716,10 +724,10 @@ void CustomLandscape::      setupHabitatStats()
             habitat.MinAge = pAgeRange[0];
             habitat.MaxAge = pAgeRange[1];
 			if (!(habitat.MinAge < habitat.MaxAge)) 
-				throw Poco::Exception("Invalid habitat age range " + ToS(habitat.MinAge) + " to " + ToS(habitat.MaxAge) + " in key " + keyAgeRange + ".  Must be in order.");
+				throw Poco::Exception("Invalid habitat age range " + ToS(habitat.MinAge) + " to " + ToS(habitat.MaxAge) + " in key " + keyAgeRange.asCString() + ".  Must be in order.");
             for (int v=0; v<vegCount; v++) {
 				if (!CustomFresco::isValidVegType(pVegTypes[v])) 
-					throw Poco::Exception("Invalid habitat veg type " + ToS(pVegTypes[v]) + " in key " + keyVegTypes + ".");
+					throw Poco::Exception("Invalid habitat veg type " + ToS(pVegTypes[v]) + " in key " + keyVegTypes.asCString() + ".");
                 habitat.VegTypes.push_back(pVegTypes[v]);
             }
             _habitatStats.push_back(habitat);
@@ -748,11 +756,11 @@ void CustomLandscape::		setupMapStats()
     {
         mapCount = FRESCO->fif().psGet("MapFiles", pMapFiles);
         if (FRESCO->fif().psGet("MapCodes", pMapCodes) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapCodes");
-        if (FRESCO->fif().pnGet("MapFlags", pMapFlags) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapFlags");
-        if (FRESCO->fif().pnGet("MapRepStart", pMapRepStart) != mapCount)   throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepStart");
-        if (FRESCO->fif().pnGet("MapRepFreq", pMapRepFreq) != mapCount)     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepFreq");
-        if (FRESCO->fif().pnGet("MapYearStart", pMapYearStart) != mapCount) throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearStart");
-        if (FRESCO->fif().pnGet("MapYearFreq", pMapYearFreq) != mapCount)   throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearFreq");
+        if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapFlags"], pMapFlags) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapFlags");
+        if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapRepStart"], pMapRepStart) != mapCount)   throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepStart");
+        if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapRepFreq"], pMapRepFreq) != mapCount)     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepFreq");
+        if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapYearStart"], pMapYearStart) != mapCount) throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearStart");
+        if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapYearFreq"], pMapYearFreq) != mapCount)   throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapYearFreq");
     }
     else mapCount = 0;
 

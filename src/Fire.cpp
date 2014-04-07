@@ -241,10 +241,10 @@ void Fire::setupFireTransitions()
     char *const*  pHistoryFireFiles;
     
     //Get arrays of values and make sure all arrays have the same count.
-    count = FRESCO->fif().pnGet("Fire.TypeTransitionYears", pYears);
+    count = FRESCO->fif().pnGet(FRESCO->fif().root["Fire"]["TypeTransitionYears"], pYears);
     if (FRESCO->fif().psGet("Fire.Types", pTypes) != count)                                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Types");
-    if (FRESCO->fif().pdGet("Fire.IgnitionFactor", pIgnitionFactors) != count)                       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.IgnitionFactor");
-    if (FRESCO->fif().pdGet("Fire.Sensitivity", pSensitivities) != count)                            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Sensitivity");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["IgnitionFactor"], pIgnitionFactors) != count)                       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.IgnitionFactor");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["Sensitivity"], pSensitivities) != count)                            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Sensitivity");
     if (FRESCO->fif().psGet("Fire.Spatial.IgnitionFactor", pSpatialIgnitionFactorFiles) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.IgnitionFactor");
     if (FRESCO->fif().psGet("Fire.Spatial.Sensitivity", pSpatialSensitivityFiles) != count)          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.Sensitivity");
     if (FRESCO->fif().psGet("Fire.Historical", pHistoryFireFiles) != count)                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Historical");

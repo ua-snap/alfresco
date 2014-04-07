@@ -131,7 +131,9 @@ void Climate::			setup()
 	{
 		if (!_isExternFlam)
 		{
-			// Add months needed by internal climate fire prob equation
+			// Add months needed by internal climate fire prob equationA
+			//tempMonths.clear();
+			//precipMonths.clear();
 			tempMonths.push_back(3);
 			tempMonths.push_back(4);
 			tempMonths.push_back(5);
@@ -217,6 +219,10 @@ void Climate::			setup()
 		ShowOutput("\t\tYear ValuesType     OffsetsType\n");
 	}
 	std::string errMsg("A climate trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
+	std::vector<SClimateTransition>::iterator T;
+	for (T=_transitions.begin(); T!=_transitions.end(); T++) {
+		std::cout << T->Year << std::endl;
+	}
 	if (_transitions.empty())
 		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
     std::vector<SClimateTransition>::iterator iter = _transitions.begin();

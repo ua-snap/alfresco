@@ -7,7 +7,7 @@ if AIEM
 INCLUDES += -I/home/UA/apbennett/aiem/include
 endif
 libFrescoFoundation_la_LDFLAGS = -shared
-libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS
+libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS -g
 libFrescoFoundation_la_SOURCES = ../src/Climate.cpp \
 				../src/Except.cpp \
 				../src/Fire.cpp \
@@ -22,7 +22,7 @@ libFrescoFoundation_la_SOURCES = ../src/Climate.cpp \
 				../src/Stat.cpp \
 				../src/FIF.cpp
 libFrescoCustom_la_LDFLAGS = -shared
-libFrescoCustom_la_CXXFLAGS = -DWITHSTATS
+libFrescoCustom_la_CXXFLAGS = -DWITHSTATS -g
 libFrescoCustom_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/BSpruce.cpp \
 				../src/CustomFresco.cpp \
@@ -37,7 +37,7 @@ libFrescoCustom_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/WSpruce.cpp
 if AIEM
 libFrescoAIEM_la_LDFLAGS = -shared
-libFrescoAIEM_la_CXXFLAGS = -DWITHSTATS -DAIEM_MODEL
+libFrescoAIEM_la_CXXFLAGS = -DWITHSTATS -DAIEM_MODEL -g
 libFrescoAIEM_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/BSpruce.cpp \
 				../src/CustomFresco.cpp \
