@@ -28,7 +28,6 @@ class FIF {
 		int psGet(Json::Value& n, std::string *&ptr);
 
 		int psGet(const char* key, char* const*& ptr);
-		int pdGet(const char* key, const double*& ptr);
 		int pdGet(Json::Value& n, const double*& ptr);
 		int pbGet(const char* key, const bool*& ptr);
 		int pbGet(Json::Value& key, const bool*& ptr);

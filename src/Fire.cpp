@@ -233,21 +233,22 @@ void Fire::setupFireTransitions()
 {
     int           count = 0;
     const int*    pYears;
-    char *const*  pTypes;
+    //char *const*  pTypes;
+    std::string*   pTypes;
     const double* pIgnitionFactors;
     const double* pSensitivities;
-    char *const*  pSpatialIgnitionFactorFiles;
-    char *const*  pSpatialSensitivityFiles;
-    char *const*  pHistoryFireFiles;
+    std::string*  pSpatialIgnitionFactorFiles;
+    std::string*  pSpatialSensitivityFiles;
+    std::string*  pHistoryFireFiles;
     
     //Get arrays of values and make sure all arrays have the same count.
     count = FRESCO->fif().pnGet(FRESCO->fif().root["Fire"]["TypeTransitionYears"], pYears);
-    if (FRESCO->fif().psGet("Fire.Types", pTypes) != count)                                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Types");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Types"], pTypes) != count)                                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Types");
     if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["IgnitionFactor"], pIgnitionFactors) != count)                       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.IgnitionFactor");
     if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["Sensitivity"], pSensitivities) != count)                            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Sensitivity");
-    if (FRESCO->fif().psGet("Fire.Spatial.IgnitionFactor", pSpatialIgnitionFactorFiles) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.IgnitionFactor");
-    if (FRESCO->fif().psGet("Fire.Spatial.Sensitivity", pSpatialSensitivityFiles) != count)          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.Sensitivity");
-    if (FRESCO->fif().psGet("Fire.Historical", pHistoryFireFiles) != count)                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Historical");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Spatial.IgnitionFactor"], pSpatialIgnitionFactorFiles) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.IgnitionFactor");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Spatial.Sensitivity"], pSpatialSensitivityFiles) != count)          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.Sensitivity");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Historical"], pHistoryFireFiles) != count)                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Historical");
 
     for (int i=0; i<count; i++) {
         SFireTransition FireTransition;

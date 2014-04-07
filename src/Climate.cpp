@@ -132,8 +132,8 @@ void Climate::			setup()
 		if (!_isExternFlam)
 		{
 			// Add months needed by internal climate fire prob equationA
-			//tempMonths.clear();
-			//precipMonths.clear();
+			tempMonths.clear();
+			precipMonths.clear();
 			tempMonths.push_back(3);
 			tempMonths.push_back(4);
 			tempMonths.push_back(5);

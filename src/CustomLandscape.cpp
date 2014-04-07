@@ -738,8 +738,8 @@ void CustomLandscape::      setupHabitatStats()
 void CustomLandscape::		setupMapStats()
 {
     int mapCount = 0;
-    char *const* pMapFiles;
-    char *const* pMapCodes;
+    std::string* pMapFiles;
+    std::string* pMapCodes;
     const int* pMapFlags;
     const int* pMapRepStart;
     const int* pMapRepFreq;
@@ -754,8 +754,8 @@ void CustomLandscape::		setupMapStats()
         && FRESCO->fif().CheckKey("MapYearStart")
         && FRESCO->fif().CheckKey("MapYearFreq")) 
     {
-        mapCount = FRESCO->fif().psGet("MapFiles", pMapFiles);
-        if (FRESCO->fif().psGet("MapCodes", pMapCodes) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapCodes");
+        mapCount = FRESCO->fif().psGet(FRESCO->fif().root["MapOutput"]["MapFiles"], pMapFiles);
+        if (FRESCO->fif().psGet(FRESCO->fif().root["MapOutput"]["MapCodes"], pMapCodes) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapCodes");
         if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapFlags"], pMapFlags) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapFlags");
         if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapRepStart"], pMapRepStart) != mapCount)   throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepStart");
         if (FRESCO->fif().pnGet(FRESCO->fif().root["MapOutput"]["MapRepFreq"], pMapRepFreq) != mapCount)     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapRepFreq");
