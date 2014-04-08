@@ -22,18 +22,6 @@ bool FIF::CheckKey(std::string key){
 bool FIF::CheckKey(Json::Value& n){
 	return !n.isNull();
 }
-bool FIF::bGet(std::string key){
-	return root[key].asBool();
-}
-std::string FIF::sGet(std::string key){
-	return root[key].asString();
-}
-int FIF::nGet(std::string key){
-	return root[key].asInt();
-}
-double FIF::dGet(std::string key){
-	return root[key].asDouble();
-}
 int FIF::pnGet(Json::Value& n, int*& ptr){
 	ptr = new int[n.size()];
 	for (int i = 0; i < n.size(); i++){
