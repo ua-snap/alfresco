@@ -24,26 +24,26 @@ private:
 	bool					_wasGrassland;
 	float					_degreesForGrassland;			//Running sum of a climate based regression used to determine succession to Grassland.
 	static int				_yearsOfGrasslandCheck;
-	static const double*	_pGrasslandThresholds;
-	static const double*	_pGrassClimateParams;
+	static double*	_pGrasslandThresholds;
+	static double*	_pGrassClimateParams;
 	static std::list<int>	_grassTempMonths;
 	static std::list<int>	_grassPrecipMonths;
 	static bool				_isStaticSetupAlready;
 	static bool				_isFireProbAgeDependent;
-	static const double*	_pAgeDependentFireParams;		
+	static double*	_pAgeDependentFireParams;		
 	static float			_decidFireProb;
 	static float			_ignitionDepressor;				//Dampens the ignition factor for any cells of type Decid.
 	static int				_decidHistory;
 	static double			_tundraSpruceBasalArea;
-	static const double*	_pDecidTundraParams;
+	static double*	_pDecidTundraParams;
 	static double**			_pDecidToBSpruceParams;			//Seperate parameters per burn severity.
 	static double**			_pDecidToWSpruceParams;
 	static EStartAgeType	_bspruceStartAgeType;
 	static EStartAgeType	_wspruceStartAgeType;
 	static double*			_pBSpruceWeibullIntegral;
 	static double*			_pWSpruceWeibullIntegral;
-	static const double*	_pBSpruceStartAge;
-	static const double*	_pWSpruceStartAge;
+	static double*	_pBSpruceStartAge;
+	static double*	_pWSpruceStartAge;
 
 //Functions
 public:

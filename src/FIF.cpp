@@ -34,14 +34,6 @@ int FIF::nGet(std::string key){
 double FIF::dGet(std::string key){
 	return root[key].asDouble();
 }
-int FIF::pnGet(Json::Value& n, const int*& ptr){
-	int temp_array[n.size()];
-	for (int i = 0; i < n.size(); i++){
-		temp_array[i] = n[i].asInt();
-	}
-	ptr = temp_array;
-	return n.size();
-}
 int FIF::pnGet(Json::Value& n, int*& ptr){
 	ptr = new int[n.size()];
 	for (int i = 0; i < n.size(); i++){
@@ -68,21 +60,5 @@ int FIF::pbGet(Json::Value& n, bool*& ptr){
 	for (int i = 0; i < n.size(); i++){
 		ptr[i] = n[i].asBool();
 	}
-	return n.size();
-}
-int FIF::pdGet(Json::Value& n, const double*& ptr){
-	double temp_array[n.size()];
-	for (int i = 0; i < n.size(); i++){
-		temp_array[i] = n[i].asDouble();
-	}
-	ptr = temp_array;
-	return n.size();
-}
-int FIF::pbGet(Json::Value& n, const bool*& ptr){
-	bool temp_array[n.size()];
-	for (int i = 0; i < n.size(); i++){
-		temp_array[i] = n[i].asBool();
-	}
-	ptr = temp_array;
 	return n.size();
 }

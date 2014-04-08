@@ -12,22 +12,22 @@
 //Declare static private members
 bool			WetlandTundra::_isStaticSetupAlready		= false;
 bool			WetlandTundra::_isFireProbAgeDependent;
-const double*	WetlandTundra::_pAgeDependentFireParams;		
+double*	WetlandTundra::_pAgeDependentFireParams;		
 float			WetlandTundra::_fireProb;
 float			WetlandTundra::_ignitionDepressor;
 double			WetlandTundra::_seedRange;
-const double*	WetlandTundra::_pSeedSource;
+double*	WetlandTundra::_pSeedSource;
 double			WetlandTundra::_seedBasalArea;
 double			WetlandTundra::_seedlingBasalArea;
 int				WetlandTundra::_history;
-const double*	WetlandTundra::_pSeedEstParams;
+double*	WetlandTundra::_pSeedEstParams;
 double			WetlandTundra::_meanGrowth;
-const double*	WetlandTundra::_pClimateGrowth;
-const double*	WetlandTundra::_pCalibrationFactor;
+double*	WetlandTundra::_pClimateGrowth;
+double*	WetlandTundra::_pCalibrationFactor;
 double			WetlandTundra::_seedling;
 double			WetlandTundra::_ratioAK = 0.;
 double			WetlandTundra::_tundraSpruceBasalArea;
-const double*	WetlandTundra::_pStartAgeParms;
+double*	WetlandTundra::_pStartAgeParms;
 double*			WetlandTundra::_pIntegral;
 EStartAgeType	WetlandTundra::_startAgeType;
 

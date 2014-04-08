@@ -16,13 +16,13 @@ std::vector<Fire::SFireTransition> Fire::fireTransitions;
 Fire::EType	    Fire::fireType						    = Fire::FIXED;
 std::string     Fire::historicalFiresFileName           = "";
 float		    Fire::_fireSpreadRadius			        = 0;
-const double*	Fire::_pFireSpreadParms;
+double*	Fire::_pFireSpreadParms;
 bool			Fire::_ignoringFirstInterval	        = false;
 bool			Fire::_isMonthly						= false;
 bool			Fire::_isExperimental						= false;
 int				Fire::_maxEmpiricalFireSizeEvent        = -1;
 float			Fire::_maxEmpiricalFireSizeEventWeight  = 1;
-const double*	Fire::_pFireClimate;
+double*	Fire::_pFireClimate;
 float			Fire::_climateFireProb			        = -1;
 SClimate		Fire::_previousClimate;
 int				Fire::_yearsOfHistory			        = -9999999;
@@ -111,7 +111,7 @@ void Fire::setup()
     _maxEmpiricalFireSizeEventWeight    = FRESCO->fif().root["Fire"]["MaxEmpiricalFireSizeEventWeight"].asDouble();
     _yearsOfHistory                     = FRESCO->fif().root["Climate"]["NumHistory"].asInt();
 
-	const double* params;
+	double* params;
 	//std::cout << FRESCO->fif().pdGet(FRESCO->fif().root["BurnSeverity"]["FxnOfFireSize"], params) << ":" << 2 << std::endl;
 	if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["BurnSeverity"]["FxnOfFireSize"], params) != 2)		throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: BurnSeverity.FxnOfFireSize");
 	burnSeveritySettings.FxnIntercept = params[0];

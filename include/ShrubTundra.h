@@ -20,22 +20,22 @@ private:
 	float					_degrees;				//Number of degree days - used to kill young seedlings
 	static bool				_isStaticSetupAlready;
 	static bool				_isFireProbAgeDependent;
-	static const double*	_pAgeDependentFireParams;		
+	static double*	_pAgeDependentFireParams;		
 	static float			_fireProb;
 	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type ShrubTundra.
 	static double			_seedRange;
-	static const double*	_pSeedSource;
+	static double*	_pSeedSource;
 	static double			_seedBasalArea;
 	static double			_seedlingBasalArea;
 	static int				_history;
-	static const double*	_pSeedEstParams;
+	static double*	_pSeedEstParams;
 	static double			_meanGrowth;
-	static const double*	_pClimateGrowth;
-	static const double*	_pCalibrationFactor;
+	static double*	_pClimateGrowth;
+	static double*	_pCalibrationFactor;
 	static double			_seedling;
 	static double			_ratioAK;
 	static double			_tundraSpruceBasalArea;
-	static const double*	_pStartAgeParms;
+	static double*	_pStartAgeParms;
 	static EStartAgeType	_startAgeType;
 	static double*			_pIntegral;
 	static int 			_spruceTransitionYear;

@@ -12,22 +12,22 @@
 //Declare static private members
 bool			ShrubTundra::_isStaticSetupAlready		= false;
 bool			ShrubTundra::_isFireProbAgeDependent;
-const double*	ShrubTundra::_pAgeDependentFireParams;		
+double*	ShrubTundra::_pAgeDependentFireParams;		
 float			ShrubTundra::_fireProb;
 float			ShrubTundra::_ignitionDepressor;
 double			ShrubTundra::_seedRange;
-const double*	ShrubTundra::_pSeedSource;
+double*	ShrubTundra::_pSeedSource;
 double			ShrubTundra::_seedBasalArea;
 double			ShrubTundra::_seedlingBasalArea;
 int				ShrubTundra::_history;
-const double*	ShrubTundra::_pSeedEstParams;
+double*	ShrubTundra::_pSeedEstParams;
 double			ShrubTundra::_meanGrowth;
-const double*	ShrubTundra::_pClimateGrowth;
-const double*	ShrubTundra::_pCalibrationFactor;
+double*	ShrubTundra::_pClimateGrowth;
+double*	ShrubTundra::_pCalibrationFactor;
 double			ShrubTundra::_seedling;
 double			ShrubTundra::_ratioAK = 0.;
 double			ShrubTundra::_tundraSpruceBasalArea;
-const double*	ShrubTundra::_pStartAgeParms;
+double*	ShrubTundra::_pStartAgeParms;
 double*			ShrubTundra::_pIntegral;
 int			ShrubTundra::_spruceTransitionYear;
 int			ShrubTundra::_tundraTransitionYear;

@@ -93,7 +93,7 @@ public:
 	virtual void			outputError(std::string message);
     //Setup: Move these two to Fire?
     double*                 getSpruceFireParms(Json::Value key);              
-    const double*           getStartAgeParms(Json::Value key, EStartAgeType* type);
+    double*           getStartAgeParms(Json::Value key, EStartAgeType* type);
 
     bool**			_pNoData;
 };

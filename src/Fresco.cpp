@@ -276,7 +276,7 @@ void Fresco::		outputError(const std::string message)
 
 double* Fresco::	getSpruceFireParms(Json::Value key)
 {
-    const double* pTemp;
+    double* pTemp;
     if (_fif.pdGet(key, pTemp) != 3) 
         throw SimpleException(SimpleException::BADARRAYSIZE, (std::string("Unexpected array size returned for Key: ") + key.asCString()).c_str());
     
@@ -292,9 +292,9 @@ double* Fresco::	getSpruceFireParms(Json::Value key)
 }
 
 
-const double* Fresco::   getStartAgeParms(Json::Value key, EStartAgeType* type)
+double* Fresco::   getStartAgeParms(Json::Value key, EStartAgeType* type)
 {
-    const double* params;
+    double* params;
     int count=_fif.pdGet(key,params);
     
     //Set start age type.

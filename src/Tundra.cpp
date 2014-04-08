@@ -12,22 +12,22 @@
 //Declare static private members
 bool			Tundra::_isStaticSetupAlready		= false;
 bool			Tundra::_isFireProbAgeDependent;
-const double*	Tundra::_pAgeDependentFireParams;		
+double*	Tundra::_pAgeDependentFireParams;		
 float			Tundra::_fireProb;
 float			Tundra::_ignitionDepressor;
 double			Tundra::_seedRange;
-const double*	Tundra::_pSeedSource;
+double*	Tundra::_pSeedSource;
 double			Tundra::_seedBasalArea;
 double			Tundra::_seedlingBasalArea;
 int				Tundra::_history;
-const double*	Tundra::_pSeedEstParams;
+double*	Tundra::_pSeedEstParams;
 double			Tundra::_meanGrowth;
-const double*	Tundra::_pClimateGrowth;
-const double*	Tundra::_pCalibrationFactor;
+double*	Tundra::_pClimateGrowth;
+double*	Tundra::_pCalibrationFactor;
 double			Tundra::_seedling;
 double			Tundra::_ratioAK = 0.;
 double			Tundra::_tundraSpruceBasalArea;
-const double*	Tundra::_pStartAgeParms;
+double*	Tundra::_pStartAgeParms;
 double*			Tundra::_pIntegral;
 EStartAgeType	Tundra::_startAgeType;
 

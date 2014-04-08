@@ -67,13 +67,13 @@ protected:
     static float			_humanIgnitionsProb;
 private:
 	static float		    _fireSpreadRadius;
-    static const double*	_pFireSpreadParms;
+    static double*	_pFireSpreadParms;
 	static bool				_ignoringFirstInterval;
     static int				_maxEmpiricalFireSizeEvent;
 	static float			_maxEmpiricalFireSizeEventWeight;
 	static bool				_isMonthly;
 	static bool				_isExperimental;
-	static const double*	_pFireClimate;
+	static double*	_pFireClimate;
 	static float			_climateFireProb;											//Stores the climate probability for a cell so it is only calculated once per cell per iteration
 	static SClimate			_previousClimate;											//Indicates the last climate for which the probability was computed
 	static int				_yearsOfHistory;

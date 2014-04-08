@@ -12,22 +12,22 @@
 //Declare static private members
 bool			GraminoidTundra::_isStaticSetupAlready		= false;
 bool			GraminoidTundra::_isFireProbAgeDependent;
-const double*	GraminoidTundra::_pAgeDependentFireParams;		
+double*	GraminoidTundra::_pAgeDependentFireParams;		
 float			GraminoidTundra::_fireProb;
 float			GraminoidTundra::_ignitionDepressor;
 double			GraminoidTundra::_seedRange;
-const double*	GraminoidTundra::_pSeedSource;
+double*	GraminoidTundra::_pSeedSource;
 double			GraminoidTundra::_seedBasalArea;
 double			GraminoidTundra::_seedlingBasalArea;
 int				GraminoidTundra::_history;
-const double*	GraminoidTundra::_pSeedEstParams;
+double*	GraminoidTundra::_pSeedEstParams;
 double			GraminoidTundra::_meanGrowth;
-const double*	GraminoidTundra::_pClimateGrowth;
-const double*	GraminoidTundra::_pCalibrationFactor;
+double*	GraminoidTundra::_pClimateGrowth;
+double*	GraminoidTundra::_pCalibrationFactor;
 double			GraminoidTundra::_seedling;
 double			GraminoidTundra::_ratioAK = 0.;
 double			GraminoidTundra::_tundraSpruceBasalArea;
-const double*	GraminoidTundra::_pStartAgeParms;
+double*	GraminoidTundra::_pStartAgeParms;
 double*			GraminoidTundra::_pIntegral;
 int			GraminoidTundra::_spruceTransitionYear;
 int			GraminoidTundra::_tundraTransitionYear;

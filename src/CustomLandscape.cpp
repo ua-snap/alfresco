@@ -702,10 +702,10 @@ void CustomLandscape::      setupHabitatStats()
         int count = FRESCO->fif().psGet(FRESCO->fif().root["Stat"]["Habitat"]["Types"], pTypes);
         for (int i=0; i<count; i++) {
             //Get values from FIF for each habitat type.
-            const int* pVegTypes;  
+            int* pVegTypes;  
             int vegCount;  
 	    Json::Value& keyVegTypes = FRESCO->fif().root["Stat"]["Habitat." + ToS(pTypes[i]) + ".VegTypes"];
-            const int* pAgeRange;  
+            int* pAgeRange;  
 	    int ageCount;  
 	    //std::string keyAgeRange("Stat.Habitat." + ToS(pTypes[i]) + ".AgeRange"); 
 	    Json::Value& keyAgeRange = FRESCO->fif().root["Stat"]["Habitat." + ToS(pTypes[i]) + ".AgeRange"]; 

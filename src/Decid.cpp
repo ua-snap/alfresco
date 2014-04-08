@@ -13,23 +13,23 @@
 //Declare static private members
 bool			Decid::_isStaticSetupAlready    = false;
 bool			Decid::_isFireProbAgeDependent;
-const double*	Decid::_pAgeDependentFireParams;
+double*	Decid::_pAgeDependentFireParams;
 float			Decid::_decidFireProb;
 float			Decid::_ignitionDepressor;
 int				Decid::_decidHistory;
 double			Decid::_tundraSpruceBasalArea;
-const double*	Decid::_pDecidTundraParams;
+double*	Decid::_pDecidTundraParams;
 double**		Decid::_pDecidToBSpruceParams = 0;
 double**		Decid::_pDecidToWSpruceParams = 0;
 EStartAgeType	Decid::_bspruceStartAgeType;
 EStartAgeType	Decid::_wspruceStartAgeType;
 double*			Decid::_pBSpruceWeibullIntegral;
 double*			Decid::_pWSpruceWeibullIntegral;
-const double*	Decid::_pBSpruceStartAge;
-const double*	Decid::_pWSpruceStartAge;
+double*	Decid::_pBSpruceStartAge;
+double*	Decid::_pWSpruceStartAge;
 int				Decid::_yearsOfGrasslandCheck = 0;
-const double*	Decid::_pGrasslandThresholds = 0;
-const double*	Decid::_pGrassClimateParams = 0;
+double*	Decid::_pGrasslandThresholds = 0;
+double*	Decid::_pGrassClimateParams = 0;
 std::list<int>	Decid::_grassTempMonths;
 std::list<int>	Decid::_grassPrecipMonths;
 
@@ -127,8 +127,8 @@ void Decid::setStaticData()
 				// Add months needed for Decid=>Grassland succession.
 				_grassTempMonths.clear();
 				_grassPrecipMonths.clear();
-				const int* pPrecipMonths;
-				const int* pTempMonths;
+				int* pPrecipMonths;
+				int* pTempMonths;
 
 				int numMonths = FRESCO->fif().pnGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.TempMonths"], pTempMonths);
 				if (numMonths > 12)
@@ -165,7 +165,7 @@ void Decid::setStaticData()
 				_pDecidToBSpruceParams[i]=new double[2];
 		}
 		for (int i=1; i<5; i++){
-			const double* parms;
+			double* parms;
 			std::string key_burnsev("BSpruce.BurnSeverity["+ToS(i)+"]");
 			Json::Value key(FRESCO->fif().root["Vegetation"]["Decid"][key_burnsev.c_str()]);
 			if (2 != FRESCO->fif().pdGet(key, parms)) {
@@ -180,7 +180,7 @@ void Decid::setStaticData()
 				_pDecidToWSpruceParams[i]=new double[2];
 		}
 		for (int i=1; i<5; i++){
-			const double* parms;
+			double* parms;
 			std::string key_burnsev("WSpruce.BurnSeverity["+ToS(i)+"]");
 			Json::Value key(FRESCO->fif().root["Vegetation"]["Decid"][key_burnsev.c_str()]);
 			if (2 != FRESCO->fif().pdGet(key, parms)) {
