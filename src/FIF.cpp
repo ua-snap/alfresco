@@ -16,9 +16,6 @@ void FIF::Initialize(std::string path, std::string fifName){
 std::string FIF::fileName(){
 	return _fileName;
 }
-bool FIF::CheckKey(std::string key){
-	return root[key].isNull();
-}
 bool FIF::CheckKey(Json::Value& n){
 	return !n.isNull();
 }

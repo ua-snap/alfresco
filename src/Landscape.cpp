@@ -115,9 +115,9 @@ void Landscape::		setup()
 /** setup a run. */
 {
     //Get variables from FIF.
-	if (FRESCO->fif().CheckKey("YOffset"))
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["YOffset"]))
 		gYOffset = FRESCO->fif().root["RasterSettings"]["YOffset"].asInt();
-	if (FRESCO->fif().CheckKey("XOffset"))
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["XOffset"]))
 	    gXOffset = FRESCO->fif().root["RasterSettings"]["XOffset"].asInt();
     gYSize				    = FRESCO->fif().root["RasterSettings"]["YSize"].asInt();
     gXSize				        = FRESCO->fif().root["RasterSettings"]["XSize"].asInt();
@@ -134,9 +134,9 @@ void Landscape::		setup()
 
 	bool requireAaeacForInput = true;
 	bool applyAaeacToOutput = true;
-	if (FRESCO->fif().CheckKey("RequireAAEACProjectedInputRasters"))
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["RequireAAEACProjectedInputRasters"]))
 		requireAaeacForInput = FRESCO->fif().root["RasterSettings"]["RequireAAEACProjectedInputRasters"].asBool();
-	if (FRESCO->fif().CheckKey("ApplyAAEACProjectionToOutputRasters"))
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["ApplyAAEACProjectionToOutputRasters"]))
 		applyAaeacToOutput = FRESCO->fif().root["RasterSettings"]["ApplyAAEACProjectionToOutputRasters"].asBool();
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)

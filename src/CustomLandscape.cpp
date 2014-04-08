@@ -746,13 +746,13 @@ void CustomLandscape::		setupMapStats()
     int* pMapYearStart;
     int* pMapYearFreq;
 
-    if (FRESCO->fif().CheckKey("MapFiles")
-        && FRESCO->fif().CheckKey("MapCodes")
-        && FRESCO->fif().CheckKey("MapFlags")
-        && FRESCO->fif().CheckKey("MapRepStart")
-        && FRESCO->fif().CheckKey("MapRepFreq")
-        && FRESCO->fif().CheckKey("MapYearStart")
-        && FRESCO->fif().CheckKey("MapYearFreq")) 
+    if (FRESCO->fif().CheckKey(FRESCO->fif().root["MapOutput"]["MapFiles"])
+        && FRESCO->fif().CheckKey(FRESCO->fif().root["MapOutput"]["MapCodes"])
+        && FRESCO->fif().CheckKey(FRESCO->fif().root["MapOutput"]["MapFlags"])
+        && FRESCO->fif().CheckKey(FRESCO->fif().root["MapOutput"]["MapRepStart"])
+        && FRESCO->fif().CheckKey(FRESCO->fif().root["MapOutput"]["MapRepFreq"])
+        && FRESCO->fif().CheckKey(FRESCO->fif().root["MapOutput"]["MapYearStart"])
+        && FRESCO->fif().CheckKey(FRESCO->fif().root["MapOutput"]["MapYearFreq"])) 
     {
         mapCount = FRESCO->fif().psGet(FRESCO->fif().root["MapOutput"]["MapFiles"], pMapFiles);
         if (FRESCO->fif().psGet(FRESCO->fif().root["MapOutput"]["MapCodes"], pMapCodes) != mapCount)         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: MapCodes");

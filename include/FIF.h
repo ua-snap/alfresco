@@ -17,7 +17,6 @@ class FIF {
 		FIF();
 		std::string fileName();
 		void Initialize(std::string path, std::string fifName);
-		bool CheckKey(std::string key);
 		bool CheckKey(Json::Value& n);
 		int pnGet(Json::Value& n, int*& ptr);
 		int psGet(Json::Value& n, std::string *&ptr);

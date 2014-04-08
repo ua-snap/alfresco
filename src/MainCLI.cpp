@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
 		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
 		long randSeedVal = 0;
 		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), randSeedVal);
-		if (FRESCO->fif().CheckKey("RandSeed")){
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Simulation"]["RandSeed"])){
 			randSeedVal = _dummysim->fif().root["Simulation"]["RandSeed"].asInt();
 		}
 		int maxReps = _dummysim->fif().root["Simulation"]["MaxReps"].asInt();

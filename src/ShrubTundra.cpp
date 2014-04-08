@@ -136,7 +136,7 @@ void ShrubTundra::           setStaticData()
 	} else {
 		_spruceTransitionYear		 = 0;
 	}
-	if (FRESCO->fif().CheckKey("ShrubTundra.TundraTransitionYear")){
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["TundraTransitionYear"])){
         	_tundraTransitionYear          = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["TundraTransitionYear"].asInt();
 	} else {
 		_tundraTransitionYear		 = 0;
