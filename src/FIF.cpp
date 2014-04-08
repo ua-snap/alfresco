@@ -5,7 +5,7 @@ FIF::FIF(){
 
 }
 void FIF::Initialize(std::string path, std::string fifName){
-	std::ifstream fif("Alfresco.JSON", std::ifstream::binary);
+	std::ifstream fif(fifName.c_str(), std::ifstream::binary);
 	bool parsed = reader.parse(fif, root, false);
 	
 	if(!parsed) {
