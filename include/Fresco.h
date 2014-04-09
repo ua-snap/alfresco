@@ -3,7 +3,6 @@
 
 
 #include "PreCompiled.h"
-#include "Interface.h"
 #include "Poco/BasicEvent.h"
 #include "Poco/File.h"
 #include "Stat.h"

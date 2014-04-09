@@ -4,7 +4,6 @@
 
 #include "PreCompiled.h"
 #include "Fresco.h"
-#include "Interface.h"
 
 
 class Landscape;

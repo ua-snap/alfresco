@@ -7,7 +7,6 @@
 #include "PreCompiled.h"
 #include "Fresco.h"
 #include "Except.h"
-#include "Interface.h"
 #include "Landscape.h"
 #include "Fire.h"
 #include "Poco/BasicEvent.h"
