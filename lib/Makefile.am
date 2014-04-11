@@ -13,7 +13,6 @@ libFrescoFoundation_la_SOURCES = ../src/Climate.cpp \
 				../src/Fire.cpp \
 				../src/Frame.cpp \
 				../src/Fresco.cpp \
-				../src/Interface.cpp \
 				../src/Landscape.cpp \
 				../src/NoVeg.cpp \
 				../src/PreCompiled.cpp \
@@ -55,7 +54,6 @@ libFrescoAIEM_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/Fire.cpp \
 				../src/Frame.cpp \
 				../src/Fresco.cpp \
-				../src/Interface.cpp \
 				../src/Landscape.cpp \
 				../src/NoVeg.cpp \
 				../src/PreCompiled.cpp \

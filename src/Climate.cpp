@@ -11,7 +11,6 @@
 #include "Climate.h"
 #include "Except.h"
 #include "Fresco.h"
-#include "Interface.h"
 #include "RasterIO.h"
 #include "Poco/Path.h"
 #include <sstream>

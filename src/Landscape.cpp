@@ -17,7 +17,6 @@
 #include "Stat.h"
 #include "Fire.h"
 #include "Frame.h"
-#include "Interface.h"
 #include "NoVeg.h"
 #include "Climate.h"
 #include "Except.h"
