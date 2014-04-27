@@ -106,7 +106,7 @@ void Climate::			setup()
 	// so there's no need in allowing users to unknowingly allocate unused memory. 
 	
 	if (_yearsOfArchivedHistory < 1) throw Poco::Exception("Climate.NumHistory must be 1 or greater.");
-	_isExternFlam = FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["Flammability.File"]);
+	_isExternFlam = FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["Values"]["Flammability.File"]);
 	setupTransitions();
     setupStepsAndRamps();
 
@@ -118,7 +118,7 @@ void Climate::			setup()
 				_pSpatialFlammability[r][c] = 0.;
 			}
 		}
-		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().root["Climate"]["Flammability.File"].asString());
+		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().root["Climate"]["Values"]["Flammability.File"].asString());
 		if (_spatialFlamabilityFile == "") 	throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
 	}
 
