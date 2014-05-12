@@ -19,7 +19,8 @@ std::string FIF::fileName(){
 }
 bool FIF::CheckKey(Json::Value& n){
 	/* Check if configuration key exists */	
-	return !n.isNull();
+	return !n.empty();
+
 }
 int FIF::pnGet(Json::Value& n, int*& ptr){
 	/* Reference the array for specified 'integer' configuration item to ptr, return length of array */
