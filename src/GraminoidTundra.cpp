@@ -222,14 +222,20 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
         //This frame burned last year, so reset degree years to start tracking again.
         	_yearEstablished	= gYear;
 		_speciesSubCanopy	= gGraminoidTundraID;
-		if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){
+		if (burnSeverity == HIGH_HSS){
+			//Reduce basal area to 0
+			_basalArea	         = 0;
+			//Reduce inoculum to 20%
+			_inoculumScore = 0.2;
+		} else if (burnSeverity == HIGH_LSS){
 			//Reduce basal area by 50%
 			_basalArea 		*= 0.5;
+			//Reduce inoculum to 50%
 			_inoculumScore *= 0.5;
-		} else if (burnSeverity == HIGH_HSS){
-			//Reduce basal area to 0
-			_basalArea	         = 0.;
-			_inoculumScore = 0.0;
+		} else if (burnSeverity == MODERATE){
+			//Reduce basal area by 50%
+			_basalArea 		*= 0.5;
+
 		} else if (burnSeverity == LOW){
 			//Unchanged
 			_basalArea               = _basalArea;

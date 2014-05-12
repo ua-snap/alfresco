@@ -217,17 +217,22 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {	
-		if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){
-			//Reduce basal area by 50%
-			_basalArea 		*= 0.5;
-			_inoculumScore *= 0.5;
-		} else if (burnSeverity == HIGH_HSS){
+		if (burnSeverity == HIGH_HSS){
 			//Reduce basal area to 0
 			_basalArea	         = 0.;
-			_inoculumScore = 0.0;
+			//Reduce incoculum to 20%
+			_inoculumScore *= 0.2;
 			if (gYear >= _tundraTransitionYear && _tundraTransitionYear > 0){
 				return new GraminoidTundra(*this);
 			}
+		} else if (burnSeverity == HIGH_LSS){
+			//Reduce basal area by 50%
+			_basalArea 		*= 0.5;
+			//Reduce incoculum to 50%
+			_inoculumScore *= 0.5;
+		} else if (burnSeverity == MODERATE){
+			//Reduce basal area by 50%
+			_basalArea 		*= 0.5;
 		} else if (burnSeverity == LOW){
 			//Unchanged
 			_basalArea               = _basalArea;
