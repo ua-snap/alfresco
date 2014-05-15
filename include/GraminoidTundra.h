@@ -20,6 +20,7 @@ private:
 	float					_degrees;				//Number of degree days - used to kill young seedlings
 	static bool				_isStaticSetupAlready;
 	static bool				_isFireProbAgeDependent;
+	static bool	_isInoculumEnabled;
 	static double*	_pAgeDependentFireParams;		
 	static float			_fireProb;
 	static float			_ignitionDepressor;		//Dampens the ignition factor for any cells of type GraminoidTundra.

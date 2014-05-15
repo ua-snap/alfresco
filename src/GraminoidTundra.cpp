@@ -12,6 +12,7 @@
 //Declare static private members
 bool			GraminoidTundra::_isStaticSetupAlready		= false;
 bool			GraminoidTundra::_isFireProbAgeDependent;
+bool			GraminoidTundra::_isInoculumEnabled = false;
 double*	GraminoidTundra::_pAgeDependentFireParams;		
 float			GraminoidTundra::_fireProb;
 float			GraminoidTundra::_ignitionDepressor;
@@ -93,6 +94,9 @@ void GraminoidTundra::			_GraminoidTundra(const int treeDensity)
 	_yearOfEstablishment = 0;
 //OLD TODO:	_yearOfEstablishment = -_history;
 	_degrees = -1;
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["enableInoculum"])){
+		_isInoculumEnabled = FRESCO->fif().root["Vegetation"]["enableInoculum"].asBool();
+	}
 	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["GraminoidTundra"]["Inoculum"])){
 		_inoculumMax = FRESCO->fif().root["Vegetation"]["GraminoidTundra"]["Inoculum"].asDouble();
 	} else {
@@ -226,12 +230,16 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 			//Reduce basal area to 0
 			_basalArea	         = 0;
 			//Reduce inoculum to 20%
-			_inoculumScore = 0.2;
+			if (_isInoculumEnabled){
+				_inoculumScore = 0.2;
+			}
 		} else if (burnSeverity == HIGH_LSS){
 			//Reduce basal area by 50%
 			_basalArea 		*= 0.5;
 			//Reduce inoculum to 50%
-			_inoculumScore *= 0.5;
+			if (_isInoculumEnabled){
+				_inoculumScore *= 0.5;
+			}
 		} else if (burnSeverity == MODERATE){
 			//Reduce basal area by 50%
 			_basalArea 		*= 0.5;
@@ -243,10 +251,13 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		_yearOfEstablishment= -_history;
 		_degrees		    = -1.;
 	}
-	if (_inoculumScore < _inoculumMax){
-		_inoculumScore += _inoculumMax * 0.1;
-		if (_inoculumScore > _inoculumMax){
-			_inoculumScore = _inoculumMax;
+	
+	if (_isInoculumEnabled){
+		if (_inoculumScore < _inoculumMax){
+			_inoculumScore += _inoculumMax * 0.1;
+			if (_inoculumScore > _inoculumMax){
+				_inoculumScore = _inoculumMax;
+			}
 		}
 	}
 	double movingTempAverage = 0;
@@ -282,11 +293,11 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 		if (movingTempAverage >= 10.0 && _rollingTempMean.size() == 10){
 			if (movingSWIAverage > swi){
 				if (yearsSinceLastBurn > 32 && yearsSinceLastBurn <= 52 && yearOfLastBurn >= 1){
-					if (rand() % 100 < 5){
+					if (GetNextRandom() < 0.05){
 						return new ShrubTundra(*this);
 					}
 				} else {
-					if (rand() % 100 < 1){
+					if (GetNextRandom() < 0.01){
 						return new ShrubTundra(*this);
 					}
 				}
@@ -299,10 +310,22 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (gYear >= _spruceTransitionYear && _spruceTransitionYear > 0){
 		if (movingTempAverage >= 10.0 && movingTempAverage <= 20.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+			double seeds = 0;
 			params[0] = 0;
-			seeds -= queryReply(pParent, FatTail (params));
-			seeds *= _seedBasalArea;
+			if (_isInoculumEnabled){
+				if (GetNextRandom() <= _inoculumScore){
+					seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+					seeds -= queryReply(pParent, FatTail (params));
+					seeds *= _seedBasalArea;
+				}
+
+			} else {
+					seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+					seeds -= queryReply(pParent, FatTail (params));
+					seeds *= _seedBasalArea;
+			}
+
+
 			double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
 			if (yearsSinceLastBurn <= 5){  // Seedling establishment is modified by recent burnSeverity
 				if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){ //High severity results in higher establishment rates
@@ -315,9 +338,12 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 			if (_basalArea == 0 && seeds > 0) {
 				_yearOfEstablishment = gYear; 
 			}
-			double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
+			double gparams[3] = {movingTempAverage, 15., 2.};
 			double modGrowth = NormDist(gparams);
 			modGrowth *= 5;
+			if (_isInoculumEnabled){
+				modGrowth *= _inoculumScore;
+			}
 			double baFromGrowth = 0;
 			if (_basalArea > 0){
 				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);

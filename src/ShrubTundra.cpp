@@ -12,6 +12,7 @@
 //Declare static private members
 bool			ShrubTundra::_isStaticSetupAlready		= false;
 bool			ShrubTundra::_isFireProbAgeDependent;
+bool			ShrubTundra::_isInoculumEnabled = false;
 double*	ShrubTundra::_pAgeDependentFireParams;		
 float			ShrubTundra::_fireProb;
 float			ShrubTundra::_ignitionDepressor;
@@ -93,6 +94,9 @@ void ShrubTundra::			_ShrubTundra(const int treeDensity)
 	_yearOfEstablishment = 0;
 //OLD TODO:	_yearOfEstablishment = -_history;
 	_degrees = -1;
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["enableInoculum"])){
+		_isInoculumEnabled = FRESCO->fif().root["Vegetation"]["enableInoculum"].asBool();
+	}
 	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Inoculum"])){
 		_inoculumMax = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Inoculum"].asDouble();
 	} else {
@@ -221,7 +225,9 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 			//Reduce basal area to 0
 			_basalArea	         = 0.;
 			//Reduce incoculum to 20%
-			_inoculumScore *= 0.2;
+			if (_isInoculumEnabled){
+				_inoculumScore *= 0.2;
+			}
 			if (gYear >= _tundraTransitionYear && _tundraTransitionYear > 0){
 				return new GraminoidTundra(*this);
 			}
@@ -229,7 +235,9 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 			//Reduce basal area by 50%
 			_basalArea 		*= 0.5;
 			//Reduce incoculum to 50%
-			_inoculumScore *= 0.5;
+			if (_isInoculumEnabled){
+				_inoculumScore *= 0.5;
+			}
 		} else if (burnSeverity == MODERATE){
 			//Reduce basal area by 50%
 			_basalArea 		*= 0.5;
@@ -239,10 +247,12 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 		}
 		//if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){
 	}
-	if (_inoculumScore < _inoculumMax){
-		_inoculumScore += _inoculumMax * 0.1;
-		if (_inoculumScore > _inoculumMax){
-			_inoculumScore = _inoculumMax;
+	if (_isInoculumEnabled){
+		if (_inoculumScore < _inoculumMax){
+			_inoculumScore += _inoculumMax * 0.1;
+			if (_inoculumScore > _inoculumMax){
+				_inoculumScore = _inoculumMax;
+			}
 		}
 	}
 	float movingTempAverage = 0;
@@ -277,10 +287,17 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 	if (gYear >= _spruceTransitionYear && _spruceTransitionYear > 0){
 		if (movingTempAverage >= 10.0 && movingTempAverage <= 20.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+			double seeds;
 			params[0] = 0;
-			seeds -= queryReply(pParent, FatTail (params));
-			seeds *= _seedBasalArea;
+			if (_isInoculumEnabled){
+				seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+				seeds -= queryReply(pParent, FatTail (params));
+				seeds *= _seedBasalArea;
+			} else {
+				seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+				seeds -= queryReply(pParent, FatTail (params));
+				seeds *= _seedBasalArea;
+			}
 			double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
 			if (yearsSinceLastBurn <= 5){
 				if (burnSeverity == MODERATE || burnSeverity == HIGH_HSS){
@@ -296,6 +313,9 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 			double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
 			double modGrowth = NormDist(gparams);
 			modGrowth *= 5;
+			if (_isInoculumEnabled){
+				modGrowth *= _inoculumScore;
+			}
 			double baFromGrowth = 0;
 			if (_basalArea > 0){
 				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
