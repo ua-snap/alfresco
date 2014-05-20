@@ -7,7 +7,6 @@
 #include "ReadRasterException.h"
 #include "WriteRasterException.h"
 #include "Frame.h"
-#include "Poco/Format.h"
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include <ogr_spatialref.h> // for OGRSpatialReference
@@ -24,6 +23,8 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::queue;
+
+using boost::format;
 
 
 const byte  RasterIO::NODATA_BYTE      = 255;
@@ -79,7 +80,7 @@ RasterIO::RasterIO(double xOrigin, double yOrigin, int xOffset, int yOffset, int
 	_mapDescriptions[FIRE_AGE] = "Fire Age for year %d of rep %d.";
 	_mapDescriptions[FIRE_SCAR] = "Fire Scar for year %d of rep %d.  Value Key: [if ignition cell use -, otherwise +][YearOfLastBurn].[FireID]";
 	_mapDescriptions[TUNDRA_BASAL_AREA] = "Tundra Basal Area for year %d of rep %d.";
-	_mapDescriptions[VEGEGATION] = "Vegetation Type for year %d of rep %d.  Value Index: "+ToS((int)gNoVegID)+"=NoVeg, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
+	_mapDescriptions[VEGETATION] = "Vegetation Type for year %d of rep %d.  Value Index: "+ToS((int)gNoVegID)+"=NoVeg, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
 	_mapDescriptions[SUBCANOPY] = "Subcanopy Type for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE)+"=NoData, "+ToS((int)gTundraID)+"=Tundra, "+ToS((int)gBSpruceID)+"=Black Spruce, "+ToS((int)gWSpruceID)+"=White Spruce, "+ToS((int)gDecidID)+"=Deciduous"+ (gGrasslandID == NODATA_BYTE ? "" : ", "+ToS((int)gGrasslandID)+"=Grassland (grassland is in alpha)");
 	_mapDescriptions[BURN_SEVERITY] = "Burn Severity for year %d of rep %d.  Value Index: "+ToS((int)NODATA_BYTE)+"=NoData (no burn for the given year), 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity";
 	_mapDescriptions[BURN_SEVERITY_HISTORY] = "Burn Severity History for year %d of rep %d.  Value Index: 0=No Burn, 1=Low, 2=Moderate, 3=High w/ Low Surface Severity, 4=High w/ High Surface Severity";
@@ -253,7 +254,7 @@ void RasterIO::getAlternateNodata(float &result)
 
 RasterIO::ALFMapType RasterIO::getMapType(int f)
 {
-	if (f & outVeg) return VEGEGATION;
+	if (f & outVeg) return VEGETATION;
 	else if (f & outAge) return AGE;
 	else if (f & outSite) return SITE_VARIABLE;
 	else if (f & outSub) return SUBCANOPY;
@@ -275,7 +276,7 @@ const std::string RasterIO::getMapTypeAsString(ALFMapType type)
 {
 	switch(type)
 	{
-	case VEGEGATION: return "VEGETATION"; break;
+	case VEGETATION: return "VEGETATION"; break;
 	case AGE: return "AGE"; break;
 	case SUBCANOPY: return "SUBCANOPY"; break;
 	case SITE_VARIABLE: return "SITE_VARIABLE"; break;
@@ -332,48 +333,49 @@ void RasterIO::readRasterFile(const string filepath, byte**  &pMatrix, const boo
 void RasterIO::readRasterFile(const string filepath, int**   &pMatrix, const bool isMalloc) { _readRasterFile<int>(  filepath, pMatrix, isMalloc, GDT_Int32); }
 void RasterIO::readRasterFile(const string filepath, float** &pMatrix, const bool isMalloc) { _readRasterFile<float>(filepath, pMatrix, isMalloc, GDT_Float32); }
 void RasterIO::writeRasterFile(const string filepath, Frame*** pFrames, ALFMapType mapType, const int year, const int rep) 
+
 { 
 	switch(mapType)
 	{
-	case VEGEGATION:
+	case VEGETATION:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[VEGEGATION], year, rep), _pVegColorTable);
+			(boost::format(_mapDescriptions[VEGETATION]) % year % rep).str(), _pVegColorTable);
 		break;
 	case AGE:
 		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
-			Poco::format(_mapDescriptions[AGE], year, rep));
+			(boost::format(_mapDescriptions[AGE]) % year % rep).str());
 		break;
 	case SUBCANOPY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[SUBCANOPY], year, rep), _pVegColorTable);
+			(boost::format(_mapDescriptions[SUBCANOPY]) % year % rep).str(), _pVegColorTable);
 		break;
 	case SITE_VARIABLE:
 		_writeRasterFile<float>(filepath, pFrames, mapType, GDT_Float32, 
-			Poco::format(_mapDescriptions[SITE_VARIABLE], year, rep));
+			(boost::format(_mapDescriptions[SITE_VARIABLE]) % year % rep).str());
 		break;
 	case FIRE_AGE:
 		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
-			Poco::format(_mapDescriptions[FIRE_AGE], year, rep));
+			(boost::format(_mapDescriptions[FIRE_AGE]) % year % rep).str());
 		break;
 	case FIRE_SCAR:
 		_writeRasterFile<int>(filepath, pFrames, mapType, GDT_Int32, 
-			Poco::format(_mapDescriptions[FIRE_SCAR], year, rep));
+			(boost::format(_mapDescriptions[FIRE_SCAR]) % year % rep).str());
 		break;
 	case BURN_SEVERITY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[BURN_SEVERITY], year, rep),_pBurnSevColorTable);
+			(boost::format(_mapDescriptions[BURN_SEVERITY]) % year % rep).str(), _pBurnSevColorTable);
 		break;
 	case BURN_SEVERITY_HISTORY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[BURN_SEVERITY_HISTORY], year, rep),_pBurnSevColorTable);
+			(boost::format(_mapDescriptions[BURN_SEVERITY_HISTORY]) % year % rep).str(), _pBurnSevColorTable);
 		break;
 	case DECID_SPECIES_TRAJECTORY:
 		_writeRasterFile<byte>(filepath, pFrames, mapType, GDT_Byte, 
-			Poco::format(_mapDescriptions[DECID_SPECIES_TRAJECTORY], year, rep), _pVegColorTable);
+			(boost::format(_mapDescriptions[DECID_SPECIES_TRAJECTORY]) % year % rep).str(), _pVegColorTable);
 		break;
 	case TUNDRA_BASAL_AREA:
 		_writeRasterFile<float>(filepath, pFrames, mapType, GDT_Float32, 
-			Poco::format(_mapDescriptions[TUNDRA_BASAL_AREA], year, rep));
+			(boost::format(_mapDescriptions[TUNDRA_BASAL_AREA]) % year % rep).str());
 		break;
 	default:
 		throw WriteRasterException("undefined map type");
@@ -609,7 +611,7 @@ template<class T> void RasterIO::_writeRasterFile(const string filepath, Frame**
 			{
 				switch(mapType)
 				{
-				case VEGEGATION:
+				case VEGETATION:
 					if (FRESCO->_pNoData[r][c]){
 						buf[c] = nodata;
 					} else {

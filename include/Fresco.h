@@ -3,13 +3,13 @@
 
 
 #include "PreCompiled.h"
-#include "Interface.h"
 #include "Poco/BasicEvent.h"
 #include "Poco/File.h"
 #include "Stat.h"
 #include <queue>
 #include <string>
 #include <vector>
+#include "FIF.h"
 
 
 using Poco::BasicEvent;
@@ -35,7 +35,7 @@ public:
         STOPPED,				    //Simulation stopped.
         COMPLETED                   //Simulation completed.
     };	
-    CInterface&             fif();
+    FIF&             fif();
     const bool              getIsStopped() const;
     void                    setIsStopped(const bool newVal);
     const int               getLastYear() const;
@@ -63,7 +63,7 @@ public:
 	BasicEvent<const int>           raiseBeforeYearEnd;
 	BasicEvent<const int>           raiseAfterYearEnd;
 private:
-    CInterface              _fif;
+    FIF              _fif;
     Landscape*				_landscape;
     FrescoState				_state;
     bool                    _isDebugOn;
@@ -91,14 +91,14 @@ public:
     virtual void			output(const std::string output);
 	virtual void			outputError(std::string message);
     //Setup: Move these two to Fire?
-    double*                 getSpruceFireParms(const std::string key);              
-    const double*           getStartAgeParms(const std::string key, EStartAgeType* type);
+    double*                 getSpruceFireParms(Json::Value key);              
+    double*           getStartAgeParms(Json::Value key, EStartAgeType* type);
 
     bool**			_pNoData;
 };
 
 
-inline CInterface&          Fresco::fif()
+inline FIF&          Fresco::fif()
 {
     return _fif;
 }

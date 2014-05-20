@@ -11,7 +11,6 @@
 #include "Climate.h"
 #include "Except.h"
 #include "Fresco.h"
-#include "Interface.h"
 #include "RasterIO.h"
 #include "Poco/Path.h"
 #include <sstream>
@@ -107,7 +106,7 @@ void Climate::			setup()
 	// so there's no need in allowing users to unknowingly allocate unused memory. 
 	
 	if (_yearsOfArchivedHistory < 1) throw Poco::Exception("Climate.NumHistory must be 1 or greater.");
-	_isExternFlam = FRESCO->fif().CheckKey("Climate.Flammability.File");
+	_isExternFlam = FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["Values"]["Flammability.File"]);
 	setupTransitions();
     setupStepsAndRamps();
 
@@ -119,26 +118,32 @@ void Climate::			setup()
 				_pSpatialFlammability[r][c] = 0.;
 			}
 		}
-		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().sGet("Climate.Flammability.File"));
+		_spatialFlamabilityFile = FormatDirectory(FRESCO->fif().root["Climate"]["Values"]["Flammability.File"].asString());
 		if (_spatialFlamabilityFile == "") 	throw SimpleException(SimpleException::INITFAULT,"\nInvalid Climate Transition Value: \n\tMissing climate flammability file name.\n");
 	}
 
 	//Set monthly status.
 	_isMonthlyClimate = false;
-	if (FRESCO->fif().CheckKey("Climate.IsMonthly"))
-		_isMonthlyClimate = FRESCO->fif().bGet("Climate.IsMonthly");
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["IsMonthly"]))
+		_isMonthlyClimate = FRESCO->fif().root["Climate"]["IsMonthly"].asBool();
 	if (_isMonthlyClimate)
 	{
 		if (!_isExternFlam)
 		{
-			// Add months needed by internal climate fire prob equation
+			// Add months needed by internal climate fire prob equationA
+			tempMonths.clear();
+			precipMonths.clear();
 			tempMonths.push_back(3);
 			tempMonths.push_back(4);
 			tempMonths.push_back(5);
 			tempMonths.push_back(6);
 			tempMonths.push_back(7);
+			tempMonths.push_back(8);
+			tempMonths.push_back(9);
 			precipMonths.push_back(6);
 			precipMonths.push_back(7);
+			precipMonths.push_back(8);
+			precipMonths.push_back(9);
 		}
 		//
 		// Moved this chunk of code to Decid's setup due to the this 
@@ -213,6 +218,7 @@ void Climate::			setup()
 		ShowOutput("\t\tYear ValuesType     OffsetsType\n");
 	}
 	std::string errMsg("A climate trasition is required at the first simulation year ("+ToS(gFirstYear)+").\n");
+	std::vector<SClimateTransition>::iterator T;
 	if (_transitions.empty())
 		throw SimpleException(SimpleException::INITFAULT,errMsg,"");
     std::vector<SClimateTransition>::iterator iter = _transitions.begin();
@@ -370,6 +376,7 @@ void Climate::			yearStart()
 		{
 			// Use external calculations for annual climate flammability.
 			filename = AppendYear(_spatialFlamabilityFile, gYear);
+
 			ShowOutput(MAXIMUM, "\t\t\tReading climate flammability file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialFlammability, false);
 		}
@@ -380,6 +387,7 @@ void Climate::			yearStart()
 			//Read temp file.
 			filename = AppendYear(_pCurrentTransition->SpatialTempFile, gYear);
 			ShowOutput(MAXIMUM, "\t\t\tReading temp file: " + GetFullPath(gInputBasePath, filename)); ShowOutput(MAXIMUM, " \n");
+
 			gIO->readRasterFile(GetFullPath(gInputBasePath, filename), _pSpatialTemp[circularIndex][0], false);
 			//Read precip file.
 			filename = AppendYear(_pCurrentTransition->SpatialPrecipFile, gYear);
@@ -465,41 +473,41 @@ void Climate::			yearEnd()
 void Climate::          setupTransitions()
 {
     int           count = 0;
-    const int     *pnYears;
-    char* const   *psValTypes;
-    const double  *pdValTempConstants, *pdValPrecipConstants;
-    char* const   *psValTempFiles;
-    char* const   *psValPrecipFiles;
-    const int     *pnValRandExplicitMinYears, *pnValRandExplicitMaxYears;
-    const bool    *pbValRandExplicitReplicate;
+    int     *pnYears;
+    std::string   *psValTypes;
+    double  *pdValTempConstants, *pdValPrecipConstants;
+    std::string   *psValTempFiles;
+    std::string   *psValPrecipFiles;
+    int     *pnValRandExplicitMinYears, *pnValRandExplicitMaxYears;
+    bool    *pbValRandExplicitReplicate;
     
-    char *const   *psOffTypes;
-    char *const   *psOffFiles;
-    const double  *pdOffConstantTemps, *pdOffConstantPrecips;
-    const double  *pdOffRandomTempMeans, *pdOffRandomPrecipMeans;
-    const double  *pdOffRandomTempStdDevs, *pdOffRandomPrecipStdDevs;
-    const bool    *pbOffRandomReplicate;
+    std::string   *psOffTypes;
+    std::string   *psOffFiles;
+    double  *pdOffConstantTemps, *pdOffConstantPrecips;
+    double  *pdOffRandomTempMeans, *pdOffRandomPrecipMeans;
+    double  *pdOffRandomTempStdDevs, *pdOffRandomPrecipStdDevs;
+    bool    *pbOffRandomReplicate;
     
     //Get arrays of values and make sure all arrays have the same count.
-    count = FRESCO->fif().pnGet("Climate.TransitionYears", pnYears);
-    if (FRESCO->fif().psGet("Climate.Values.Type", psValTypes) != count)                                      throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Type");
-    if (FRESCO->fif().pdGet("Climate.Values.Temp.Constant", pdValTempConstants) != count)                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.Constant");
-    if (FRESCO->fif().pdGet("Climate.Values.Precip.Constant", pdValPrecipConstants) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.Constant");
-    if (FRESCO->fif().psGet("Climate.Values.Temp.File", psValTempFiles) != count)                             throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.File");
-    if (FRESCO->fif().psGet("Climate.Values.Precip.File", psValPrecipFiles) != count)                         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.File");
-    if (FRESCO->fif().pnGet("Climate.Values.RandExplicit.MinYear", pnValRandExplicitMinYears) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MinYear");
-    if (FRESCO->fif().pnGet("Climate.Values.RandExplicit.MaxYear", pnValRandExplicitMaxYears) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MaxYear");
-    if (FRESCO->fif().pbGet("Climate.Values.RandExplicit.Replicate", pbValRandExplicitReplicate) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.Replicate");
+    count = FRESCO->fif().pnGet(FRESCO->fif().root["Climate"]["TransitionYears"], pnYears);
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Climate"]["Values"]["Type"], psValTypes) != count)                                      throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Type");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Values"]["Temp.Constant"], pdValTempConstants) != count)                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.Constant");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Values"]["Precip.Constant"], pdValPrecipConstants) != count)                 throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.Constant");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Climate"]["Values"]["Temp.File"], psValTempFiles) != count)                             throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Temp.File");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Climate"]["Values"]["Precip.File"], psValPrecipFiles) != count)                         throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.Precip.File");
+    if (FRESCO->fif().pnGet(FRESCO->fif().root["Climate"]["Values"]["RandExplicit.MinYear"], pnValRandExplicitMinYears) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MinYear");
+    if (FRESCO->fif().pnGet(FRESCO->fif().root["Climate"]["Values"]["RandExplicit.MaxYear"], pnValRandExplicitMaxYears) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.MaxYear");
+    if (FRESCO->fif().pbGet(FRESCO->fif().root["Climate"]["Values"]["RandExplicit.Replicate"], pbValRandExplicitReplicate) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Values.RandExplicit.Replicate");
 
-    if (FRESCO->fif().psGet("Climate.Offsets.Type", psOffTypes) != count)                                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Type");
-    if (FRESCO->fif().psGet("Climate.Offsets.File", psOffFiles) != count)                                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.File");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Constant.Temp", pdOffConstantTemps) != count)                    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Temp");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Constant.Precip", pdOffConstantPrecips) != count)                throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Precip");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Temp.Mean", pdOffRandomTempMeans) != count)               throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.Mean");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Temp.StdDev", pdOffRandomPrecipMeans) != count)           throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.StdDev");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Precip.Mean", pdOffRandomTempStdDevs) != count)           throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.Mean");
-    if (FRESCO->fif().pdGet("Climate.Offsets.Random.Precip.StdDev", pdOffRandomPrecipStdDevs) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.StdDev");
-    if (FRESCO->fif().pbGet("Climate.Offsets.Random.Replicate", pbOffRandomReplicate) != count)               throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Replicate");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Climate"]["Offsets"]["Type"], psOffTypes) != count)                                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Type");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Climate"]["Offsets"]["File"], psOffFiles) != count)                                     throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.File");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Offsets"]["Constant.Temp"], pdOffConstantTemps) != count)                    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Temp");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Offsets"]["Constant.Precip"], pdOffConstantPrecips) != count)                throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Constant.Precip");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Offsets"]["Random.Temp.Mean"], pdOffRandomTempMeans) != count)               throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.Mean");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Offsets"]["Random.Temp.StdDev"], pdOffRandomPrecipMeans) != count)           throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Temp.StdDev");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Offsets"]["Random.Precip.Mean"], pdOffRandomTempStdDevs) != count)           throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.Mean");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Climate"]["Offsets"]["Random.Precip.StdDev"], pdOffRandomPrecipStdDevs) != count)       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Precip.StdDev");
+    if (FRESCO->fif().pbGet(FRESCO->fif().root["Climate"]["Offsets"]["Random.Replicate"], pbOffRandomReplicate) != count)               throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Climate.Offsets.Random.Replicate");
 
     std::string temp = "";
     for (int i=0; i<count; i++) {
@@ -649,24 +657,24 @@ float Climate::			getClimateFlammability(int row, int col)
 //Offsets
 void Climate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffsetType OffsetType, int Year, float Amount)
 {
-    _stepsAndRampsEnabled = FRESCO->fif().bGet("Climate.StepsAndRampsEnabled");
+    _stepsAndRampsEnabled = FRESCO->fif().root["Climate"]["StepsAndRampsEnabled"].asBool();
     if (_stepsAndRampsEnabled)
     {
-        setupStepOrRamp(TEMP,     STEP,  "Climate.Offsets.TempStepYear",     "Climate.Offsets.TempStep");
-        setupStepOrRamp(TEMP,     RAMP,  "Climate.Offsets.TempRampYear",     "Climate.Offsets.TempRamp");
-        setupStepOrRamp(PRECIP,   STEP,  "Climate.Offsets.PrecipStepYear",   "Climate.Offsets.PrecipStep");
-        setupStepOrRamp(PRECIP,   RAMP,  "Climate.Offsets.PrecipRampYear",   "Climate.Offsets.PrecipRamp");
+        setupStepOrRamp(TEMP,     STEP,  FRESCO->fif().root["Climate"]["Offsets"]["TempStepYear"],     FRESCO->fif().root["Climate"]["Offsets"]["TempStep"]);
+        setupStepOrRamp(TEMP,     RAMP,  FRESCO->fif().root["Climate"]["Offsets"]["TempRampYear"],     FRESCO->fif().root["Climate"]["Offsets"]["TempRamp"]);
+        setupStepOrRamp(PRECIP,   STEP,  FRESCO->fif().root["Climate"]["Offsets"]["PrecipStepYear"],   FRESCO->fif().root["Climate"]["Offsets"]["PrecipStep"]);
+        setupStepOrRamp(PRECIP,   RAMP,  FRESCO->fif().root["Climate"]["Offsets"]["PrecipRampYear"],   FRESCO->fif().root["Climate"]["Offsets"]["PrecipRamp"]);
     }
 }
 
-void Climate::          setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, const char* yearsKey, const char* offsetsKey)
+void Climate::          setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, Json::Value& yearsKey, Json::Value& offsetsKey)
 {        
     //Get values from FIF.
-    const int*      pYears;
-    const double*   pAmounts;
+    int*      pYears;
+    double*   pAmounts;
     int count = FRESCO->fif().pnGet(yearsKey, pYears);
     if (FRESCO->fif().pdGet(offsetsKey, pAmounts) != count)     
-        throw SimpleException(SimpleException::BADARRAYSIZE, std::string("Unexpected array size returned for Key: ") + offsetsKey);
+        throw SimpleException(SimpleException::BADARRAYSIZE, std::string("Unexpected array size returned for Key: ") + offsetsKey.asCString());
     //Place values into appropriate list for later use.
     for (int i=0; i<count; i++) {
         //Create the offset with values from FIF.

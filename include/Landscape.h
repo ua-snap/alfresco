@@ -13,7 +13,7 @@ extern StatArray* RunStats;
 #endif
 
 #ifdef AIEM_MODEL
-	#include "/home/UA/apbennett/aiem/aiem.h"
+	#include "aiem.h"
 	extern AIEM* aiem;
 #endif
 

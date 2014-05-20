@@ -52,11 +52,11 @@ int main(int argc, char** argv) {
 		CustomFresco* _dummysim = new CustomFresco(args->getDebug());
 		long randSeedVal = 0;
 		_dummysim->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), randSeedVal);
-		if (FRESCO->fif().CheckKey("RandSeed")){
-			randSeedVal = _dummysim->fif().nGet("RandSeed");
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Simulation"]["RandSeed"])){
+			randSeedVal = _dummysim->fif().root["Simulation"]["RandSeed"].asInt();
 		}
-		int maxReps = _dummysim->fif().nGet("MaxReps");
-		RunStats->setFirstYear(_dummysim->fif().nGet("FirstYear"));
+		int maxReps = _dummysim->fif().root["Simulation"]["MaxReps"].asInt();
+		RunStats->setFirstYear(_dummysim->fif().root["Simulation"]["FirstYear"].asInt());
 		#ifdef WITHMPI
 			std::cout << "Fresco Client Rank: " << id << " of: " << max << std::endl;
 		#else 
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 			srand(randSeedVal + rc);
 			long repRand = rand();
 			_simulation->setup(args->getFifPath(), args->getFifName(), args->getOutPath(), repRand);
-			_simulation->runRep(rc,_simulation->fif().nGet("FirstYear")); 
+			_simulation->runRep(rc,_simulation->fif().root["Simulation"]["FirstYear"].asInt()); 
 			_simulation->runEnd();
 			_simulation->clear();
 			delete _simulation; _simulation = 0;

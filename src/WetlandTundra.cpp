@@ -12,22 +12,22 @@
 //Declare static private members
 bool			WetlandTundra::_isStaticSetupAlready		= false;
 bool			WetlandTundra::_isFireProbAgeDependent;
-const double*	WetlandTundra::_pAgeDependentFireParams;		
+double*	WetlandTundra::_pAgeDependentFireParams;		
 float			WetlandTundra::_fireProb;
 float			WetlandTundra::_ignitionDepressor;
 double			WetlandTundra::_seedRange;
-const double*	WetlandTundra::_pSeedSource;
+double*	WetlandTundra::_pSeedSource;
 double			WetlandTundra::_seedBasalArea;
 double			WetlandTundra::_seedlingBasalArea;
 int				WetlandTundra::_history;
-const double*	WetlandTundra::_pSeedEstParams;
+double*	WetlandTundra::_pSeedEstParams;
 double			WetlandTundra::_meanGrowth;
-const double*	WetlandTundra::_pClimateGrowth;
-const double*	WetlandTundra::_pCalibrationFactor;
+double*	WetlandTundra::_pClimateGrowth;
+double*	WetlandTundra::_pCalibrationFactor;
 double			WetlandTundra::_seedling;
 double			WetlandTundra::_ratioAK = 0.;
 double			WetlandTundra::_tundraSpruceBasalArea;
-const double*	WetlandTundra::_pStartAgeParms;
+double*	WetlandTundra::_pStartAgeParms;
 double*			WetlandTundra::_pIntegral;
 EStartAgeType	WetlandTundra::_startAgeType;
 
@@ -99,41 +99,41 @@ void WetlandTundra::           setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-        _humanIgnitionsProb	    = FRESCO->fif().dGet("WetlandTundra.HumanFireProb");
-		_isFireProbAgeDependent = FRESCO->fif().bGet("WetlandTundra.FireProb.IsAgeDependent");
+        _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["HumanFireProb"].asDouble();
+		_isFireProbAgeDependent = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["FireProb.IsAgeDependent"].asBool();
 		if (_isFireProbAgeDependent) {
-			if (3 != FRESCO->fif().pdGet("WetlandTundra.FireProb", _pAgeDependentFireParams))
+			if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["WetlandTundra"]["FireProb"], _pAgeDependentFireParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: WetlandTundra.FireProb (because Tundra.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
-	        _fireProb = FRESCO->fif().dGet("WetlandTundra.FireProb");
-		if (FRESCO->fif().CheckKey("WetlandTundra.IgnitionDepressor"))
-			_ignitionDepressor = FRESCO->fif().dGet("WetlandTundra.IgnitionDepressor");
+	        _fireProb = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["FireProb"].asDouble();
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["WetlandTundra"]["IgnitionDepressor"]))
+			_ignitionDepressor = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["IgnitionDepressor"].asDouble();
 		else
 			_ignitionDepressor = 1;
-        _history			    = FRESCO->fif().nGet("WetlandTundra.History");
-        _seedRange		        = FRESCO->fif().dGet("WetlandTundra.SeedRange");
-        _seedBasalArea	        = FRESCO->fif().dGet("WetlandTundra.Seed.BasalArea");
-        _seedling			    = FRESCO->fif().dGet("WetlandTundra.Seedling");
-        _seedlingBasalArea      = FRESCO->fif().dGet("WetlandTundra.SeedlingBA");
-        _tundraSpruceBasalArea  = FRESCO->fif().dGet("WetlandTundra->Spruce.BasalArea");
-        _pStartAgeParms         = FRESCO->getStartAgeParms("WetlandTundra.StartAge", &_startAgeType);
-        _meanGrowth             = FRESCO->fif().dGet("WetlandTundra.MeanGrowth");
-        if (2 != FRESCO->fif().pdGet("WetlandTundra.SeedEstParms", _pSeedEstParams)) {
+        _history			    = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["History"].asInt();
+        _seedRange		        = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["SeedRange"].asDouble();
+        _seedBasalArea	        = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["Seed.BasalArea"].asDouble();
+        _seedling			    = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["Seedling"].asDouble();
+        _seedlingBasalArea      = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["SeedlingBA"].asDouble();
+        _tundraSpruceBasalArea  = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["Spruce.BasalArea"].asDouble();
+        _pStartAgeParms         = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["WetlandTundra"]["StartAge"], &_startAgeType);
+        _meanGrowth             = FRESCO->fif().root["Vegetation"]["WetlandTundra"]["MeanGrowth"].asDouble();
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["WetlandTundra"]["SeedEstParms"], _pSeedEstParams)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: WetlandTundra.SeedEstParms");
         }
-        if (3 != FRESCO->fif().pdGet("WetlandTundra.ClimGrowth", _pClimateGrowth)) {
+        if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["WetlandTundra"]["ClimGrowth"], _pClimateGrowth)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: WetlandTundra.ClimGrowth");
         }
-        if (2 != FRESCO->fif().pdGet("WetlandTundra.CalFactor", _pCalibrationFactor)) {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["WetlandTundra"]["CalFactor"], _pCalibrationFactor)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: WetlandTundra.CalFactor");
         }
-        if (2 != FRESCO->fif().pdGet("WetlandTundra.SeedSource", _pSeedSource)) {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["WetlandTundra"]["SeedSource"], _pSeedSource)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: WetlandTundra.SeedSource");
         }
 
 		//Calculate _ratioAK for use in getInitialBasalAreaI()
-        double spruceEstBasalAarea	= FRESCO->fif().dGet("WetlandTundra.Spruce.EstBA");
+        double spruceEstBasalAarea	= FRESCO->fif().root["Vegetation"]["WetlandTundra"]["Spruce.EstBA"].asDouble();
 		const double pSeedSourceFatTailParams[3] = {gCellSize, _pSeedSource[0], _pSeedSource[1]};  //Parameters for calling FatTail()
 		const double alpha = _pCalibrationFactor[1] * spruceEstBasalAarea * _seedBasalArea * FatTail(pSeedSourceFatTailParams) / _seedling * _seedlingBasalArea;
 		double k = _pCalibrationFactor[0] * _meanGrowth;

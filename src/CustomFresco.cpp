@@ -32,12 +32,12 @@ CustomFresco::		~CustomFresco()
 void CustomFresco::	customSetup()
 {
 	output("Loading Species settings.\n");
-	gBSpruceID = (byte)fif().nGet("BSpruce");
-	gWSpruceID = (byte)fif().nGet("WSpruce");
-	gDecidID   = (byte)fif().nGet("Decid"); 
-	gShrubTundraID  = (byte)fif().nGet("ShrubTundra");
-	gGraminoidTundraID  = (byte)fif().nGet("GraminoidTundra");
-	gWetlandTundraID  = (byte)fif().nGet("WetlandTundra");
+	gBSpruceID = (byte)fif().root["Vegetation"]["BSpruce"]["id"].asInt();
+	gWSpruceID = (byte)fif().root["Vegetation"]["WSpruce"]["id"].asInt();
+	gDecidID   = (byte)fif().root["Vegetation"]["Decid"]["id"].asInt(); 
+	gShrubTundraID  = (byte)fif().root["Vegetation"]["ShrubTundra"]["id"].asInt();
+	gGraminoidTundraID  = (byte)fif().root["Vegetation"]["GraminoidTundra"]["id"].asInt();
+	gWetlandTundraID  = (byte)fif().root["Vegetation"]["WetlandTundra"]["id"].asInt();
 
 
 	validVegTypes.insert(gBSpruceID);
@@ -49,27 +49,27 @@ void CustomFresco::	customSetup()
 	validVegTypes.insert(gNoVegID);
 
 	// Handle Grassland here for backwards compatibility.
-	if (fif().CheckKey("Grassland"))
+	if (fif().CheckKey(fif().root["Vegetation"]["Grassland"]["id"]))
 	{
-		gGrasslandID = (byte)fif().nGet("Grassland");
+		gGrasslandID = (byte)fif().root["Vegetation"]["Grassland"]["id"].asInt();
 		validVegTypes.insert(gGrasslandID);
 		Grassland::setStaticData();
 	}
-	if (fif().CheckKey("Tundra")) 
+	if (fif().CheckKey(fif().root["Vegetation"]["Tundra"]["id"])) 
 	{
-		gTundraID = (byte)fif().nGet("Tundra");
+		gTundraID = (byte)fif().root["Vegetation"]["Tundra"]["id"].asInt();
 		validVegTypes.insert(gTundraID);
 		Tundra::setStaticData();
 	}
-	if (fif().CheckKey("BarrenLichenMoss"))
+	if (fif().CheckKey(fif().root["Vegetation"]["BarrenLichenMoss"]["id"]))
 	{
-		gBarrenLichenMossID = (byte)fif().nGet("BarrenLichenMoss");
+		gBarrenLichenMossID = (byte)fif().root["Vegetation"]["BarrenLichenMoss"]["id"].asInt();
 		validVegTypes.insert(gBarrenLichenMossID);
 	//	BarrenLichenMoss::setStaticData();
 	}
-	if (fif().CheckKey("TemperateRainforest"))
+	if (fif().CheckKey(fif().root["Vegetation"]["TemperateRainforest"]["id"]))
 	{
-		gTemperateRainforestID = (byte)fif().nGet("TemperateRainforest");
+		gTemperateRainforestID = (byte)fif().root["Vegetation"]["TemperateRainforest"]["id"].asInt();
 		validVegTypes.insert(gTemperateRainforestID);
 	//	TemperateRainforest::setStaticData();
 	}

@@ -4,6 +4,7 @@
 
 #include "PreCompiled.h"
 #include "Except.h"
+#include "jsoncpp/json/json.h"
 #include "Poco/Exception.h"
 #include "RasterIO.h"
 #include <list>
@@ -119,7 +120,7 @@ private:
 	void					applyTransitionIfExists(int year);
 	//Steps/Ramps
     void                    setupStepsAndRamps();
-    void                    setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, const char* yearsKey, const char* offsetsKey);
+    void                    setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, Json::Value& yearsKey, Json::Value& offsetsKey);
 	void					addOffset(EClimateType climateType, EOffsetType offsetType, int year, float amount);
 };
 

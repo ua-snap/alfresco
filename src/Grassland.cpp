@@ -76,15 +76,15 @@ void Grassland::setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-        _humanIgnitionsProb	    = FRESCO->fif().dGet("Grassland.HumanFireProb");
-        _decidFireProb          = FRESCO->fif().dGet("Decid.FireProb");
-		if (FRESCO->fif().CheckKey("Grassland.IgnitionDepressor"))
-			_ignitionDepressor = FRESCO->fif().dGet("Grassland.IgnitionDepressor");
+        _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["Grassland"]["HumanFireProb"].asDouble();
+        _decidFireProb          = FRESCO->fif().root["Decid"]["FireProb"].asDouble();
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["Grassland"]["IgnitionDepressor"]))
+			_ignitionDepressor = FRESCO->fif().root["Vegetation"]["Grassland"]["IgnitionDepressor"].asDouble();
 		else
 			_ignitionDepressor = 1;
-		_tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
-        _pGrasslandFireParms      = FRESCO->getSpruceFireParms("Grassland.FireParms");
-        _pStartAgeParms         = FRESCO->getStartAgeParms("Grassland.StartAge", &_startAgeType);
+		_tundraSpruceBasalArea  = FRESCO->fif().root["Vegetation"]["Tundra"]["Spruce.BasalArea"].asDouble();
+        _pGrasslandFireParms      = FRESCO->getSpruceFireParms(FRESCO->fif().root["Vegetation"]["Grassland"]["FireParms"]);
+        _pStartAgeParms         = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Grassland"]["StartAge"], &_startAgeType);
 
 		if (WEIBULL==_startAgeType) {
 			const int length = (int)(5*_pStartAgeParms[0]);

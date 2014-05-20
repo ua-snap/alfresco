@@ -7,7 +7,6 @@
 #include "PreCompiled.h"
 #include "Fresco.h"
 #include "Except.h"
-#include "Interface.h"
 #include "Landscape.h"
 #include "Fire.h"
 #include "Poco/BasicEvent.h"
@@ -126,28 +125,29 @@ void Fresco::		setup(std::string basePath, std::string fifName, std::string outp
 	setState(SETTING_UP);
 	
     output("Reading FIF File.\n");
+    //_fif.Initialize(basePath, fifName);
     _fif.Initialize(basePath, fifName);
 
     output("Loading General settings.\n");
     std::string temp = "";
     //Get class variables with parsed FIF values.
-    gInputBasePath      = FormatDirectory(_fif.sGet("ClientInputBasePath"));
-    gOutputBasePath     = FormatDirectory(_fif.sGet("ClientOutputBasePath"));
+    gInputBasePath      = FormatDirectory(_fif.root["PathSetup"]["ClientInputBasePath"].asString());
+    gOutputBasePath     = FormatDirectory(_fif.root["PathSetup"]["ClientOutputBasePath"].asString());
     gOutputDirectory    = GetFullPath(gOutputBasePath, outputTimestamp);
     EnsureDirectoryExists(gOutputDirectory, false);
-    gMaxRep             = _fif.nGet("MaxReps");
-    gFirstYear          = _fif.nGet("FirstYear");
-    gLastYear           = _fif.nGet("LastYear");
-	gDetailLevel        = (temp=_fif.sGet("Output.DetailLevel"))=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
+    gMaxRep		= fif().root["Simulation"]["MaxReps"].asInt();
+    gFirstYear		= fif().root["Simulation"]["FirstYear"].asInt();
+    gLastYear		= fif().root["Simulation"]["LastYear"].asInt();
+	gDetailLevel        = (temp=fif().root["Simulation"]["Output.DetailLevel"].asString())=="MINIMAL" ? MINIMAL : (temp=="MODERATE" ? MODERATE : (temp=="MAXIMUM" ? MAXIMUM : throw Poco::Exception("Invalid input for Output.DetailLevel: "+temp)));
 	try { //Initialize the random number generator.
         _randomSeed = SeedRandom(randSeed);
         ShowOutput(MODERATE, "\tRandom Seed " + ToS(_randomSeed));
     } catch (SimpleException& e) {throw SimpleException(SimpleException::INITFAULT,"Initializing random number generator failed.\n", e.message);}
-    gNoVegID            = _fif.nGet("NoVeg"); 
+    gNoVegID            = fif().root["Vegetation"]["NoVeg"]["id"].asInt(); 
         
     //Fire
     output("Loading Fire settings.\n");
-    _isFireEnabled      = _fif.bGet("Fire.Enabled");
+    _isFireEnabled      = fif().root["Fire"]["Enabled"].asBool();
     Fire::setup();
 	
     customSetup();
@@ -273,16 +273,16 @@ void Fresco::		outputError(const std::string message)
 }
 
 
-double* Fresco::	getSpruceFireParms(const std::string key)
+double* Fresco::	getSpruceFireParms(Json::Value key)
 {
-    const double* pTemp;
-    if (_fif.pdGet(key.c_str(), pTemp) != 3) 
-        throw SimpleException(SimpleException::BADARRAYSIZE, (std::string("Unexpected array size returned for Key: ") + key).c_str());
+    double* pTemp;
+    if (_fif.pdGet(key, pTemp) != 3) 
+        throw SimpleException(SimpleException::BADARRAYSIZE, (std::string("Unexpected array size returned for Key: ") + key.asCString()).c_str());
     
     //Transfer "const double*" to "double*"
     double* pReturn;
     pReturn = new double[3];
-    pReturn[0] = pTemp[0] - _fif.dGet("Decid.FireProb");
+    pReturn[0] = pTemp[0] - _fif.root["Vegetation"]["Decid"]["FireProb"].asDouble();
     pReturn[1] = pTemp[1];
     pReturn[2] = pTemp[2];
     
@@ -291,10 +291,10 @@ double* Fresco::	getSpruceFireParms(const std::string key)
 }
 
 
-const double* Fresco::   getStartAgeParms(const std::string key, EStartAgeType* type)
+double* Fresco::   getStartAgeParms(Json::Value key, EStartAgeType* type)
 {
-    const double* params;
-    int count=_fif.pdGet(key.c_str(),params);
+    double* params;
+    int count=_fif.pdGet(key,params);
     
     //Set start age type.
     if (1==count)      
@@ -302,7 +302,7 @@ const double* Fresco::   getStartAgeParms(const std::string key, EStartAgeType* 
     else if (2==count) 
         *type=WEIBULL;
     else
-        throw SimpleException(SimpleException::BADARRAYSIZE,(std::string("Unexpected array size returned for Key: ") + key).c_str());
+        throw SimpleException(SimpleException::BADARRAYSIZE,(std::string("Unexpected array size returned for Key: ") + key.asCString()).c_str());
     
     return params;
 }

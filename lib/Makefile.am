@@ -2,26 +2,26 @@ lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la
 if AIEM
 lib_LTLIBRARIES += libFrescoAIEM.la
 endif
-INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS)
+INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) -I/home/UA/apbennett/include
 if AIEM
-INCLUDES += -I/home/UA/apbennett/aiem
+INCLUDES += -I/home/UA/apbennett/aiem/include
 endif
 libFrescoFoundation_la_LDFLAGS = -shared
-libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS
+libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS -g
 libFrescoFoundation_la_SOURCES = ../src/Climate.cpp \
 				../src/Except.cpp \
 				../src/Fire.cpp \
 				../src/Frame.cpp \
 				../src/Fresco.cpp \
-				../src/Interface.cpp \
 				../src/Landscape.cpp \
 				../src/NoVeg.cpp \
 				../src/PreCompiled.cpp \
 				../src/RasterIO.cpp \
 				../src/Species.cpp \
-				../src/Stat.cpp
+				../src/Stat.cpp \
+				../src/FIF.cpp
 libFrescoCustom_la_LDFLAGS = -shared
-libFrescoCustom_la_CXXFLAGS = -DWITHSTATS
+libFrescoCustom_la_CXXFLAGS = -DWITHSTATS -g
 libFrescoCustom_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/BSpruce.cpp \
 				../src/CustomFresco.cpp \
@@ -36,7 +36,7 @@ libFrescoCustom_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/WSpruce.cpp
 if AIEM
 libFrescoAIEM_la_LDFLAGS = -shared
-libFrescoAIEM_la_CXXFLAGS = -DWITHSTATS -DAIEM_MODEL
+libFrescoAIEM_la_CXXFLAGS = -DWITHSTATS -DAIEM_MODEL -g
 libFrescoAIEM_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/BSpruce.cpp \
 				../src/CustomFresco.cpp \
@@ -54,7 +54,6 @@ libFrescoAIEM_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/Fire.cpp \
 				../src/Frame.cpp \
 				../src/Fresco.cpp \
-				../src/Interface.cpp \
 				../src/Landscape.cpp \
 				../src/NoVeg.cpp \
 				../src/PreCompiled.cpp \
