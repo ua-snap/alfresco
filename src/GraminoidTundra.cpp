@@ -279,6 +279,8 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (pParent->cellTempByMonth(5) > 0){ summerWarmthIndex += pParent->cellTempByMonth(5); }
 	if (pParent->cellTempByMonth(6) > 0){ summerWarmthIndex += pParent->cellTempByMonth(6); }
 	if (pParent->cellTempByMonth(7) > 0){ summerWarmthIndex += pParent->cellTempByMonth(7); }
+	if (pParent->cellTempByMonth(8) > 0){ summerWarmthIndex += pParent->cellTempByMonth(8); }
+	if (pParent->cellTempByMonth(9) > 0){ summerWarmthIndex += pParent->cellTempByMonth(9); }
 	if (_rollingSWIMean.size() < 10){
                 _rollingSWIMean.push_back(summerWarmthIndex);
         } else {
