@@ -279,6 +279,8 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	if (pParent->cellTempByMonth(5) > 0){ summerWarmthIndex += pParent->cellTempByMonth(5); }
 	if (pParent->cellTempByMonth(6) > 0){ summerWarmthIndex += pParent->cellTempByMonth(6); }
 	if (pParent->cellTempByMonth(7) > 0){ summerWarmthIndex += pParent->cellTempByMonth(7); }
+	if (pParent->cellTempByMonth(8) > 0){ summerWarmthIndex += pParent->cellTempByMonth(8); }
+	if (pParent->cellTempByMonth(9) > 0){ summerWarmthIndex += pParent->cellTempByMonth(9); }
 	if (_rollingSWIMean.size() < 10){
                 _rollingSWIMean.push_back(summerWarmthIndex);
         } else {
@@ -341,9 +343,6 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 			double gparams[3] = {movingTempAverage, 15., 2.};
 			double modGrowth = NormDist(gparams);
 			modGrowth *= 5;
-			if (_isInoculumEnabled){
-				modGrowth *= _inoculumScore;
-			}
 			double baFromGrowth = 0;
 			if (_basalArea > 0){
 				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);

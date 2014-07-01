@@ -79,7 +79,9 @@ inline float                GraminoidTundra::getFireProb(const Landscape* pLands
 // by multiplying this frame's climate and species fire probabilities.
 {
 	if (_isFireProbAgeDependent)
+
 		_fireProb = Logistic(age(), _pAgeDependentFireParams);
+		//std::cout << "AgeParams: " << _pAgeDependentFireParams[0] << "," << _pAgeDependentFireParams[1] << "," << _pAgeDependentFireParams[2] << " - FP: " << _fireProb << std::endl;
 	return getClimateFireProb(pLandscape) * ((WSpruce::getFireParam(0)-_fireProb) * _basalArea/_tundraSpruceBasalArea + _fireProb);
 }
 
