@@ -102,6 +102,16 @@ void GraminoidTundra::			_GraminoidTundra(const int treeDensity)
 	} else {
 		_inoculumMax = 1.0;
 	}
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["GraminoidTundra"]["InoculumReturn"])){
+		_inoculumReturn= FRESCO->fif().root["Vegetation"]["GraminoidTundra"]["InoculumReturn"].asDouble();
+	} else {
+		_inoculumReturn = 1.0;
+	}
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumBA"])){
+		_inoculumBA = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumBA"].asDouble();
+	} else {
+		_inoculumBA = 1.0;
+	}
 	_inoculumScore = _inoculumMax;
 }
 
@@ -254,7 +264,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 	
 	if (_isInoculumEnabled){
 		if (_inoculumScore < _inoculumMax){
-			_inoculumScore += _inoculumMax * 0.1;
+			_inoculumScore += _inoculumReturn;
 			if (_inoculumScore > _inoculumMax){
 				_inoculumScore = _inoculumMax;
 			}
@@ -346,6 +356,9 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 			double baFromGrowth = 0;
 			if (_basalArea > 0){
 				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
+				if (_isInoculumEnabled && _basalArea < _inoculumBA){
+					baFromGrowth *= _inoculumScore;
+				}
 			}
 			double baFromSeed = 0;
 			if (seeds > 0.00001){

@@ -39,6 +39,8 @@ protected:
 	double		_basalArea; //Store basalArea in Frame class to allow for retention as transitions occur
 	double		_inoculumScore; //Current inoculum score.  Can be lower than _inoculumMax based on recent fire history, or other factors
 	double		_inoculumMax;  //Maximum inoculum score for a species
+	double		_inoculumReturn;  //Time in years for inoculum score to return to maximum
+	double		_inoculumBA;  //Threshhold for BA to be affected by Inoculum
 
 
 //Functions

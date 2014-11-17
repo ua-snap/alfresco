@@ -102,6 +102,16 @@ void ShrubTundra::			_ShrubTundra(const int treeDensity)
 	} else {
 		_inoculumMax = 1.0;
 	}
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumReturn"])){
+		_inoculumReturn= FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumReturn"].asDouble();
+	} else {
+		_inoculumReturn = 1.0;
+	}
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumBA"])){
+		_inoculumBA = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumBA"].asDouble();
+	} else {
+		_inoculumBA = 1.0;
+	}
 	_inoculumScore = _inoculumMax;
 }
 
@@ -249,7 +259,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 	}
 	if (_isInoculumEnabled){
 		if (_inoculumScore < _inoculumMax){
-			_inoculumScore += _inoculumMax * 0.1;
+			_inoculumScore += _inoculumReturn;
 			if (_inoculumScore > _inoculumMax){
 				_inoculumScore = _inoculumMax;
 			}
@@ -313,12 +323,12 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 			double gparams[3] = {movingTempAverage, 15., 2.};		                    //The first location will get set to the actual distance
 			double modGrowth = NormDist(gparams);
 			modGrowth *= 5;
-			if (_isInoculumEnabled){
-				modGrowth *= _inoculumScore;
-			}
 			double baFromGrowth = 0;
 			if (_basalArea > 0){
 				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
+				if (_isInoculumEnabled && _basalArea < _inoculumBA){
+					baFromGrowth *= _inoculumScore;
+				}
 			}
 			double baFromSeed = 0;
 			if (seeds > 0.00001){
