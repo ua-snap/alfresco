@@ -5,6 +5,7 @@ endif
 INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) -I/home/UA/apbennett/include
 if AIEM
 INCLUDES += -I/home/UA/apbennett/aiem/include
+INCLUDES += -I/home/apbennett/aiem/include
 endif
 libFrescoFoundation_la_LDFLAGS = -shared
 libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS -g
@@ -51,6 +52,7 @@ libFrescoAIEM_la_SOURCES = 	../src/BarrenLichenMoss.cpp \
 				../src/WSpruce.cpp \
 				../src/Climate.cpp \
 				../src/Except.cpp \
+				../src/FIF.cpp \
 				../src/Fire.cpp \
 				../src/Frame.cpp \
 				../src/Fresco.cpp \
