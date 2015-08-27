@@ -175,9 +175,7 @@ const float Fire::getClimateFireProb (const Landscape* l)
 							+ _pFireClimate[8] * p6 
 							+ _pFireClimate[9] * p7
 							+ _pFireClimate[10] * p8
-							+ _pFireClimate[11] * p9
-							//aprT*julP
-							+ _pFireClimate[12] * t4 * p7;
+							+ _pFireClimate[11] * p9;
 	}
 	else if (_isMonthly)  //use monthly equation
 	{
