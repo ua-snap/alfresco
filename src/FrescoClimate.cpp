@@ -8,7 +8,7 @@
 
 
 #include "PreCompiled.h"
-#include "Climate.h"
+#include "FrescoClimate.h"
 #include "Except.h"
 #include "Fresco.h"
 #include "RasterIO.h"
@@ -17,10 +17,10 @@
 
 
 //Declare static members.
-std::vector<Climate::SClimateTransition> Climate::_transitions;
+std::vector<FrescoClimate::SClimateTransition> FrescoClimate::_transitions;
 
 
-Climate::				Climate () 
+FrescoClimate::				FrescoClimate () 
 {
 	_pSpatialFlammability = 0;
 	_pSpatialTemp		= 0;
@@ -32,14 +32,14 @@ Climate::				Climate ()
 }
 
 
-Climate::				~Climate () 
+FrescoClimate::				~FrescoClimate () 
 {
     deleteArrays();
     delete _pCurrentTransition;
 }
 
 
-void Climate::          deleteArrays()
+void FrescoClimate::          deleteArrays()
 {
     if (_pRandomYears)      { delete[] _pRandomYears; _pRandomYears = 0; }
 	if (_pOffsets)			{ delete[] _pOffsets; _pOffsets = 0; }	
@@ -82,7 +82,7 @@ void Climate::          deleteArrays()
 }
 
 
-void Climate::			clear()
+void FrescoClimate::			clear()
 /** Clear existing run if any and return to before a run is specified. */
 {
 	ShowOutput(MODERATE, "Climate Clear \n");
@@ -98,7 +98,7 @@ void Climate::			clear()
 }
 
 
-void Climate::			setup()
+void FrescoClimate::			setup()
 /** setup a run. */
 {
     _yearsOfArchivedHistory  = 1; //FRESCO->fif().nGet("Climate.NumHistory");
@@ -282,19 +282,19 @@ void Climate::			setup()
 }
 
 
-void Climate::			runStart()
+void FrescoClimate::			runStart()
 {
 	ShowOutput(MAXIMUM, "\t\tClimate Run Init\n");
 }
 
 
-void Climate::			runEnd()
+void FrescoClimate::			runEnd()
 //Finish up this run but do not clear.
 {
 }
 
 
-void Climate::			repStart()
+void FrescoClimate::			repStart()
 /** Calculate temporal offsets. */
 {
 	ShowOutput(MAXIMUM, "\t\tClimate Rep setup\n");
@@ -323,12 +323,12 @@ void Climate::			repStart()
 }
 
 
-void Climate::			repEnd()
+void FrescoClimate::			repEnd()
 {
 }
 
 
-void Climate::			yearStart()
+void FrescoClimate::			yearStart()
 /** Start of year processing. */
 {
 	applyTransitionIfExists(gYear);
@@ -464,13 +464,13 @@ void Climate::			yearStart()
 }
 
 
-void Climate::			yearEnd()
+void FrescoClimate::			yearEnd()
 {
 }
 
 
 //Transitions
-void Climate::          setupTransitions()
+void FrescoClimate::          setupTransitions()
 {
     int           count = 0;
     int     *pnYears;
@@ -533,14 +533,14 @@ void Climate::          setupTransitions()
 	    Transition.RandomOffsetsPrecipStdDev= pdOffRandomPrecipStdDevs[i];
 	    Transition.IsRandOffsetReplicated	= pbOffRandomReplicate[i];
 	    //Insert it before the first later year.
-	    for (Iter=Climate::_transitions.begin(); Iter!=Climate::_transitions.end(); Iter++)
+	    for (Iter=FrescoClimate::_transitions.begin(); Iter!=FrescoClimate::_transitions.end(); Iter++)
 		    if (Transition.Year<Iter->Year) break;
-	    Climate::_transitions.insert(Iter,Transition);
+	    FrescoClimate::_transitions.insert(Iter,Transition);
     }
 }
 
 
-void Climate::			clearTransition(SClimateTransition* pTransition)
+void FrescoClimate::			clearTransition(SClimateTransition* pTransition)
 {
 	pTransition->Year = 0;
 	pTransition->ValuesType = VTCONSTANT;
@@ -564,7 +564,7 @@ void Climate::			clearTransition(SClimateTransition* pTransition)
 }
 
 
-void Climate::			setCurrentTransition(std::vector<SClimateTransition>::iterator transition)
+void FrescoClimate::			setCurrentTransition(std::vector<SClimateTransition>::iterator transition)
 {
 	_pCurrentTransition->Year = transition->Year;
 	//Values
@@ -594,10 +594,10 @@ void Climate::			setCurrentTransition(std::vector<SClimateTransition>::iterator 
 }
 
 
-void Climate::			applyTransitionIfExists(int year)
+void FrescoClimate::			applyTransitionIfExists(int year)
 {
 	std::vector<SClimateTransition>::iterator transition;
-	for (transition=Climate::_transitions.begin(); transition!=Climate::_transitions.end(); transition++) {
+	for (transition=FrescoClimate::_transitions.begin(); transition!=FrescoClimate::_transitions.end(); transition++) {
 		if (transition->Year == year) {
 			setCurrentTransition(transition);
 			break;
@@ -607,7 +607,7 @@ void Climate::			applyTransitionIfExists(int year)
 
 
 //Values
-int Climate::			getRandExplicitYear()
+int FrescoClimate::			getRandExplicitYear()
 {
 	//OLD TODO: Seperate filling the list, from selecting getting a specific year
 	int randomYear;
@@ -631,7 +631,7 @@ int Climate::			getRandExplicitYear()
 }
 
 
-std::string Climate::	climateValuesTypeToString(EValuesType type)
+std::string FrescoClimate::	climateValuesTypeToString(EValuesType type)
 {
     std::string result= "INVALID";
 	if		(type == VTCONSTANT)	    result="CONSTANT";
@@ -642,7 +642,7 @@ std::string Climate::	climateValuesTypeToString(EValuesType type)
 }
 
 
-float Climate::			getClimateFlammability(int row, int col)
+float FrescoClimate::			getClimateFlammability(int row, int col)
 {
 	if (_pSpatialFlammability)
 	{
@@ -655,7 +655,7 @@ float Climate::			getClimateFlammability(int row, int col)
 }
 
 //Offsets
-void Climate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffsetType OffsetType, int Year, float Amount)
+void FrescoClimate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffsetType OffsetType, int Year, float Amount)
 {
     _stepsAndRampsEnabled = FRESCO->fif().root["Climate"]["StepsAndRampsEnabled"].asBool();
     if (_stepsAndRampsEnabled)
@@ -667,7 +667,7 @@ void Climate::          setupStepsAndRamps() //(EClimateType ClimateType, EOffse
     }
 }
 
-void Climate::          setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, Json::Value& yearsKey, Json::Value& offsetsKey)
+void FrescoClimate::          setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, Json::Value& yearsKey, Json::Value& offsetsKey)
 {        
     //Get values from FIF.
     int*      pYears;
@@ -696,7 +696,7 @@ void Climate::          setupStepOrRamp(const EClimateType climateType, const EO
 }
 
 
-void Climate::			setOffsetsConstant(float temp, float precip, int firstYear, int lastYear)
+void FrescoClimate::			setOffsetsConstant(float temp, float precip, int firstYear, int lastYear)
 /** Sets temporal offsets to constant temp and precip for firstYear through lastYear. */
 {
 	for (int y=firstYear; y<=lastYear && y<=gLastYear; y++) {
@@ -706,7 +706,7 @@ void Climate::			setOffsetsConstant(float temp, float precip, int firstYear, int
 }
 
 
-void Climate::			setOffsetsFromFile(std::string filePath, int firstYear, int lastYear)
+void FrescoClimate::			setOffsetsFromFile(std::string filePath, int firstYear, int lastYear)
 /** Sets temporal offsets, for years from firstYear through lastYear, to values from a file. */
 {
 	std::fstream	fp;
@@ -725,7 +725,7 @@ void Climate::			setOffsetsFromFile(std::string filePath, int firstYear, int las
 }
 
 
-void Climate::			setOffsetsRandom(float tempMean, float tempStdDev, float precipMean, float precipStdDev, bool isReplicated, int firstYear, int lastYear)
+void FrescoClimate::			setOffsetsRandom(float tempMean, float tempStdDev, float precipMean, float precipStdDev, bool isReplicated, int firstYear, int lastYear)
 /**
  * Sets temporal offsets to random temp and precip for firstYear through lastYear.
  * If isReplicated, this function will only be called for the first rep.
@@ -738,7 +738,7 @@ void Climate::			setOffsetsRandom(float tempMean, float tempStdDev, float precip
 }
 
 
-void Climate::			showOffsetSummary() 
+void FrescoClimate::			showOffsetSummary() 
 /** Output offsets to console. */
 {
 	if (gDetailLevel>=MAXIMUM) {
@@ -758,7 +758,7 @@ void Climate::			showOffsetSummary()
 }
 
 
-std::string Climate::	climateOffsetsTypeToString(EOffsetsType type)
+std::string FrescoClimate::	climateOffsetsTypeToString(EOffsetsType type)
 {
     std::string result= "INVALID";
     if      (type == OTNONE)         result = "NONE";
@@ -770,14 +770,14 @@ std::string Climate::	climateOffsetsTypeToString(EOffsetsType type)
 
 
 //Steps and Ramps
-void Climate::			setStepsAndRamps()
+void FrescoClimate::			setStepsAndRamps()
 /** Calculate temporal steps and ramps for all years and apply them to temporal offsets. */
 {
 	setStepsAndRampsInTimeRange(gFirstYear, gLastYear);
 }
 
 
-void Climate::          setStepsAndRampsInTimeRange(int firstYear, int lastYear)
+void FrescoClimate::          setStepsAndRampsInTimeRange(int firstYear, int lastYear)
 /** Calculate temporal steps and ramps for the given time range and apply them to temporal offsets. */
 {
 	SClimate		tempOffset;			//Climate offsets (temp and precip) due to ramping or stepwise changes.

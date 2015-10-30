@@ -47,7 +47,7 @@ byte  FrescoFoundation_API          gGrasslandID		= 255;
 EDetailLevel    FrescoFoundation_API gDetailLevel		= MINIMAL;
 Fresco  FrescoFoundation_API        *FRESCO				= 0;
 RasterIO FrescoFoundation_API       *gIO				= 0;
-Climate FrescoFoundation_API        *gClimate			= 0;
+FrescoClimate FrescoFoundation_API        *gClimate			= 0;
 long FrescoFoundation_API        gTallyOfRandCalls		= 0;
 
 

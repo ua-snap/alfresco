@@ -17,7 +17,7 @@ extern StatArray* RunStats;
 	extern AIEM* aiem;
 #endif
 
-class Climate;
+class FrescoClimate;
 
 
 class FrescoFoundation_API Landscape 
@@ -33,7 +33,7 @@ protected:
 	int					_row;                                                   //This class remembers where it is in the array
     int                 _col;												    //This class remembers where it is in the array
 	Frame***			_pFrames;												//The landscape array which points to each frame
-	Climate*			_pClimate;												//A landscape has a climate.  This also stores the climate history.
+	FrescoClimate*			_pClimate;												//A landscape has a climate.  This also stores the climate history.
 	//Stats
 	CStat				_fireNumStat;											//Number of ignitions.
 	CStat				_fireSizeStat;											//Fire sizes stratified by fire number
