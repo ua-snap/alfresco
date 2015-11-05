@@ -18,7 +18,7 @@
 #include "Fire.h"
 #include "Frame.h"
 #include "NoVeg.h"
-#include "Climate.h"
+#include "FrescoClimate.h"
 #include "Except.h"
 #include "RasterIO.h"
 #include <stack>
@@ -42,7 +42,7 @@ struct SNeighbor
 
 Landscape::				Landscape (const int rows, const int cols) 
 {
-	_pClimate		    = new Climate();
+	_pClimate		    = new FrescoClimate();
 	_pFrames			= 0;
 	_pHumanIgnitions	= 0;
 	_pfireSpreadParams  = 0;

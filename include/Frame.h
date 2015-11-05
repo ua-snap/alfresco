@@ -2,7 +2,7 @@
 #define Fresco_Frame_h
 
 
-#include "Climate.h"
+#include "FrescoClimate.h"
 #include "Fire.h"
 #include "Species.h"
 #include "RasterIO.h"

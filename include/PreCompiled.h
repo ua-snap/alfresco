@@ -97,8 +97,8 @@ enum EDetailLevel		{MINIMAL, MODERATE, MAXIMUM};
 //Global FRESCO object.
 class Fresco;
 extern Fresco       FrescoFoundation_API    *FRESCO;
-class Climate;
-extern Climate FrescoFoundation_API    *gClimate;
+class FrescoClimate;
+extern FrescoClimate FrescoFoundation_API    *gClimate;
 
 //Global simulation settings.
 extern std::string  FrescoFoundation_API    gWorkingDirectory;

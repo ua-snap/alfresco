@@ -241,7 +241,7 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 			_basalArea	         = 0;
 			//Reduce inoculum to 20%
 			if (_isInoculumEnabled){
-				_inoculumScore = 0.2;
+				_inoculumScore *= 0.2;
 			}
 		} else if (burnSeverity == HIGH_LSS){
 			//Reduce basal area by 50%
@@ -353,6 +353,9 @@ Frame *GraminoidTundra::		    success(Landscape* pParent)
 			double gparams[3] = {movingTempAverage, 15., 2.};
 			double modGrowth = NormDist(gparams);
 			modGrowth *= 5;
+			if (_isInoculumEnabled){
+				modGrowth *= _inoculumScore;
+			}
 			double baFromGrowth = 0;
 			if (_basalArea > 0){
 				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
