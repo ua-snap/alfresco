@@ -58,6 +58,13 @@ std::string				AppendRepYear(const std::string file, const int rep, const int ye
 	result = file.substr(0,file.find_last_of(".")) + "_" + ToS(rep) + "_" + ToS(year) + file.substr(file.find_last_of("."),file.length()) + '\0';
 	return result;
 }
+std::string				InsertDirYear(const std::string file, const int year) 
+/** Inserts a Year(DDDD) directory inside of the default Map output directoryi path for files */ 
+{
+	std::string subdir_result;
+	subdir_result = file.substr(0,file.find_last_of("/")) + "/" + ToS(year) + file.substr(file.find_last_of("/"),file.length());
+	return subdir_result;
+}
 
 std::string				AppendMonthYear(const std::string file, const int month, const int year) 
 /** Inserts the month and year (_month_year) into the filename in front of the last decimal point so as not to corrupt the file extension. */
