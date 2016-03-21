@@ -56,6 +56,7 @@
 #include <cmath>
 #include <sstream>
 #include <algorithm>
+#include <boost/format.hpp>
 
 
 class Frame;
@@ -73,7 +74,7 @@ public:
 
 	enum ALFMapType 
 	{
-		VEGEGATION,
+		VEGETATION,
 		AGE,
 		SUBCANOPY,
 		SITE_VARIABLE,

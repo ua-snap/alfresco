@@ -12,22 +12,23 @@
 //Declare static private members
 bool			ShrubTundra::_isStaticSetupAlready		= false;
 bool			ShrubTundra::_isFireProbAgeDependent;
-const double*	ShrubTundra::_pAgeDependentFireParams;		
+bool			ShrubTundra::_isInoculumEnabled = false;
+double*	ShrubTundra::_pAgeDependentFireParams;		
 float			ShrubTundra::_fireProb;
 float			ShrubTundra::_ignitionDepressor;
 double			ShrubTundra::_seedRange;
-const double*	ShrubTundra::_pSeedSource;
+double*	ShrubTundra::_pSeedSource;
 double			ShrubTundra::_seedBasalArea;
 double			ShrubTundra::_seedlingBasalArea;
 int				ShrubTundra::_history;
-const double*	ShrubTundra::_pSeedEstParams;
+double*	ShrubTundra::_pSeedEstParams;
 double			ShrubTundra::_meanGrowth;
-const double*	ShrubTundra::_pClimateGrowth;
-const double*	ShrubTundra::_pCalibrationFactor;
+double*	ShrubTundra::_pClimateGrowth;
+double*	ShrubTundra::_pCalibrationFactor;
 double			ShrubTundra::_seedling;
 double			ShrubTundra::_ratioAK = 0.;
 double			ShrubTundra::_tundraSpruceBasalArea;
-const double*	ShrubTundra::_pStartAgeParms;
+double*	ShrubTundra::_pStartAgeParms;
 double*			ShrubTundra::_pIntegral;
 int			ShrubTundra::_spruceTransitionYear;
 int			ShrubTundra::_tundraTransitionYear;
@@ -59,6 +60,7 @@ ShrubTundra::				ShrubTundra(const Frame& rFrame, const int treeDensity)
 	_yearFrameEstablished	= gYear;
 	_ShrubTundra(treeDensity);
 	_basalArea = rFrame.basalArea();
+	_inoculumScore = rFrame.inoculumScore();
 }
 
 
@@ -92,6 +94,25 @@ void ShrubTundra::			_ShrubTundra(const int treeDensity)
 	_yearOfEstablishment = 0;
 //OLD TODO:	_yearOfEstablishment = -_history;
 	_degrees = -1;
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["enableInoculum"])){
+		_isInoculumEnabled = FRESCO->fif().root["Vegetation"]["enableInoculum"].asBool();
+	}
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Inoculum"])){
+		_inoculumMax = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Inoculum"].asDouble();
+	} else {
+		_inoculumMax = 1.0;
+	}
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumReturn"])){
+		_inoculumReturn= FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumReturn"].asDouble();
+	} else {
+		_inoculumReturn = 1.0;
+	}
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumBA"])){
+		_inoculumBA = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["InoculumBA"].asDouble();
+	} else {
+		_inoculumBA = 1.0;
+	}
+	_inoculumScore = _inoculumMax;
 }
 
 
@@ -104,51 +125,51 @@ void ShrubTundra::           setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-        _humanIgnitionsProb	    = FRESCO->fif().dGet("ShrubTundra.HumanFireProb");
-		_isFireProbAgeDependent = FRESCO->fif().bGet("ShrubTundra.FireProb.IsAgeDependent");
+        _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["HumanFireProb"].asDouble();
+		_isFireProbAgeDependent = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["FireProb.IsAgeDependent"].asBool();
 		if (_isFireProbAgeDependent) {
-			if (3 != FRESCO->fif().pdGet("ShrubTundra.FireProb", _pAgeDependentFireParams))
+			if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["FireProb"], _pAgeDependentFireParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: ShrubTundra.FireProb (because Tundra.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
-	        _fireProb = FRESCO->fif().dGet("ShrubTundra.FireProb");
-		if (FRESCO->fif().CheckKey("ShrubTundra.IgnitionDepressor"))
-			_ignitionDepressor = FRESCO->fif().dGet("ShrubTundra.IgnitionDepressor");
+	        _fireProb = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["FireProb"].asDouble();
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["IgnitionDepressor"]))
+			_ignitionDepressor = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["IgnitionDepressor"].asDouble();
 		else
 			_ignitionDepressor = 1;
-        _history			    = FRESCO->fif().nGet("ShrubTundra.History");
-        _seedRange		        = FRESCO->fif().dGet("ShrubTundra.SeedRange");
-        _seedBasalArea	        = FRESCO->fif().dGet("ShrubTundra.Seed.BasalArea");
-        _seedling			    = FRESCO->fif().dGet("ShrubTundra.Seedling");
-        _seedlingBasalArea      = FRESCO->fif().dGet("ShrubTundra.SeedlingBA");
-        _tundraSpruceBasalArea  = FRESCO->fif().dGet("ShrubTundra->Spruce.BasalArea");
-        _pStartAgeParms         = FRESCO->getStartAgeParms("ShrubTundra.StartAge", &_startAgeType);
-        _meanGrowth             = FRESCO->fif().dGet("ShrubTundra.MeanGrowth");
-	if (FRESCO->fif().CheckKey("ShrubTundra.SpruceTransitionYear")){
-        	_spruceTransitionYear          = FRESCO->fif().nGet("ShrubTundra.SpruceTransitionYear");
+        _history			    = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["History"].asInt();
+        _seedRange		        = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["SeedRange"].asDouble();
+        _seedBasalArea	        = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Seed.BasalArea"].asDouble();
+        _seedling			    = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Seedling"].asDouble();
+        _seedlingBasalArea      = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["SeedlingBA"].asDouble();
+        _tundraSpruceBasalArea  = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Spruce.BasalArea"].asDouble();
+        _pStartAgeParms         = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["StartAge"], &_startAgeType);
+        _meanGrowth             = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["MeanGrowth"].asDouble();
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["SpruceTransitionYear"])){
+        	_spruceTransitionYear          = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["SpruceTransitionYear"].asInt();
 	} else {
 		_spruceTransitionYear		 = 0;
 	}
-	if (FRESCO->fif().CheckKey("ShrubTundra.TundraTransitionYear")){
-        	_tundraTransitionYear          = FRESCO->fif().nGet("ShrubTundra.TundraTransitionYear");
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["TundraTransitionYear"])){
+        	_tundraTransitionYear          = FRESCO->fif().root["Vegetation"]["ShrubTundra"]["TundraTransitionYear"].asInt();
 	} else {
 		_tundraTransitionYear		 = 0;
 	}
-        if (2 != FRESCO->fif().pdGet("ShrubTundra.SeedEstParms", _pSeedEstParams)) {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["SeedEstParms"], _pSeedEstParams)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedEstParms");
         }
-        if (3 != FRESCO->fif().pdGet("ShrubTundra.ClimGrowth", _pClimateGrowth)) {
+        if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["ClimGrowth"], _pClimateGrowth)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: ShrubTundra.ClimGrowth");
         }
-        if (2 != FRESCO->fif().pdGet("ShrubTundra.CalFactor", _pCalibrationFactor)) {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["CalFactor"], _pCalibrationFactor)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.CalFactor");
         }
-        if (2 != FRESCO->fif().pdGet("ShrubTundra.SeedSource", _pSeedSource)) {
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["SeedSource"], _pSeedSource)) {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: ShrubTundra.SeedSource");
         }
 
 		//Calculate _ratioAK for use in getInitialBasalAreaI()
-        double spruceEstBasalAarea	= FRESCO->fif().dGet("ShrubTundra.Spruce.EstBA");
+        double spruceEstBasalAarea	= FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Spruce.EstBA"].asDouble();
 		const double pSeedSourceFatTailParams[3] = {gCellSize, _pSeedSource[0], _pSeedSource[1]};  //Parameters for calling FatTail()
 		const double alpha = _pCalibrationFactor[1] * spruceEstBasalAarea * _seedBasalArea * FatTail(pSeedSourceFatTailParams) / _seedling * _seedlingBasalArea;
 		double k = _pCalibrationFactor[0] * _meanGrowth;
@@ -206,24 +227,43 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 //model used is to check immediate post burn stuff first, then time dependant state changes, and then 
 //general (long term) state changes. Specific algorithms are documented in the code
 {
-	if(FRESCO->fif().bGet("ShrubTundra.Transitions")){
+	if(FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Transitions"].asBool()){
 	//Check immediately after burn
 	const int yearsSinceLastBurn = gYear - yearOfLastBurn;
 	if (yearsSinceLastBurn == 1) {	
-		if (burnSeverity == MODERATE || burnSeverity == HIGH_LSS){
-			//Reduce basal area by 50%
-			_basalArea 		*= 0.5;
-		} else if (burnSeverity == HIGH_HSS){
+		if (burnSeverity == HIGH_HSS){
 			//Reduce basal area to 0
 			_basalArea	         = 0.;
+			//Reduce incoculum to 20%
+			if (_isInoculumEnabled){
+				_inoculumScore *= 0.2;
+			}
 			if (gYear >= _tundraTransitionYear && _tundraTransitionYear > 0){
 				return new GraminoidTundra(*this);
 			}
+		} else if (burnSeverity == HIGH_LSS){
+			//Reduce basal area by 50%
+			_basalArea 		*= 0.5;
+			//Reduce incoculum to 50%
+			if (_isInoculumEnabled){
+				_inoculumScore *= 0.5;
+			}
+		} else if (burnSeverity == MODERATE){
+			//Reduce basal area by 50%
+			_basalArea 		*= 0.5;
 		} else if (burnSeverity == LOW){
 			//Unchanged
 			_basalArea               = _basalArea;
 		}
 		//if (burnSeverity == HIGH_LSS || burnSeverity == HIGH_HSS ){
+	}
+	if (_isInoculumEnabled){
+		if (_inoculumScore < _inoculumMax){
+			_inoculumScore += _inoculumReturn;
+			if (_inoculumScore > _inoculumMax){
+				_inoculumScore = _inoculumMax;
+			}
+		}
 	}
 	float movingTempAverage = 0;
 	float movingSWIAverage = 0;
@@ -257,10 +297,17 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 	if (gYear >= _spruceTransitionYear && _spruceTransitionYear > 0){
 		if (movingTempAverage >= 10.0 && movingTempAverage <= 20.0){
 			double params[3] = {0., _pSeedSource[0], _pSeedSource[1]};		                    //The first location will get set to the actual distance
-			double seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+			double seeds;
 			params[0] = 0;
-			seeds -= queryReply(pParent, FatTail (params));
-			seeds *= _seedBasalArea;
+			if (_isInoculumEnabled){
+				seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+				seeds -= queryReply(pParent, FatTail (params));
+				seeds *= _seedBasalArea;
+			} else {
+				seeds = pParent->neighborsSuccess(&Frame::queryReply, &FatTail, _seedRange, params);	//Find the neighborhood seed source - returns the weighted basal area
+				seeds -= queryReply(pParent, FatTail (params));
+				seeds *= _seedBasalArea;
+			}
 			double modSeedling = 1;  // Modified seedling ratio based on Burn Severity
 			if (yearsSinceLastBurn <= 5){
 				if (burnSeverity == MODERATE || burnSeverity == HIGH_HSS){
@@ -279,6 +326,9 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 			double baFromGrowth = 0;
 			if (_basalArea > 0){
 				baFromGrowth = -(_basalArea *_basalArea) * (0.00025) + (modGrowth * 0.2);
+				if (_isInoculumEnabled && _basalArea < _inoculumBA){
+					baFromGrowth *= _inoculumScore;
+				}
 			}
 			double baFromSeed = 0;
 			if (seeds > 0.00001){
@@ -288,7 +338,7 @@ Frame *ShrubTundra::		    success(Landscape* pParent)
 		}
 
 		//Transition if necessary
-		if (_basalArea >= FRESCO->fif().dGet("ShrubTundra.Spruce.EstBA")) {
+		if (_basalArea >= FRESCO->fif().root["Vegetation"]["ShrubTundra"]["Spruce.EstBA"].asDouble()) {
 			return new WSpruce(*this);
 		}
 	}

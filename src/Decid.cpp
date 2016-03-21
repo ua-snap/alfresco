@@ -13,23 +13,23 @@
 //Declare static private members
 bool			Decid::_isStaticSetupAlready    = false;
 bool			Decid::_isFireProbAgeDependent;
-const double*	Decid::_pAgeDependentFireParams;
+double*	Decid::_pAgeDependentFireParams;
 float			Decid::_decidFireProb;
 float			Decid::_ignitionDepressor;
 int				Decid::_decidHistory;
 double			Decid::_tundraSpruceBasalArea;
-const double*	Decid::_pDecidTundraParams;
+double*	Decid::_pDecidTundraParams;
 double**		Decid::_pDecidToBSpruceParams = 0;
 double**		Decid::_pDecidToWSpruceParams = 0;
 EStartAgeType	Decid::_bspruceStartAgeType;
 EStartAgeType	Decid::_wspruceStartAgeType;
 double*			Decid::_pBSpruceWeibullIntegral;
 double*			Decid::_pWSpruceWeibullIntegral;
-const double*	Decid::_pBSpruceStartAge;
-const double*	Decid::_pWSpruceStartAge;
+double*	Decid::_pBSpruceStartAge;
+double*	Decid::_pWSpruceStartAge;
 int				Decid::_yearsOfGrasslandCheck = 0;
-const double*	Decid::_pGrasslandThresholds = 0;
-const double*	Decid::_pGrassClimateParams = 0;
+double*	Decid::_pGrasslandThresholds = 0;
+double*	Decid::_pGrassClimateParams = 0;
 std::list<int>	Decid::_grassTempMonths;
 std::list<int>	Decid::_grassPrecipMonths;
 
@@ -95,23 +95,23 @@ void Decid::setStaticData()
 {
 	if (!_isStaticSetupAlready) 
     {
-		_isFireProbAgeDependent = FRESCO->fif().bGet("Decid.FireProb.IsAgeDependent");
+		_isFireProbAgeDependent = FRESCO->fif().root["Vegetation"]["Decid"]["FireProb.IsAgeDependent"].asBool();
 		if (_isFireProbAgeDependent) {
-			if (3 != FRESCO->fif().pdGet("Decid.FireProb", _pAgeDependentFireParams))
+			if (3 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["FireProb"], _pAgeDependentFireParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 3 for key: Decid.FireProb (because Decid.FireProb.IsAgeDependent is set to TRUE)");
 		}
 		else
-	        _decidFireProb = FRESCO->fif().dGet("Decid.FireProb");
-		if (FRESCO->fif().CheckKey("Decid.IgnitionDepressor"))
-			_ignitionDepressor = FRESCO->fif().dGet("Decid.IgnitionDepressor");
+	        _decidFireProb = FRESCO->fif().root["Vegetation"]["Decid"]["FireProb"].asDouble();
+		if (FRESCO->fif().CheckKey(FRESCO->fif().root["Vegetation"]["Decid"]["IgnitionDepressor"]))
+			_ignitionDepressor = FRESCO->fif().root["Vegetation"]["Decid"]["IgnitionDepressor"].asDouble();
 		else
 			_ignitionDepressor = 1;
-        _humanIgnitionsProb	    = FRESCO->fif().dGet("Decid.HumanFireProb");
-        _decidHistory           = FRESCO->fif().nGet("Decid.History");
-        _tundraSpruceBasalArea  = FRESCO->fif().dGet("Tundra->Spruce.BasalArea");
-        _pBSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.BSpruce", &_bspruceStartAgeType);
-        _pWSpruceStartAge       = FRESCO->getStartAgeParms("Decid.StartAge.WSpruce", &_wspruceStartAgeType);
-        if (2 != FRESCO->fif().pdGet("Decid->Tundra.Parms", _pDecidTundraParams))  {
+        _humanIgnitionsProb	    = FRESCO->fif().root["Vegetation"]["Decid"]["HumanFireProb"].asDouble();
+        _decidHistory           = FRESCO->fif().root["Vegetation"]["Decid"]["History"].asInt();
+        _tundraSpruceBasalArea  = FRESCO->fif().root["Vegetation"]["Tundra"]["Spruce.BasalArea"].asDouble();
+        _pBSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.BSpruce"], &_bspruceStartAgeType);
+        _pWSpruceStartAge       = FRESCO->getStartAgeParms(FRESCO->fif().root["Vegetation"]["Decid"]["StartAge.WSpruce"], &_wspruceStartAgeType);
+        if (2 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["Tundra.Parms"], _pDecidTundraParams))  {
             throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: Decid->Tundra.Parms");
         }
 		
@@ -120,17 +120,17 @@ void Decid::setStaticData()
 		//
 		if (usingGrassland())
 		{
-			_yearsOfGrasslandCheck = FRESCO->fif().nGet("Decid->Grassland.History");
+			_yearsOfGrasslandCheck = FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.History"].asInt();
 
 			if (!IsNodata(gGrasslandID))
 			{
 				// Add months needed for Decid=>Grassland succession.
 				_grassTempMonths.clear();
 				_grassPrecipMonths.clear();
-				const int* pPrecipMonths;
-				const int* pTempMonths;
+				int* pPrecipMonths;
+				int* pTempMonths;
 
-				int numMonths = FRESCO->fif().pnGet("Decid->Grassland.TempMonths", pTempMonths);
+				int numMonths = FRESCO->fif().pnGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.TempMonths"], pTempMonths);
 				if (numMonths > 12)
 					throw SimpleException(SimpleException::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.TempMonths. There are only 12 months in a year.");
 
@@ -139,7 +139,7 @@ void Decid::setStaticData()
 					_grassTempMonths.push_back(pTempMonths[i]);
 				}
 
-				numMonths = FRESCO->fif().pnGet("Decid->Grassland.PrecipMonths", pPrecipMonths);
+				numMonths = FRESCO->fif().pnGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.PrecipMonths"], pPrecipMonths);
 				if (numMonths > 12)
 					throw SimpleException(SimpleException::BADARRAYSIZE, "Expected up to 12 values in the array for the key, Grassland.PrecipMonths. There are only 12 months in a year.");
 
@@ -149,10 +149,10 @@ void Decid::setStaticData()
 				}
 			}
 			size_t expectedSize = 2 + _grassTempMonths.size() + _grassPrecipMonths.size();
-			if (expectedSize != FRESCO->fif().pdGet("Decid->Grassland.ClimateWeight", _pGrassClimateParams))
+			if (expectedSize != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.ClimateWeight"], _pGrassClimateParams))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of "+ToS(expectedSize)+" for key: Decid->Grassland.ClimateWeight = {Intercept,IfFlatInterceptAdjusment, [a temp multiplier per month in Grassland.TempMonths], [a precip multiplier per month in Grassland.PrecipMonths]}");
 
-			if (6 != FRESCO->fif().pdGet("Decid->Grassland.ClimateThreshholds", _pGrasslandThresholds))
+			if (6 != FRESCO->fif().pdGet(FRESCO->fif().root["Vegetation"]["Decid"]["Grassland.ClimateThreshholds"], _pGrasslandThresholds))
 				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 6 for key: Decid->Grassland.ClimateThreshholds = {Low, Moderate, High_LSS, High_HSS, Low_And_WasGrassland, Moderate_And_WasGrassland}");
 		}
 
@@ -165,10 +165,11 @@ void Decid::setStaticData()
 				_pDecidToBSpruceParams[i]=new double[2];
 		}
 		for (int i=1; i<5; i++){
-			const double* parms;
-			std::string key("Decid->BSpruce.BurnSeverity["+ToS(i)+"]");
-			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
-				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: " + key);
+			double* parms;
+			std::string key_burnsev("BSpruce.BurnSeverity["+ToS(i)+"]");
+			Json::Value key(FRESCO->fif().root["Vegetation"]["Decid"][key_burnsev.c_str()]);
+			if (2 != FRESCO->fif().pdGet(key, parms)) {
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Expected array size of 2 for key: " + key_burnsev);
 			}
 			_pDecidToBSpruceParams[i][0] = parms[0];
 			_pDecidToBSpruceParams[i][1] = parms[1];
@@ -179,10 +180,11 @@ void Decid::setStaticData()
 				_pDecidToWSpruceParams[i]=new double[2];
 		}
 		for (int i=1; i<5; i++){
-			const double* parms;
-			std::string key("Decid->WSpruce.BurnSeverity["+ToS(i)+"]");
-			if (2 != FRESCO->fif().pdGet(key.c_str(), parms)) {
-				throw SimpleException(SimpleException::BADARRAYSIZE, "Unexpected array size returned for Key: " + key);
+			double* parms;
+			std::string key_burnsev("WSpruce.BurnSeverity["+ToS(i)+"]");
+			Json::Value key(FRESCO->fif().root["Vegetation"]["Decid"][key_burnsev.c_str()]);
+			if (2 != FRESCO->fif().pdGet(key, parms)) {
+				throw SimpleException(SimpleException::BADARRAYSIZE, "Unexpected array size returned for Key: " + key_burnsev);
 			}
 			_pDecidToWSpruceParams[i][0] = parms[0];
 			_pDecidToWSpruceParams[i][1] = parms[1];

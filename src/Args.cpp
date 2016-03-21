@@ -9,6 +9,7 @@ Args::Args(){
 	outPath = p.string();
 	inPath = "";
 	debug = false;
+	nostats = false;
 	help = false;
 	showversion = false;
 	#ifdef ALF_VERSION
@@ -25,6 +26,7 @@ void Args::parse(int argc, char** argv){
 		("help,h", "produces helps message")
 		("version,v", "show the version information")
 		("debug,d", "enable debug mode")
+		("nostats,n", "disable summary stats gathering")
 		("startrep,s", boost::program_options::value<int>(), "set the starting rep number")
 		("fif,f", boost::program_options::value<string>(), "set the fif file")
 		("fif-path", boost::program_options::value<string>(), "set the fif path")
@@ -43,6 +45,9 @@ void Args::parse(int argc, char** argv){
 	}
 	if (varmap.count("debug")){
 		debug = true;
+	}
+	if (varmap.count("nostats")){
+		nostats = true;
 	}
 	if (varmap.count("startrep")){
         	startRep = varmap["startrep"].as<int>();

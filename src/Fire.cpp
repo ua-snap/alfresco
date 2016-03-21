@@ -16,12 +16,13 @@ std::vector<Fire::SFireTransition> Fire::fireTransitions;
 Fire::EType	    Fire::fireType						    = Fire::FIXED;
 std::string     Fire::historicalFiresFileName           = "";
 float		    Fire::_fireSpreadRadius			        = 0;
-const double*	Fire::_pFireSpreadParms;
+double*	Fire::_pFireSpreadParms;
 bool			Fire::_ignoringFirstInterval	        = false;
 bool			Fire::_isMonthly						= false;
+bool			Fire::_isExperimental						= false;
 int				Fire::_maxEmpiricalFireSizeEvent        = -1;
 float			Fire::_maxEmpiricalFireSizeEventWeight  = 1;
-const double*	Fire::_pFireClimate;
+double*	Fire::_pFireClimate;
 float			Fire::_climateFireProb			        = -1;
 SClimate		Fire::_previousClimate;
 int				Fire::_yearsOfHistory			        = -9999999;
@@ -85,28 +86,40 @@ void Fire::clear()
 void Fire::setup()
 {
     setupFireTransitions();
-	if (FRESCO->fif().pdGet("Fire.SpreadParms", _pFireSpreadParms) != 2)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.SpreadParms");
+	if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["SpreadParms"], _pFireSpreadParms) != 2)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.SpreadParms");
 
 	_isMonthly = false;
-	if (FRESCO->fif().CheckKey("Climate.IsMonthly"))
-		_isMonthly = FRESCO->fif().bGet("Climate.IsMonthly");
-	int numParams = _isMonthly ? 8 : 3;
-	if (FRESCO->fif().pdGet("Fire.Climate", _pFireClimate) != numParams)            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["IsMonthly"]))
+		_isMonthly = FRESCO->fif().root["Climate"]["IsMonthly"].asBool();
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["Climate"]["IsExperimental"]))
+		_isExperimental = FRESCO->fif().root["Climate"]["IsExperimental"].asBool();
+	int numParams;
+	if (_isExperimental){
+		numParams = 13;
+	} else if (_isMonthly){
+		numParams = 8;
+	} else {
+		numParams = 3;
+	}
+	if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["Climate"], _pFireClimate) != numParams){
+		throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	}
 
-	_fireSpreadRadius				    = FRESCO->fif().dGet("Fire.SpreadRadius");
-	_ignoringFirstInterval              = FRESCO->fif().bGet("Fire.IgnoreFirstInterval");
-    _maxEmpiricalFireSizeEvent          = FRESCO->fif().nGet("Fire.MaxEmpiricalFireSizeEvent");
-    _maxEmpiricalFireSizeEventWeight    = FRESCO->fif().dGet("Fire.MaxEmpiricalFireSizeEventWeight");
-    _yearsOfHistory                     = FRESCO->fif().nGet("Climate.NumHistory");
+	_fireSpreadRadius				    = FRESCO->fif().root["Fire"]["SpreadRadius"].asDouble();
+	_ignoringFirstInterval              = FRESCO->fif().root["Fire"]["IgnoreFirstInterval"].asBool();
+    _maxEmpiricalFireSizeEvent          = FRESCO->fif().root["Fire"]["MaxEmpiricalFireSizeEvent"].asInt();
+    _maxEmpiricalFireSizeEventWeight    = FRESCO->fif().root["Fire"]["MaxEmpiricalFireSizeEventWeight"].asDouble();
+    _yearsOfHistory                     = FRESCO->fif().root["Climate"]["NumHistory"].asInt();
 
-	const double* params;
-	if (FRESCO->fif().pdGet("BurnSeverity.FxnOfFireSize", params) != 2)		throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Climate");
+	double* params;
+	//std::cout << FRESCO->fif().pdGet(FRESCO->fif().root["BurnSeverity"]["FxnOfFireSize"], params) << ":" << 2 << std::endl;
+	if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["BurnSeverity"]["FxnOfFireSize"], params) != 2)		throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: BurnSeverity.FxnOfFireSize");
 	burnSeveritySettings.FxnIntercept = params[0];
 	burnSeveritySettings.FxnSlope = params[1];
-	burnSeveritySettings.LssVsHssWeight			= FRESCO->fif().dGet("BurnSeverity.LSS-vs-HSS.wt");
-	burnSeveritySettings.LowVsModerateWeight	= FRESCO->fif().dGet("BurnSeverity.Low-vs-Moderate.wt");
-	burnSeveritySettings.FlatTopoWeight			= FRESCO->fif().dGet("BurnSeverity.FlatTopo.wt");
-	burnSeveritySettings.ComplexTopoWeight		= FRESCO->fif().dGet("BurnSeverity.ComplexTopo.wt");
+	burnSeveritySettings.LssVsHssWeight			= FRESCO->fif().root["Fire"]["BurnSeverity"]["LSS-vs-HSS.wt"].asDouble();
+	burnSeveritySettings.LowVsModerateWeight	= FRESCO->fif().root["Fire"]["BurnSeverity"]["Low-vs-Moderate.wt"].asDouble();
+	burnSeveritySettings.FlatTopoWeight			= FRESCO->fif().root["Fire"]["BurnSeverity"]["FlatTopo.wt"].asDouble();
+	burnSeveritySettings.ComplexTopoWeight		= FRESCO->fif().root["Fire"]["BurnSeverity"]["ComplexTopo.wt"].asDouble();
 }
 
 
@@ -129,6 +142,40 @@ const float Fire::getClimateFireProb (const Landscape* l)
 		else {
 			_climateFireProb = p;
 		}
+	}
+	else if (_isExperimental)  //use monthly equation
+	{
+		const float t3 = l->cellTempByMonth(3);
+		const float t4 = l->cellTempByMonth(4);
+		const float t5 = l->cellTempByMonth(5);
+		const float t6 = l->cellTempByMonth(6);
+		const float t7 = l->cellTempByMonth(7);
+		const float t8 = l->cellTempByMonth(8);
+		const float t9 = l->cellTempByMonth(9);
+		const float p6 = l->cellPrecipByMonth(6);
+		const float p7 = l->cellPrecipByMonth(7);
+		const float p8 = l->cellPrecipByMonth(8);
+		const float p9 = l->cellPrecipByMonth(9);
+
+		if (IsNodata(t3) || IsNodata(t4) || IsNodata(t5) || IsNodata(t6)
+			|| IsNodata(t7) || IsNodata(t8) || IsNodata(t9)
+			|| IsNodata(p6) || IsNodata(p7) || IsNodata(p8) || IsNodata(p9))
+			return 0;
+
+		_climateFireProb =    _pFireClimate[0]	//intercept
+							//Temps: mar apr may jun jul aug sep
+							+ _pFireClimate[1] * t3 
+							+ _pFireClimate[2] * t4 
+							+ _pFireClimate[3] * t5 
+							+ _pFireClimate[4] * t6
+							+ _pFireClimate[5] * t7
+							+ _pFireClimate[6] * t8
+							+ _pFireClimate[7] * t9
+							//Precips: jun jul
+							+ _pFireClimate[8] * p6 
+							+ _pFireClimate[9] * p7
+							+ _pFireClimate[10] * p8
+							+ _pFireClimate[11] * p9;
 	}
 	else if (_isMonthly)  //use monthly equation
 	{
@@ -183,22 +230,23 @@ void Fire::setupFireTransitions()
  */
 {
     int           count = 0;
-    const int*    pYears;
-    char *const*  pTypes;
-    const double* pIgnitionFactors;
-    const double* pSensitivities;
-    char *const*  pSpatialIgnitionFactorFiles;
-    char *const*  pSpatialSensitivityFiles;
-    char *const*  pHistoryFireFiles;
+    int*    pYears;
+    //char *const*  pTypes;
+    std::string*   pTypes;
+    double* pIgnitionFactors;
+    double* pSensitivities;
+    std::string*  pSpatialIgnitionFactorFiles;
+    std::string*  pSpatialSensitivityFiles;
+    std::string*  pHistoryFireFiles;
     
     //Get arrays of values and make sure all arrays have the same count.
-    count = FRESCO->fif().pnGet("Fire.TypeTransitionYears", pYears);
-    if (FRESCO->fif().psGet("Fire.Types", pTypes) != count)                                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Types");
-    if (FRESCO->fif().pdGet("Fire.IgnitionFactor", pIgnitionFactors) != count)                       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.IgnitionFactor");
-    if (FRESCO->fif().pdGet("Fire.Sensitivity", pSensitivities) != count)                            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Sensitivity");
-    if (FRESCO->fif().psGet("Fire.Spatial.IgnitionFactor", pSpatialIgnitionFactorFiles) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.IgnitionFactor");
-    if (FRESCO->fif().psGet("Fire.Spatial.Sensitivity", pSpatialSensitivityFiles) != count)          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.Sensitivity");
-    if (FRESCO->fif().psGet("Fire.Historical", pHistoryFireFiles) != count)                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Historical");
+    count = FRESCO->fif().pnGet(FRESCO->fif().root["Fire"]["TypeTransitionYears"], pYears);
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Types"], pTypes) != count)                                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Types");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["IgnitionFactor"], pIgnitionFactors) != count)                       throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.IgnitionFactor");
+    if (FRESCO->fif().pdGet(FRESCO->fif().root["Fire"]["Sensitivity"], pSensitivities) != count)                            throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Sensitivity");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Spatial.IgnitionFactor"], pSpatialIgnitionFactorFiles) != count)    throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.IgnitionFactor");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Spatial.Sensitivity"], pSpatialSensitivityFiles) != count)          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Spatial.Sensitivity");
+    if (FRESCO->fif().psGet(FRESCO->fif().root["Fire"]["Historical"], pHistoryFireFiles) != count)                          throw SimpleException(SimpleException::BADARRAYSIZE,"Unexpected array size returned for Key: Fire.Historical");
 
     for (int i=0; i<count; i++) {
         SFireTransition FireTransition;

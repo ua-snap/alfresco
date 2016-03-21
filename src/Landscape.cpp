@@ -17,9 +17,8 @@
 #include "Stat.h"
 #include "Fire.h"
 #include "Frame.h"
-#include "Interface.h"
 #include "NoVeg.h"
-#include "Climate.h"
+#include "FrescoClimate.h"
 #include "Except.h"
 #include "RasterIO.h"
 #include <stack>
@@ -43,7 +42,7 @@ struct SNeighbor
 
 Landscape::				Landscape (const int rows, const int cols) 
 {
-	_pClimate		    = new Climate();
+	_pClimate		    = new FrescoClimate();
 	_pFrames			= 0;
 	_pHumanIgnitions	= 0;
 	_pfireSpreadParams  = 0;
@@ -115,29 +114,29 @@ void Landscape::		setup()
 /** setup a run. */
 {
     //Get variables from FIF.
-	if (FRESCO->fif().CheckKey("YOffset"))
-		gYOffset				= FRESCO->fif().nGet("YOffset");
-	if (FRESCO->fif().CheckKey("XOffset"))
-	    gXOffset				= FRESCO->fif().nGet("XOffset");
-    gYSize				    = FRESCO->fif().nGet("YSize");
-    gXSize				        = FRESCO->fif().nGet("XSize");
-    gCellSize				    = FRESCO->fif().dGet("CellSize");
-    _cropNeighbors		        = FRESCO->fif().bGet("CropNeighbors");
-    _xulCorner		            = FRESCO->fif().dGet("XULCorner");
-    _yulCorner			        = FRESCO->fif().dGet("YULCorner");
-    _vegDistributionStatFlags	= FRESCO->fif().nGet("Stat.VegDist.Flags");
-    _vegResidenceStatFlags	    = FRESCO->fif().nGet("Stat.VegResidence.Flags");
-    _fireSpeciesStatFlags	    = FRESCO->fif().nGet("Stat.FireSpecies.Flags");
-    _fireIntervalStatFlags	    = FRESCO->fif().nGet("Stat.FireInterval.Flags");
-    _fireSizeStatFlags		    = FRESCO->fif().nGet("Stat.FireSize.Flags");
-    _fireNumStatFlags		    = FRESCO->fif().nGet("Stat.FireNum.Flags");
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["YOffset"]))
+		gYOffset = FRESCO->fif().root["RasterSettings"]["YOffset"].asInt();
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["XOffset"]))
+	    gXOffset = FRESCO->fif().root["RasterSettings"]["XOffset"].asInt();
+    gYSize				    = FRESCO->fif().root["RasterSettings"]["YSize"].asInt();
+    gXSize				        = FRESCO->fif().root["RasterSettings"]["XSize"].asInt();
+    gCellSize				    = FRESCO->fif().root["RasterSettings"]["CellSize"].asDouble();
+    _cropNeighbors		        = FRESCO->fif().root["Simulation"]["CropNeighbors"].asBool();
+    _xulCorner		            = FRESCO->fif().root["RasterSettings"]["XULCorner"].asDouble();
+    _yulCorner			        = FRESCO->fif().root["RasterSettings"]["YULCorner"].asDouble();
+    _vegDistributionStatFlags	= FRESCO->fif().root["Stat"]["VegDist.Flags"].asInt();
+    _vegResidenceStatFlags	    = FRESCO->fif().root["Stat"]["VegResidence.Flags"].asInt();
+    _fireSpeciesStatFlags	    = FRESCO->fif().root["Stat"]["FireSpecies.Flags"].asInt();
+    _fireIntervalStatFlags	    = FRESCO->fif().root["Stat"]["FireInterval.Flags"].asInt();
+    _fireSizeStatFlags		    = FRESCO->fif().root["Stat"]["FireSize.Flags"].asInt();
+    _fireNumStatFlags		    = FRESCO->fif().root["Stat"]["FireNum.Flags"].asInt();
 
 	bool requireAaeacForInput = true;
 	bool applyAaeacToOutput = true;
-	if (FRESCO->fif().CheckKey("RequireAAEACProjectedInputRasters"))
-		requireAaeacForInput = FRESCO->fif().bGet("RequireAAEACProjectedInputRasters");
-	if (FRESCO->fif().CheckKey("ApplyAAEACProjectionToOutputRasters"))
-		applyAaeacToOutput = FRESCO->fif().bGet("ApplyAAEACProjectionToOutputRasters");
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["RequireAAEACProjectedInputRasters"]))
+		requireAaeacForInput = FRESCO->fif().root["RasterSettings"]["RequireAAEACProjectedInputRasters"].asBool();
+	if (FRESCO->fif().CheckKey(FRESCO->fif().root["RasterSettings"]["ApplyAAEACProjectionToOutputRasters"]))
+		applyAaeacToOutput = FRESCO->fif().root["RasterSettings"]["ApplyAAEACProjectionToOutputRasters"].asBool();
 
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
@@ -146,7 +145,7 @@ void Landscape::		setup()
 						requireAaeacForInput, applyAaeacToOutput);
 
     // Should this be in Fire?
-    _humanIgnitionsFilename     = FormatDirectory(FRESCO->fif().sGet("Fire.HumanIgnition.Basename"));
+    _humanIgnitionsFilename     = FormatDirectory(FRESCO->fif().root["Fire"]["HumanIgnition.Basename"].asString());
 	_pfireSpreadParams = new double[3];
 	_pfireSpreadParams[0] = 0.; //The first value is set to the cell's distance from a neighbor in each call to testFireSpread.
 	_pfireSpreadParams[1] = Fire::fireSpreadMean();
@@ -179,8 +178,8 @@ void Landscape::		setup()
 	_fireIntervalStat.resize(gNumSpecies);
 
 	#ifdef WITHSTATS
-	int numYears = FRESCO->fif().nGet("LastYear") - FRESCO->fif().nGet("FirstYear") + 1;  // Used for number of rows in StatArray
-	int numReps = FRESCO->fif().nGet("MaxReps");  // Used for number of columns in StatArray
+	int numYears = FRESCO->fif().root["Simulation"]["LastYear"].asInt() - FRESCO->fif().root["Simulation"]["FirstYear"].asInt() + 1;  // Used for number of rows in StatArray
+	int numReps = FRESCO->fif().root["Simulation"]["MaxReps"].asInt();  // Used for number of columns in StatArray
 	#endif
 
 	for (int s=0; s<gNumSpecies; s++) 
@@ -377,7 +376,7 @@ void Landscape::		doIgnitions()
 					rowStored = _row;   //Remember where to pick up when this fire is done spreading.
 					colStored = _col;
 					#ifdef AIEM_MODEL
-						aiem->setFireSeverity(_col, _row, pFrame->burnSeverity);
+						aiem->fireSeverity.setValue(_col, _row, pFrame->burnSeverity);
 					#endif
 				}
 				else { //Existing (spreading) fire.
@@ -386,7 +385,7 @@ void Landscape::		doIgnitions()
 					pFrame->burnSeverity = selectSpreadBurnSeverity(pFrame, pSpreaderFrame, fireSize);
 					severitySizes[pFrame->burnSeverity]++;
 					#ifdef AIEM_MODEL
-						aiem->setFireSeverity(_col, _row, pFrame->burnSeverity);
+						aiem->fireSeverity.setValue(_col, _row, pFrame->burnSeverity);
 					#endif
 				}
                 ////////////////////////////////////////////////

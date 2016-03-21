@@ -4,6 +4,7 @@
 
 #include "PreCompiled.h"
 #include "Except.h"
+#include "jsoncpp/json/json.h"
 #include "Poco/Exception.h"
 #include "RasterIO.h"
 #include <list>
@@ -17,7 +18,7 @@ struct SClimate
 };
 
 
-class FrescoFoundation_API Climate 
+class FrescoFoundation_API FrescoClimate 
 {
 //Data
 private:
@@ -48,8 +49,8 @@ private:
 	    float					RandomOffsetsPrecipStdDev;
 	    bool					IsRandOffsetReplicated;
 	    SClimateTransition() : Year(0), 
-		    ValuesType(Climate::VTCONSTANT), ConstantTemp(0), ConstantPrecip(0), SpatialTempFile(""), SpatialPrecipFile(""), RandExplicitMinYear(0), RandExplicitMaxYear(0), IsRandExplicitReplicated(false),
-		    OffsetsType(Climate::OTCONSTANT), 	ConstantTempOffset(0), ConstantPrecipOffset(0), OffsetsFile(""), RandomOffsetsTempMean(0), RandomOffsetsTempStdDev(0), RandomOffsetsPrecipMean(0), RandomOffsetsPrecipStdDev(0), IsRandOffsetReplicated(false) {};
+		    ValuesType(FrescoClimate::VTCONSTANT), ConstantTemp(0), ConstantPrecip(0), SpatialTempFile(""), SpatialPrecipFile(""), RandExplicitMinYear(0), RandExplicitMaxYear(0), IsRandExplicitReplicated(false),
+		    OffsetsType(FrescoClimate::OTCONSTANT), 	ConstantTempOffset(0), ConstantPrecipOffset(0), OffsetsFile(""), RandomOffsetsTempMean(0), RandomOffsetsTempStdDev(0), RandomOffsetsPrecipMean(0), RandomOffsetsPrecipStdDev(0), IsRandOffsetReplicated(false) {};
     };
     struct SOffset		
     {
@@ -83,8 +84,8 @@ public:
 
 //Functions
 public:
-							Climate();
-							~Climate();
+							FrescoClimate();
+							~FrescoClimate();
 
 	void					clear();
 	void					setup();
@@ -119,12 +120,12 @@ private:
 	void					applyTransitionIfExists(int year);
 	//Steps/Ramps
     void                    setupStepsAndRamps();
-    void                    setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, const char* yearsKey, const char* offsetsKey);
+    void                    setupStepOrRamp(const EClimateType climateType, const EOffsetType offsetType, Json::Value& yearsKey, Json::Value& offsetsKey);
 	void					addOffset(EClimateType climateType, EOffsetType offsetType, int year, float amount);
 };
 
 
-inline SClimate Climate::getClimate(const int row, const int col, const int yearBP) const 
+inline SClimate FrescoClimate::getClimate(const int row, const int col, const int yearBP) const 
 {
 	//Calculate year to get climate.
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw SimpleException(SimpleException::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
@@ -147,7 +148,7 @@ inline SClimate Climate::getClimate(const int row, const int col, const int year
 	return climate;
 }
 
-inline const float Climate::getTemp(const int row, const int col, const int month, const int yearBP) const 
+inline const float FrescoClimate::getTemp(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw SimpleException(SimpleException::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
@@ -161,7 +162,7 @@ inline const float Climate::getTemp(const int row, const int col, const int mont
     return t + _pOffsets[year].Temp;
 }
 
-inline const float Climate::getPrecip(const int row, const int col, const int month, const int yearBP) const 
+inline const float FrescoClimate::getPrecip(const int row, const int col, const int month, const int yearBP) const 
 {
 	//Calculate year to get climate.
 	if (yearBP+0 > _yearsOfArchivedHistory)		throw SimpleException(SimpleException::UNKNOWN, "Cannot retrieve climate data older than "+ToS(_yearsOfArchivedHistory)+ " years before present.  The Climate.NumHistory FIF setting might need adjustment.");
@@ -175,7 +176,7 @@ inline const float Climate::getPrecip(const int row, const int col, const int mo
 	return p + _pOffsets[year].Precip;
 }
 
-inline void Climate::assertTempMonth(const int month) const
+inline void FrescoClimate::assertTempMonth(const int month) const
 {
 	bool found = false;
 	std::list<int>::const_iterator m;
@@ -191,7 +192,7 @@ inline void Climate::assertTempMonth(const int month) const
 		throw SimpleException(SimpleException::UNKNOWN, "Expected month "+ToS(month)+ " to be included in the FIF field TempMonths.");
 }
 
-inline void Climate::assertPrecipMonth(const int month) const
+inline void FrescoClimate::assertPrecipMonth(const int month) const
 {
 	bool found = false;
 	std::list<int>::const_iterator m;
