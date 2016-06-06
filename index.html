@@ -3,7 +3,10 @@
 <head>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 <title>ALFRESCO User's Guide</title>
-<link rel="stylesheet" href="http://www.snap.uaf.edu/css/style.css" type="text/css" />
+
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 <style type="text/css">
 html {
 	margin: auto;
@@ -29,7 +32,7 @@ table td {
 
 <body>
 	<div class="methods">
-	<img alt="ALFRESCO Simulation Image" src="Map.png" style="width: 250px; margin-bottom: 50px; "  />
+	<img alt="ALFRESCO Simulation Image" src="Alfresco.png" style="width: 500px; margin-bottom: 10px; "  />
 	<h1>ALFRESCO User's Guide</h1>
 	<ol>
 	<li><a href="#intro">Introduction to ALFRESCO</a></li>
@@ -125,7 +128,7 @@ table td {
 	</p>
 	<p>If you are interested in obtaining ALFRESCO, please contact apbennett@alaska.edu</p>
 	<!--
-	<p>The repository can be added be creating a file in the <code>/etc/yum.repos.d</code> directory called snap.repo, and adding the following text to that file:</p>
+	<p>The repository can be added by creating a file in the <code>/etc/yum.repos.d</code> directory called snap.repo, and adding the following text to that file:</p>
 	<p><code>
 		[snap-pub]<br/>
 		name=SNAP Public Software Repo<br/>
@@ -144,6 +147,7 @@ table td {
 			<li>Boost - 1.47.x (w/ header libraries)</li>
 			<li>GDAL - 1.8.x (w/ header libraries)</li>
 			<li>Poco - 1.4.x (w/ header libraries)</li>
+			<li>jsoncpp 0.5+ (w/ header libraries)</li>
 		</ul>
 		<h4>Optional Libraries</h4>
 		<ul>
@@ -183,11 +187,11 @@ table td {
 	<h2><a name="getstarted"></a>Getting Started</h2>
 	<h3><a name="fifsetup"></a>.FIF Setup</h3>	
 	<p>
-		The .FIF file is the main component of configuration of the ALFRESCO model.  It contains parameterizations for model dynamics that allow the user to customize the scenario produced, offering options for fire dynamics, climate impacts, vegetation information, and more.
+		The .JSON file is the main component of configuration of the ALFRESCO model.  It contains parameterizations for model dynamics that allow the user to customize the scenario produced, offering options for fire dynamics, climate impacts, vegetation information, and more.
 	</p>
-	<p>Configuration is done by editing a text file in compliance with the .FIF configuration settings.  For available options, see <a href="#fifconfig">Appendix A</a>
+	<p>Configuration is done by editing a text file in compliance with the .JSON configuration settings.  For available options, see <a href="#fifconfig">Appendix A</a>
 	<h3><a name="running"></a>Running ALFRESCO</h3>	
-	<p>Once ALFRESCO is installed, and the .FIF has been configured, the model can be run in a few steps:
+	<p>Once ALFRESCO is installed, and the .JSON has been configured, the model can be run in a few steps:
 		<code>
 		<ol>
 			<li>cd &lt;output-path&gt;</li>
@@ -211,7 +215,8 @@ table td {
 			<li>-h [ --help ]         produces helps message
 			<li>-v [ --version ]      show the version information
 			<li>-d [ --debug ]        enable debug mode
-			<li>-s [ --start ] arg    set the startng rep number
+			<li>-n [ --nostats ]      disable summary stats gathering
+			<li>-s [ --startrep ] arg set the starting rep number
 			<li>-f [ --fif ] arg      set the fif file
 			<li>--fif-path arg        set the fif path
 			<li>--input-path arg      set the input path
@@ -220,16 +225,16 @@ table td {
 		</code>
 
 	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
-	<h2><a name="fifconfig" ></a>Appendix A: .FIF Configuration</h2>
-	<h3>Intro to the .FIF</h3>
-	<p>The Boreal ALFRESCO .fif is an ascii text file containing all parameterizations for any
-	particular simulation scenario. It can be edited within any general text editor (e.g., Notepad,
-	Vim, gedit, etc.). Details for each .fif section
-	are provided below. When a .fif file is opened, you can modify the parameters shown in the
-	central column of the figure below. Do not change the default values highlighted in the
-	following tables.</p>
-	<p>Values in the FIF follow the form of:
-		<p><code>Variable = Value;</code></p>
+	<h2><a name="fifconfig" ></a>Appendix A: Input Configuration</h2>
+	<h3>Intro to the Alfresco Config File</h3>
+	<p>The Boreal ALFRESCO Config file is a json format text file containing all 
+	parameterizations for any particular simulation scenario. It can be edited 
+	within any general text editor (e.g., Notepad, Vim, gedit, etc.). Details for 
+	each .json section are provided below. When a .json file is opened, you can 
+	modify the parameters shown in the central column of the figure below. It is  
+	not advised to change the default values highlighted in the following tables.</p>
+	<p>Values in the Config file follow the form of:
+		<p><code>"Variable" = "Value";</code></p>
 	</p>
 	<style>
 		.fixedValue { background-color: #ffff77; }
@@ -237,6 +242,20 @@ table td {
 		.deprecatedValue { color: #999999; }
 	</style>
 	<h3>Program Parameters</h3>
+	<pre><code class="json">
+[{
+	&quot;type&quot;: &quot;AlfrescoConfig&quot;,
+	"PathSetup": {},
+	"Landscape": {},
+	"RasterSettings": {},
+	"Climate": {},
+	"Fire": {},
+	"MapOutput": {},
+	"Stat": {},
+	"Vegetation": {},
+	"Simulation": {}
+}]
+	</code></pre>
 	<h4>Base Input</h4>
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
@@ -246,8 +265,46 @@ table td {
 	<tr class="deprecatedValue"><td>ServerOutputBasePath</td><td>Base path for output data</td><td>DEPRECATED - 2.0</td></tr>
 	<tr><td></td><td></td></tr>
 	</table>
-
-	<h4>Simulation Settings</h4>
+	<h4>"Simulation": </h4>
+	<pre><code class="json">
+	Simulation {
+		//This can be any 'long int'.  If they same number is used, it should be
+		//possible to recreate the same simulation
+		"RandSeed": 1234567890, 
+		//Level of detail to produce in Log Files
+		"Output.DetailLevel": "MAXIMUM",
+		//Simulation starting year.  Typically, no earlier than 1000.
+		"FirstYear": 1000,
+		//Simulation ending year.
+		"LastYear": 2100,
+		//Total number of replicate simulations to perform
+		"MaxReps": 200,
+		"CropNeighbors": true
+	}
+	<pre></code>
+	<h4>"Simulation": </h4>
+	<pre><code class="json">
+	"RasterSettings": {
+		//X Upper Left coordinate of the origin point
+		"XULCorner": -1725223.205807,
+		//Y Upper Left coordinate of the origin point
+		"YULCorner": 2544412.932644,
+		//The number of pixels to offset from the X origin point
+		"XOffset": 0,
+		//The number of pixels to offset from the Y origin point
+		"YOffset": 0,
+		//Number of pixels to include, starting from the YULCorner+YOffset 
+		"XSize": 3650,
+		//Number of pixels to include, starting from the XULCorner+XOffset 
+		"YSize": 2100,
+		"CellSize": 1000,
+		"RequireAAEACProjectedInputRasters": false,
+		"ApplyAAEACProjectionToOutputRasters": true
+	}
+	<pre></code>
+	<h4>"Simulation": </h4>
+	<pre><code class="json">
+	<pre></code>
 	<table style="width: 100%">
 	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>	
 	<tr><td>RandSeed</td><td>A manually set number used to seed the random number generator. If not set, the current time is used to seed the random number generator.</td><td></td></tr>
