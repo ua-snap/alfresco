@@ -279,6 +279,7 @@ table td {
 		"LastYear": 2100,
 		//Total number of replicate simulations to perform
 		"MaxReps": 200,
+		//Determines whether neighbor algorithm will crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.
 		"CropNeighbors": true
 	}
 	</code></pre>
@@ -304,27 +305,30 @@ table td {
 	</code></pre>
 
 	<h4>Landscape Parameters</h4>
-	<table style="width: 100%">
-	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
-	<tr><td>SiteInputFile</td><td>The site input file</td><td></td></tr>
-	<tr><td>TreeDensityInputFile</td><td>The initial tree density input file</td><td></td></tr>
-	<tr><td>TopoInputFile</td><td>Elevation/akcanada_prism_slopeComplexity_1km.tifThe topography input file.  0=flat, 1=complex</td><td></td></tr>
-	<tr><td>BurnSeverityInputFile</td><td>The initial burn severity input file. 0=No Burn, 1=Low, 2=Moderate, 3=High w Low Surface Severity, 4=High w/ High Surface Severity</td><td></td></tr>
-	<tr><td>AgeInputFile</td><td>The initial age input file - years before present so positive values</td><td></td></tr>
-	<tr><td>VegInputFile</td><td>The vegetation input file, in format filename_REP_YEAR.tif</td><td></td></tr>
-	<tr><td>VegTransitionFile</td><td>Base filename for forced vegetation transitions.  Year is appended as  _YR</td><td></td></tr>
-	<tr><td>IsForcedVegTransitions</td><td>TRUE: Succession trajectories are read from files as well as simulated.  FALSE: Succession is simulated only.</td><td></td></tr>
-	<tr><td>UseUniqueVegAndAgePerRep</td><td>Use unique input files for veg and age.  This can be used to prevent a bias due to all reps starting from the same input data.</td><td></td></tr>
-	<tr><td>UseUniqueBurnSeverityPerRep</td><td>Use unique input files for burn severity per rep.  This prevents a bias due to all reps starting from the same input data.</td><td></td></tr>
-	<tr><td>YearOfUniqueInputPerRep</td><td>The year to be appended to the base filename when using unique veg, age andor burn severity files per rep.  File format: filename_REP#_YEAR#.txt</td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	</table>
-
-	<h4>Succession</h4>
-	<table style="width: 100%">
-	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
-	<tr class="fixedValue"><td>CropNeighbors</td><td>Should the neighbours algorithm crop calls to cells outside the circular boundary defined by size or should it include all the cells withing the square boundary defined by size.</td><td></td></tr>
-	</table>
+	<pre><code class="json">
+	"Landscape": {
+		//Aspect input file
+		"SiteInputFile": "Elevation/ALF_AK_CAN_prism_aspect_1km.tif",
+		//Canopy / Density input file
+		"TreeDensityInputFile": "Initialization_MarkO/POSTProc_CreateCanopy.tif",
+		//Topographic / Elevation file
+		"TopoInputFile": "Initialization_MarkO/POSTProc_ALF_AK_CAN_prism_slopeComplexity_1km.tif",
+		//Burn Severity File
+		"BurnSeverityInputFile": "Initialization_MarkO/POSTProc_CreateBSH.tif",
+		//Starting Age Input File
+		"AgeInputFile": "Initialization_MarkO/POSTProc_CreateAge.tif",
+		//Starting Vegetation Input File
+		"VegInputFile": "Landcover/LandCover_alf_2005.tif",
+		"VegTransitionFile": "Input/Initialization/VegTransitions.tif",
+		"IsForcedVegTransitions": false,
+		//Whether to use unique veg/age files per rep, or start all via one input
+		"UseUniqueVegAndAgePerRep": false,
+		//Whether to use unique burn severity files per rep, or start all via one input
+		"UseUniqueBurnSeverityPerRep": false,
+		//Starting year for unique input file
+		"YearOfUniqueInputPerRep": 1000
+	}
+	</code></pre>
 
 	<h4>Climate Settings</h4>
 	<table style="width: 100%">
