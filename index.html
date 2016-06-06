@@ -281,8 +281,8 @@ table td {
 		"MaxReps": 200,
 		"CropNeighbors": true
 	}
-	<pre></code>
-	<h4>"Simulation": </h4>
+	</code></pre>
+	<h4>"Raster Settings": </h4>
 	<pre><code class="json">
 	"RasterSettings": {
 		//X Upper Left coordinate of the origin point
@@ -301,35 +301,7 @@ table td {
 		"RequireAAEACProjectedInputRasters": false,
 		"ApplyAAEACProjectionToOutputRasters": true
 	}
-	<pre></code>
-	<h4>"Simulation": </h4>
-	<pre><code class="json">
-	<pre></code>
-	<table style="width: 100%">
-	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>	
-	<tr><td>RandSeed</td><td>A manually set number used to seed the random number generator. If not set, the current time is used to seed the random number generator.</td><td></td></tr>
-	<tr><td>Output.DetailLevel</td><td>MINIMAL: Show only run progress.  MODERATE: Show some interim calculations along with run detail.  MAXIMUM: Show maximum detail along with run detail.</td><td></td></tr>
-	<tr><td>FirstYear</td><td>The first year of the simulation to run</td><td></td></tr>
-        <tr><td>LastYear</td><td>The last year of the simulation to run</td><td></td></tr>
-        <tr><td>MaxReps</td><td>The number of replicates to run the model (i.e. x replicates total).</td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	</table>
-
-	<h4>Raster Settings</h4>
-	<table style="width: 100%">
-	<tr><th>Field</th><th>Description</th><th>Version Notes</th></tr>
-	<tr><td>XULCorner</td><td>"x origin", "top left corner". Usually in meters.</td><td></td></tr>
-	<tr><td>YULCorner</td><td>"y origin", "top left corner". Usually in meters.</td><td></td></tr>
-	<tr><td>XOffset</td><td>Number of pixels from the left (XULCorner) to start counting columns</td><td></td></tr>
-	<tr><td>YOffset</td><td>Number of pixels from the top (YULCorner) to start counting rows</td><td></td></tr>
-	<tr><td>XSize</td><td>Landscape's width in pixels.</td><td></td></tr>
-	<tr><td>YSize</td><td>Landscape's height in pixels.</td><td></td></tr>
-	<tr class="fixedValue"><td>CellSize</td><td>The size of each cell (in meters)</td><td></td></tr>
-	<tr><td>RequireAAEACProjectedInputRasters</td><td>(optional -- defaults to TRUE) if TRUE, each input raster file will be checked for the Alaska Albers projection.</td><td></td></tr>
-	<tr><td>ApplyAAEACProjectionToOutputRasters</td><td>(optional -- defaults to TRUE) if TRUE, each output raster file will include metadata for the Alaska Albers projection.</td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	<tr><td></td><td></td><td></td></tr>
-	</table>
+	</code></pre>
 
 	<h4>Landscape Parameters</h4>
 	<table style="width: 100%">
