@@ -494,11 +494,8 @@ void CustomLandscape::      setupSuppressionTransitions()
     double  *pClass1,*pClass2, *pClass3, *pClass4, *pClass5;
     std::string   errBase("Unexpected array size returned for Key: ");
     Json::Value&  keyBase = FRESCO->fif().root["Fire"]["Suppression"]["Tran"];
-    //std::string   keyBase("Fire.Suppression.Tran.");
-    //std::string   yearsKey(keyBase + "Years");
     Json::Value&  yearsKey = keyBase["Years"];
     Json::Value&  hasNewMapKey = keyBase["HasNewMap"];
-    //std::string   hasNewMapKey(keyBase + "HasNewMap");
     Json::Value&   class1Key = keyBase["Class1"];
     Json::Value&   class2Key = keyBase["Class2"];
     Json::Value&   class3Key = keyBase["Class3"];
