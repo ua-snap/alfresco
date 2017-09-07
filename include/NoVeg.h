@@ -1,9 +1,8 @@
 #ifndef Fresco_NoVeg_h
 #define Fresco_NoVeg_h
 
-
 #include "Frame.h"
-
+#include "PreCompiled.h"
 
 class FrescoFoundation_API NoVeg : public Frame
 //This frame is only a place holder at this time, but at some point in the future, could become a realistic

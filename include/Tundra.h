@@ -1,12 +1,14 @@
 #ifndef Fresco_Tundra_h
 #define Fresco_Tundra_h
 
-
+#include "BSpruce.h"
 #include "Custom.h"
 #include "Frame.h"
+#include "Fresco.h"
 #include "NoVeg.h"
+#include "PreCompiled.h"
+#include "RasterIO.h"
 #include "WSpruce.h"
-
 
 class FrescoCustom_API Tundra : public Frame 
 //The Tundra class is the definition of the tundra frame.  It is a child of the general frame type and inherits most

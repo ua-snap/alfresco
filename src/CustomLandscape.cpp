@@ -1,18 +1,6 @@
 //CustomLandscape.cpp
 
-
 #include "CustomLandscape.h"
-#include "CustomFresco.h"
-#include "PreCompiled.h"
-#include "Landscape.h"
-#include "Fresco.h"
-#include "NoVeg.h"
-#include "Stat.h"
-#include "Except.h"
-#include "Fire.h"
-#include "RasterIO.h"
-#include "Poco/Path.h"
-
 
 CustomLandscape::		    CustomLandscape(const int rows, const int cols) : Landscape (rows, cols)
 {

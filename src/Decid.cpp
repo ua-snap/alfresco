@@ -1,13 +1,11 @@
 //Decid.cpp
 
 
-#include "PreCompiled.h"
+
 #include "Decid.h"
-#include "BSpruce.h"
-#include "Fresco.h"
-#include "RasterIO.h"
+
 #include "CustomLandscape.h"
-#include "WSpruce.h"
+
 
 
 //Declare static private members

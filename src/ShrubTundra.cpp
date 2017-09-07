@@ -1,13 +1,7 @@
 //ShrubTundra.cpp
 
-
-#include "PreCompiled.h"
 #include "ShrubTundra.h"
-#include "BSpruce.h"
-#include "Fresco.h"
-#include "RasterIO.h"
 #include "CustomLandscape.h"
-#include "WSpruce.h"
 
 //Declare static private members
 bool			ShrubTundra::_isStaticSetupAlready		= false;

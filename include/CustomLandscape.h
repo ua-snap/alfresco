@@ -3,20 +3,29 @@
 
 #include <string>
 #include "Custom.h"
+#include "CustomFresco.h"
+#include "Except.h"
+#include "Fire.h"
+#include "Fresco.h"
 #include "Landscape.h"
-//Include frame types
-#include "Tundra.h"
-#include "BarrenLichenMoss.h"
-#include "TemperateRainforest.h"
-#include "ShrubTundra.h"
-#include "GraminoidTundra.h"
-#include "WetlandTundra.h"
-#include "BSpruce.h"
-#include "WSpruce.h"
-#include "Grassland.h"
-#include "Decid.h"
+#include "Poco/Path.h"
+#include "PreCompiled.h"
+#include "RasterIO.h"
+#include "Stat.h"
 #include "StatArray.h"
 #include "StatFile.h"
+//Include frame types
+#include "BarrenLichenMoss.h"
+#include "BSpruce.h"
+#include "Decid.h"
+#include "GraminoidTundra.h"
+#include "Grassland.h"
+#include "NoVeg.h"
+#include "ShrubTundra.h"
+#include "TemperateRainforest.h"
+#include "Tundra.h"
+#include "WetlandTundra.h"
+#include "WSpruce.h"
 
 #ifdef WITHSTATS
 extern StatArray* RunStats;

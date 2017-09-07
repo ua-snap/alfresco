@@ -1,12 +1,15 @@
 #ifndef Fresco_Global_h
 #define Fresco_Global_h
 
-
+#include "Fresco.h"
 #include "Poco/Net/IPAddress.h"
 #include "Poco/Net/SocketAddress.h"
+#include "Poco/File.h"
 #include "Poco/Mutex.h"
 #include <string>
-
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 class Global
 {

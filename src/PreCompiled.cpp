@@ -1,20 +1,9 @@
 //Global.cpp
 
-
-#include "PreCompiled.h"
-#include "Fresco.h"
 #include "Except.h"
+#include "Fresco.h"
+#include "PreCompiled.h"
 #include "RasterIO.h"
-#include "Poco/Path.h"
-//#include <ios>
-//#include <iostream>
-#include <sstream>
-#include <sys/types.h>
-#include <fcntl.h>
-#ifndef WIN32
-#include <unistd.h>
-#endif
-
 
 void					ShowOutput(const EDetailLevel DetailLevel, const std::string output)
 /** 

@@ -1,11 +1,11 @@
 #ifndef Fresco_WSpruce_h
 #define Fresco_WSpruce_h
 
-
 #include "Custom.h"
 #include "Frame.h"
+#include "Fresco.h"
 #include "NoVeg.h"
-
+#include "PreCompiled.h"
 
 class FrescoCustom_API WSpruce : public Frame 
 //The WSpruce class is the definition of the white spruce frame.  It is a child of the general frame type and inherits

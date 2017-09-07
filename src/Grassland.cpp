@@ -3,12 +3,8 @@
 //probability function and the success function which are pure virtual functions and therefore require
 //definition, and any other worker functions which may be required for the function of the module.
 
-
-#include "PreCompiled.h"
-#include "Fresco.h"
 #include "Grassland.h"
 #include "CustomLandscape.h"
-
 
 //Declare static private members
 bool			Grassland::_isStaticSetupAlready = false;
