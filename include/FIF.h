@@ -10,8 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
-#include "jsoncpp/json/json.h"
+#include <jsoncpp/json/json.h>
 
 class FIF {
 	public:
