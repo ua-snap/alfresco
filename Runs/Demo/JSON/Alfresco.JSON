@@ -1,0 +1,281 @@
+{ 		
+	"type": "AlfrescoConfig",
+	"PathSetup": {	
+		"ClientInputBasePath": "/atlas_scratch/ALFRESCO/ALFRESCO_Master_Dataset/ALFRESCO_Model_Input_Datasets/AK_CAN_Inputs",
+		"ClientOutputBasePath": "",
+		"BaseData": "/atlas_scratch/ALFRESCO/ALFRESCO_Master_Dataset/ALFRESCO_Model_Input_Datasets/AK_CAN_Inputs"
+	},
+	"Landscape": {
+		"SiteInputFile": "Elevation/ALF_AK_CAN_prism_aspect_1km.tif",
+		"TreeDensityInputFile": "Initialization_MarkO/POSTProc_CreateCanopy.tif",
+		"TopoInputFile": "Initialization_MarkO/POSTProc_ALF_AK_CAN_prism_slopeComplexity_1km.tif",
+		"BurnSeverityInputFile": "Initialization_MarkO/POSTProc_CreateBSH.tif",
+		"AgeInputFile": "Initialization_MarkO/POSTProc_CreateAge.tif",
+		"VegInputFile": "Landcover/LandCover_alf_2005.tif",
+		"VegTransitionFile": "Input/Initialization/VegTransitions.tif",
+		"IsForcedVegTransitions": false,
+		"UseUniqueVegAndAgePerRep": false,
+		"UseUniqueBurnSeverityPerRep": false,
+		"YearOfUniqueInputPerRep": 1000
+	},
+	"RasterSettings": {
+		"XULCorner": -1725223.205807,
+		"YULCorner": 2544412.932644,
+		"XOffset": 0,
+		"YOffset": 0,
+		"XSize": 3650,
+		"YSize": 2100,
+		"CellSize": 1000,
+		"RequireAAEACProjectedInputRasters": false,
+		"ApplyAAEACProjectionToOutputRasters": true
+	},
+	"Climate": {
+		"IsMonthly": true,
+		"IsExperimental": true,
+		"NumHistory": 1,
+		"TransitionYears": [1000, 1901, 2015],
+		"Values": {
+			"Type": ["RANDEXPLICIT", "EXPLICIT", "EXPLICIT"],
+			"Temp.Constant": [0.0, 0.0, 0.0],
+			"Precip.Constant": [0.0, 0.0, 0.0],
+			"Temp.File": [
+					"/Data/Base_Data/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/ts40/historical/tas/tas_mean_C_CRU_TS40_historical.tif",
+					"/Data/Base_Data/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/ts40/historical/tas/tas_mean_C_CRU_TS40_historical.tif",
+					"/Data/Base_Data/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/NCAR-CCSM4/rcp85/tas/tas_mean_C_alf_ar5_NCAR-CCSM4_rcp85.tif"
+			],
+			"Precip.File": [
+					"/Data/Base_Data/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/ts40/historical/pr/pr_total_mm_CRU_TS40_historical.tif",
+					"/Data/Base_Data/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/ts40/historical/pr/pr_total_mm_CRU_TS40_historical.tif",
+					"/Data/Base_Data/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/NCAR-CCSM4/rcp85/pr/pr_total_mm_alf_ar5_NCAR-CCSM4_rcp85.tif"
+			],
+			"RandExplicit.MinYear": [1901,1901,2015],
+			"RandExplicit.MaxYear": [1999,1901,2015],
+			"RandExplicit.Replicate": [false,false, false],
+			"StepsAndRampsEnabled": false
+		},
+		"Offsets": {
+			"Type": ["NONE","NONE", "NONE"],
+			"File": ["na","na", "na"],
+			"Constant.Temp": [0.0,0.0,0.0],
+			"Constant.Precip": [0.0,0.0,0.0],
+			"Random.Temp.Mean": [0.0,0.0,0.0],
+			"Random.Temp.StdDev": [0.0,0.0,0.0],
+			"Random.Precip.Mean": [0.0,0.0,0.0],
+			"Random.Precip.StdDev": [0.0,0.0,0.0],
+			"Random.Replicate": [false,false,false],
+			"TempStepYear": [],
+			"TempStep": [],
+			"TempRampYear": [],
+			"TempRamp": [],
+			"PrecipStepYear": [],
+			"PrecipStep": [],
+			"PrecipRampYear": [],
+			"PrecipRamp": []
+		} 
+
+	},
+	"Fire": {
+		"Types": ["SPATIAL", "SPATIAL", "SPATIAL"],
+		"TypeTransitionYears": [1000, 1950, 2015],
+		"Enabled": true,
+		"SpreadRadius": 1000,
+		"SpreadParms": [0.0, 500.0],
+		"Climate": [1.0, 0.05, 0.1, 0.5, 0.85, 0.15, 0.50, 0.2, -0.075, -0.025, -0.085, -0.005, 0.0],
+		"IgnoreFirstInterval": true,
+		"IgnitionFactor": [2.95e-05, 2.95e-05, 2.95e-05],
+		"Sensitivity": [475.0, 475.0, 475.0],
+		"MaxEmpiricalFireSizeEvent": 6900,
+		"MaxEmpiricalFireSizeEventWeight": 0.80,
+		"Historical": ["", "", ""],
+		"HumanIgnition.Basename": "Fire/HumanIgnitions/HIg_Default_0.txt",
+		"Spatial.IgnitionFactor": ["/atlas_scratch/apbennett/TestCRU4/Core/Ignition.tif", "/atlas_scratch/apbennett/TestCRU4/Core/Ignition2.tif", "/atlas_scratch/apbennett/TestCRU4/Core/Ignition3.tif"],
+		"Spatial.Sensitivity": ["/atlas_scratch/apbennett/TestCRU4/Core/Sensitivity.tif", "/atlas_scratch/apbennett/TestCRU4/Core/Sensitivity2.tif", "/atlas_scratch/apbennett/TestCRU4/Core/Sensitivity3.tif"],
+		"Suppression": {
+			"On": false,
+			"Basename": "Fire/Suppression/old_mngt.txt",
+			"Tran": {
+				"Years": [0,34,56],
+				"HasNewMap": [true,true,true],
+				"Class1": [1.0, 0.05, 0.05],
+				"Class2": [1.0, 0.15, 0.15],
+				"Class3": [1.0, 0.6, 0.6],
+				"Class4": [1.0, 1.0, 1.0],
+				"Class5": [1.0, 1.0, 1.0],
+				"Threshold.FireSize": [28461, 28461, 28461],
+				"Threshold.Ignitions": [500, 500, 500]
+			}
+		},
+		"BurnSeverity": {
+			"FxnOfFireSize": [-3.0, 0.00333],
+			"LSS-vs-HSS.wt": 0.5,
+			"Low-vs-Moderate.wt": 0.5,
+			"FlatTopo.wt": 0.5,
+			"ComplexTopo.wt": 0.2
+		}
+
+	},
+	"MapOutput": {
+		"MapFiles": ["Maps/BurnSeverityHistory.tif", "Maps/BurnSeverity.tif", "Maps/Veg.tif", "Maps/Fire.tif", "Maps/Age.tif", "Maps/FireScar.tif", "Maps/BasalArea.tif"],
+		"MapCodes": ["FSevHist", "FSev", "Veg", "Fire", "Age", "FScar", "Basal"],
+		"MapFlags": [2097233, 1048657, 4177, 65617, 8273, 524369, 593],
+		"MapRepStart": [0, 0, 0, 0, 0, 0, 0],
+		"MapRepFreq": [0, 1, 1, 0, 1, 1, 1],
+		"MapYearStart": [0, 1901, 1901, 0, 1901, 1901, 1901],
+		"MapYearFreq": [0, 1, 1, 0, 1, 1, 1]
+	},
+	"Stat": {
+		"Summary.File": "StatOut.txt",
+		"FireNum.Flags": 1057,
+		"FireSize.Flags": 3105,
+		"VegDist.Flags": 1073,
+		"VegResidence.Flags": 561,
+		"FireSpecies.Flags": 1073,
+		"FireInterval.Flags": 2097,
+		"BurnsBySupp.Flags": 1073,
+		"Habitat.Flags": 1057
+	},
+	"Vegetation": {
+		"enableInoculum": false,
+		"NoVeg": {
+			"id": 0
+		},
+		"Tundra": {
+			"active": false,
+			"StartAge": [40.0, 1.0],
+			"FireProb.IsAgeDependent": true,
+			"FireProb": [0.10,6.0,0.1],
+			"HumanFireProb": 2.432667E-05,
+			"Spruce.EstBA": 23.5,
+			"SeedRange": 1000,
+			"SeedSource": [35.0, 0.95],
+			"Seed.BasalArea": 70000,
+			"Seedling": 100,
+			"SeedlingBA": 7.854E-05,
+			"History": 20,
+			"SeedEstParms": [7.5, 0.085],
+			"MeanGrowth": 0.001,
+			"ClimGrowth": [0.0, 0.0, 0.0],
+			"CalFactor": [100.0, 100.0],
+			"Spruce.BasalArea": 10,
+			"IgnitionDepressor": 0.1,
+			"Transitions": false
+		},
+		"BSpruce": {
+			"id": 1,
+			"StartAge": [3.59, 0.87],
+			"FireParms": [0.95, 4.0, 0.08],
+			"HumanFireProb": 0.00119969
+		},
+		"WSpruce": {
+			"id": 2,
+			"StartAge": [11.3, 2.36],
+			"FireParms": [0.87, 8.0, 0.08],
+			"HumanFireProb": 0.002184466 
+		},
+		"Decid": {
+			"id": 3,
+			"StartAge.WSpruce": [9.0],
+			"StartAge.BSpruce": [4.0],
+			"FireProb.IsAgeDependent": false,
+			"FireProb": 0.020,
+			"HumanFireProb": 0.003060109,
+			"History": 20,
+			"Tundra.Parms": [4.0, 19.32],
+			"Grassland.History": 3,
+			"Grassland.TempMonths": [3,4,5,6],
+			"Grassland.PrecipMonths": [6,7],
+			"Grassland.ClimateWeight": [0.1, 1.0, 0.03, 0.04, 0.05, 0.06, 0.006, 0.007],
+			"Grassland.ClimateThreshholds": [2, 2.5, 1, 1, 3, 3.2],
+			"WSpruce.BurnSeverity[1]": [0.001000000, -0.07500000],
+			"WSpruce.BurnSeverity[2]": [0.001000000, -0.07500000],
+			"WSpruce.BurnSeverity[3]": [0.001000000, -0.09000000],
+			"WSpruce.BurnSeverity[4]": [0.001000000, -0.09000000],
+			"BSpruce.BurnSeverity[1]": [0.001428571, -0.07142857],
+			"BSpruce.BurnSeverity[2]": [0.001428571, -0.07142857],
+			"BSpruce.BurnSeverity[3]": [0.001000000, -0.07500000],
+			"BSpruce.BurnSeverity[4]": [0.001000000, -0.07500000]
+		},
+		"ShrubTundra": {
+			"id": 4,
+			"StartAge": [40.0, 1.0],
+			"FireProb.IsAgeDependent": true,
+			"FireProb": [0.17,6.0,0.15],
+			"HumanFireProb": 2.432667E-05,
+			"Spruce.EstBA": 20,
+			"SeedRange": 1000,
+			"SeedSource": [35.0, 0.95],
+			"Seed.BasalArea": 70000,
+			"Seedling": 100,
+			"SeedlingBA": 7.854E-05,
+			"History": 20,
+			"SeedEstParms": [7.5, 0.085],
+			"MeanGrowth": 0.00044,
+			"ClimGrowth": [0.0, 0.0, 0.0],
+			"CalFactor": [0.0, 0.0],
+			"Spruce.BasalArea": 10,
+			"IgnitionDepressor": 0.1,
+			"Transitions": true,
+			"SpruceTransitionYear": 1860,
+			"TundraTransitionYear": 1960
+		},
+		"GraminoidTundra": {
+			"id": 5,
+			"StartAge": [40.0, 1.0],
+			"FireProb.IsAgeDependent": true,
+			"FireProb": [0.17,6.0,0.15],
+			"HumanFireProb": 2.432667E-05,
+			"Spruce.EstBA": 20,
+			"SeedRange": 1000,
+			"SeedSource": [35.0, 0.95],
+			"Seed.BasalArea": 70000,
+			"Seedling": 100,
+			"SeedlingBA": 7.854E-05,
+			"History": 20,
+			"SeedEstParms": [7.5, 0.085],
+			"MeanGrowth": 0.00044,
+			"ClimGrowth": [0.0, 0.0, 0.0],
+			"CalFactor": [0.0, 0.0],
+			"Spruce.BasalArea": 10,
+			"IgnitionDepressor": 0.1,
+			"Transitions": true,
+			"SpruceTransitionYear": 1860,
+			"TundraTransitionYear": 1960,
+			"SummerWarmthIndex": 27
+		},
+		"WetlandTundra": {
+			"id": 6,
+			"StartAge": [40.0, 1.0],
+			"FireProb.IsAgeDependent": true,
+			"FireProb": [0.0,0.0,0.0],
+			"HumanFireProb": 2.432667E-05,
+			"Spruce.EstBA": 23.5,
+			"SeedRange": 1000,
+			"SeedSource": [35.0, 0.95],
+			"Seed.BasalArea": 70000,
+			"Seedling": 5000,
+			"SeedlingBA": 7.854E-05,
+			"History": 20,
+			"SeedEstParms": [7.5, 0.085],
+			"MeanGrowth": 0.00044,
+			"ClimGrowth": [0.0, 0.0, 0.0],
+			"CalFactor": [0.0, 0.0],
+			"Spruce.BasalArea": 10,
+			"IgnitionDepressor": 0.1,
+			"Transitions": false
+		},
+		"BarrenLichenMoss": {
+			"id": 7
+		},
+		"TemperateRainforest": {
+			"id": 8
+		}
+	},
+	"Simulation": {
+		"RandSeed": 1234567890,
+		"Output.DetailLevel": "MAXIMUM",
+		"FirstYear": 1000,
+		"LastYear": 2100,
+		"MaxReps": 30,
+		"CropNeighbors": true
+	}
+}
