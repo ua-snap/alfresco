@@ -57,3 +57,26 @@ $ ls -1 $HOME/local/bin
 fresco
 fresco-mpi
 ```
+
+# Running
+
+At appears that previous versions of ALFRESCO read run parameters from `*.fif` files, of which there are many examples in the `Runs/TestCases/FIF` and `/Runs/Demo/FIF`. However, the ALFRESCO executables now expect parameters to be provided from `*.json` files. An example JSON parameter file is provided in `Runs/Demo/JSON`. The FIF files have been preserved for reference.
+
+
+To run a locally installed version of ALFRESCO, make sure the install diretory is in your PATH. For example:
+
+```
+$ export PATH=$PATH:$HOME/local/bin
+```
+
+To run the non-MPI version of ALFRESCO:
+
+```
+$ ./fresco -f Alfresco.JSON
+```
+
+To run the MPI version of ALFRESCO, run the following from a Slurm script/job:
+
+```
+$ mpiexec fresco-mpi -f Alfresco.JSON
+```
