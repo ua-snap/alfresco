@@ -21,7 +21,7 @@ $ srun -p main -N 1 -n 32 -w atlas15 --pty /bin/bash
 Download, build, and install version 1.9.0 of the POCO C++ Libraries. Newer versions of the POCO C++ Libraries do not appear to be compatible with the C++ compiler installed on Atlas, so an older version is chosen deliberately here:
 
 ```
-wget `https://github.com/pocoproject/poco/archive/refs/tags/poco-1.9.0-release.tar.gz`
+wget 'https://github.com/pocoproject/poco/archive/refs/tags/poco-1.9.0-release.tar.gz'
 tar zxvf poco-1.9.0-release.tar.gz
 cd poco-poco-1.9.0-release
 ./configure --prefix=$HOME/local
