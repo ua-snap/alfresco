@@ -58,7 +58,7 @@ fresco
 fresco-mpi
 ```
 
-# Running
+## Running
 
 At appears that previous versions of ALFRESCO read run parameters from `*.fif` files, of which there are many examples in the `Runs/TestCases/FIF` and `/Runs/Demo/FIF`. However, the ALFRESCO executables now expect parameters to be provided from `*.json` files. An example JSON parameter file is provided in `Runs/Demo/JSON`. The FIF files have been preserved for reference.
 
