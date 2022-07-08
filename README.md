@@ -9,27 +9,13 @@ An understanding of the processes that control wildland fuel accumulation, inclu
 The following instructions show how to build the ALFRESCO code for either global or local installation on Atlas.
 
 First, you will need to get onto a compute node. Unlike the login nodes that run CentOS 6, the compute nodes run
-CentOS 7. This code will need to be compiled from a CentOS 7 system.
-
-
-To log into atlas15 for example:
+CentOS 7. This code will need to be compiled from a CentOS 7 system. To log into atlas15 for example:
 
 ```
 $ srun -p main -N 1 -n 32 -w atlas15 --pty /bin/bash
 ```
 
-Download, build, and install version 1.9.0 of the POCO C++ Libraries. Newer versions of the POCO C++ Libraries do not appear to be compatible with the C++ compiler installed on Atlas, so an older version is chosen deliberately here:
-
-```
-wget 'https://github.com/pocoproject/poco/archive/refs/tags/poco-1.9.0-release.tar.gz'
-tar zxvf poco-1.9.0-release.tar.gz
-cd poco-poco-1.9.0-release
-./configure --prefix=$HOME/local
-make
-make install
-```
-
-From the compute node, clone this repo:
+Then, clone this repo:
 
 ```
 $ git clone git@github.com:ua-snap/alfresco.git
@@ -41,8 +27,6 @@ Set the following environment variables to pick up the MPI C++ compiler and exec
 ```
 $ export CXX=/usr/lib64/openmpi/bin/mpic++
 $ export PATH=$PATH:/usr/lib64/openmpi/bin
-$ export CPLUS_INCLUDE_PATH=$HOME/local/include
-$ export LD_LIBRARY_PATH=$HOME/local/lib
 ```
 
 Run `autogen.sh` to generate the `configure` script that will be needed in the next step:
@@ -91,5 +75,5 @@ $ ./fresco -f Alfresco.JSON
 To run the MPI version of ALFRESCO, run the following from a Slurm script/job:
 
 ```
-$ mpiexec fresco-mpi -f Alfresco.JSON
+$ mpirun fresco-mpi -f Alfresco.JSON
 ```
