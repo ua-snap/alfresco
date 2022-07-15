@@ -35,7 +35,7 @@ Run `autogen.sh` to generate the `configure` script that will be needed in the n
 $ ./autogen.sh
 ```
 
-Run the `configure` script. Omit the `--prefix=$HOME/local` option if you intend to install ALFRESCO globally:
+This will output a handful of warnings that you can ignore as long as a `configure` file is successfully generated. Run the `configure` script. Omit the `--prefix=$HOME/local` option if you intend to install ALFRESCO globally:
 
 ```
 $ ./configure --prefix=$HOME/local
