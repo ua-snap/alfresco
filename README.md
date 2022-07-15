@@ -47,7 +47,13 @@ Run `make` to compile the code:
 $ make
 ```
 
-Run `make install` to install the executables in `$HOME/local` (specified with the `--prefix` option above), or globally if the `--prefix` option was omitted. MPI and non-MPI versions of the ALFRESCO executable should now be present in this directory. For example:
+Install the executables:
+
+```
+$ make install
+```
+
+This will install the executables in `$HOME/local` (specified with the `--prefix` option above), or globally if the `--prefix` option was omitted. MPI and non-MPI versions of the ALFRESCO executable should now be present in this directory. For example:
 
 ```
 $ ls -1 $HOME/local/bin
