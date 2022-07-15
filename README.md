@@ -9,10 +9,10 @@ An understanding of the processes that control wildland fuel accumulation, inclu
 The following instructions show how to build the ALFRESCO code for either global or local installation on Atlas.
 
 First, you will need to get onto a compute node. Unlike the login nodes that run CentOS 6, the compute nodes run
-CentOS 7. This code will need to be compiled from a CentOS 7 system. To log into atlas15 for example:
+CentOS 7. This code will need to be compiled from a CentOS 7 system. Run the following command to log into a compute node:
 
 ```
-$ srun -p main -N 1 -n 32 -w atlas15 --pty /bin/bash
+$ srun -p main -N 1 -n 32 --pty /bin/bash
 ```
 
 Then, clone this repo:
@@ -63,23 +63,63 @@ fresco-mpi
 
 ## Running
 
-At appears that previous versions of ALFRESCO read run parameters from `*.fif` files, of which there are many examples in the `Runs/TestCases/FIF` and `/Runs/Demo/FIF`. However, the ALFRESCO executables now expect parameters to be provided from `*.json` files. An example JSON parameter file is provided in `Runs/Demo/JSON`. The FIF files have been preserved for reference.
+Previous versions of ALFRESCO read their run configurations from FIF files, of which there are many examples in the `Deprecated/Runs/TestCases` and `Deprecated/Runs/Demo` directories. However, ALFRESCO executables built from the latest code base now read their run configurations from JSON files. FIF files are no longer compatible with the latest code base but are perserved in the `Deprecated` directory for reference.
 
+An example JSON parameter file is provided in `examples/alfresco.json`. Before running ALFRESCO, make sure to update the following line in `alfresco.json` with the directory where you would like the output GeoTIFFs to be written:
 
-To run a locally installed version of ALFRESCO, make sure the install diretory is in your PATH. For example:
+```
+{
+  ...
+  "PathSetup": {	
+    ...
+    "ClientOutputBasePath": "/atlas_scratch/username/run/directory",
+    ...
+  }
+  ...
+},
+```
+
+### Running ALFRESCO interactively on one cluster node
+
+To run a locally installed version of ALFRESCO interactively on a single node, first make sure you are logged into a compute node:
+
+```
+$ srun -p main -N 1 -n 32 --pty /bin/bash
+```
+
+Then, make sure the local ALFRESCO install directory is in your PATH. For example:
 
 ```
 $ export PATH=$PATH:$HOME/local/bin
 ```
 
-To run the non-MPI version of ALFRESCO:
+Then run the non-MPI version of ALFRESCO:
 
 ```
-$ ./fresco -f Alfresco.JSON
+$ fresco -f alfresco.json
 ```
 
-To run the MPI version of ALFRESCO, run the following from a Slurm script/job:
+Output from each ALFRESCO replicate will show up in the `logs` directory.
+
+### Running ALFRESCO on multiple cluster nodes
+
+To run across multiple cluster nodes, you will need to run the MPI version of ALFRESCO submitted via a Slurm script. An example Slurm script is included in `examples/alfresco.slurm`. Change these two lines of the Slurm script to reflect your email address and where you would like the Slurm output to be written:
 
 ```
-$ mpirun fresco-mpi -f Alfresco.JSON
+#SBATCH --mail-user=username@alaska.edu
+#SBATCH --output=/path/to/output/alfresco_slurm_%j.out
 ```
+
+Make sure the `alfresco.json` run configuration file is in the same directory as `alfresco.slurm`, then submit the Slurm job like this:
+
+```
+$ sbatch alfresco.slurm
+```
+
+You can check the status of the Slurm job like this:
+
+```
+$ squeue
+```
+
+Output from each ALFRESCO replicate will show up in the `logs` directory.
