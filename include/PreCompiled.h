@@ -1,6 +1,13 @@
 #ifndef Fresco_PreCompiled_h
 #define Fresco_PreCompiled_h
 
+#include "Poco/Path.h"
+#include <sstream>
+#include <sys/types.h>
+#include <fcntl.h>
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 #define Fresco_Is_Client
 

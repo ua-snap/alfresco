@@ -11,7 +11,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "jsoncpp/json/json.h"
+#include "json/json.h"
 
 class FIF {
 	public:

@@ -1,11 +1,11 @@
 #ifndef Fresco_Grassland_h
 #define Fresco_Grassland_h
 
-
 #include "Custom.h"
 #include "Frame.h"
+#include "Fresco.h"
+#include "PreCompiled.h"
 #include "NoVeg.h"
-
 
 class FrescoCustom_API Grassland : public Frame 
 //The Grassland class is the definition of the white spruce frame.  It is a child of the general frame type and inherits

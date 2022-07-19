@@ -1,7 +1,8 @@
 //CStat.cpp
 //This class provides the hooks to report stats to the server app.
-#include "PreCompiled.h"
+
 #include "Stat.h"
+#include "PreCompiled.h"
 #include "Except.h"
 #include "Fresco.h"
 

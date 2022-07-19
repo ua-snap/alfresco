@@ -1,9 +1,6 @@
 // BarrenLichenMoss.cpp
 
-
-#include "PreCompiled.h"
 #include "BarrenLichenMoss.h"
-
 
 BarrenLichenMoss::BarrenLichenMoss (const Frame& rFrame)
     : Frame(rFrame)

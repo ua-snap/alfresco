@@ -1,9 +1,8 @@
 #ifndef Fresco_BarrenLichenMoss_h
 #define Fresco_BarrenLichenMoss_h
 
-
 #include "Frame.h"
-
+#include "PreCompiled.h"
 
 class FrescoFoundation_API BarrenLichenMoss : public Frame
 /*

@@ -1,13 +1,7 @@
 //GraminoidTundra.cpp
 
-
-#include "PreCompiled.h"
 #include "GraminoidTundra.h"
-#include "BSpruce.h"
-#include "Fresco.h"
-#include "RasterIO.h"
 #include "CustomLandscape.h"
-#include "WSpruce.h"
 
 //Declare static private members
 bool			GraminoidTundra::_isStaticSetupAlready		= false;

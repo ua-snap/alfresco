@@ -6,12 +6,8 @@
  * definition, and any other worker functions which may be required for the function of the module.  
  */
 
-
-#include "PreCompiled.h"
-#include "Fresco.h"
-#include "WSpruce.h"
 #include "CustomLandscape.h"
-
+#include "WSpruce.h"
 
 //Declare static private members
 bool			WSpruce::_isStaticSetupAlready = false;

@@ -1,13 +1,7 @@
 //WetlandTundra.cpp
 
-
-#include "PreCompiled.h"
 #include "WetlandTundra.h"
-#include "BSpruce.h"
-#include "Fresco.h"
-#include "RasterIO.h"
 #include "CustomLandscape.h"
-#include "WSpruce.h"
 
 //Declare static private members
 bool			WetlandTundra::_isStaticSetupAlready		= false;

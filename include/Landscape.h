@@ -1,9 +1,14 @@
 #ifndef Fresco_Landscape_h
 #define Fresco_Landscape_h
 
-
-#include "PreCompiled.h"
+#include "Except.h"
+#include "Fire.h"
 #include "Frame.h"
+#include "Fresco.h"
+#include "FrescoClimate.h"
+#include "NoVeg.h"
+#include "PreCompiled.h"
+#include "RasterIO.h"
 #include "Stat.h"
 #include "StatArray.h"
 #include "StatFile.h"

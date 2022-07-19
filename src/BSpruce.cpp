@@ -3,12 +3,8 @@
 //probability function and the success function which are pure virtual functions and therefore require
 //definition, and any other worker functions which may be required for the function of the module.  
 
-
-#include "PreCompiled.h"
 #include "BSpruce.h"
-#include "Fresco.h"
 #include "CustomLandscape.h"
-
 
 //Declare static members
 bool			BSpruce::_isStaticSetupAlready = false;

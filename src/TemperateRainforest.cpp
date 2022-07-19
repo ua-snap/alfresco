@@ -1,9 +1,6 @@
 // TemperateRainforest.cpp
 
-
-#include "PreCompiled.h"
 #include "TemperateRainforest.h"
-
 
 TemperateRainforest::TemperateRainforest (const Frame& rFrame)
     : Frame(rFrame)

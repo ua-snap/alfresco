@@ -1,9 +1,6 @@
 // NoVeg.cpp
 
-
-#include "PreCompiled.h"
 #include "NoVeg.h"
-
 
 NoVeg::NoVeg (const Frame& rFrame)
     : Frame(rFrame)
