@@ -1,12 +1,4 @@
-
-
 #include "Global.h"
-#include "Fresco.h"
-#include "Poco/File.h"
-#include "Poco/Mutex.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
 
 
 //Declare static private members

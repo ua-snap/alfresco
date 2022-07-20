@@ -1,11 +1,11 @@
 #ifndef Fresco_BSpruce_h
 #define Fresco_BSpruce_h
 
-
 #include "Custom.h"
 #include "Frame.h"
+#include "Fresco.h"
 #include "NoVeg.h"
-
+#include "PreCompiled.h"
 
 class FrescoCustom_API BSpruce : public Frame 
 //The BSpruce class is the definition of the black spruce frame.  It is a child of the general frame type and inherits

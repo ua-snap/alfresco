@@ -1,9 +1,8 @@
 #ifndef Fresco_TemperateRainforest_h
 #define Fresco_TemperateRainforest_h
 
-
 #include "Frame.h"
-
+#include "PreCompiled.h"
 
 class FrescoFoundation_API TemperateRainforest : public Frame
 /*

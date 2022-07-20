@@ -1,14 +1,15 @@
 #ifndef Fresco_Climate_h
 #define Fresco_Climate_h
 
-
-#include "PreCompiled.h"
 #include "Except.h"
-#include <jsoncpp/json/json.h>
+#include "Fresco.h"
+#include "PreCompiled.h"
+
 #include "Poco/Exception.h"
+#include "Poco/Path.h"
 #include "RasterIO.h"
 #include <list>
-
+#include <jsoncpp/json/json.h>
 
 struct SClimate 
 {

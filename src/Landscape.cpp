@@ -10,17 +10,7 @@
  * succession, fire regime, and steps to iterate the internal state).
  */
 
-
-#include "PreCompiled.h"
 #include "Landscape.h"
-#include "Fresco.h"
-#include "Stat.h"
-#include "Fire.h"
-#include "Frame.h"
-#include "NoVeg.h"
-#include "FrescoClimate.h"
-#include "Except.h"
-#include "RasterIO.h"
 #include <stack>
 #include <limits>
 

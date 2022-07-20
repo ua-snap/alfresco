@@ -1,13 +1,7 @@
 //Tundra.cpp
 
-
-#include "PreCompiled.h"
 #include "Tundra.h"
-#include "BSpruce.h"
-#include "Fresco.h"
-#include "RasterIO.h"
 #include "CustomLandscape.h"
-#include "WSpruce.h"
 
 //Declare static private members
 bool			Tundra::_isStaticSetupAlready		= false;

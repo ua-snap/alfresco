@@ -1,12 +1,14 @@
 #ifndef Fresco_ShrubTundra_h
 #define Fresco_ShrubTundra_h
 
-
+#include "BSpruce.h"
 #include "Custom.h"
 #include "Frame.h"
+#include "Fresco.h"
 #include "NoVeg.h"
+#include "PreCompiled.h"
+#include "RasterIO.h"
 #include "WSpruce.h"
-
 
 class FrescoCustom_API ShrubTundra : public Frame 
 //The ShrubTundra class is the definition of the tundra frame.  It is a child of the general frame type and inherits most

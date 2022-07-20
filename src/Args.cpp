@@ -1,6 +1,5 @@
 #include "Args.h"
 
-
 Args::Args(){
 	fifFile = "default.fif";
 	boost::filesystem::path p = boost::filesystem::initial_path();

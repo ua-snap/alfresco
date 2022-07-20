@@ -7,12 +7,9 @@
  */
 
 
-#include "PreCompiled.h"
+
 #include "FrescoClimate.h"
-#include "Except.h"
-#include "Fresco.h"
-#include "RasterIO.h"
-#include "Poco/Path.h"
+
 #include <sstream>
 
 

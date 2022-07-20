@@ -6,10 +6,8 @@
  * burns fires recursively.  This algorithm is a bit involved and is described in more detail in the Burn function.
  */
 
-
 #include "Fire.h"
-#include "Landscape.h"	
-
+#include "Landscape.h"
 
 //Declare static private members for optimization
 std::vector<Fire::SFireTransition> Fire::fireTransitions;

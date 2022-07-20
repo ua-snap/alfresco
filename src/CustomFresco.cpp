@@ -1,6 +1,5 @@
 //CustomFresco.cpp
 
-
 #include "CustomFresco.h"
 #include "CustomLandscape.h"
 #include "BarrenLichenMoss.h"
@@ -16,7 +15,6 @@
 #include "Fresco.h"
 #include "Landscape.h"
 #include <set>
-
 
 std::set<unsigned char>	CustomFresco::validVegTypes;
 

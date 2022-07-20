@@ -5,7 +5,6 @@
 #include "PreCompiled.h"
 #include "Fresco.h"
 
-
 class Landscape;
 struct SClimate;
 //struct SFireTransition;

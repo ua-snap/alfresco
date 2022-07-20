@@ -3,17 +3,8 @@
  *
  */
 
-
-#include "PreCompiled.h"
 #include "Fresco.h"
-#include "Except.h"
 #include "Landscape.h"
-#include "Fire.h"
-#include "Poco/BasicEvent.h"
-#include "Poco/DateTimeFormatter.h"
-#include "Poco/LocalDateTime.h"
-#include "Poco/File.h"
-#include <sys/timeb.h>
 
 
 
