@@ -36,21 +36,13 @@ table td {
 	<h1>ALFRESCO User's Guide</h1>
 	<ol>
 	<li><a href="#intro">Introduction to ALFRESCO</a></li>
-	<li><a href="#install">Installing ALFRESCO</a>
-	    <ol>
-		<li><a href="#requirements">Minimum System Requirements</a></li>
-		<li><a href="#downloads">Downloads</a></li>
-		<li><a href="#installbin">Installing from RPM</a></li>
-		<li><a href="#installsrc">Compiling/Installing from Source</a></li>
-	    </ol>
-	</li>
 	<li><a href="#getstarted">Getting Started</a>
 	    <ol>
-		<li><a href="#fifsetup">.FIF Setup</a></li>
+		<li><a href="#jsonsetup">JSON Setup</a></li>
 		<li><a href="#running">Running ALFRESCO</a></li>
 	    </ol>
 	</li>
-	<li><a href="#fifconfig">Appendix A: .FIF Configuration</a></li>
+	<li><a href="#jsonconfig">Appendix A: JSON Configuration</a></li>
 	<li><a href="#changelog">Change Log</a></li>
 	<li><a href="#references">ALFRESCO Model References</a></li>
 	</ol>
@@ -88,81 +80,18 @@ table td {
 	refined tundra transition stages, fire suppression effects on fire size, simulated fire severity patterns
 	and fire severity effects on successional rates and trajectories.</p>
 
-	<h2><a name="install" ></a>Installing ALFRESCO</h2>
-	<h3><a name="requirements"></a>Minimum System Requirements</h3>
-	<p>ALFRESCO runs on the Linux operating system, and will run on most distributions.  Systems running the Fedora distribution can use the RPM downloads to install the software.  Installation using this method will also install required packages as well automatically. </p>
-	<h4>General Requirements</h4>
-		<ul>
-			<li>Linux - 2.4+</li>
-			<li>1.5GHz processor</li>
-			<li>1GB of RAM (2GB recommended for large simulation domains)</li>
-		</ul>
-	<h4>Required Libraries (minimum recommended version)</h4>
-		<ul>
-			<li>Boost - 1.47.x</li>
-			<li>GDAL - 1.8.x</li>
-			<li>Poco - 1.4.x</li>
-		</ul>
-	<h4>Optional Libraries</h4>
-		<ul>
-			<li>OpenMPI - 1.5.x (required for parallel runs)</li>
-		</ul>
-	<h3><a name="installsrc"></a>Compiling/Installing from Source</h3>
-	<p>Building ALFRESCO from source is a relatively straightforward process on most Linux distributions, but will have additional requirements.  This is intended for systems not supported via binary installs, or for users that need to custom configure the build.</p>
-		<h4>Library Requirements</h4>
-		<ul>
-			<li>Boost - 1.47.x (w/ header libraries)</li>
-			<li>GDAL - 1.8.x (w/ header libraries)</li>
-			<li>Poco - 1.4.x (w/ header libraries)</li>
-			<li>jsoncpp 0.5+ (w/ header libraries)</li>
-		</ul>
-		<h4>Optional Libraries</h4>
-		<ul>
-			<li>OpenMPI - 1.5.x (w/ header libraries)</li>
-		</ul>
-		<h4>Build Requirements</h4>
-		<ul>
-			<li>C++ Compiler (GNU C++)</li>
-			<li>Autoconf (2.59.x)</li>
-			<li>Automake (1.11.x)</li>
-			<li>Libtool (2.4.x)</li>
-		</ul>
-	<p>
-		Once the above requirements are installed, the source is downloaded (see <a name="downloads">Downloads</a>), and you have extracted it, you'll need to "cd" into the extracted directory.  The steps to build a default version of ALFRESCO are fairly simple:
-	</p>
-		<ol>
-			<li>cd alfresco/</li>
-			<li>./configure</li>
-			<li>make</li>
-			<li>sudo make install</li>
-		</ol>
-	<p>By default, this will install alfresco into the default user space, typically /usr/bin for executables, and /usr/lib for libraries.  If you wish to install alfresco in a non-standard location, the following steps will be used instead:</p>
-		<ol>
-			<li>cd alfresco/</li>
-                        <li>./configure --prefix=&lt;install-dir&gt;</li>
-                        <li>make</li>
-                        <li>make install</li>
-		</ol>
-	<p>
-		For a non-standard install, you may also need to set the PATH and LD_LIBRARY_PATH environment variables to point to the bin and lib directories inside the &lt;install-dir&gt; directory used in the above example.  This can be done with the following commands in the Bash shell:
-	</p>
-		<ul>
-			<li>export PATH=${PATH}:&lt;install-dir&gt;/bin</li>
-			<li>export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:&lt;install-dir&gt;/lib</li>
-		</ul>
-	<p>At this point, the software will be installed, and you can move on to the Getting Started section for setting up runs and input files.</p>
 	<h2><a name="getstarted"></a>Getting Started</h2>
-	<h3><a name="fifsetup"></a>.FIF Setup</h3>	
+	<h3><a name="jsonsetup"></a>JSON Setup</h3>	
 	<p>
 		The .JSON file is the main component of configuration of the ALFRESCO model.  It contains parameterizations for model dynamics that allow the user to customize the scenario produced, offering options for fire dynamics, climate impacts, vegetation information, and more.
 	</p>
-	<p>Configuration is done by editing a text file in compliance with the .JSON configuration settings.  For available options, see <a href="#fifconfig">Appendix A</a>
+	<p>Configuration is done by editing a text file in compliance with the .JSON configuration settings.  For available options, see <a href="#jsonconfig">Appendix A</a>
 	<h3><a name="running"></a>Running ALFRESCO</h3>	
 	<p>Once ALFRESCO is installed, and the .JSON has been configured, the model can be run in a few steps:
 		<code>
 		<ol>
 			<li>cd &lt;output-path&gt;</li>
-			<li>fresco --fif &lt;fif-file&gt;</li>
+			<li>fresco --fif &lt;json-file&gt;</li>
 		</ol>
 		</code>
 	</p>
@@ -171,7 +100,7 @@ table td {
 		<code>
 		<ol>
                         <li>cd &lt;output-path&gt;</li>
-                        <li>mpirun -np &lt;num-tasks&gt; fresco-mpi --fif &lt;fif-file&gt;</li>
+                        <li>mpirun -np &lt;num-tasks&gt; fresco-mpi --fif &lt;json-file&gt;</li>
                 </ol>
 		</code>
 	</p>
@@ -184,15 +113,15 @@ table td {
 			<li>-d [ --debug ]        enable debug mode
 			<li>-n [ --nostats ]      disable summary stats gathering
 			<li>-s [ --startrep ] arg set the starting rep number
-			<li>-f [ --fif ] arg      set the fif file
-			<li>--fif-path arg        set the fif path
+			<li>-f [ --fif ] arg      set the json file
+			<li>--fif-path arg        set the json path
 			<li>--input-path arg      set the input path
 			<li>--output-path arg     set the output path
 		</ul>
 		</code>
 
 	<p>At this point the model will begin to run, and map files will be produced in &lt;output-path&gt;/Maps.  Once the run is complete, statistics files will be generated, and will be produced as &lt;stat-file&gt;.txt</p>
-	<h2><a name="fifconfig" ></a>Appendix A: Input Configuration</h2>
+	<h2><a name="jsonconfig" ></a>Appendix A: Input Configuration</h2>
 	<h3>Intro to the Alfresco Config File</h3>
 	<p>The Boreal ALFRESCO Config file is a json format text file containing all 
 	parameterizations for any particular simulation scenario. It can be edited 
