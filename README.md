@@ -110,7 +110,7 @@ To run across multiple cluster nodes, you will need to run the MPI version of AL
 #SBATCH --output=/path/to/output/alfresco_slurm_%j.out
 ```
 
-Make sure the `alfresco.json` run configuration file is in the same directory as `alfresco.slurm`, then submit the Slurm job like this:
+Make sure the `alfresco.json` run configuration file is in the same directory as `alfresco.slurm`. If you have renamed the `alfresco.json` file or put it in a different directory, make sure these changes are reflected in the `alfresco.slurm` script. Then submit the Slurm job like this:
 
 ```
 $ sbatch alfresco.slurm
