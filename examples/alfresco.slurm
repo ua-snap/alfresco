@@ -1,12 +1,12 @@
 #!/bin/sh
-#SBATCH --nodes=2	# Setting this too high may cause MPI timeouts.
+#SBATCH --nodes=2
 #SBATCH --ntasks=128
 #SBATCH --ntasks-per-node=64
 #SBATCH --account=snap
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=username@alaska.edu
 #SBATCH --output=/path/to/output/alfresco_slurm_%j.out
-#SBATCH -p viz		# ALFRESCO seems to scale better on a few beefy nodes vs. many smaller nodes.
+#SBATCH -p viz
 
 echo Start slurm && date
 
