@@ -2,11 +2,7 @@ lib_LTLIBRARIES = libFrescoFoundation.la libFrescoCustom.la
 if AIEM
 lib_LTLIBRARIES += libFrescoAIEM.la
 endif
-INCLUDES = -I../include -I../ -I/usr/include/gdal -I/usr/include/Poco $(MPI_CXXFLAGS) -I/home/UA/apbennett/include
-if AIEM
-INCLUDES += -I/home/UA/apbennett/aiem/include
-INCLUDES += -I/home/apbennett/aiem/include
-endif
+INCLUDES = -I../include -I/usr/include/gdal $(MPI_CXXFLAGS)
 libFrescoFoundation_la_LDFLAGS = -shared
 libFrescoFoundation_la_CXXFLAGS = -DWITHSTATS -g
 libFrescoFoundation_la_SOURCES = ../src/FrescoClimate.cpp \

@@ -39,6 +39,3 @@ config.h.in
 config.h.in~
 config.log
 stamp-h1
-# Input Settings Files #
-*.fif
-*.FIF

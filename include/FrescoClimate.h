@@ -3,12 +3,13 @@
 
 #include "Except.h"
 #include "Fresco.h"
-#include "json/json.h"
 #include "PreCompiled.h"
+
 #include "Poco/Exception.h"
 #include "Poco/Path.h"
 #include "RasterIO.h"
 #include <list>
+#include <jsoncpp/json/json.h>
 
 struct SClimate 
 {
