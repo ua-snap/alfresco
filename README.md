@@ -2,7 +2,13 @@
 
 ## About
 
-An understanding of the processes that control wildland fuel accumulation, including the roles played by climate change and fire management activities, is crucial for designing wildland management policies. Boreal ALFRESCO simulates the responses of subarctic and boreal vegetation to transient climatic changes. The model assumptions reflect the hypothesis that fire regime and climate are the primary drivers of landscape-level changes in the distribution of vegetation in the circumpolar arctic/boreal zone. Furthermore, it assumes that vegetation composition and continuity serve as a major determinant of large, landscape-level fires. Boreal ALFRESCO operates on an annual time step, in a landscape composed of 1 × 1 km pixels, a scale appropriate for interfacing with mesoscale climate and carbon models. The model simulates five major subarctic/boreal ecosystem types: upland tundra, black spruce forest, white spruce forest, deciduous forest, and grassland-steppe. These ecosystem types represent a generalized classification of the complex vegetation mosaic characteristic of the circumpolar arctic and boreal zones of Alaska. SNAP climate data can be used as ALFRESCO inputs, thus creating projections of the impacts of changing climate on fire regime. 
+ALFRESCO was originally developed to simulate the response of subarctic vegetation to a changing climate and disturbance regime (Rupp et al. 2000a, 2000b). Previous research has highlighted both direct and indirect (through changes in fire regime) effects of climate on the expansion rate, species composition, and extent of treeline in Alaska (Rupp et al. 2000b, 2001, Lloyd et al. 2003). Additional research, focused on boreal forest vegetation dynamics, has emphasized that fire frequency changes – both direct (climate-driven or anthropogenic) and indirect (as a result of vegetation succession and species composition) – strongly influence landscape-level vegetation patterns and associated feedbacks to future fire regime (Rupp et al. 2002, Chapin et al. 2003, Turner et al. 2003). A detailed description of ALFRESCO can be obtained from the literature (Rupp et al. 2000a, 200b, 2001, 2002). The boreal forest version of ALFRESCO was developed to explore the interactions and feedbacks between fire, climate, and vegetation in interior Alaska (Rupp et al. 2002, 2007, Duffy et al. 2005, 2007) and associated impacts to natural resources (Rupp et al. 2006, Butler et al. 2007).
+
+ALFRESCO is a state-and-transition model of successional dynamics that explicitly represents the spatial processes of fire and vegetation recruitment across the landscape (Rupp et al. 2000a). ALFRESCO does not model fire behavior, but rather models the empirical relationship between growing-season climate (e.g., average temperature and total precipitation) and total annual area burned (i.e., the footprint of fire on the landscape). ALFRESCO also models the changes in vegetation flammability that occurs during succession through a flammability coefficient that changes with vegetation type and stand age (Chapin et al. 2003).
+
+The fire regime is simulated stochastically and is driven by climate, vegetation type, and time since last fire (Rupp et al. 2000a, 2007). ALFRESCO employs a cellular automaton approach, where an ignited pixel may spread to any of the eight surrounding pixels. ‘Ignition’ of a pixel is determined using a random number generator and as a function of the flammability value of that pixel. Fire ‘spread’ depends on the flammability of the receptor pixel and any effects of natural firebreaks including non-vegetated mountain slopes and large water bodies, which do not burn.
+
+Version 1.0.1 can operate at any time step and pixel resolution, however the current model calibration and parameterization was conducted at an annual time step and 1 km2 pixel resolution. A 30 m2 calibration and parameterization is currently underway. Other model developments include refined tundra transition stages, fire suppression effects on fire size, simulated fire severity patterns and fire severity effects on successional rates and trajectories.
 
 ## Build process
 
@@ -123,32 +129,3 @@ $ squeue
 ```
 
 Output from each ALFRESCO replicate will show up in the `logs` directory.
-
-## Using historical fire data
-
-Historical fire polygon data can be downloaded from the [Maps/Imagery/Geospatial page of the AICC website](https://fire.ak.blm.gov/predsvcs/maps.php) as a file geodatabase (see "AlaskaFireHistory_Polygons_1940_*"). Polygons from each year of the file geodatabase can be extracted, rasterized, and used as historical fire inputs for ALFRESCO.
-
-The following Bash command will created GeoTIFFs from the AICC fire history polygons geodatabase for each year from 1950 to 2021, for example:
-
-```
-for i in {1950..2021}; do \
-gdal_rasterize AlaskaFireHistory_Polygons.gdb ~/FireHistoryYears/AlaskaFireHistory_Polygons_${i}.tif \
--a_srs EPSG:3338 -burn 255 -ts 5528 2223 -te -1725223.205807 321412.933 3802776.794 2544412.932644 \
--ot Byte -sql "SELECT * FROM AK_fire_location_polygons WHERE FIREYEAR = '${i}'"; \
-done
-```
-
-To input these GeoTIFFs into ALFRESCO, make sure the historical transition type and year are set properly in the JSON configuration, and the historical fire GeoTIFF base path is set. For example:
-
-```
-{
-    ...
-    "Fire": {
-        "Types": ["SPATIAL", "HISTORICAL", "SPATIAL"],
-        "TypeTransitionYears": [1000, 1950, 2022],
-        "Historical": ["", "/atlas_scratch/username/AlaskaFireHistory/AlaskaFireHistory_Polygons.tif", ""],
-        ...
-    }
-    ...
-}
-```
