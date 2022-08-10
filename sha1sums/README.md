@@ -12,6 +12,6 @@ cd /workspace/Data/Base_Data/ALFRESCO/ALFRESCO_Master_Dataset_v2_1
 find . -type f -exec sha1sum '{}' \; | sort > ALFRESCO_Master_Dataset_v2_1.sha1sums
 ```
 
-The same commands can be run against the ALFRESCO master datasets on Atlas to verify the integrity of all files.
+The same commands can be run against the ALFRESCO master datasets on Atlas to verify the integrity of all files by running a `diff` between your *.sha1sums files vs. the ones from this repository.
 
 The *.sha1sums files have been compressed with gzip to shrink them below GitHub's 100mb file size limit.
