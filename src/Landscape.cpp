@@ -131,7 +131,7 @@ void Landscape::		setup()
 	// TODO: Maybe make RasterIO a static singleton class (issues with multithreading?)
 	//       rather than assigning to a global variable.
 	gIO = new RasterIO(_xulCorner, _yulCorner, gXOffset, gYOffset, gXSize, gYSize, gCellSize, -gCellSize, 0, 0,
-						"ALFRESCO " + Fresco::version() + " from UAF. Config file: " + FRESCO->fif().fileName(),
+						"ALFRESCO " + Fresco::version() + " from UAF.",
 						requireAaeacForInput, applyAaeacToOutput);
 
     // Should this be in Fire?
