@@ -122,7 +122,7 @@ You can check the status of the Slurm job like this:
 $ squeue
 ```
 
-Output from each ALFRESCO replicate will show up in the `logs` directory.
+Output from each ALFRESCO replicate will show up in the `logs` directory. Output GeoTIFFs will show up in the `Maps` directory, separated into subdirectories for each year.
 
 ## Using historical fire data
 
