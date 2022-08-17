@@ -33,7 +33,7 @@
 		"IsMonthly": true,
 		"IsExperimental": true,
 		"NumHistory": 1,
-		"TransitionYears": [1000, 1901, 2022],
+		"TransitionYears": [1000, 1901, 2015],
 		"Values": {
 			"Type": ["RANDEXPLICIT", "EXPLICIT", "EXPLICIT"],
 			"Temp.Constant": [0.0, 0.0, 0.0],
@@ -48,8 +48,8 @@
 				"/atlas_scratch/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/ts40/historical/pr/pr_total_mm_CRU_TS40_historical.tif",
 				"/atlas_scratch/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/NCAR-CCSM4/rcp85/pr/pr_total_mm_alf_ar5_NCAR-CCSM4_rcp85.tif"
 			],
-			"RandExplicit.MinYear": [1901,1901,2022],
-			"RandExplicit.MaxYear": [1999,1901,2022],
+			"RandExplicit.MinYear": [1901,1901,2015],
+			"RandExplicit.MaxYear": [1999,1901,2015],
 			"RandExplicit.Replicate": [false,false, false],
 			"StepsAndRampsEnabled": false
 		},
@@ -283,7 +283,7 @@
 		"Output.DetailLevel": "MAXIMUM",
 		"FirstYear": 1000,
 		"LastYear": 2100,
-		"MaxReps": 30,
+		"MaxReps": 5,
 		"CropNeighbors": true
 	}
 }
