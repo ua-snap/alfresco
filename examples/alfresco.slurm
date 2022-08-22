@@ -1,12 +1,12 @@
 #!/bin/sh
 #SBATCH --nodes=2
-#SBATCH --ntasks=128
-#SBATCH --ntasks-per-node=64
+#SBATCH --ntasks=64
+#SBATCH --ntasks-per-node=32
 #SBATCH --account=snap
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=username@alaska.edu
 #SBATCH --output=/path/to/output/alfresco_slurm_%j.out
-#SBATCH -p viz
+#SBATCH -p main
 
 echo Start slurm && date
 
