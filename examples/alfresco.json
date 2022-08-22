@@ -2,7 +2,6 @@
 	"type": "AlfrescoConfig",
 	"PathSetup": {	
 		"ClientInputBasePath": "/atlas_scratch/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/ALFRESCO_Model_Input_Datasets/AK_CAN_Inputs",
-		"ClientOutputBasePath": "/atlas_scratch/username/run/directory",
 		"BaseData": "/atlas_scratch/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/ALFRESCO_Model_Input_Datasets/AK_CAN_Inputs"
 	},
 	"Landscape": {

@@ -63,21 +63,7 @@ fresco-mpi
 
 ## Running
 
-Previous versions of ALFRESCO read their run configurations from FIF files, of which there are many examples in the `Deprecated/Runs/TestCases` and `Deprecated/Runs/Demo` directories. However, ALFRESCO executables built from the latest code base now read their run configurations from JSON files. FIF files are no longer compatible with the latest code base but are perserved in the `Deprecated` directory for reference.
-
-An example JSON parameter file is provided in `examples/alfresco.json`. Before running ALFRESCO, make sure to update the following line in `alfresco.json` with the directory where you would like the output GeoTIFFs to be written:
-
-```
-{
-  ...
-  "PathSetup": {	
-    ...
-    "ClientOutputBasePath": "/atlas_scratch/username/run/directory",
-    ...
-  }
-  ...
-},
-```
+Previous versions of ALFRESCO read their run configurations from FIF files, of which there are many examples in the `Deprecated/Runs/TestCases` and `Deprecated/Runs/Demo` directories. However, ALFRESCO executables built from the latest code base now read their run configurations from JSON files. FIF files are no longer compatible with the latest code base but are perserved in the `Deprecated` directory for reference. An example JSON parameter file is provided in `examples/alfresco.json`.
 
 ### Running ALFRESCO interactively on one cluster node
 
