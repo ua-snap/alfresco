@@ -1,5 +1,8 @@
 ﻿# ALFRESCO Change Log
 
+## 2.2.1
+- Fixed value index of vegetation GeoTIFF description tag.
+
 ## 2.2
 - Converted main input configuration to JSON from custom .FIF format
 - Added directory structures to outputs
