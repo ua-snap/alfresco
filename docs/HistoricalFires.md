@@ -2,7 +2,7 @@
 
 Historical fire polygon data can be downloaded from the [Maps/Imagery/Geospatial page of the AICC website](https://fire.ak.blm.gov/predsvcs/maps.php) as a file geodatabase (see "AlaskaFireHistory_Polygons_1940_*"). Polygons from each year of the file geodatabase can be extracted, rasterized, and used as historical fire inputs for ALFRESCO.
 
-The following Bash command will created GeoTIFFs from the AICC fire history polygons geodatabase for each year from 1950 to 2021, for example:
+The following Bash command will create GeoTIFFs from the AICC fire history polygons geodatabase for each year from 1950 to 2021, for example:
 
 ```
 for i in {1950..2021}; do

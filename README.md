@@ -8,8 +8,6 @@ ALFRESCO is a state-and-transition model of successional dynamics that explicitl
 
 The fire regime is simulated stochastically and is driven by climate, vegetation type, and time since last fire (Rupp et al. 2000a, 2007). ALFRESCO employs a cellular automaton approach, where an ignited pixel may spread to any of the eight surrounding pixels. ‘Ignition’ of a pixel is determined using a random number generator and as a function of the flammability value of that pixel. Fire ‘spread’ depends on the flammability of the receptor pixel and any effects of natural firebreaks including non-vegetated mountain slopes and large water bodies, which do not burn.
 
-Version 1.0.1 can operate at any time step and pixel resolution, however the current model calibration and parameterization was conducted at an annual time step and 1 km2 pixel resolution. A 30 m2 calibration and parameterization is currently underway. Other model developments include refined tundra transition stages, fire suppression effects on fire size, simulated fire severity patterns and fire severity effects on successional rates and trajectories.
-
 ## Build process
 
 The following instructions show how to build the ALFRESCO code for either global or local installation on Atlas.

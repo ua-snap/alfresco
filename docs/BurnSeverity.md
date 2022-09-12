@@ -1,8 +1,8 @@
 # Burn Severity
 
-Burn Severity in Boreal ALFRESCO is modeled to reflect the following two assumptions (Duffy et al. 2007):
+Burn severity in Boreal ALFRESCO is modeled to reflect the following two assumptions (Duffy et al. 2007):
 
-1. Burn Severity increases w/ Firesize (as a consequence of sub-regions of larger fires burning more severely as opposed to a uniform increase in burn severity).
+1. Burn severity increases w/ fire size (as a consequence of sub-regions of larger fires burning more severely as opposed to a uniform increase in burn severity).
 2. Fires burning in the Flats have greater spatial correlation in burn severity than those burning in complex topography.
 
 Algorithm:
