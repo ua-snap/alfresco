@@ -113,3 +113,63 @@ $ squeue
 ```
 
 Output from each ALFRESCO replicate will show up in the `logs` directory.
+
+---
+
+## Running ALFRESCO in an Apptainer container (Chinook)
+
+This section shows how to run the ALFRESCO model on the Chinook cluster using an Apptainer (`.sif`) image. It covers where inputs live, how to update the example config, and how to launch a job on an interactive node.
+
+### ALFRESCO inputs (Chinook)
+
+The ALFRESCO input data referenced by the run configuration lives at: /beegfs/SNAP/ALFRESCO/ALFRESCO_Master_Dataset_v2_1/
+
+The example configuration is here:  
+https://github.com/ua-snap/alfresco/blob/main/examples/alfresco.json
+
+Update the example JSON to point at the Chinook path with:
+
+```bash
+# Optional: keep a backup
+cp alfresco.json alfresco.json.bak
+
+# Replace all occurrences of /atlas_scratch with /beegfs/SNAP
+sed -i 's|/atlas_scratch|/beegfs/SNAP|g' alfresco.json
+
+# Verify the replacement worked
+grep -n "/atlas_scratch" alfresco.json || echo "Paths updated for Chinook."
+```
+
+### Run ALFRESCO on an interactive compute node (Apptainer)
+
+#### Start a persistent terminal session
+
+```bash
+screen -S alfresco
+```
+
+#### Request an interactive node in Slurm
+
+```bash
+srun -p t2small -N 1 --pty /bin/bash
+```
+
+You should now be on a Chinook compute node.
+
+#### Run the ALFRESCO container
+
+Bind-mount the /beegfs file system so you can read and write from within the container.
+
+```bash
+apptainer run -B /beegfs:/beegfs /beegfs/SNAP/ALFRESCO/alfresco-x86_latest.sif
+```
+
+#### Run the fresco binary inside of the ALFRESCO container
+
+```bash
+Apptainer> fresco -f alfresco.json
+```
+
+### Output location (Apptainer)
+
+ALFRESCO writes outputs to the current working directory where you invoke the command (i.e., the directory containing your alfresco.json, unless your JSON specifies different output paths). Let it run in the screen session and check back for generated files.
